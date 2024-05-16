@@ -1,0 +1,21 @@
+@import './variables.module';
+
+@mixin flex($direction: row, $align-items: center, $justify-content: center) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align-items;
+  justify-content: $justify-content;
+}
+
+@mixin display-grid(
+  $colum: repeat(1, 1fr),
+  $row: repeat(1, 1fr),
+  $column-gap: $default,
+  $row-gap: $default
+) {
+  display: grid;
+  grid-template-columns: $colum;
+  column-gap: $column-gap;
+  grid-template-rows: $row;
+  row-gap: $row-gap;
+}

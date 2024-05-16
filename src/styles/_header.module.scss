@@ -1,0 +1,43 @@
+@import './common.module';
+
+@mixin menu {
+  a {
+    margin-right: $margin * 2;
+    font-size: $padding;
+    font-weight: 500;
+    letter-spacing: 1px;
+    &:hover {
+      color: $color-background-200;
+    }
+  }
+}
+
+.header_container {
+  position: fixed;
+  z-index: 9999;
+  width: 100%;
+
+  background-color: $color-dark-200;
+  height: $margin * 3;
+  color: $color-background-100;
+  @include flex($justify-content: space-between);
+  padding: 0px $padding * 2 0px $padding * 2;
+  .category_wrapper {
+    @include flex($align-items: baseline);
+    .header_logo {
+      width: 150px;
+      cursor: pointer;
+      margin-right: $margin * 3;
+    }
+    .category {
+      @include menu;
+    }
+  }
+  .user_wrapper {
+    svg {
+      font-size: 18px;
+      margin-right: $padding/2;
+    }
+    @include menu;
+  }
+}
