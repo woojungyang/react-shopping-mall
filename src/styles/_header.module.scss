@@ -3,8 +3,8 @@
 @mixin menu {
   a {
     margin-right: $margin * 2;
-    font-size: $padding;
-    font-weight: 500;
+    font-size: $margin;
+    font-weight: 700;
     letter-spacing: 1px;
     &:hover {
       color: $color-background-200;
@@ -17,27 +17,37 @@
   z-index: 9999;
   width: 100%;
 
-  background-color: $color-dark-200;
-  height: $margin * 3;
+  height: $margin * 5;
   color: $color-background-100;
-  @include flex($justify-content: space-between);
-  padding: 0px $padding * 2 0px $padding * 2;
-  .category_wrapper {
-    @include flex($align-items: baseline);
-    .header_logo {
-      width: 150px;
-      cursor: pointer;
-      margin-right: $margin * 3;
+
+  @include flex;
+  .header_wrapper {
+    max-width: $max-width;
+    width: 100%;
+    @include flex($justify-content: space-between);
+
+    .category_wrapper {
+      @include flex($align-items: baseline);
+      .header_logo {
+        width: 220px;
+        cursor: pointer;
+
+        margin-right: $margin * 3;
+      }
+      .category {
+        @include menu;
+      }
     }
-    .category {
+    .user_wrapper {
+      @include flex($align-items: baseline);
+      svg {
+        font-size: $margin;
+        margin-right: $padding/1.2;
+      }
       @include menu;
+      a {
+        margin-right: 0px;
+      }
     }
-  }
-  .user_wrapper {
-    svg {
-      font-size: 18px;
-      margin-right: $padding/2;
-    }
-    @include menu;
   }
 }

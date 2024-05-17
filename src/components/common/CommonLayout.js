@@ -6,7 +6,6 @@ export const CommonLayout = ({ children }) => {
   return (
     <div className={styles.container}>
       <Header />
-      CommonLayout
       {children}
     </div>
   );
