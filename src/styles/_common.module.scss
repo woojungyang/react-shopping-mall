@@ -18,28 +18,13 @@ a:active {
 .default_flex {
   display: flex;
 }
+.default_flex_space {
+  @include flex($justify-content: space-between);
+}
 
 .container {
   position: relative;
   .domino_pagination_container {
-  }
-  .best_product_container {
-    height: 450px;
-    border: 1px solid red;
-    position: relative;
-    img {
-      max-height: 80%;
-      height: 100%;
-      object-fit: cover;
-      width: 100%;
-    }
-    svg {
-      position: absolute;
-      top: 3%;
-      right: 3%;
-      color: $color-background-100;
-      cursor: pointer;
-    }
   }
 }
 

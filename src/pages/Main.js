@@ -88,12 +88,18 @@ export default function Main() {
             <div className={styles.second_slider_container}>
               <div className={styles.slider_subtitle_wrapper}>
                 <h4 className={styles.slider_subtitle}>WHAT'S BEST</h4>
-                <div className={styles.default_flex}>
+                {/* <div className={styles.default_flex}>
                   <DominoPagination />
                   <p className={styles.view_all_button}>View All</p>
-                </div>
+                </div> */}
               </div>
               <BestCardsSlider />
+            </div>
+            <div className={styles.collection_container}>
+              <div className={styles.collection_img_wrapper}>
+                <img src={require('assets/images/main/main24.jpg')} />
+                <img src={require('assets/images/sub/sub23.jpg')} />
+              </div>
             </div>
           </div>
         </div>

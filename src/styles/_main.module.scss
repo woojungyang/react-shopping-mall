@@ -82,13 +82,88 @@
         }
       }
       .second_slider_container {
+        margin-bottom: $margin * 4;
         .slider_subtitle_wrapper {
-          p
           .slider_subtitle {
             text-align: center;
             font-weight: 200;
             letter-spacing: 2px;
-            font-size: $margin * 1.2;
+            font-size: $margin * 1.5;
+            color: $color-dark-200;
+          }
+        }
+        .best_product_container {
+          @include flex($align-items: flex-start);
+
+          width: 100%;
+          max-width: $max-width;
+
+          .best_product_wrapper {
+            height: 450px;
+            width: 100%;
+            max-width: 281.7px;
+
+            position: relative;
+            margin-right: $padding/2;
+
+            img {
+              max-height: 75%;
+              height: 100%;
+              object-fit: cover;
+              width: 100%;
+            }
+            svg {
+              position: absolute;
+              top: 3%;
+              right: 3%;
+              color: $color-background-100;
+              cursor: pointer;
+            }
+            &:last-child {
+              margin-right: 0;
+            }
+            p {
+              font-size: 14px;
+            }
+
+            .brand_name {
+              font-weight: 700;
+              margin-top: $padding/2;
+            }
+            .product_name {
+              font-size: 14px;
+              width: 100%;
+              word-wrap: break-word;
+            }
+            .product_price {
+              font-size: $padding;
+              font-weight: 500;
+              span {
+                font-weight: 400;
+                font-size: 13px;
+                text-decoration: line-through;
+                color: $color-skeleton-200;
+              }
+            }
+            .discount_rate {
+              color: rgb(254, 99, 32);
+            }
+          }
+        }
+      }
+      .collection_container {
+        max-width: $max-width;
+        width: 100%;
+        border: 1px solid blue;
+        .collection_img_wrapper {
+          @include flex;
+          height: 700px;
+          img {
+            height: 100%;
+            width: 100%;
+            &:last-child {
+              width: 40%;
+            }
           }
         }
       }
