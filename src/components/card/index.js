@@ -1,1 +1,1 @@
-export * from './BestProductCard';
+export * from './DefaultCard';
