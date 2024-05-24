@@ -10,12 +10,12 @@
 @mixin display-grid(
   $colum: repeat(1, 1fr),
   $row: repeat(1, 1fr),
-  $column-gap: $default,
+  $colum-gap: $default,
   $row-gap: $default
 ) {
   display: grid;
   grid-template-columns: $colum;
-  column-gap: $column-gap;
+  column-gap: $colum-gap;
   grid-template-rows: $row;
   row-gap: $row-gap;
 }

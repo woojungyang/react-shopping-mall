@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Slider from 'react-slick';
 import { CommonLayout, DominoPagination } from 'components/common';
 import styles from 'styles/_main.module.scss';
@@ -34,6 +34,8 @@ export default function Main() {
     { id: 3, name: 'ZOOM' },
     { id: 4, name: 'SALE' },
   ];
+
+  const [activeBrand, setActiveBrand] = useState(0);
 
   return (
     <CommonLayout>
@@ -127,7 +129,7 @@ export default function Main() {
             </div>
           </div>
         </div>
-        <div className={styles.events_container}>
+        <div className={styles.magazine_container}>
           {[...new Array(4)].map((e, i) => (
             <DefaultCard />
           ))}
@@ -147,9 +149,32 @@ export default function Main() {
               <div>사진3</div>
             </div>
           </div>
-          {/* <div className={styles.}>
-
-          </div> */}
+          <div className={styles.brand_container}>
+            <h4 className={styles.section_title}>BRAND</h4>
+            <div className={styles.default_flex} style={{ flexWrap: 'nowrap' }}>
+              {[...new Array(3)].map((e, i) => {
+                const active = activeBrand == i;
+                return (
+                  <div
+                    onMouseEnter={() => setActiveBrand(i)}
+                    className={classNames({
+                      [styles.brand_wrapper]: true,
+                      [styles.brand_wrapper_active]: active,
+                    })}
+                  >
+                    <div
+                      className={classNames({
+                        [styles.default_flex]: active,
+                      })}
+                    >
+                      <img src={require(`assets/images/sub/sub2${i}.jpg`)} />
+                      {active && <div className={styles.brand_items_wrapper}>ddd</div>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </CommonLayout>
