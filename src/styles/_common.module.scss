@@ -62,3 +62,50 @@ a:active {
     line-height: 140%;
   }
 }
+
+.brand_item_wrapper {
+  padding: $margin/2 0;
+  height: 20%;
+  flex: 1;
+
+  position: relative;
+  @include flex($justify-content: flex-start, $align-items: flex-start);
+  margin-bottom: 1%;
+  &:last-child {
+    margin-bottom: 0%;
+  }
+  img {
+    width: 20%;
+    height: 100px;
+
+    object-fit: cover;
+    margin-right: $margin;
+  }
+  .brand_name {
+    font-size: 14px;
+    margin-bottom: $padding/2;
+  }
+  .brand_item_name {
+    margin-bottom: $padding;
+  }
+  .price_info {
+    font-size: 13px;
+    color: $color-skeleton-200;
+    .original_price {
+      text-decoration: line-through;
+    }
+    .current_price {
+      color: $color-dark-300;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      margin: 0px $padding/4;
+    }
+    .sale_percent {
+      color: $color-orange;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  }
+}

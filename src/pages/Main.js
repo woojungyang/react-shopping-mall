@@ -1,13 +1,14 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Slider from 'react-slick';
-import { CommonLayout, DominoPagination } from 'components/common';
+import { CommonLayout, LikePin } from 'components/common';
 import styles from 'styles/_main.module.scss';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link } from 'react-router-dom';
 import { BestCardsSlider } from 'components/slider';
 import classNames from 'classnames';
-import { DefaultCard } from 'components/card';
+import { DefaultCard, SmallCard } from 'components/card';
+import { numberWithCommas } from 'utilities';
 
 export default function Main() {
   const slider = useRef(null);
@@ -101,13 +102,40 @@ export default function Main() {
             </div>
           </div>
         </div>
+        <div className={styles.gallery_container}>
+          <h4 className={styles.section_title}>HOT KEYWORD</h4>
+          <div className={styles.gallery}>
+            <div className={styles.large_img}>#버킷햇</div>
+            <div className={styles.small_img}>
+              <div>#나시</div>
+              <div>#원피스</div>
+            </div>
+            <div className={styles.large_img}>#샌들</div>
+            <div className={styles.small_img}>
+              <div>#플레따</div>
+              <div>#에코백</div>
+            </div>
+          </div>
+          <div className={styles.selected_keyword_item_wrapper}>
+            {[...new Array(3)].map((e, i) => (
+              <div className={styles.selected_keyword_item_wrap}>
+                <img
+                  src={require('assets/images/sub/sub24.jpg')}
+                  className={styles.item_thumbnail}
+                />
+                <div>
+                  {[...new Array(3)].map((e2, i) => (
+                    <SmallCard />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className={styles.collection_container}>
+          <h4 className={styles.section_title}>STYLE STORY</h4>
           <div className={styles.collection_img_wrapper}>
             <div className={styles.first_img}>사진1</div>
-
-            {/* <div className={styles.second_img}>사진2</div> */}
-            {/* <img src={require('assets/images/main/main25.jpg')} />
-                <img src={require('assets/images/sub/sub24.jpg')} /> */}
           </div>
           <div className={classNames(styles.default_flex, styles.collection_description_wrapper)}>
             <div className={styles.collection_description}>
@@ -135,45 +163,36 @@ export default function Main() {
           ))}
         </div>
         <div className={styles.event_banner_wrapper}>event banner</div>
-        <div className={styles.gallery_container}>
-          <h4 className={styles.section_title}>HOT KEYWORD</h4>
-          <div className={styles.gallery}>
-            <div className={styles.large_img}>사진1</div>
-            <div className={styles.small_img}>
-              <div>사진2</div>
-              <div>사진3</div>
-            </div>
-            <div className={styles.large_img}>사진4</div>
-            <div className={styles.small_img}>
-              <div>사진2</div>
-              <div>사진3</div>
-            </div>
-          </div>
-          <div className={styles.brand_container}>
-            <h4 className={styles.section_title}>BRAND</h4>
-            <div className={styles.default_flex} style={{ flexWrap: 'nowrap' }}>
-              {[...new Array(3)].map((e, i) => {
-                const active = activeBrand == i;
-                return (
-                  <div
-                    onMouseEnter={() => setActiveBrand(i)}
-                    className={classNames({
-                      [styles.brand_wrapper]: true,
-                      [styles.brand_wrapper_active]: active,
-                    })}
-                  >
-                    <div
-                      className={classNames({
-                        [styles.default_flex]: active,
-                      })}
-                    >
-                      <img src={require(`assets/images/sub/sub2${i}.jpg`)} />
-                      {active && <div className={styles.brand_items_wrapper}>ddd</div>}
+
+        <div className={styles.brand_container}>
+          <h4 className={styles.section_title}>BRAND</h4>
+          <div className={styles.brand_wrapper}>
+            {[...new Array(3)].map((e, i) => {
+              const active = activeBrand == i;
+              return (
+                <div
+                  className={classNames({
+                    [styles.brand_wrap]: true,
+                    [styles.default_flex]: active,
+                    [styles.brand_disabled]: !active,
+                  })}
+                  onClick={() => setActiveBrand(i)}
+                >
+                  <img
+                    className={styles.brand_thumbnail}
+                    src={require(`assets/images/sub/sub2${i}.jpg`)}
+                  />
+                  {!active && <div className={styles.image_overlay}>BrandName</div>}
+                  {active && (
+                    <div className={styles.items_list_wrapper}>
+                      {[...new Array(4)].map((e, i) => (
+                        <SmallCard />
+                      ))}
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

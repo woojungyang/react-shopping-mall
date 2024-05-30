@@ -1,9 +1,7 @@
-import { BestProductCard } from 'components/card';
 import React, { useState } from 'react';
+import { BestProductCard } from 'components/card';
+import { LikePin } from 'components/common';
 import styles from 'styles/_main.module.scss';
-import Slider from 'react-slick';
-import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
-import PushPinIcon from '@mui/icons-material/PushPin';
 import { numberWithCommas } from 'utilities';
 
 export const BestCardsSlider = () => {
@@ -28,7 +26,7 @@ export const BestCardsSlider = () => {
           }}
         >
           <img src={require(`assets/images/sub/sub${index + 1}.jpg`)} />
-          <PushPinOutlinedIcon />
+          <LikePin />
           <p className={styles.brand_name}>BrandName</p>
           <p className={styles.product_name}>ProductName</p>
           <div className={styles.default_flex_space} style={{ marginTop: 16 }}>
