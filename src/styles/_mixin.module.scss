@@ -1,4 +1,4 @@
-@import './variables.module';
+@import "./variables.module";
 
 @mixin flex($direction: row, $align-items: center, $justify-content: center) {
   display: flex;

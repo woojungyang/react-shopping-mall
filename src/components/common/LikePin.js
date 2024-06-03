@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
-import PushPinIcon from '@mui/icons-material/PushPin';
+import PushPinIcon from "@mui/icons-material/PushPin";
+import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 
 export const LikePin = ({
   onClick,
   like = false,
-  position = { top: '3%', right: '3%' },
-  defaultColor = 'white',
+  position = { top: "3%", right: "3%" },
+  defaultColor = "white",
 }) => {
   const [status, setStatus] = useState(like);
   function LikeItem() {
@@ -15,14 +15,14 @@ export const LikePin = ({
   }
 
   const colors = {
-    white: '#fff',
-    skeleton: '#c4c4c4',
+    white: "#fff",
+    skeleton: "#c4c4c4",
   };
   return (
     <div
       style={{
-        position: 'absolute',
-        cursor: 'pointer',
+        position: "absolute",
+        cursor: "pointer",
         ...position,
       }}
       onClick={LikeItem}
@@ -30,7 +30,7 @@ export const LikePin = ({
       {!status ? (
         <PushPinOutlinedIcon sx={{ color: colors[defaultColor] }} />
       ) : (
-        <PushPinIcon sx={{ color: 'red' }} />
+        <PushPinIcon sx={{ color: "red" }} />
       )}
     </div>
   );

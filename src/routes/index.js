@@ -1,19 +1,20 @@
-import Login from 'pages/Login';
-import Main from 'pages/Main';
-import NotFound from 'pages/NotFound';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter } from "react-router-dom";
+
+import Login from "pages/Login";
+import Main from "pages/Main";
+import NotFound from "pages/NotFound";
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Main />,
   },
   {
-    path: '/login',
+    path: "/login",
     element: <Login />,
   },
   {
-    path: '*',
+    path: "*",
     element: <NotFound />,
   },
 ]);

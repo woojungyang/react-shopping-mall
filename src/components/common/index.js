@@ -1,3 +1,3 @@
-export * from './CommonLayout';
-export * from './DominoPagination';
-export * from './LikePin';
+export * from "./CommonLayout";
+export * from "./DominoPagination";
+export * from "./LikePin";

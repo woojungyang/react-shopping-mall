@@ -1,6 +1,8 @@
-import React from 'react';
-import Header from './Header';
-import styles from 'styles/_common.module.scss';
+import React from "react";
+
+import styles from "styles/_common.module.scss";
+
+import Header from "./Header";
 
 export const CommonLayout = ({ children }) => {
   return (

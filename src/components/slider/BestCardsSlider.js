@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { BestProductCard } from 'components/card';
-import { LikePin } from 'components/common';
-import styles from 'styles/_main.module.scss';
-import { numberWithCommas } from 'utilities';
+import React, { useState } from "react";
+
+import { numberWithCommas } from "utilities";
+
+import { BestProductCard } from "components/card";
+import { LikePin } from "components/common";
+
+import styles from "styles/_main.module.scss";
 
 export const BestCardsSlider = () => {
   const settings = {
@@ -13,7 +16,9 @@ export const BestCardsSlider = () => {
     slidesToScroll: 1,
   };
 
-  const [cardSize, setCardSize] = useState([0, 0, 0, 0, 1, 1, 1].sort(() => Math.random() - 0.5));
+  const [cardSize, setCardSize] = useState(
+    [0, 0, 0, 0, 1, 1, 1].sort(() => Math.random() - 0.5),
+  );
 
   return (
     <div className={styles.best_product_container}>

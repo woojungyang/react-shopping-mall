@@ -1,2 +1,2 @@
-export * from './DefaultCard';
-export * from './SmallCard';
+export * from "./DefaultCard";
+export * from "./SmallCard";
