@@ -260,10 +260,9 @@
       }
     }
     .selected_keyword_item_wrapper {
-      margin-top: $margin * 3;
+      margin-top: $margin * 2.5;
       @include display-grid($colum: repeat(3, 1fr));
       .selected_keyword_item_wrap {
-        border: 1px solid black;
         .item_thumbnail {
           width: 100%;
           height: 400px;

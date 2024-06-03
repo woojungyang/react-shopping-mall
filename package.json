@@ -45,7 +45,8 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "eslint-plugin-import": "^2.29.1"
-  }
+  "main": "index.js",
+  "repository": "https://github.com/woojungyang/react-shopping-mall.git",
+  "author": "woojungyang <blossom1113@nate.com>",
+  "license": "MIT"
 }

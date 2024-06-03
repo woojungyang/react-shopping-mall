@@ -123,7 +123,7 @@ export default function Main() {
                   src={require('assets/images/sub/sub24.jpg')}
                   className={styles.item_thumbnail}
                 />
-                <div>
+                <div style={{ padding: '16px' }}>
                   {[...new Array(3)].map((e2, i) => (
                     <SmallCard />
                   ))}

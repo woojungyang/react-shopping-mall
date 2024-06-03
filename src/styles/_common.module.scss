@@ -87,6 +87,15 @@ a:active {
   }
   .brand_item_name {
     margin-bottom: $padding;
+
+    width: 90%;
+    p {
+      display: -webkit-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
   }
   .price_info {
     font-size: 13px;
