@@ -278,49 +278,114 @@
     margin: auto;
     width: 100%;
     overflow: hidden;
+    margin-bottom: $margin * 8;
 
     .brand_wrapper {
       display: flex;
-      width: 100%; // @include flex;
+      width: 100%;
+
       .brand_wrap {
         width: 100%;
         position: relative;
-        transition: 0.23s;
         flex: 5;
+
+        transition:
+          flex 0.5s ease,
+          transform 0.5s ease;
+
         .brand_thumbnail {
           width: 100%;
           height: 500px;
           object-fit: cover;
           aspect-ratio: 1;
         }
+
         .image_overlay {
           width: 100%;
           height: 500px;
-          background-color: rgba($color: #000000, $alpha: 0.7);
+          background-color: rgba(0, 0, 0, 0.7);
           position: absolute;
           z-index: 1;
           top: 0;
           @include flex;
           color: $color-background-100;
           cursor: pointer;
+          transition: background-color 0.23s ease;
+
           &:hover {
-            background-color: rgba($color: #000000, $alpha: 0.3);
+            background-color: rgba(0, 0, 0, 0.3);
           }
         }
+
         .items_list_wrapper {
           padding: 0 $margin;
           width: 100%;
           height: 500px;
-          transition: opacity 0.5s;
-          opacity: 1;
 
-          // display: flex;
-          // flex-direction: column;
+          transition: opacity 0.5s ease;
+          opacity: 1;
         }
       }
+
       .brand_disabled {
         flex: 1;
-        transition: all 0.5s;
+        transition:
+          flex 0.5s ease,
+          transform 0.5s ease;
+      }
+    }
+  }
+  .event_container {
+    max-width: $max-width;
+
+    margin: auto;
+    margin-bottom: $margin * 6;
+    @include display-grid($colum: repeat(3, 1fr));
+    width: 100%;
+  }
+  .style_container {
+    max-width: $max-width;
+
+    margin: auto;
+    // @include display-grid($colum: repeat(8, 1fr));
+    // width: 100%;
+
+    .style_menu_wrapper {
+      width: 100%;
+      @include flex;
+      margin-bottom: $margin * 2;
+      .style_menu {
+        // max-width: 90px;
+        // width: 100%;
+        text-align: center;
+        font-weight: 300;
+        margin-right: 20px;
+        cursor: pointer;
+        color: $color-skeleton-200;
+        &:last-child {
+          margin-right: 0px;
+        }
+      }
+      .active_style_menu {
+        border-bottom: 2px solid $color-skeleton-200;
+        font-weight: 400;
+      }
+    }
+    .style_image_wrapper {
+      @include display-grid($colum: repeat(7, 1fr));
+
+      .style_image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        aspect-ratio: 1;
+        position: relative;
+      }
+      .user_name {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba($color: #000, $alpha: 0.3);
       }
     }
   }

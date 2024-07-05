@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-import PushPinIcon from "@mui/icons-material/PushPin";
-import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 
-export const LikePin = ({
+export const LikeHeart = ({
   onClick,
   like = false,
   position = { top: "3%", right: "3%" },
@@ -28,9 +28,9 @@ export const LikePin = ({
       onClick={LikeItem}
     >
       {!status ? (
-        <PushPinOutlinedIcon sx={{ color: colors[defaultColor] }} />
+        <FavoriteBorderOutlinedIcon sx={{ color: colors[defaultColor] }} />
       ) : (
-        <PushPinIcon sx={{ color: "red" }} />
+        <FavoriteIcon sx={{ color: "red" }} />
       )}
     </div>
   );

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { numberWithCommas } from "utilities";
 
 import { BestProductCard } from "components/card";
-import { LikePin } from "components/common";
+import { LikeHeart } from "components/common";
 
 import styles from "styles/_main.module.scss";
 
@@ -31,7 +31,7 @@ export const BestCardsSlider = () => {
           }}
         >
           <img src={require(`assets/images/sub/sub${index + 1}.jpg`)} />
-          <LikePin />
+          <LikeHeart />
           <p className={styles.brand_name}>BrandName</p>
           <p className={styles.product_name}>ProductName</p>
           <div className={styles.default_flex_space} style={{ marginTop: 16 }}>

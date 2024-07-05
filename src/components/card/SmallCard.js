@@ -2,7 +2,7 @@ import React from "react";
 
 import { numberWithCommas } from "utilities";
 
-import { LikePin } from "components/common";
+import { LikeHeart } from "components/common";
 
 import styles from "styles/_common.module.scss";
 
@@ -25,7 +25,7 @@ export const SmallCard = ({ item }) => {
           </span>
           <span className={styles.sale_percent}> 15%</span>
         </p>
-        <LikePin
+        <LikeHeart
           defaultColor="skeleton"
           position={{ top: "10%", right: "3%" }}
         />

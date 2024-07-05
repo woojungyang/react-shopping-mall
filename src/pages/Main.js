@@ -1,4 +1,4 @@
-import React, {  useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -39,6 +39,16 @@ export default function Main() {
   ];
 
   const [activeBrand, setActiveBrand] = useState(0);
+  const [brands, setBrands] = useState([...new Array(3)]);
+
+  const styleMenu = [
+    { id: 1, name: "ALL" },
+    { id: 2, name: "WOMAN" },
+    { id: 3, name: "MAN" },
+    { id: 4, name: "LIFE" },
+    { id: 5, name: "BEAUTY" },
+  ];
+  const [activeStyleCategory, setActiveStyleCategory] = useState(1);
 
   return (
     <CommonLayout>
@@ -186,8 +196,9 @@ export default function Main() {
         <div className={styles.brand_container}>
           <h4 className={styles.section_title}>BRAND</h4>
           <div className={styles.brand_wrapper}>
-            {[...new Array(3)].map((e, i) => {
-              const active = activeBrand == i;
+            {brands.map((item, index) => {
+              const active = activeBrand == index;
+              const isMiddle = index !== 0 && index !== brands.length;
               return (
                 <div
                   className={classNames({
@@ -195,11 +206,12 @@ export default function Main() {
                     [styles.default_flex]: active,
                     [styles.brand_disabled]: !active,
                   })}
-                  onClick={() => setActiveBrand(i)}
+                  style={{ marginLeft: isMiddle && active ? 16 : 0 }}
+                  onClick={() => setActiveBrand(index)}
                 >
                   <img
                     className={styles.brand_thumbnail}
-                    src={require(`assets/images/sub/sub2${i}.jpg`)}
+                    src={require(`assets/images/sub/sub2${index}.jpg`)}
                   />
                   {!active && (
                     <div className={styles.image_overlay}>BrandName</div>
@@ -214,6 +226,38 @@ export default function Main() {
                 </div>
               );
             })}
+          </div>
+        </div>
+        <div className={styles.event_container}>
+          {[...new Array(3)].map((e, i) => (
+            <DefaultCard />
+          ))}
+        </div>
+        <div className={styles.style_container}>
+          <div className={styles.style_menu_wrapper}>
+            {styleMenu.map((e) => (
+              <p
+                onClick={() => setActiveStyleCategory(e.id)}
+                className={classNames({
+                  [styles.style_menu]: true,
+                  [styles.active_style_menu]: activeStyleCategory == e.id,
+                })}
+              >
+                {e.name}
+              </p>
+            ))}
+          </div>
+
+          <div className={styles.style_image_wrapper}>
+            {[...new Array(7)].map((e, i) => (
+              <div style={{ overflow: "hidden" }}>
+                <img
+                  src={require("assets/images/sub/sub11.jpg")}
+                  className={styles.style_image}
+                />
+                <p className={styles.user_name}>@user_name</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
