@@ -18,7 +18,7 @@
   .main_slider_wrapper {
     position: absolute;
     bottom: 10%;
-
+    max-width: $max-width;
     @include flex($justify-content: flex-start);
     left: 50%;
     transform: translate(-50%, -10%);
@@ -375,12 +375,15 @@
     }
     .notice_container {
       .information_wrapper {
-        border: 1px solid red;
+        border-bottom: 1px solid rgba($color: $color-skeleton-100, $alpha: 0.4);
+        padding-bottom: $margin;
         .information_title {
           font-size: 16px;
         }
         .information_subtitle {
           font-size: 14px;
+          margin-top: $padding/4;
+          line-height: 180%;
         }
         .information_button_wrapper {
           @include flex($justify-content: space-between);
@@ -406,6 +409,46 @@
               height: 20px;
               color: white;
             }
+          }
+        }
+      }
+      .notice_wrapper {
+        width: 100%;
+
+        padding-top: $margin;
+        .notice_title {
+          font-weight: 700;
+          font-size: 15px;
+          margin-bottom: $padding/2;
+        }
+        .notice_content_title {
+          font-size: 14px;
+          margin-bottom: $padding/3;
+          color: $color-skeleton-200;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          -webkit-line-clamp: 1;
+        }
+      }
+      .bottom_navigation_wrapper {
+        width: 80%;
+        margin-left: 5%;
+        @include flex($justify-content: flex-end, $align-items: flex-start);
+        .bottom_navigation_item {
+          margin-left: $margin * 1.5;
+
+          margin-top: $padding * 1.5;
+          p {
+            color: $color-skeleton-200;
+            &:first-child {
+              font-weight: 600;
+              font-size: 16px !important;
+              margin-bottom: $padding/2;
+            }
+            line-height: 180%;
+            font-size: 12px;
+            cursor: pointer;
           }
         }
       }

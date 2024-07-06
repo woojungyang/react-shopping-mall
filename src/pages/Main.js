@@ -275,7 +275,8 @@ export default function Main() {
                 SERVICE CENTER 2015-0907
               </h4>
               <p className={styles.information_subtitle}>
-                운영시간 : 평일 09:00 - 17:00 (점심시간: 12:00-13:00 제외)
+                MON - FRI 09 : 00 - 18:00 | 주말, 공휴일 휴무 | BREAK TIME :
+                12:30 - 13:30
                 <br />
                 cs_help@wootique.co.kr
               </p>
@@ -300,37 +301,46 @@ export default function Main() {
                 </div>
               </div>
             </div>
-            <div>
-              <div>
-                <p>NOTICE</p>
+            <div className={styles.default_flex_space}>
+              <div className={styles.notice_wrapper}>
+                <p className={styles.notice_title}>NOTICE</p>
                 <div>
                   {[...new Array(7)].map((e, i) => (
-                    <p>
-                      [공지] 서비스 이용약관 개정 안내 (시행일: 2024년 7월 5일)
-                    </p>
+                    <div className={styles.default_flex_space}>
+                      <p className={styles.notice_content_title}>
+                        [공지] 서비스 이용약관 개정 안내 (시행일: 2024년 7월
+                        5일)
+                      </p>
+                      <p
+                        className={styles.notice_content_title}
+                        style={{ flexShrink: 0, marginLeft: 20 }}
+                      >
+                        2024-07-11
+                      </p>
+                    </div>
                   ))}
                 </div>
               </div>
-              <div>
-                <div>ABOUT US</div>
-                <div>MY ORDER</div>
-                <div>MY ACCOUNT</div>
-                <div>HELP</div>
+              <div className={styles.bottom_navigation_wrapper}>
+                <div className={styles.bottom_navigation_item}>
+                  <p>ABOUT US</p>
+                  <p>WOOTIQUE 소개</p>
+                  <p>SITE MAP</p>
+                </div>
+                <div className={styles.bottom_navigation_item}>
+                  <p>MY ORDER</p>
+                  <p>주문 배송</p>
+                  <p>상품 리뷰 내역</p>
+                </div>
+                <div className={styles.bottom_navigation_item}>
+                  <p>NEED HELP</p>
+                  <p>1:1문의 내역</p>
+                  <p>주문 문의</p>
+                  <p>FQA</p>
+                  <p>공지사항</p>
+                  <p>고객의 소리</p>
+                </div>
               </div>
-            </div>
-            <div>
-              <h6>
-                <span>개인정보처리방침</span> | 이용약관
-              </h6>
-              <p>
-                상호명 : 주식회사 우티크 (WOOTIQUE Co., Ltd.) 팩스 :
-                010-1233-4444 사업자등록번호 : 000-00-0000
-                <br />
-                일부 상품의 경우 WOOTIQUE는 통신판매의 당사자가 아닌
-                통신판매중개자로서 상품, 상품정보, 거래에 대한 책임이 제한될 수
-                있으므로, 각 상품 페이지에서 구체적인 내용을 확인하시기
-                바랍니다.
-              </p>
             </div>
           </div>
         </div>

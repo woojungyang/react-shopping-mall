@@ -59,3 +59,29 @@
   color: $color-dark-300;
   border-bottom: 1px solid $color-skeleton-100;
 }
+
+.footer_container {
+  // max-width: $max-width;
+  // margin: auto;
+  margin-top: $margin * 5;
+  height: 120px;
+  background-color: rgba($color-skeleton-100, 0.1);
+  @include flex;
+  .footer_wrapper {
+    max-width: $max-width;
+    width: 100%;
+    @include flex($justify-content: space-between, $align-items: flex-end);
+    p {
+      font-size: 14px;
+      color: $color-skeleton-100;
+      line-height: 180%;
+    }
+    .footer_strong {
+      font-weight: 600;
+      color: $color-skeleton-200;
+      span {
+        cursor: pointer;
+      }
+    }
+  }
+}
