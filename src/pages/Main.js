@@ -3,13 +3,14 @@ import React, { useRef, useState } from "react";
 import AppleIcon from "@mui/icons-material/Apple";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import ShopIcon from "@mui/icons-material/Shop";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
+
+import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { DefaultCard, SmallCard } from "components/card";
 import { CommonLayout } from "components/common";
@@ -119,10 +120,10 @@ export default function Main() {
               <div className={styles.second_slider_container}>
                 <div className={styles.slider_subtitle_wrapper}>
                   <h4 className={styles.section_title}>WHAT'S BEST</h4>
-                  {/* <div className={styles.default_flex}>
-                    <DominoPagination />
-                    <p className={styles.view_all_button}>View All</p>
-                  </div> */}
+                  <div className={styles.default_flex}>
+                    {/* <DominoPaginatio /> */}
+                    {/* <p className={styles.view_all_button}>View All</p> */}
+                  </div>
                 </div>
                 <BestCardsSlider />
               </div>
@@ -242,6 +243,7 @@ export default function Main() {
               <DefaultCard />
             ))}
           </div>
+          <h4 className={styles.section_title}> STYLE</h4>
           <div className={styles.style_container}>
             <div className={styles.style_menu_wrapper}>
               {styleMenu.map((e) => (

@@ -3,11 +3,17 @@ import React, { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import classNames from "classnames";
+import { Device } from "models/device";
 import { Link } from "react-router-dom";
+
+import { useUserDevice } from "hooks/size/useUserDevice";
 
 import styles from "styles/_header.module.scss";
 
 export default function Header() {
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
+
   const [position, setPosition] = useState(0);
   const switchPosition = position > 100;
   function onScroll() {

@@ -1,8 +1,5 @@
 import React from "react";
 
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-
 import styles from "styles/_common.module.scss";
 
 export const DefaultCard = ({ contents }) => {

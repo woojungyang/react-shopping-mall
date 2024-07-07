@@ -2,9 +2,9 @@ import React from "react";
 
 import { numberWithCommas } from "utilities";
 
-import { LikeHeart } from "components/common";
-
 import styles from "styles/_common.module.scss";
+
+import { LikeHeart } from "./LikeHeart";
 
 export const SmallCard = ({ item }) => {
   return (

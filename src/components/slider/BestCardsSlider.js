@@ -2,8 +2,7 @@ import React, { useState } from "react";
 
 import { numberWithCommas } from "utilities";
 
-import { BestProductCard } from "components/card";
-import { LikeHeart } from "components/common";
+import { LikeHeart } from "components/card";
 
 import styles from "styles/_main.module.scss";
 
