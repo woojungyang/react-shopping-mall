@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
+import LoginIcon from "@mui/icons-material/Login";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import classNames from "classnames";
@@ -10,22 +11,30 @@ import { useUserDevice } from "hooks/size/useUserDevice";
 
 import styles from "styles/_header.module.scss";
 
+import { SearchContainer } from "./SearchContainer";
+
 export default function Header() {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
+
+  const [showSearch, setShowSearch] = useState(false);
 
   const [position, setPosition] = useState(0);
   const switchPosition = position > 100;
   function onScroll() {
     setPosition(window.scrollY);
   }
-
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
+
+  useEffect(() => {
+    if (showSearch) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "scroll";
+  }, [showSearch]);
 
   return (
     <div
@@ -38,7 +47,7 @@ export default function Header() {
         <div className={styles.category_wrapper}>
           <img
             src={
-              switchPosition
+              switchPosition || !isDeskTop
                 ? require("assets/images/common/logo.png")
                 : require("assets/images/common/logo_trans.png")
             }
@@ -54,11 +63,27 @@ export default function Header() {
           </div>
         </div>
         <div className={styles.user_wrapper}>
-          <SearchIcon />
-          <ShoppingBagIcon />
-          <Link to="/login">LOGIN</Link>
+          {isDeskTop ? (
+            <>
+              <Link to="/login">SIGN IN</Link>
+              <p onClick={() => setShowSearch(!showSearch)}>SEARCH</p>
+              <Link to="/login">CART</Link>
+            </>
+          ) : (
+            <>
+              <SearchIcon
+                className={styles.user_icon}
+                onClick={() => setShowSearch(!showSearch)}
+              />
+              <ShoppingBagIcon className={styles.user_icon} />
+              <LoginIcon className={styles.user_icon} />
+            </>
+          )}
         </div>
       </div>
+      {showSearch && (
+        <SearchContainer visible={showSearch} setVisible={setShowSearch} />
+      )}
     </div>
   );
 }

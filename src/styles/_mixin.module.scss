@@ -7,6 +7,13 @@
   justify-content: $justify-content;
 }
 
+@mixin overflow-text($clamp: 1) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: $clamp;
+}
+
 @mixin display-grid(
   $colum: repeat(1, 1fr),
   $row: repeat(1, 1fr),
@@ -18,4 +25,22 @@
   column-gap: $colum-gap;
   grid-template-rows: $row;
   row-gap: $row-gap;
+}
+
+@mixin mobile {
+  @media (min-width: #{$breakpoint-mobile}) and (max-width: #{$breakpoint-tablet - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-tablet}) and (max-width: #{1279px}) {
+    @content;
+  }
+}
+
+@mixin default-desktop-size {
+  padding: $padding/4 $padding;
+  max-width: $breakpoint-desktop;
+  width: 100%;
 }

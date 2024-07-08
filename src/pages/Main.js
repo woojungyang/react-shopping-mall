@@ -7,6 +7,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import ShopIcon from "@mui/icons-material/Shop";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import classNames from "classnames";
+import { Device } from "models/device";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
 
@@ -19,13 +20,28 @@ import { BestCardsSlider } from "components/slider";
 import styles from "styles/_main.module.scss";
 
 export default function Main() {
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
+
   const slider = useRef(null);
   const settings = {
     dots: false,
+    className: "center",
+    centerMode: isDeskTop,
     infinite: true,
-    speed: 1000,
+    centerPadding: "200px",
     slidesToShow: 1,
-    slidesToScroll: 1,
+    speed: 1000,
+    responsive: [
+      {
+        breakpoint: 760,
+        settings: {
+          centerPadding: "0px",
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -69,11 +85,15 @@ export default function Main() {
               setCurrentIndex(newIndex);
             }}
           >
-            {[...new Array(totalImages)].map((e, i) => (
+            {[...new Array(totalImages)].map((image, index) => (
               <img
-                key={i}
-                src={require(`assets/images/main/main${i + 1}.jpg`)}
-                className={styles.main_image}
+                key={index}
+                src={require(`assets/images/main/main${index + 1}.jpg`)}
+                className={classNames({
+                  [styles.main_image]: true,
+                  [styles.main_image_disabled]:
+                    currentIndex != index && isDeskTop,
+                })}
               />
             ))}
           </Slider>
@@ -92,7 +112,7 @@ export default function Main() {
               ></div>
             </div>
             <p className={styles.slider_index}>{addLeadingZero(totalImages)}</p>
-            <div
+            {/* <div
               className={styles.main_slider_button}
               onClick={() => slider?.current?.slickPrev()}
             >
@@ -103,7 +123,7 @@ export default function Main() {
               onClick={() => slider?.current?.slickNext()}
             >
               <ArrowForwardIosIcon />
-            </div>
+            </div> */}
           </div>
         </div>
         <div className={styles.main_content_container}>
@@ -218,6 +238,7 @@ export default function Main() {
                     })}
                     style={{ marginLeft: isMiddle && active ? 16 : 0 }}
                     onClick={() => setActiveBrand(index)}
+                    onMouseOver={() => setActiveBrand(index)}
                   >
                     <img
                       className={styles.brand_thumbnail}

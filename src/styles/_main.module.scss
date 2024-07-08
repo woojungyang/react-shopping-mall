@@ -5,9 +5,14 @@
   position: relative;
   .main_image {
     width: 100%;
-    height: 90vh;
+    height: 80vh;
     object-fit: cover;
+    cursor: pointer;
   }
+  .main_image_disabled {
+    filter: grayscale(90%);
+  }
+
   .section_title {
     text-align: center;
     font-weight: 200;
@@ -18,13 +23,12 @@
   }
   .main_slider_wrapper {
     position: absolute;
-    bottom: 10%;
-    max-width: $max-width;
-    @include flex($justify-content: flex-start);
-    left: 50%;
-    transform: translate(-50%, -10%);
-
+    bottom: 5%;
+    max-width: $breakpoint-desktop;
     width: 100%;
+    @include flex;
+    left: 50%;
+    transform: translate(-50%, -5%);
 
     .main_slider_button {
       border: 2px solid $color-background-100;
@@ -39,32 +43,35 @@
       }
     }
     .main_slider_bottom {
-      width: 300px;
-      height: 8px;
+      width: 400px;
+      height: 5px;
       background-color: rgba($color: #ffffff, $alpha: 0.5);
       margin-right: $padding;
+      border-radius: 3px;
       // position: relative;
     }
     .main_slider_percent {
-      max-width: 300px;
+      max-width: 400px;
       height: 100%;
       width: 0;
-      height: 8px;
+      height: 5px;
       background-color: $color-background-100;
       left: 0px;
       top: 0px;
       position: absolute;
       transition: width 0.3s;
+      border-radius: 3px;
     }
     .slider_index {
       margin-right: $margin;
       flex-shrink: 0;
-      font-weight: 900;
+      font-weight: 600;
       color: $color-background-100;
+      margin-bottom: -4px;
     }
   }
   .main_content_container {
-    max-width: $max-width;
+    max-width: $breakpoint-desktop;
     margin: auto;
 
     .items_contents_container {
@@ -269,6 +276,7 @@
       .brand_wrapper {
         display: flex;
         width: 100%;
+        cursor: pointer;
 
         .brand_wrap {
           width: 100%;
@@ -426,10 +434,7 @@
           font-size: 14px;
           margin-bottom: $padding/3;
           color: $color-skeleton-200;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          -webkit-line-clamp: 1;
+          @include overflow-text;
         }
       }
       .bottom_navigation_wrapper {
