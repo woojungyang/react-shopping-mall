@@ -103,15 +103,16 @@ export default function Header() {
         </div>
       ) : (
         <div className={styles.mb_header_container}>
-          <img
-            src={
-              switchPosition
-                ? require("assets/images/common/logo.png")
-                : require("assets/images/common/logo_trans.png")
-            }
-            alt="logo"
-            className={styles.header_logo}
-          />
+          <div className={styles.header_logo}>
+            <img
+              src={
+                switchPosition
+                  ? require("assets/images/common/logo.png")
+                  : require("assets/images/common/logo_trans.png")
+              }
+              alt="logo"
+            />
+          </div>
           <div className={styles.header_icon_wrapper}>
             <SearchIcon
               className={styles.user_icon}

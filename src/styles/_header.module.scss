@@ -195,12 +195,17 @@
 }
 
 .mb_header_container {
+  background-color: pink !important;
   @include flex($justify-content: space-between);
   @include header-container;
   height: 80px;
   .header_logo {
-    width: 250px;
+    max-width: 180px;
+
     margin-left: $padding;
+    img {
+      width: 100%;
+    }
   }
   .header_icon_wrapper {
     width: 100%;

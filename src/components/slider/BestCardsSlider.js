@@ -5,7 +5,7 @@ import { numberWithCommas } from "utilities";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import { LikeHeart } from "components/card";
+import { ItemCard, LikeHeart } from "components/card";
 
 import styles from "styles/_main.module.scss";
 
@@ -32,26 +32,7 @@ export const BestCardsSlider = () => {
   return (
     <div className={styles.best_product_container}>
       {cardSize.map((product, index) => (
-        <div
-          className={styles.best_product_wrapper}
-          style={{
-            height: product ? 480 : 400,
-            maxWidth: product ? 330 : 250,
-          }}
-        >
-          <img src={require(`assets/images/sub/sub${index + 1}.jpg`)} />
-          <LikeHeart />
-          <p className={styles.brand_name}>BrandName</p>
-          <p className={styles.product_name}>ProductName</p>
-          <div className={styles.default_flex_space} style={{ marginTop: 16 }}>
-            <p className={styles.product_price}>
-              {numberWithCommas(10000)} <span> {numberWithCommas(90000)}</span>
-            </p>
-            <p className={styles.discount_rate}>
-              <span>20</span>%
-            </p>
-          </div>
-        </div>
+        <ItemCard key={index} product={product} />
       ))}
     </div>
   );

@@ -44,3 +44,14 @@
   max-width: $breakpoint-desktop;
   width: 100%;
 }
+
+@mixin default-button {
+  width: 100%;
+  @include flex;
+  height: 38px;
+  border-radius: 8px;
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+}

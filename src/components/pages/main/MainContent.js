@@ -11,7 +11,9 @@ import { Link } from "react-router-dom";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { DefaultCard, SmallCard } from "components/card";
-import { BasicSlider, BestCardsSlider } from "components/slider";
+import { BestCardsSlider, ImageSlider } from "components/slider";
+
+import { calculatePercent } from "utilities/calculatePercent";
 
 import styles from "styles/_main.module.scss";
 
@@ -22,7 +24,6 @@ export default function MainContent() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalImages = 8;
   const progressBarWidth = useRef(null);
-  let percentage = (currentIndex / (totalImages - 1)) * 100;
 
   function addLeadingZero(number) {
     return number.toString().padStart(2, "0");
@@ -51,7 +52,7 @@ export default function MainContent() {
   return (
     <div className={styles.main_image_container}>
       <div className="slider-container" style={{ position: "relative" }}>
-        <BasicSlider
+        <ImageSlider
           images={[...new Array(totalImages)]}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
@@ -66,7 +67,7 @@ export default function MainContent() {
               className={styles.main_slider_percent}
               ref={progressBarWidth}
               style={{
-                width: percentage + "%",
+                width: calculatePercent(currentIndex, totalImages) + "%",
               }}
             ></div>
           </div>
