@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
+import { Device } from "models/device";
 import { numberWithCommas } from "utilities";
+
+import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { LikeHeart } from "components/card";
 
@@ -15,8 +18,15 @@ export const BestCardsSlider = () => {
     slidesToScroll: 1,
   };
 
-  const [cardSize, setCardSize] = useState(
-    [0, 0, 0, 0, 1, 1, 1].sort(() => Math.random() - 0.5),
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
+
+  const cardSize = useMemo(
+    () =>
+      isDeskTop
+        ? [0, 0, 0, 0, 1, 1, 1].sort(() => Math.random() - 0.5)
+        : [0, 0, 0, 0],
+    [isDeskTop],
   );
 
   return (

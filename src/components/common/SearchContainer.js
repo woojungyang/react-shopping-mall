@@ -11,21 +11,8 @@ export const SearchContainer = ({ visible, setVisible }) => {
 
   const [searchValue, setSearchValue] = useState("");
 
-  const searchRef = useRef(null);
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setVisible(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [searchRef]);
-
   return (
-    <div className={styles.search_container} ref={searchRef}>
+    <div className={styles.search_container}>
       <div className={styles.search_wrapper}>
         <SearchInput value={searchValue} setValue={setSearchValue} />
         <div className={styles.keyword_wrapper}>
