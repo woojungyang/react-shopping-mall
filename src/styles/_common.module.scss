@@ -89,7 +89,6 @@ body {
   }
   .brand_name {
     font-size: 14px;
-    margin-bottom: $padding/2;
   }
   .brand_item_name {
     margin-bottom: $padding;
@@ -163,8 +162,6 @@ body {
   margin-right: $padding/2;
 
   img {
-    max-height: 75%;
-    height: 100%;
     object-fit: cover;
     width: 100%;
   }
@@ -184,7 +181,14 @@ body {
   .product_name {
     font-size: 16px;
     width: 100%;
-    word-wrap: break-word;
+    margin-top: $padding/3;
+    @include overflow-text;
+  }
+  .product_name_sm {
+    font-size: 12px;
+    width: 100%;
+    margin-top: $padding/3;
+    @include overflow-text;
   }
   .product_price {
     font-size: $padding;
@@ -196,24 +200,101 @@ body {
       color: $color-skeleton-200;
     }
   }
+  .product_price_sm {
+    font-size: 10px;
+    span {
+      font-weight: 400;
+      font-size: 10px;
+      text-decoration: line-through;
+      color: $color-skeleton-200;
+    }
+  }
+  .icon_wrap_sm {
+    svg {
+      width: $padding;
+      height: $padding;
+    }
+  }
   .discount_rate {
     color: $color-orange;
+  }
+  .discount_rate_sm {
+    color: $color-orange;
+    font-size: 10px;
+  }
+  .more_information {
+    margin-top: 10px;
+    @include flex($justify-content: flex-start);
+    font-size: 12px !important;
+    color: $color-skeleton-200;
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+    margin-top: 10px;
+    span {
+      margin-left: 2px;
+    }
   }
 }
 
 .mb_slider_wrapper {
   width: $width_padding;
-  height: 2px;
+  height: 4px;
   margin-top: $margin;
   background-color: white;
   position: relative;
+  overflow-x: scroll;
+
   .mb_slider_percent {
-    transition: width 0.7s;
+    width: 500%;
+    // transition: width 0.7s;
     position: absolute;
     z-index: 1;
     background-color: $color-dark-300;
     height: 100%;
   }
+}
+
+.scrollable_container {
+  width: 100%;
+  overflow: hidden;
+  .scrollable_list {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    @include hidden-scrollbar;
+  }
+  .bottom_bar {
+    width: $width_padding;
+    height: 5px;
+    background-color: #f0f0f0;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .bar {
+    width: 500%;
+    height: 5px;
+    background-color: red;
+    position: absolute;
+    z-index: 2;
+  }
+  // .bottom_bar {
+  //   width: 100%;
+  //   height: 10px;
+  //   background-color: #f0f0f0;
+  //   overflow-x: auto;
+  //   position: relative;
+  // }
+
+  // .bar {
+  //   width: 500%;
+  //   height: 100%;
+  //   background-color: red;
+  //   position: absolute;
+  //   z-index: 2;
+  // }
 }
 
 .default_button_dark_300 {

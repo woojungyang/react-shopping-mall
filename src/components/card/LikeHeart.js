@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 
-import styles from "styles/_common.module.scss";
-
 export const LikeHeart = ({
   onClick,
   like = false,
@@ -19,6 +17,7 @@ export const LikeHeart = ({
   const colors = {
     white: "#fff",
     skeleton: "#c4c4c4",
+    red: "#ff0000",
   };
   return (
     <div
@@ -27,7 +26,6 @@ export const LikeHeart = ({
         cursor: "pointer",
         ...position,
       }}
-      className={styles.like_heart}
       onClick={LikeItem}
     >
       {!status ? (

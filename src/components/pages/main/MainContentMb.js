@@ -3,8 +3,14 @@ import React, { useRef, useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 
-import { ItemCard } from "components/card";
-import { BasicSlider, ImageSlider, SliderPagination } from "components/slider";
+import { ItemFullCard } from "components/card";
+import { ItemCard } from "components/card/ItemCard";
+import {
+  BasicSlider,
+  ImageSlider,
+  ScrollableSlider,
+  SliderPagination,
+} from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
 
@@ -49,42 +55,41 @@ export default function MainContentMb() {
           percent={calculatePercent(currentMainSliderIndex, totalImages)}
         />
       </div>
-      <div className={styles.category_wrapper}>
-        <BasicSlider>
+
+      <div className={styles.category_wrapper_mb}>
+        <ScrollableSlider showScroll={false}>
           {categoryMenu.map((menu) => (
-            <div className={styles.category_wrap}>
-              <img src={require("assets/images/sub/sub24.jpg")} alt="" />
+            <div className={styles.category_wrap_mb}>
+              <img
+                src={require("assets/images/sub/sub24.jpg")}
+                alt=""
+                className={styles.category_icon}
+              />
               <p className={styles.category_name}>{menu.name}</p>
             </div>
           ))}
-        </BasicSlider>
+        </ScrollableSlider>
       </div>
+
       <div className={styles.event_wrapper}>
         <div className={styles.event_header}>
           <p className={styles.event_title}>더운 여름, 시원하게 챙기기</p>
           <p className={styles.event_more}>자세히 보기 ></p>
         </div>
-        <div className={styles.event_wrap}>
-          <BasicSlider setCurrentIndex={setCurrentEventSliderIndex}>
-            {eventItems.map((item, index) => (
-              <div className={styles.event_card}>
-                <ItemCard
-                  key={index}
-                  product={item}
-                  style={{
-                    height: 400,
-                    maxWidth: 230,
-                  }}
-                />
-              </div>
-            ))}
-          </BasicSlider>
-        </div>
-        <SliderPagination
-          bgColor="white"
-          percentColor="black"
-          percent={calculatePercent(currentEventSliderIndex, eventItems.length)}
-        />
+        <ScrollableSlider scrollBgColor="white" scrollPercentColor="black">
+          {eventItems.map((item, index) => (
+            <ItemFullCard
+              key={index}
+              product={item}
+              style={{
+                height: 400,
+                flex: "0 0 calc(33.333% - 10px)",
+                minWidth: 200,
+              }}
+            />
+          ))}
+        </ScrollableSlider>
+
         <button className={styles.default_button_dark_300}>
           <p>다른 기획전 보기 1/1</p>
           <RotateLeftIcon />
@@ -92,26 +97,24 @@ export default function MainContentMb() {
       </div>
       <div className={styles.best_item_wrapper}>
         <h3>Best Item</h3>
-        <BasicSlider setCurrentIndex={setCurrentBestSliderIndex}>
+        <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
           {bestItems.map((item, index) => (
             <div className={styles.best_card}>
               <p className={styles.ranking}>{index + 1}</p>
-              <ItemCard
+              <ItemFullCard
+                showStatus={true}
                 key={index}
                 product={item}
                 style={{
                   height: 300,
-                  maxWidth: 200,
+                  flex: "0 0 calc(33.333% - 10px)",
+                  minWidth: 200,
                 }}
               />
             </div>
           ))}
-        </BasicSlider>
-        <SliderPagination
-          bgColor="gray"
-          percentColor="black"
-          percent={calculatePercent(currentBestSliderIndex, bestItems.length)}
-        />
+        </ScrollableSlider>
+
         <button className={styles.default_button_background_100_outline}>
           <p>상품 더보기</p>
           <KeyboardArrowRightIcon />
@@ -124,6 +127,45 @@ export default function MainContentMb() {
         <p className={styles.sub_title}>오직 우티크에서만, UP TO 70% OFF</p>
 
         <img src={require("assets/images/sub/sub24.jpg")} alt="" />
+
+        <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
+          {bestItems.map((item, index) => (
+            <div className={styles.sale_card}>
+              <ItemCard
+                key={index}
+                product={item}
+                style={{
+                  height: 300,
+                  flex: "0 0 calc(33.333% - 10px)",
+                  minWidth: 200,
+                }}
+              />
+            </div>
+          ))}
+        </ScrollableSlider>
+      </div>
+
+      <div className={styles.style_wrapper}>
+        <h3>STYLE PICK +</h3>
+        <BasicSlider setCurrentIndex={setCurrentBestSliderIndex}>
+          {bestItems.map((item, index) => (
+            <div className={styles.style_card}>
+              <ItemCard
+                key={index}
+                product={item}
+                style={{
+                  height: 200,
+                  maxWidth: 180,
+                }}
+              />
+            </div>
+          ))}
+        </BasicSlider>
+        <SliderPagination
+          bgColor="lightgray"
+          percentColor="black"
+          percent={calculatePercent(currentBestSliderIndex, bestItems.length)}
+        />
       </div>
 
       {/*

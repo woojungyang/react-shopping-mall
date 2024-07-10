@@ -28,21 +28,34 @@
 }
 
 @mixin mobile {
-  @media (min-width: #{$breakpoint-mobile}) and (max-width: #{$breakpoint-tablet - 1px}) {
+  @media (max-width: #{$breakpoint-mobile}) {
     @content;
   }
 }
 
 @mixin tablet {
-  @media (min-width: #{$breakpoint-tablet}) and (max-width: #{1279px}) {
+  @media (max-width: #{$breakpoint-desktop - 1px}) {
     @content;
   }
 }
 
+@mixin desktop {
+  @media (min-width: #{$breakpoint-desktop}) {
+    @content;
+  }
+}
 @mixin default-desktop-size {
   padding: $padding/4 $padding;
   max-width: $breakpoint-desktop;
   width: 100%;
+}
+
+@mixin hidden-scrollbar {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 @mixin default-button {

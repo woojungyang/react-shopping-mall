@@ -443,33 +443,49 @@
 }
 
 .main_container_mb {
-  overflow: hidden;
-  width: 100%;
-  position: relative;
-  .category_wrapper {
-    padding-left: $margin * 1.5;
-    margin-top: $margin * 2;
-    width: 100%;
-    .category_wrap {
-      max-width: 120px;
+  .category_wrapper_mb {
+    margin: auto;
+    margin-top: $margin * 1.5;
+    max-width: 710px;
+
+    .category_wrap_mb {
       width: 100%;
-      img {
-        width: $width_padding;
-        height: 100px;
-        object-fit: cover;
-        border-radius: 10px;
+      min-width: 100px;
+      cursor: pointer;
+      margin-right: $default/2;
+
+      &:last-child {
+        margin-right: 0px;
       }
+      .category_icon {
+        border-radius: 6px;
+        width: 100%;
+        height: 100px;
+
+        object-fit: cover;
+      }
+
       .category_name {
-        margin-top: $padding/2;
-        width: $width_padding;
+        margin-top: $default/4;
+
         text-align: center;
         font-weight: 500;
       }
+
+      @include mobile {
+        &:first-child {
+          margin-left: 50px;
+        }
+        &:last-child {
+          margin-right: $padding;
+        }
+      }
     }
   }
+
   .event_wrapper {
     background-color: rgba($color: #2b2b2b, $alpha: 1);
-    margin-top: $margin * 4;
+    margin-top: $margin * 3;
     min-height: 500px;
     padding: $margin * 2 $padding;
     padding-right: 0;
@@ -491,16 +507,15 @@
         flex-shrink: 0;
       }
     }
-    .event_card {
-      margin-right: 40px;
-    }
   }
   .best_item_wrapper {
     margin-top: $margin * 3;
     margin-left: $padding;
     .best_card {
+      height: 340px;
       margin-top: $padding;
-      margin-right: 60px;
+      margin-right: $padding;
+      // margin-right: 40px;
       position: relative;
       .ranking {
         position: absolute;
@@ -538,13 +553,27 @@
       font-size: 14px;
       font-weight: 300;
     }
+    .sale_card {
+      margin-right: $default;
+    }
   }
-}
+  .style_wrapper {
+    margin-top: $margin * 3;
+    padding: 0 $padding;
 
-.event_banner_wrapper {
-  margin-top: $margin * 6;
-  width: 100%;
-  height: 180px;
-  border: 1px solid black;
-  color: white;
+    h3 {
+      margin-bottom: $padding/2;
+    }
+    .style_card {
+      margin-right: 90px;
+    }
+  }
+
+  .event_banner_wrapper {
+    margin-top: $margin * 6;
+    width: 100%;
+    height: 180px;
+    border: 1px solid black;
+    color: white;
+  }
 }
