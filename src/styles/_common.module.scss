@@ -43,9 +43,8 @@ body {
 
 .default_card_container {
   img {
-    width: 100%;
+    @include default-image;
     height: 350px;
-    object-fit: cover;
   }
   .card_title {
     margin-top: $padding/2;
@@ -81,10 +80,9 @@ body {
     margin-bottom: 0%;
   }
   img {
-    width: 20%;
+    @include default-image;
     height: 100px;
-
-    object-fit: cover;
+    width: 20%;
     margin-right: $margin;
   }
   .brand_name {
@@ -153,91 +151,6 @@ body {
   }
 }
 
-.default_item_wrapper {
-  height: 450px;
-  width: 100%;
-  max-width: 281.7px;
-
-  position: relative;
-  margin-right: $padding/2;
-
-  img {
-    object-fit: cover;
-    width: 100%;
-  }
-
-  &:last-child {
-    margin-right: 0;
-  }
-  p {
-    font-size: 14px;
-  }
-
-  .brand_name {
-    font-weight: 700;
-    margin-top: $padding/2;
-    font-size: 12px;
-  }
-  .product_name {
-    font-size: 16px;
-    width: 100%;
-    margin-top: $padding/3;
-    @include overflow-text;
-  }
-  .product_name_sm {
-    font-size: 12px;
-    width: 100%;
-    margin-top: $padding/3;
-    @include overflow-text;
-  }
-  .product_price {
-    font-size: $padding;
-    font-weight: 500;
-    span {
-      font-weight: 400;
-      font-size: 13px;
-      text-decoration: line-through;
-      color: $color-skeleton-200;
-    }
-  }
-  .product_price_sm {
-    font-size: 10px;
-    span {
-      font-weight: 400;
-      font-size: 10px;
-      text-decoration: line-through;
-      color: $color-skeleton-200;
-    }
-  }
-  .icon_wrap_sm {
-    svg {
-      width: $padding;
-      height: $padding;
-    }
-  }
-  .discount_rate {
-    color: $color-orange;
-  }
-  .discount_rate_sm {
-    color: $color-orange;
-    font-size: 10px;
-  }
-  .more_information {
-    margin-top: 10px;
-    @include flex($justify-content: flex-start);
-    font-size: 12px !important;
-    color: $color-skeleton-200;
-    svg {
-      width: 14px;
-      height: 14px;
-    }
-    margin-top: 10px;
-    span {
-      margin-left: 2px;
-    }
-  }
-}
-
 .mb_slider_wrapper {
   width: $width_padding;
   height: 4px;
@@ -259,12 +172,15 @@ body {
 .scrollable_container {
   width: 100%;
   overflow: hidden;
+
   .scrollable_list {
     display: flex;
+    height: auto; // 높이를 자동으로 설정
     overflow-x: auto;
-    white-space: nowrap;
+    overflow-y: visible; // 세로 스크롤이 생기지 않도록 설정
     @include hidden-scrollbar;
   }
+
   .bottom_bar {
     width: $width_padding;
     height: 5px;
@@ -280,21 +196,68 @@ body {
     position: absolute;
     z-index: 2;
   }
-  // .bottom_bar {
-  //   width: 100%;
-  //   height: 10px;
-  //   background-color: #f0f0f0;
-  //   overflow-x: auto;
-  //   position: relative;
-  // }
+}
 
-  // .bar {
-  //   width: 500%;
-  //   height: 100%;
-  //   background-color: red;
-  //   position: absolute;
-  //   z-index: 2;
-  // }
+.default_item_card_container {
+  width: 100%;
+  position: relative;
+  margin-right: $default;
+  display: flex;
+  flex-direction: column;
+  &:last-child {
+    margin-right: 0;
+  }
+  .item_image {
+    @include default-image;
+    height: calc(100% - 100px);
+  }
+  .item_card_information {
+    font-size: $padding;
+    @include mobile {
+      font-size: $padding * 0.88;
+    }
+    width: 100%;
+    min-height: 40px;
+    flex-shrink: 0;
+
+    .item_brand_name {
+      margin-top: 0.5em;
+      font-size: 0.9em;
+      opacity: 0.7;
+      @include overflow-text;
+    }
+    .item_product_name {
+      font-size: 1em;
+      @include overflow-text;
+    }
+    .product_price {
+      font-size: 1em;
+      font-weight: 500;
+      span {
+        font-weight: 400;
+        font-size: 0.8em;
+        text-decoration: line-through;
+        color: $color-skeleton-200;
+      }
+    }
+    .discount_rate {
+      color: $color-orange !important;
+    }
+    .more_item_information {
+      margin-top: 0.5em;
+      // @include flex($justify-content: flex-start);
+      font-size: 0.8em !important;
+      color: $color-skeleton-200;
+      svg {
+        width: 0.65em;
+        height: 0.65em;
+      }
+      // margin-top: 10px;
+      span {
+        margin-left: 2px;
+      }
+    }
+  }
 }
 
 .default_button_dark_300 {

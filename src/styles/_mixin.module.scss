@@ -68,3 +68,9 @@
     height: 15px;
   }
 }
+
+@mixin default-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

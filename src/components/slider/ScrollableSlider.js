@@ -43,7 +43,7 @@ export const ScrollableSlider = ({
       >
         {children}
       </div>
-      {showScroll && (
+      {/* {showScroll && (
         <div
           className={styles.mb_slider_wrapper}
           style={{ backgroundColor: scrollBgColor }}
@@ -57,7 +57,7 @@ export const ScrollableSlider = ({
             }}
           ></div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
