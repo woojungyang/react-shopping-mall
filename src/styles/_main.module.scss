@@ -513,31 +513,15 @@
   .best_item_wrapper {
     margin-top: $margin * 3;
     margin-left: $padding;
-    .slick-list {
-      margin: 0 100px !important;
-    }
+
     h3 {
       margin-bottom: $padding;
     }
-    .for_you_wrapper {
-      overflow: hidden;
-      // display: flex;
-      // position: relative;
-      // flex-direction: column;
-      // align-items: center;
-      // overflow: hidden;
-    }
 
-    .recommend_card {
-      @include default-image;
-      height: 300px;
-      margin-right: 10px;
-
-      // width: 50% !important;
-      // border: 1px solid red;
-      // margin-right: $padding !important;
-
+    .refresh_button {
       background-color: pink;
+      border: none;
+      margin-right: $padding;
     }
   }
   .event_wrapper_mb2 {
@@ -576,11 +560,51 @@
     }
   }
 
+  .brand_news_wrapper {
+    padding: 0 $padding;
+    margin-top: $margin * 4;
+    .band_thumbnail_wrapper {
+      position: relative;
+      margin-bottom: $margin * 1.3;
+      img {
+        @include default-image;
+        height: 500px;
+      }
+      .brand_copyright {
+        color: $color-background-100;
+        margin: 0 $padding;
+        position: absolute;
+        z-index: 9;
+        bottom: $margin * 3;
+        border-top: 4px solid white;
+        padding-top: $padding * 1.5;
+        h2 {
+          margin-bottom: $margin;
+        }
+      }
+    }
+    .brand_item_wrap {
+      border-top: 1px solid rgba($color: $color-skeleton-100, $alpha: 0.4);
+    }
+  }
+
   .event_banner_wrapper {
     margin-top: $margin * 6;
     width: 100%;
     height: 180px;
     border: 1px solid black;
     color: white;
+  }
+}
+
+.scrollable_container {
+  width: 100%;
+
+  .default_item_card_container {
+    width: 90% !important;
+    margin: $default/3;
+    &:nth-child(2n) {
+      border: 1px solid red;
+    }
   }
 }

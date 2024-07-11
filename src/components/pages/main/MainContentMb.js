@@ -4,7 +4,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import Slider from "react-slick";
 
-import { ItemFullCard } from "components/card";
+import { ItemFullCard, SmallCard } from "components/card";
 import { ItemCard } from "components/card/ItemCard";
 import {
   BasicSlider,
@@ -31,10 +31,11 @@ export default function MainContentMb() {
   ];
 
   const [eventItems, setEventItems] = useState([...new Array(10)]);
-  const [currentEventSliderIndex, setCurrentEventSliderIndex] = useState(0);
-
   const [bestItems, setBestItems] = useState([...new Array(8)]);
-  const [currentBestSliderIndex, setCurrentBestSliderIndex] = useState(0);
+
+  const [collaborationItems, setCollaborationItems] = useState([
+    ...new Array(2),
+  ]);
 
   return (
     <div className={styles.main_container_mb}>
@@ -72,6 +73,49 @@ export default function MainContentMb() {
         </ScrollableSlider>
       </div>
 
+      <div className={styles.best_item_wrapper}>
+        <div className={styles.default_flex_space}>
+          <h3>For You</h3>
+          {/* <button className={styles.refresh_button}>
+            <p>추천상품 새로고침</p>
+            <RotateLeftIcon />
+          </button> */}
+        </div>
+        <div className={styles.scrollable_container}>
+          <Slider
+            arrows={false}
+            {...{
+              rows: 2,
+              slidesToShow: 4,
+              slidesToScroll: 4,
+              infinite: false,
+            }}
+          >
+            {bestItems.map((product, index) => (
+              <div className={styles.default_item_card_container}>
+                <ItemFullCard
+                  showStatus={false}
+                  showBrand={false}
+                  showOriginalPrice={false}
+                  key={index}
+                  product={product}
+                  style={{
+                    height: 300,
+                    minWidth: 100,
+                  }}
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
+        {/* </div> */}
+
+        <button className={styles.default_button_background_100_outline}>
+          <p>추천상품 전체보기</p>
+          <KeyboardArrowRightIcon />
+        </button>
+      </div>
+
       <div className={styles.event_wrapper_mb}>
         <div className={styles.event_header}>
           <p className={styles.event_title}>더운 여름, 시원하게 챙기기</p>
@@ -84,7 +128,7 @@ export default function MainContentMb() {
               product={item}
               style={{
                 height: 400,
-                flex: "0 0 calc(33.333% - 10px)",
+                flex: "0 0 calc(38% - 10px)",
                 minWidth: 230,
               }}
             />
@@ -106,7 +150,7 @@ export default function MainContentMb() {
               product={item}
               style={{
                 height: 300,
-                flex: "0 0 calc(33.333% - 10px)",
+                flex: "0 0 calc(31% - 10px)",
                 minWidth: 200,
               }}
             />
@@ -118,8 +162,27 @@ export default function MainContentMb() {
           <KeyboardArrowRightIcon />
         </button>
       </div>
+      <div className={styles.brand_news_wrapper}>
+        <div className={styles.band_thumbnail_wrapper}>
+          <img src={require("assets/images/sub/sub24.jpg")} alt="" />
+          <div className={styles.brand_copyright}>
+            <h2>Lorem ipsum dolor</h2>
+            <p>
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore
+              nostrum ducimus repudiandae perspiciatis nisi, nihil aspernatur
+              corrupti maiores nobis earum, suscipit soluta rerum sit sapiente
+              doloremque, repellendus vel. Fugit, molestias!
+            </p>
+          </div>
+        </div>
+        {collaborationItems.map((e) => (
+          <div className={styles.brand_item_wrap}>
+            <SmallCard />
+          </div>
+        ))}
+      </div>
       <div className={styles.event_wrapper_mb2}>
-        <h3>BRAND NEWS</h3>
+        <h3>SHOPPING NEWS</h3>
 
         <p className={styles.title}>안타티카 단독 시즌 클리어런스</p>
         <p className={styles.sub_title}>오직 우티크에서만, UP TO 70% OFF</p>
@@ -139,7 +202,7 @@ export default function MainContentMb() {
               product={item}
               style={{
                 height: 250,
-                flex: "0 0 calc(33.333% - 10px)",
+                flex: "0 0 calc(28% - 10px)",
                 minWidth: 150,
               }}
             />
@@ -156,7 +219,7 @@ export default function MainContentMb() {
               alt=""
               style={{
                 height: 150,
-                flex: "0 0 calc(20% - 10px)",
+                flex: "0 0 calc(23% - 10px)",
                 minWidth: 120,
               }}
               className={styles.style_card}
@@ -166,36 +229,6 @@ export default function MainContentMb() {
 
         <button className={styles.default_button_background_100_outline}>
           <p>스타일 더보기</p>
-          <KeyboardArrowRightIcon />
-        </button>
-      </div>
-      <div className={styles.best_item_wrapper}>
-        <h3>For You</h3>
-        <div className={styles.for_you_wrapper}>
-          <Slider
-            arrows={false}
-            {...{
-              className: "slider variable-width",
-              variableWidth: true,
-              infinite: false,
-              speed: 500,
-              rows: 2,
-              slidesPerRow: 2,
-            }}
-          >
-            {bestItems.map((item, index) => (
-              <img
-                src={require("assets/images/sub/sub24.jpg")}
-                alt=""
-                className={styles.recommend_card}
-                style={{ width: 20 }}
-              />
-            ))}
-          </Slider>
-        </div>
-
-        <button className={styles.default_button_background_100_outline}>
-          <p>상품 더보기</p>
           <KeyboardArrowRightIcon />
         </button>
       </div>
