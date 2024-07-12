@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import styles from "styles/_header.module.scss";
+import styles from "styles/_navigation.module.scss";
 
 import { SearchInput } from "./SearchInput";
 

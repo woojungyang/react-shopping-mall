@@ -1,8 +1,14 @@
 import React from "react";
 
-import styles from "styles/_header.module.scss";
+import { Device } from "models/device";
+
+import { useUserDevice } from "hooks/size/useUserDevice";
+
+import styles from "styles/_navigation.module.scss";
 
 export default function Footer() {
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
   return (
     <div className={styles.footer_container}>
       <div className={styles.footer_wrapper}>

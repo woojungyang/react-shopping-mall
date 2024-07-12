@@ -86,19 +86,18 @@ export default function MainContentMb() {
             arrows={false}
             {...{
               rows: 2,
-              slidesToShow: 4,
-              slidesToScroll: 4,
+              slidesToShow: 2,
+              slidesToScroll: 2,
               infinite: false,
             }}
           >
             {bestItems.map((product, index) => (
-              <div className={styles.default_item_card_container}>
+              <div className={styles.default_item_card_container} key={index}>
                 <ItemFullCard
                   showStatus={false}
                   showBrand={false}
                   showOriginalPrice={false}
-                  key={index}
-                  product={product}
+                  product={index}
                   style={{
                     height: 300,
                     minWidth: 100,

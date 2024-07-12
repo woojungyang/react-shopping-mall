@@ -601,10 +601,7 @@
   width: 100%;
 
   .default_item_card_container {
-    width: 90% !important;
-    margin: $default/3;
-    &:nth-child(2n) {
-      border: 1px solid red;
-    }
+    width: 92% !important;
+    margin-bottom: $default;
   }
 }

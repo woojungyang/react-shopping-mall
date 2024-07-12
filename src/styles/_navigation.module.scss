@@ -17,6 +17,10 @@
     }
   }
 }
+@mixin navigation-default-padding {
+  padding-left: $padding;
+  padding-right: $padding;
+}
 
 @mixin header-container {
   position: fixed;
@@ -91,16 +95,7 @@
     @include flex;
     transform: translateY(-10px);
     animation: slideDown 0.5s forwards ease-out;
-    @keyframes slideDown {
-      0% {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+
     .search_wrapper {
       width: 100%;
       max-width: 620px;
@@ -195,28 +190,94 @@
 }
 
 .mb_header_container {
-  background-color: pink !important;
-  @include flex($justify-content: space-between);
   @include header-container;
-  height: 80px;
-  .header_logo {
-    max-width: 180px;
 
-    margin-left: $padding;
-    img {
-      width: 100%;
+  .header_wrapper_mb {
+    height: 60px;
+    @include navigation-default-padding;
+    @include flex($justify-content: space-between);
+    .header_logo {
+      img {
+        width: 100%;
+        max-width: 180px;
+        object-fit: contain;
+      }
     }
-  }
-  .header_icon_wrapper {
-    width: 100%;
-    margin-right: $padding;
-    @include flex($justify-content: flex-end);
+    .header_icon_wrapper {
+      width: 100%;
+
+      @include flex($justify-content: flex-end);
+    }
     .user_icon {
       color: white;
       margin-left: $padding/1.2;
-      width: 30px;
-      height: 30px;
+      width: 25px;
+      height: 25px;
       cursor: pointer;
+    }
+  }
+}
+
+.mb_header_container_scrolled {
+  background-color: $color-background-100;
+
+  .header_wrapper_mb {
+    .user_icon {
+      color: black;
+    }
+  }
+  .mb_scroll_menu_wrapper {
+    margin-left: $padding;
+    margin-right: $padding;
+    height: $margin * 1.5;
+    transform: translateY(-10px);
+    animation: slideDown 0.1s forwards ease-out;
+    @include flex($justify-content: flex-start, $align-items: baseline);
+    overflow-x: scroll;
+    @include hidden-scrollbar;
+    .default_scroll_menu {
+      @include flex;
+      height: 100%;
+
+      // border: 1px solid red;
+
+      padding-left: $default/1.5;
+      padding-right: $default/1.5;
+      font-weight: 500;
+      flex-shrink: 0;
+      color: $color-skeleton-100;
+      cursor: pointer;
+    }
+    .active_scroll_menu {
+      height: 80%;
+      border-bottom: 4px solid $color-dark-100;
+      color: $color-dark-300;
+      font-weight: 600;
+    }
+  }
+}
+
+.bottom_navigation_container {
+  font-size: 14px;
+  position: fixed;
+  bottom: 0;
+  background-color: $color-background-100;
+  width: 100%;
+  @include flex($justify-content: space-between);
+  flex-wrap: nowrap;
+  .bottom_menu_wrapper {
+    cursor: pointer;
+    width: calc((100% - 32px) / 4);
+    @include flex($direction: column);
+
+    height: $margin * 3;
+    svg {
+      width: 1em;
+      height: 1em;
+    }
+    .bottom_menu {
+      font-size: 0.9em;
+      margin-top: $default/2;
     }
   }
 }

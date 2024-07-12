@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import LoginIcon from "@mui/icons-material/Login";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import classNames from "classnames";
@@ -9,7 +8,7 @@ import { Link } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import styles from "styles/_header.module.scss";
+import styles from "styles/_navigation.module.scss";
 
 import { SearchContainer } from "./SearchContainer";
 
@@ -49,6 +48,8 @@ export default function Header() {
     };
   }, [searchRef]);
 
+  const [activeMobilMenu, setActiveMobileMenu] = useState("");
+
   return (
     <>
       {isDeskTop ? (
@@ -79,22 +80,9 @@ export default function Header() {
               </div>
             </div>
             <div className={styles.user_wrapper}>
-              {isDeskTop ? (
-                <>
-                  <Link to="/login">SIGN IN</Link>
-                  <p onClick={() => setShowSearch(!showSearch)}>SEARCH</p>
-                  <Link to="/login">CART</Link>
-                </>
-              ) : (
-                <>
-                  <SearchIcon
-                    className={styles.user_icon}
-                    onClick={() => setShowSearch(!showSearch)}
-                  />
-                  <ShoppingBagIcon className={styles.user_icon} />
-                  <LoginIcon className={styles.user_icon} />
-                </>
-              )}
+              <Link to="/login">SIGN IN</Link>
+              <p onClick={() => setShowSearch(!showSearch)}>SEARCH</p>
+              <Link to="/login">CART</Link>
             </div>
           </div>
           {showSearch && (
@@ -102,26 +90,63 @@ export default function Header() {
           )}
         </div>
       ) : (
-        <div className={styles.mb_header_container}>
-          <div className={styles.header_logo}>
-            <img
-              src={
-                switchPosition
-                  ? require("assets/images/common/logo.png")
-                  : require("assets/images/common/logo_trans.png")
-              }
-              alt="logo"
-            />
+        <div
+          className={classNames({
+            [styles.mb_header_container]: true,
+            [styles.mb_header_container_scrolled]: switchPosition,
+          })}
+        >
+          <div className={styles.header_wrapper_mb}>
+            <div
+              className={classNames({
+                [styles.header_logo]: true,
+                [styles.default_flex]: true,
+              })}
+            >
+              <img
+                src={
+                  switchPosition
+                    ? require("assets/images/common/logo.png")
+                    : require("assets/images/common/logo_trans.png")
+                }
+                alt="logo"
+              />
+            </div>
+            <div className={styles.header_icon_wrapper}>
+              <SearchIcon
+                className={styles.user_icon}
+                onClick={() => setShowSearch(!showSearch)}
+              />
+              <ShoppingBagIcon className={styles.user_icon} />
+            </div>
           </div>
-          <div className={styles.header_icon_wrapper}>
-            <SearchIcon
-              className={styles.user_icon}
-              onClick={() => setShowSearch(!showSearch)}
-            />
-            <ShoppingBagIcon className={styles.user_icon} />
-          </div>
+          {switchPosition && (
+            <div className={styles.mb_scroll_menu_wrapper}>
+              {mobileMenu.map((e, index) => (
+                <p
+                  className={classNames({
+                    [styles.default_scroll_menu]: true,
+                    [styles.active_scroll_menu]: activeMobilMenu == e.id,
+                  })}
+                >
+                  {e.name}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </>
   );
 }
+
+const mobileMenu = [
+  { id: 1, name: "썸머위크" },
+  { id: 2, name: "아울렛" },
+  { id: 3, name: "세일" },
+  { id: 4, name: "브랜드" },
+  { id: 5, name: "여성" },
+  { id: 5, name: "남성" },
+  { id: 5, name: "#SNAP" },
+  { id: 5, name: "#PICK" },
+];

@@ -39,7 +39,7 @@ export const ItemFullCard = ({
           className={styles.item_product_name}
           style={{ marginTop: showBrand ? "" : "0.5em" }}
         >
-          ProductName
+          ProductName{product}
         </p>
         <div className={styles.default_flex_space} style={{ marginTop: 8 }}>
           <p className={styles.product_price}>
