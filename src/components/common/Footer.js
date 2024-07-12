@@ -1,5 +1,6 @@
 import React from "react";
 
+import classNames from "classnames";
 import { Device } from "models/device";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
@@ -9,16 +10,25 @@ import styles from "styles/_navigation.module.scss";
 export default function Footer() {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
+
+  const mobileSpacing = isDeskTop ? "" : <br />;
+
   return (
-    <div className={styles.footer_container}>
+    <div
+      className={classNames({
+        [styles.footer_container]: true,
+        [styles.footer_container_mb]: !isDeskTop,
+      })}
+    >
       <div className={styles.footer_wrapper}>
         <div>
           <p className={styles.footer_strong}>
             <span>개인정보처리방침</span> | <span>이용약관</span>
           </p>
           <p>
-            상호명 : 주식회사 우티크 (WOOTIQUE Co., Ltd.) 팩스 : 010-1233-4444
-            사업자등록번호 : 000-00-0000
+            상호명 : 주식회사 우티크 (WOOTIQUE Co., Ltd.)
+            {mobileSpacing}팩스 : 010-1233-4444 {mobileSpacing}사업자등록번호 :
+            000-00-0000
           </p>
           <p>
             일부 상품의 경우 WOOTIQUE는 통신판매의 당사자가 아닌

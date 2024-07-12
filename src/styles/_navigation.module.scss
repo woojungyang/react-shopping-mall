@@ -84,74 +84,6 @@
       }
     }
   }
-  .search_container {
-    position: absolute;
-    position: 9999999;
-    width: 100%;
-    top: $margin * 4.5;
-    height: 500px;
-    background-color: $color-background-100;
-
-    @include flex;
-    transform: translateY(-10px);
-    animation: slideDown 0.5s forwards ease-out;
-
-    .search_wrapper {
-      width: 100%;
-      max-width: 620px;
-      @include flex($direction: column);
-      .keyword_wrapper {
-        color: $color-dark-200;
-        width: 100%;
-        overflow: hidden;
-        .keyword_title {
-          font-weight: 700;
-          text-align: left;
-          margin-bottom: $padding/2;
-          font-size: $padding;
-        }
-        .keyword_wrap1 {
-          width: 100%;
-          margin-top: $margin * 1.5;
-          margin-bottom: $margin * 1.5;
-          overflow: scroll;
-          .keyword1 {
-            margin-right: $padding/3;
-            max-width: 100px;
-            border: 1px solid $color-orange;
-            padding: $padding/2;
-            color: $color-orange;
-            font-size: $padding * 0.9;
-            @include overflow-text;
-            flex-shrink: 0;
-            cursor: pointer;
-          }
-        }
-        .keyword_wrap2 {
-          width: 100%;
-          margin-top: $padding;
-          overflow: scroll;
-          .keyword2 {
-            span {
-              font-weight: 600;
-              font-size: $margin;
-              margin-right: $padding;
-              color: $color-dark-300;
-            }
-            width: 100%;
-            border-bottom: 1px solid
-              rgba($color: $color-skeleton-100, $alpha: 0.2);
-            padding: $padding/2;
-            color: $color-dark-300;
-            font-size: $padding * 0.9;
-            @include overflow-text;
-            flex-shrink: 0;
-            cursor: pointer;
-          }
-        }
-      }
-    }
-  }
 }
 
 .header_container_dark {
@@ -163,37 +95,13 @@
   }
 }
 
-.footer_container {
-  // max-width:$breakpoint-desktop;
-  // margin: auto;
-  margin-top: $margin * 5;
-  height: 120px;
-  background-color: rgba($color-skeleton-100, 0.1);
-  @include flex;
-  .footer_wrapper {
-    max-width: $breakpoint-desktop;
-    width: 100%;
-    @include flex($justify-content: space-between, $align-items: flex-end);
-    p {
-      font-size: 14px;
-      color: $color-skeleton-100;
-      line-height: 180%;
-    }
-    .footer_strong {
-      font-weight: 600;
-      color: $color-skeleton-200;
-      span {
-        cursor: pointer;
-      }
-    }
-  }
-}
+$mobile-header-height: $margin * 3;
 
 .mb_header_container {
   @include header-container;
 
   .header_wrapper_mb {
-    height: 60px;
+    height: $mobile-header-height;
     @include navigation-default-padding;
     @include flex($justify-content: space-between);
     .header_logo {
@@ -257,12 +165,169 @@
   }
 }
 
+@mixin default_search {
+  position: absolute;
+  position: 9999999;
+  width: 100%;
+  background-color: $color-background-100;
+}
+
+.search_container {
+  top: $margin * 4.5;
+  height: 500px;
+  @include default_search;
+
+  @include flex;
+  transform: translateY(-10px);
+  animation: slideDown 0.5s forwards ease-out;
+
+  .search_wrapper {
+    width: 100%;
+    max-width: 620px;
+    @include flex($direction: column);
+    .keyword_wrapper {
+      color: $color-dark-200;
+      width: 100%;
+      overflow: hidden;
+      .keyword_title {
+        font-weight: 700;
+        text-align: left;
+        margin-bottom: $padding/2;
+        font-size: $padding;
+      }
+      .keyword_wrap1 {
+        width: 100%;
+        margin-top: $margin * 1.5;
+        margin-bottom: $margin * 1.5;
+        overflow: scroll;
+        .keyword1 {
+          margin-right: $padding/3;
+          max-width: 100px;
+          border: 1px solid $color-orange;
+          padding: $padding/2;
+          color: $color-orange;
+          font-size: $padding * 0.9;
+          @include overflow-text;
+          flex-shrink: 0;
+          cursor: pointer;
+        }
+      }
+      .keyword_wrap2 {
+        width: 100%;
+        margin-top: $padding;
+        overflow: scroll;
+        .keyword2 {
+          span {
+            font-weight: 600;
+            font-size: $margin;
+            margin-right: $padding;
+            color: $color-dark-300;
+          }
+          width: 100%;
+          border-bottom: 1px solid
+            rgba($color: $color-skeleton-100, $alpha: 0.2);
+          padding: $padding/2;
+          color: $color-dark-300;
+          font-size: $padding * 0.9;
+          @include overflow-text;
+          flex-shrink: 0;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.search_container_mb {
+  @include default_search;
+  width: 100%;
+  height: 100vh;
+
+  background-color: $color-background-100;
+  top: 0;
+  transform: translateX(10px);
+  animation: slideSide 0.5s forwards ease-out;
+  .search_header {
+    height: $mobile-header-height;
+    position: relative;
+    @include flex;
+    .go_back {
+      position: absolute;
+      cursor: pointer;
+      left: 16px;
+      svg {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+  .search_body {
+    width: calc(97% - $padding * 3);
+    @include flex($direction: column, $justify-content: flex-start);
+    margin: auto;
+    text-align: center;
+    height: 100%;
+    padding-top: $margin * 5;
+    .keyword_wrapper_mb {
+      margin-top: $margin * 5;
+      .keyword_title {
+        font-weight: 700;
+        font-size: 18px;
+        color: $color-orange;
+        line-height: 180%;
+        margin-bottom: $default;
+      }
+      .keyword_mb {
+        line-height: 200%;
+        font-weight: 500;
+        color: $color-skeleton-200;
+      }
+    }
+  }
+}
+
+.footer_container {
+  // max-width:$breakpoint-desktop;
+  // margin: auto;
+  margin-top: $margin * 5;
+  height: 120px;
+  background-color: rgba($color-skeleton-100, 0.1);
+  @include flex;
+  .footer_wrapper {
+    max-width: $breakpoint-desktop;
+    width: 100%;
+    @include flex($justify-content: space-between, $align-items: flex-end);
+    p {
+      font-size: 14px;
+      color: $color-skeleton-100;
+      line-height: 180%;
+    }
+    .footer_strong {
+      font-weight: 600;
+      color: $color-skeleton-200;
+      span {
+        cursor: pointer;
+      }
+    }
+  }
+}
+.footer_container_mb {
+  height: 220px;
+  padding: $padding;
+  padding-bottom: $padding * 4;
+  .footer_wrapper {
+    @include flex($direction: column);
+    text-align: center;
+  }
+}
+
 .bottom_navigation_container {
   font-size: 14px;
   position: fixed;
-  bottom: 0;
+  bottom: 0px;
   background-color: $color-background-100;
   width: 100%;
+  z-index: 999;
   @include flex($justify-content: space-between);
   flex-wrap: nowrap;
   .bottom_menu_wrapper {

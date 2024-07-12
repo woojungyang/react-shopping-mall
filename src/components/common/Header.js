@@ -134,6 +134,9 @@ export default function Header() {
               ))}
             </div>
           )}
+          {showSearch && (
+            <SearchContainer visible={showSearch} setVisible={setShowSearch} />
+          )}
         </div>
       )}
     </>

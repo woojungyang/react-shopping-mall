@@ -7,6 +7,7 @@ import styles from "styles/_common.module.scss";
 export const SearchInput = ({ value = "", setValue }) => {
   return (
     <div className={styles.search_input}>
+      <SearchIcon />
       <input
         type="text"
         value={value}
@@ -16,7 +17,6 @@ export const SearchInput = ({ value = "", setValue }) => {
           if (e.key === "Enter" && !value) alert("검색어를 입력해주세요.");
         }}
       />
-      <SearchIcon />
     </div>
   );
 };
