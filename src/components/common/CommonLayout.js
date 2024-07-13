@@ -26,7 +26,7 @@ export const CommonLayout = ({ children }) => {
       }}
     >
       <Header />
-      <div style={{ flexGrow: 1, background: "pink" }}> {children}</div>
+      <div style={{ flexGrow: 1 }}> {children}</div>
       {!isDeskTop && <BottomNavigation />}
       <Footer />
     </div>

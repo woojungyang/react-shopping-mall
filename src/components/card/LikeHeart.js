@@ -17,6 +17,7 @@ export const LikeHeart = ({
   const colors = {
     white: "#fff",
     skeleton: "#c4c4c4",
+    dark: "#000",
     red: "#ff0000",
   };
   return (

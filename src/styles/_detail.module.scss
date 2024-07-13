@@ -16,8 +16,93 @@
     .item_information_wrapper {
       padding-left: $padding;
       width: 100%;
+      height: 100%;
       border: 1px solid red;
-      @include flex($direction: column);
+      .item_information_wrap {
+        max-width: 500px;
+        width: 100%;
+        border: 1px solid blue;
+        @include flex($direction: column);
+        .item_header_icon_wrapper {
+          @include flex($justify-content: flex-end);
+          margin-bottom: $default;
+          width: 100%;
+        }
+        .item_header_wrapper {
+          background-color: pink;
+          width: 100%;
+          @include flex(
+            $justify-content: space-between,
+            $align-items: flex-start
+          );
+          .item_brand_name {
+            font-size: 13px;
+            color: $color-skeleton-100;
+            font-weight: 300;
+            letter-spacing: 1.3px;
+          }
+          .review_icon_wrap {
+            cursor: pointer;
+            flex-shrink: 0;
+            @include flex;
+            color: $color-skeleton-200;
+            svg {
+              width: $margin;
+              height: $margin;
+              &:last-child {
+                margin-top: -1px;
+                width: $padding;
+                height: $padding;
+              }
+            }
+          }
+        }
+
+        .item_code {
+          width: 100%;
+
+          font-size: 13px;
+        }
+        .price_information_wrapper {
+          width: 100%;
+          margin-top: $margin;
+          padding-bottom: $margin;
+          border-bottom: 3px solid $color-dark-300;
+          @include flex($justify-content: space-between);
+          .total_price {
+            font-weight: 800;
+            font-size: 20px;
+          }
+          .original_price {
+            text-decoration: line-through;
+            font-size: 14px;
+            color: $color-skeleton-100;
+          }
+          .sale_percent {
+            text-decoration: none !important;
+            color: $color-orange;
+            font-weight: 800;
+            font-size: 18px;
+            margin-left: $default/2;
+          }
+          // .share_button {
+          //   border: 1px solid $color-skeleton-100;
+          //   border-radius: 100%;
+          //   width: 30px;
+          //   height: 30px;
+          //   @include flex;
+          //   svg {
+          //     width: $margin;
+          //     height: $margin;
+          //     color: $color-skeleton-100;
+          //   }
+          // }
+        }
+        .color_option_thumbnail {
+          @include default-image;
+          margin: $default/2;
+        }
+      }
     }
   }
 }
