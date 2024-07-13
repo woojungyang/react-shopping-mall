@@ -4,8 +4,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import Slider from "react-slick";
 
-import { ItemFullCard, SmallCard } from "components/card";
-import { ItemCard } from "components/card/ItemCard";
+import { ItemCard, SmallCard } from "components/card";
 import {
   BasicSlider,
   ImageSlider,
@@ -93,7 +92,7 @@ export default function MainContentMb() {
           >
             {bestItems.map((product, index) => (
               <div className={styles.default_item_card_container} key={index}>
-                <ItemFullCard
+                <ItemCard
                   showStatus={false}
                   showBrand={false}
                   showOriginalPrice={false}
@@ -122,7 +121,7 @@ export default function MainContentMb() {
         </div>
         <ScrollableSlider scrollBgColor="white" scrollPercentColor="black">
           {eventItems.map((item, index) => (
-            <ItemFullCard
+            <ItemCard
               key={index}
               product={item}
               style={{
@@ -143,7 +142,7 @@ export default function MainContentMb() {
         <h3>Best Item</h3>
         <ScrollableSlider>
           {bestItems.map((item, index) => (
-            <ItemFullCard
+            <ItemCard
               showStatus={true}
               key={index}
               product={item}
@@ -193,7 +192,7 @@ export default function MainContentMb() {
         />
         <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
           {bestItems.map((item, index) => (
-            <ItemFullCard
+            <ItemCard
               showStatus={false}
               showBrand={false}
               showOriginalPrice={false}

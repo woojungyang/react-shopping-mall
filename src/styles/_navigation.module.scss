@@ -17,10 +17,7 @@
     }
   }
 }
-@mixin navigation-default-padding {
-  padding-left: $padding;
-  padding-right: $padding;
-}
+
 
 @mixin header-container {
   position: fixed;
@@ -32,7 +29,7 @@
 .header_container {
   @include header-container;
   background-color: rgba($color: #000000, $alpha: 0.05);
-  height: $margin * 4.5;
+  height: $header-height;
   color: $color-background-100;
 
   @include flex;
@@ -95,13 +92,11 @@
   }
 }
 
-$mobile-header-height: $margin * 3;
-
 .mb_header_container {
   @include header-container;
 
   .header_wrapper_mb {
-    height: $mobile-header-height;
+    height: $header-height_mb;
     @include navigation-default-padding;
     @include flex($justify-content: space-between);
     .header_logo {
@@ -248,7 +243,7 @@ $mobile-header-height: $margin * 3;
   transform: translateX(10px);
   animation: slideSide 0.5s forwards ease-out;
   .search_header {
-    height: $mobile-header-height;
+    height: $header-height_mb;
     position: relative;
     @include flex;
     .go_back {

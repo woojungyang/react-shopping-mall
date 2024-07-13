@@ -4,6 +4,9 @@ $margin: 20px;
 
 $width_padding: calc(100% - $padding);
 
+$header-height: $margin * 4.5;
+$header-height_mb: $margin * 3;
+
 $breakpoint-desktop: 1920px;
 $breakpoint-tablet: 1024px;
 $breakpoint-mobile: 760px;

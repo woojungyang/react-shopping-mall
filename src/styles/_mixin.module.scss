@@ -13,6 +13,10 @@
   overflow: hidden;
   -webkit-line-clamp: $clamp;
 }
+@mixin navigation-default-padding {
+  padding-left: $padding;
+  padding-right: $padding;
+}
 
 @mixin display-grid(
   $colum: repeat(1, 1fr),

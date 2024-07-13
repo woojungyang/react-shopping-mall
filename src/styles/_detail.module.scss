@@ -1,0 +1,23 @@
+@import "./color.module";
+@import "./mixin.module";
+
+.detail_container {
+  margin-top: $header-height;
+  max-width: $breakpoint-desktop;
+  @include navigation-default-padding;
+  .item_information_wrapper {
+    height: 500px;
+    @include flex;
+    .images_slider_wrapper {
+      width: 100%;
+      border: 1px solid red;
+      height: 100%;
+    }
+    .item_information_wrapper {
+      padding-left: $padding;
+      width: 100%;
+      border: 1px solid red;
+      @include flex($direction: column);
+    }
+  }
+}

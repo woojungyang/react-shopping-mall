@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "styles/_common.module.scss";
 
-export const DefaultCard = ({ contents }) => {
+export const PhotoCard = ({ contents }) => {
   return (
     <div className={styles.default_card_container}>
       <img src={require("assets/images/sub/sub11.jpg")} />

@@ -5,7 +5,7 @@ import { numberWithCommas } from "utilities";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import { ItemFullCard } from "components/card";
+import { ItemCard } from "components/card";
 
 import styles from "styles/_main.module.scss";
 
@@ -21,7 +21,7 @@ export const BestCardsSlider = () => {
   return (
     <div className={styles.best_product_container}>
       {cardSize.map((product, index) => (
-        <ItemFullCard
+        <ItemCard
           key={index}
           product={product}
           style={{

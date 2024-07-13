@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import { DefaultCard, SmallCard } from "components/card";
+import { PhotoCard, SmallCard } from "components/card";
 import { BestCardsSlider, ImageSlider } from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
@@ -166,7 +166,7 @@ export default function MainContent() {
         </div>
         <div className={styles.magazine_container}>
           {[...new Array(4)].map((e, i) => (
-            <DefaultCard />
+            <PhotoCard />
           ))}
         </div>
       </div>
@@ -211,7 +211,7 @@ export default function MainContent() {
         </div>
         <div className={styles.event_container}>
           {[...new Array(3)].map((e, i) => (
-            <DefaultCard />
+            <PhotoCard />
           ))}
         </div>
         <h4 className={styles.section_title}> STYLE</h4>

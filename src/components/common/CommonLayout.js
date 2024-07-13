@@ -16,9 +16,17 @@ export const CommonLayout = ({ children }) => {
   const isDeskTop = userDevice == Device.Desktop;
 
   return (
-    <div className={styles.container} style={{ maxWidth: innerWidth }}>
+    <div
+      className={styles.container}
+      style={{
+        maxWidth: innerWidth,
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Header />
-      {children}
+      <div style={{ flexGrow: 1, background: "pink" }}> {children}</div>
       {!isDeskTop && <BottomNavigation />}
       <Footer />
     </div>

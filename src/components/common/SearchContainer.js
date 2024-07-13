@@ -14,8 +14,6 @@ export const SearchContainer = ({ visible, setVisible }) => {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
-  const navigation = useNavigate();
-
   const dummy = Array.from({ length: 5 }, (v, i) => "키워드" + i + 1);
   const [recommendedKeywords, setRecommendedKeywords] = useState(dummy);
   const [hotKeywords, setHotKeywords] = useState(dummy);
