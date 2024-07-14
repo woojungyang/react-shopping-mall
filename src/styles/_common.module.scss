@@ -28,7 +28,14 @@ body {
 
 .container {
   position: relative;
-  .domino_pagination_container {
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  .common_layout_content_wrapper {
+    flex-grow: 1;
+    width: 100%;
+    @include flex($align-items: flex-start);
   }
 }
 
@@ -40,7 +47,6 @@ body {
   text-align: right;
   width: 100%;
 }
-
 .default_card_container {
   img {
     @include default-image;
@@ -260,8 +266,8 @@ body {
   }
 }
 
-.default_button_dark_300 {
-  @include default-button;
+.button_dark_300_mb {
+  @include default-button_mb;
   margin-top: $margin;
   width: $width_padding;
   border: none;
@@ -269,13 +275,34 @@ body {
   color: $color-background-100;
 }
 
-.default_button_background_100_outline {
-  @include default-button;
+.button_background_100_outline_mb {
+  @include default-button_mb;
   margin-top: $margin;
   width: $width_padding;
   background-color: $color-background-100;
   color: $color-skeleton-100;
   border: 1px solid $color-skeleton-100;
+}
+.button_background_100_outline_mb_color_dark_300 {
+  @include default-button_desktop;
+  margin-top: $default;
+  background-color: $color-background-100;
+  color: $color-dark-300;
+  border: 1px solid $color-skeleton-100;
+}
+.button_orange_color_background_100 {
+  @include default-button_desktop;
+  margin-top: $default;
+  background-color: $color-orange;
+  color: $color-background-100;
+  border: none;
+}
+.button_dark_300_color_background_100 {
+  @include default-button_desktop;
+  margin-top: $default;
+  background-color: $color-dark-300;
+  color: $color-background-100;
+  border: none;
 }
 
 @keyframes slideDown {

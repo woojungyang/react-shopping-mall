@@ -108,7 +108,7 @@ export default function MainContentMb() {
         </div>
         {/* </div> */}
 
-        <button className={styles.default_button_background_100_outline}>
+        <button className={styles.button_background_100_outline_mb}>
           <p>추천상품 전체보기</p>
           <KeyboardArrowRightIcon />
         </button>
@@ -133,7 +133,7 @@ export default function MainContentMb() {
           ))}
         </ScrollableSlider>
 
-        <button className={styles.default_button_dark_300}>
+        <button className={styles.button_dark_300_mb}>
           <p>다른 기획전 보기 1/1</p>
           <RotateLeftIcon />
         </button>
@@ -155,7 +155,7 @@ export default function MainContentMb() {
           ))}
         </ScrollableSlider>
 
-        <button className={styles.default_button_background_100_outline}>
+        <button className={styles.button_background_100_outline_mb}>
           <p>상품 더보기</p>
           <KeyboardArrowRightIcon />
         </button>
@@ -225,7 +225,7 @@ export default function MainContentMb() {
           ))}
         </ScrollableSlider>
 
-        <button className={styles.default_button_background_100_outline}>
+        <button className={styles.button_background_100_outline_mb}>
           <p>스타일 더보기</p>
           <KeyboardArrowRightIcon />
         </button>

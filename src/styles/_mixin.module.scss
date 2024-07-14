@@ -72,6 +72,20 @@
     height: 15px;
   }
 }
+@mixin default-button_mb {
+  @include default-button;
+  @include flex;
+}
+@mixin default-button_desktop {
+  @include default-button;
+  height: 48px;
+  @include flex;
+  font-size: $padding;
+  svg {
+    width: $margin;
+    height: $margin;
+  }
+}
 
 @mixin default-image {
   width: 100%;

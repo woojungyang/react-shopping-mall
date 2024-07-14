@@ -20,13 +20,10 @@ export const CommonLayout = ({ children }) => {
       className={styles.container}
       style={{
         maxWidth: innerWidth,
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
       }}
     >
       <Header />
-      <div style={{ flexGrow: 1 }}> {children}</div>
+      <div className={styles.common_layout_content_wrapper}> {children}</div>
       {!isDeskTop && <BottomNavigation />}
       <Footer />
     </div>
