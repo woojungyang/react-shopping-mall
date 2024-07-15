@@ -10,11 +10,13 @@
   .item_information_wrapper {
     min-height: 500px;
     height: 100%;
-    @include flex;
+    border: 1px solid red;
+    @include flex($align-items: flex-start);
     .images_slider_wrapper {
+      @include flex;
+      height: 700px;
       width: 100%;
       border: 1px solid red;
-      height: 100%;
     }
     .item_information_wrapper {
       padding-left: $padding;

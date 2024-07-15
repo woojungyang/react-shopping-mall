@@ -38,17 +38,17 @@ export const ImageSlider = ({ images, currentIndex = 0, setCurrentIndex }) => {
       autoplay
       arrows={false}
       afterChange={(newIndex) => {
-        setCurrentIndex(newIndex);
+        setCurrentIndex?.(newIndex);
       }}
     >
       {images.map((image, index) => (
         <img
           key={index}
           src={require(`assets/images/main/main${index + 1}.jpg`)}
-          className={classNames({
-            [styles.main_image]: true,
-            [styles.main_image_disabled]: currentIndex != index && isDeskTop,
-          })}
+          // className={classNames({
+          //   [styles.main_image]: true,
+          //   [styles.main_image_disabled]: currentIndex != index && isDeskTop,
+          // })}
         />
       ))}
     </Slider>

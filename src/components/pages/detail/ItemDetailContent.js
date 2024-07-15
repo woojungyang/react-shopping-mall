@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
@@ -9,7 +9,7 @@ import classNames from "classnames";
 import { numberWithCommas } from "utilities";
 
 import { LikeHeart } from "components/card";
-import { ScrollableSlider } from "components/slider";
+import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
 import { formatDateTime, now } from "utilities/dateTime";
 
@@ -32,7 +32,9 @@ export default function ItemDetailContent() {
   return (
     <div className={styles.detail_container}>
       <div className={styles.item_information_wrapper}>
-        <div className={styles.images_slider_wrapper}>슬라이더자리</div>
+        <div className={styles.images_slider_wrapper}>
+          <ImageZoomSlider />
+        </div>
         <div className={styles.item_information_wrapper}>
           <div className={styles.item_information_wrap}>
             <div className={styles.item_header_icon_wrapper}>
