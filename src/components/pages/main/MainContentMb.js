@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
-import Slider from "react-slick";
 
 import { ItemCard, SmallCard } from "components/card";
 import {
@@ -81,9 +80,9 @@ export default function MainContentMb() {
           </button> */}
         </div>
         <div className={styles.scrollable_container}>
-          <Slider
+          <BasicSlider
             arrows={false}
-            {...{
+            settings={{
               rows: 2,
               slidesToShow: 2,
               slidesToScroll: 2,
@@ -104,7 +103,7 @@ export default function MainContentMb() {
                 />
               </div>
             ))}
-          </Slider>
+          </BasicSlider>
         </div>
         {/* </div> */}
 

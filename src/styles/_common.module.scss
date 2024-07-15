@@ -17,6 +17,10 @@ a:active {
 
 body {
   transition: all 0.5s ease;
+  li::marker {
+    content: "• ";
+    font-size: 1.2em;
+  }
 }
 
 .default_flex {
@@ -34,8 +38,10 @@ body {
   flex-direction: column;
   .common_layout_content_wrapper {
     flex-grow: 1;
-    width: 100%;
-    @include flex($align-items: flex-start);
+    width: calc(100% - $padding * 2);
+    @include navigation-default-padding;
+
+    // @include flex($align-items: flex-start);
   }
 }
 
@@ -303,6 +309,40 @@ body {
   background-color: $color-dark-300;
   color: $color-background-100;
   border: none;
+}
+
+.modal_container {
+  padding: $margin * 2;
+  .modal_header {
+    position: relative;
+    text-align: center;
+    margin-bottom: $margin;
+    .close_button {
+      cursor: pointer;
+      position: absolute;
+      right: 0;
+      top: -15px;
+      svg {
+        width: 30px;
+        height: 30px;
+        color: $color-skeleton-200;
+      }
+    }
+  }
+  .modal_content {
+    line-height: 180%;
+    font-size: 15px;
+  }
+}
+
+.list_content_wrapper {
+  font-size: 16px;
+  display: flex;
+  line-height: 160%;
+  margin-bottom: 0px;
+  p {
+    font-size: 0.9em;
+  }
 }
 
 @keyframes slideDown {

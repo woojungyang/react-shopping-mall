@@ -80,6 +80,7 @@
   @include default-button;
   height: 48px;
   @include flex;
+  border-radius: 0px;
   font-size: $padding;
   svg {
     width: $margin;
