@@ -42,7 +42,7 @@ export default function ItemDetailContent() {
     <div className={styles.item_detail_container}>
       <div className={styles.item_detail_wrapper}>
         <div className={styles.item_content_scroll_wrapper}>
-          {/* <ImageZoomSlider /> */}
+          <ImageZoomSlider images={[...new Array(9)]} />
         </div>
         <div className={styles.item_content_information_wrapper}>
           {/*   <div className={styles.item_header_icon_wrapper}>
