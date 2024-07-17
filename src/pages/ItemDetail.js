@@ -12,6 +12,8 @@ export default function ItemDetail() {
   const isDeskTop = userDevice == Device.Desktop;
 
   return (
-    <CommonLayout>{isDeskTop ? <ItemDetailContent /> : <></>}</CommonLayout>
+    <CommonLayout>
+      <ItemDetailContent />
+    </CommonLayout>
   );
 }

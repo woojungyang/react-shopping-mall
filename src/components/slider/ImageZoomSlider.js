@@ -10,7 +10,7 @@ import styles from "styles/_detail.module.scss";
 const limit = 5;
 const magnifierHeight = 100;
 const magnifierWidth = 100;
-const zoomLevel = 3;
+const zoomLevel = 1.5;
 
 export const ImageZoomSlider = ({ images = [] }) => {
   const containerRef = useRef(null);
@@ -43,14 +43,9 @@ export const ImageZoomSlider = ({ images = [] }) => {
     containerRef.current.slickGoTo(index);
   }
 
-  const originalImageRef = useRef(null);
-  const scannerImageRef = useRef(null);
-
   const [showMagnifier, setShowMagnifier] = useState(false);
   const [axisXY, setAxisXY] = useState([0, 0]);
-  const [imageSize, setImageSize] = useState([]);
-
-  console.log(imageSize);
+  const [imageSize, setImageSize] = useState([0, 0]);
 
   return (
     <div className={styles.image_zoom_container}>
@@ -94,14 +89,11 @@ export const ImageZoomSlider = ({ images = [] }) => {
                   height: magnifierHeight,
                   top: `${axisXY[1] - magnifierHeight / 2}px`,
                   left: `${axisXY[0] - magnifierWidth / 2}px`,
-                  opacity: "1", // reduce opacity so you can verify position
-
+                  opacity: "1",
                   backgroundColor: "white",
-                  backgroundImage: `url('assets/images/main/main${index + 1}.jpg')`,
+                  backgroundImage: `url(${require(`assets/images/main/main${index + 1}.jpg`)})`,
                   backgroundRepeat: "no-repeat",
-                  backgroundSize: `${imageSize[0] * zoomLevel}px ${
-                    imageSize[1] * zoomLevel
-                  }px`,
+                  backgroundSize: `${imageSize[0] * zoomLevel}px ${imageSize[1] * zoomLevel}px`,
                   backgroundPositionX: `${-axisXY[0] * zoomLevel + magnifierWidth / 2}px`,
                   backgroundPositionY: `${-axisXY[1] * zoomLevel + magnifierHeight / 2}px`,
                 }}
@@ -117,6 +109,7 @@ export const ImageZoomSlider = ({ images = [] }) => {
       <div className={styles.slider_pagination_wrapper}>
         {pagerArray.map((e, index) => (
           <SquarePager
+            key={index}
             currentIndex={currentIndex}
             changeSlider={changeSlider}
             page={e}
@@ -134,8 +127,8 @@ function SquarePager({ page, currentIndex, changeSlider }) {
       className={classNames({
         [styles.square_pager]: true,
         [styles.square_pager_active]:
-          page == currentIndex ||
-          (currentIndex > 4 && currentIndex - limit == page),
+          page === currentIndex ||
+          (currentIndex > 4 && currentIndex - limit === page),
       })}
     ></div>
   );
