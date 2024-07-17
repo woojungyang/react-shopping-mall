@@ -8,6 +8,9 @@ import Slider from "react-slick";
 import styles from "styles/_detail.module.scss";
 
 const limit = 5;
+const magnifierHeight = 100;
+const magnifierWidth = 100;
+const zoomLevel = 3;
 
 export const ImageZoomSlider = ({ images = [] }) => {
   const containerRef = useRef(null);
@@ -31,7 +34,7 @@ export const ImageZoomSlider = ({ images = [] }) => {
   const pagerArray = useMemo(() => {
     const totalCount = images.length;
     const pageCount = Math.min(limit, totalCount - currentPage * limit);
-    console.log(pageCount);
+
     return Array.from({ length: pageCount }, (_, i) => i + currentPage * limit);
   }, [currentPage, images.length, limit]);
 
@@ -39,6 +42,15 @@ export const ImageZoomSlider = ({ images = [] }) => {
     setCurrentIndex(index);
     containerRef.current.slickGoTo(index);
   }
+
+  const originalImageRef = useRef(null);
+  const scannerImageRef = useRef(null);
+
+  const [showMagnifier, setShowMagnifier] = useState(false);
+  const [axisXY, setAxisXY] = useState([0, 0]);
+  const [imageSize, setImageSize] = useState([]);
+
+  console.log(imageSize);
 
   return (
     <div className={styles.image_zoom_container}>
@@ -54,7 +66,47 @@ export const ImageZoomSlider = ({ images = [] }) => {
             <img
               src={require(`assets/images/main/main${index + 1}.jpg`)}
               alt={`slide ${index + 1}`}
+              onMouseEnter={(e) => {
+                const element = e.currentTarget;
+                const { width, height } = element.getBoundingClientRect();
+                setImageSize([width, height]);
+
+                setShowMagnifier(true);
+              }}
+              onMouseMove={(e) => {
+                const element = e.currentTarget;
+
+                const { top, left } = element.getBoundingClientRect();
+
+                const x = e.clientX - left;
+                const y = e.clientY - top;
+
+                setAxisXY([x, y]);
+              }}
+              onMouseLeave={() => setShowMagnifier(false)}
             />
+            {showMagnifier && (
+              <div
+                className={styles.scanner}
+                style={{
+                  display: showMagnifier ? "" : "none",
+                  width: magnifierWidth,
+                  height: magnifierHeight,
+                  top: `${axisXY[1] - magnifierHeight / 2}px`,
+                  left: `${axisXY[0] - magnifierWidth / 2}px`,
+                  opacity: "1", // reduce opacity so you can verify position
+
+                  backgroundColor: "white",
+                  backgroundImage: `url('assets/images/main/main${index + 1}.jpg')`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: `${imageSize[0] * zoomLevel}px ${
+                    imageSize[1] * zoomLevel
+                  }px`,
+                  backgroundPositionX: `${-axisXY[0] * zoomLevel + magnifierWidth / 2}px`,
+                  backgroundPositionY: `${-axisXY[1] * zoomLevel + magnifierHeight / 2}px`,
+                }}
+              ></div>
+            )}
           </div>
         ))}
       </Slider>

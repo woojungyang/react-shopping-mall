@@ -63,6 +63,15 @@
             background-color: $color-dark-300;
           }
         }
+        .slide {
+          position: relative;
+          .scanner {
+            position: absolute;
+            border: 1px solid #ccc;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+          }
+        }
       }
     }
 
