@@ -9,7 +9,6 @@ import { Drawer, Rating } from "@mui/material";
 import classNames from "classnames";
 import { numberWithCommas } from "utilities";
 
-import { LikeHeart } from "components/card";
 import { ListContent } from "components/common";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
@@ -22,7 +21,6 @@ export default function ItemDetailContent() {
 
   const [toggleDelivery, setToggleDelivery] = useState(false);
   const [deliveryModal, setDeliveryModal] = useState(false);
-  const [returnModal, setReturnModal] = useState(false);
 
   const today = useMemo(() => formatDateTime(now(), "MM월dd일-w"), []);
 
@@ -37,6 +35,8 @@ export default function ItemDetailContent() {
   const toggleDrawer = (newOpen) => () => {
     setDeliveryModal(newOpen);
   };
+
+  const [activeTab, setActiveTab] = useState("detail");
 
   return (
     <div className={styles.item_detail_container}>
@@ -239,6 +239,19 @@ export default function ItemDetailContent() {
           </button>
         </div>
       </div>
+      <div className={styles.tab_menu_container}>
+        <div className={styles.tab_menu_wrapper}>
+          <div
+            onClick={() => setActiveTab("detail")}
+            className={styles.tab_menu_wrap}
+          >
+            Detail
+          </div>
+          <div onClick={() => setActiveTab("review")}>Review</div>
+        </div>
+        {activeTab == "detail" && <div>detail</div>}
+        {activeTab == "review" && <div>review</div>}
+      </div>
       <Drawer
         anchor="right"
         open={deliveryModal}
@@ -316,6 +329,14 @@ function DrawerContentWrapper({ children, title }) {
     <div className={styles.drawer_content}>
       <p className={styles.drawer_title}>{title}</p>
       {children}
+    </div>
+  );
+}
+
+function TabMenu(name = "", setActiveTab, activeTab) {
+  return (
+    <div onClick={() => setActiveTab(name)} className={styles.tab_menu_wrap}>
+      Detail
     </div>
   );
 }

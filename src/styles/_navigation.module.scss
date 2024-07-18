@@ -18,7 +18,6 @@
   }
 }
 
-
 @mixin header-container {
   position: fixed;
   z-index: 9999;
@@ -286,6 +285,8 @@
   // margin: auto;
   margin-top: $margin * 5;
   height: 120px;
+  padding-left: $padding;
+  padding-right: $padding;
   background-color: rgba($color-skeleton-100, 0.1);
   @include flex;
   .footer_wrapper {

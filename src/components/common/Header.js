@@ -4,7 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import classNames from "classnames";
 import { Device } from "models/device";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
@@ -13,6 +13,10 @@ import styles from "styles/_navigation.module.scss";
 import { SearchContainer } from "./SearchContainer";
 
 export default function Header() {
+  const navigation = useNavigate();
+  const location = useLocation();
+  const isMainPage = location.pathname == "/";
+
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
@@ -57,19 +61,20 @@ export default function Header() {
           ref={searchRef}
           className={classNames(
             { [styles.header_container]: true },
-            { [styles.header_container_dark]: switchPosition },
+            { [styles.header_container_dark]: switchPosition || !isMainPage },
           )}
         >
           <div className={styles.header_wrapper}>
             <div className={styles.category_wrapper}>
               <img
                 src={
-                  switchPosition
+                  switchPosition || !isMainPage
                     ? require("assets/images/common/logo.png")
                     : require("assets/images/common/logo_trans.png")
                 }
                 alt="logo"
                 className={styles.header_logo}
+                onClick={() => navigation("/")}
               />
               <div className={styles.category}>
                 <Link to="/category/women">WOMEN</Link>
@@ -93,7 +98,7 @@ export default function Header() {
         <div
           className={classNames({
             [styles.mb_header_container]: true,
-            [styles.mb_header_container_scrolled]: switchPosition,
+            [styles.mb_header_container_scrolled]: true,
           })}
         >
           <div className={styles.header_wrapper_mb}>
@@ -103,14 +108,7 @@ export default function Header() {
                 [styles.default_flex]: true,
               })}
             >
-              <img
-                src={
-                  switchPosition
-                    ? require("assets/images/common/logo.png")
-                    : require("assets/images/common/logo_trans.png")
-                }
-                alt="logo"
-              />
+              <img src={require("assets/images/common/logo.png")} alt="logo" />
             </div>
             <div className={styles.header_icon_wrapper}>
               <SearchIcon
@@ -120,20 +118,20 @@ export default function Header() {
               <ShoppingBagIcon className={styles.user_icon} />
             </div>
           </div>
-          {switchPosition && (
-            <div className={styles.mb_scroll_menu_wrapper}>
-              {mobileMenu.map((e, index) => (
-                <p
-                  className={classNames({
-                    [styles.default_scroll_menu]: true,
-                    [styles.active_scroll_menu]: activeMobilMenu == e.id,
-                  })}
-                >
-                  {e.name}
-                </p>
-              ))}
-            </div>
-          )}
+          {/* {switchPosition && ( */}
+          <div className={styles.mb_scroll_menu_wrapper}>
+            {mobileMenu.map((e, index) => (
+              <p
+                className={classNames({
+                  [styles.default_scroll_menu]: true,
+                  [styles.active_scroll_menu]: activeMobilMenu == e.id,
+                })}
+              >
+                {e.name}
+              </p>
+            ))}
+          </div>
+          {/* )} */}
           {showSearch && (
             <SearchContainer visible={showSearch} setVisible={setShowSearch} />
           )}

@@ -3,9 +3,14 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import classNames from "classnames";
+import { Device } from "models/device";
 import Slider from "react-slick";
 
+import { useUserDevice } from "hooks/size/useUserDevice";
+
 import styles from "styles/_detail.module.scss";
+
+import { ImageSlider } from "./ImageSlider";
 
 const limit = 5;
 const magnifierHeight = 100;
@@ -13,6 +18,8 @@ const magnifierWidth = 100;
 const zoomLevel = 1.5;
 
 export const ImageZoomSlider = ({ images = [] }) => {
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
   const containerRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -49,63 +56,74 @@ export const ImageZoomSlider = ({ images = [] }) => {
 
   return (
     <div className={styles.image_zoom_container}>
-      <Slider
-        {...settings}
-        ref={containerRef}
-        afterChange={(newIndex) => {
-          setCurrentIndex?.(newIndex);
-        }}
-      >
-        {images.map((image, index) => (
-          <div key={index} className={styles.slide}>
-            <img
-              src={require(`assets/images/main/main${index + 1}.jpg`)}
-              alt={`slide ${index + 1}`}
-              onMouseEnter={(e) => {
-                const element = e.currentTarget;
-                const { width, height } = element.getBoundingClientRect();
-                setImageSize([width, height]);
+      {isDeskTop ? (
+        <Slider
+          {...settings}
+          ref={containerRef}
+          afterChange={(newIndex) => {
+            setCurrentIndex?.(newIndex);
+          }}
+        >
+          {images.map((image, index) => (
+            <div key={index} className={styles.slide}>
+              <img
+                src={require(`assets/images/main/main${index + 1}.jpg`)}
+                alt={`slide ${index + 1}`}
+                onMouseEnter={(e) => {
+                  const element = e.currentTarget;
+                  const { width, height } = element.getBoundingClientRect();
+                  setImageSize([width, height]);
 
-                setShowMagnifier(true);
-              }}
-              onMouseMove={(e) => {
-                const element = e.currentTarget;
-
-                const { top, left } = element.getBoundingClientRect();
-
-                const x = e.clientX - left;
-                const y = e.clientY - top;
-
-                setAxisXY([x, y]);
-              }}
-              onMouseLeave={() => setShowMagnifier(false)}
-            />
-            {showMagnifier && (
-              <div
-                className={styles.scanner}
-                style={{
-                  display: showMagnifier ? "" : "none",
-                  width: magnifierWidth,
-                  height: magnifierHeight,
-                  top: `${axisXY[1] - magnifierHeight / 2}px`,
-                  left: `${axisXY[0] - magnifierWidth / 2}px`,
-                  opacity: "1",
-                  backgroundColor: "white",
-                  backgroundImage: `url(${require(`assets/images/main/main${index + 1}.jpg`)})`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: `${imageSize[0] * zoomLevel}px ${imageSize[1] * zoomLevel}px`,
-                  backgroundPositionX: `${-axisXY[0] * zoomLevel + magnifierWidth / 2}px`,
-                  backgroundPositionY: `${-axisXY[1] * zoomLevel + magnifierHeight / 2}px`,
+                  setShowMagnifier(true);
                 }}
-              ></div>
-            )}
-          </div>
-        ))}
-      </Slider>
-      <div className={styles.slider_button}>
-        <ArrowBackIcon onClick={previous} />
-        <ArrowForwardIcon onClick={next} />
-      </div>
+                onMouseMove={(e) => {
+                  const element = e.currentTarget;
+
+                  const { top, left } = element.getBoundingClientRect();
+
+                  const x = e.clientX - left;
+                  const y = e.clientY - top;
+
+                  setAxisXY([x, y]);
+                }}
+                onMouseLeave={() => setShowMagnifier(false)}
+              />
+              {showMagnifier && (
+                <div
+                  className={styles.scanner}
+                  style={{
+                    display: showMagnifier ? "" : "none",
+                    width: magnifierWidth,
+                    height: magnifierHeight,
+                    top: `${axisXY[1] - magnifierHeight / 2}px`,
+                    left: `${axisXY[0] - magnifierWidth / 2}px`,
+                    opacity: "1",
+                    backgroundColor: "white",
+                    backgroundImage: `url(${require(`assets/images/main/main${index + 1}.jpg`)})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: `${imageSize[0] * zoomLevel}px ${imageSize[1] * zoomLevel}px`,
+                    backgroundPositionX: `${-axisXY[0] * zoomLevel + magnifierWidth / 2}px`,
+                    backgroundPositionY: `${-axisXY[1] * zoomLevel + magnifierHeight / 2}px`,
+                  }}
+                ></div>
+              )}
+            </div>
+          ))}
+        </Slider>
+      ) : (
+        <ImageSlider
+          autoplay={false}
+          images={images}
+          currentIndex={currentIndex}
+          setCurrentIndex={setCurrentIndex}
+        />
+      )}
+      {isDeskTop && (
+        <div className={styles.slider_button}>
+          <ArrowBackIcon onClick={previous} />
+          <ArrowForwardIcon onClick={next} />
+        </div>
+      )}
       <div className={styles.slider_pagination_wrapper}>
         {pagerArray.map((e, index) => (
           <SquarePager

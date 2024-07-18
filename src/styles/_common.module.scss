@@ -38,8 +38,8 @@ body {
   flex-direction: column;
   .common_layout_content_wrapper {
     flex-grow: 1;
-    width: calc(100% - $padding * 2);
-    @include navigation-default-padding;
+    // width: calc(100% - $padding * 2);
+    // @include navigation-default-padding;
 
     // @include flex($align-items: flex-start);
   }
@@ -211,6 +211,7 @@ body {
 }
 
 .default_item_card_container {
+  cursor: pointer;
   width: 100%;
   position: relative;
   margin-right: $default;

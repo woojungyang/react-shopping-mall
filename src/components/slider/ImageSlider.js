@@ -8,7 +8,12 @@ import { useUserDevice } from "hooks/size/useUserDevice";
 
 import styles from "styles/_main.module.scss";
 
-export const ImageSlider = ({ images, currentIndex = 0, setCurrentIndex }) => {
+export const ImageSlider = ({
+  images,
+  currentIndex = 0,
+  setCurrentIndex,
+  autoplay = true,
+}) => {
   const slider = useRef(null);
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
@@ -35,7 +40,7 @@ export const ImageSlider = ({ images, currentIndex = 0, setCurrentIndex }) => {
     <Slider
       ref={slider}
       {...settings}
-      autoplay
+      autoplay={autoplay}
       arrows={false}
       afterChange={(newIndex) => {
         setCurrentIndex?.(newIndex);

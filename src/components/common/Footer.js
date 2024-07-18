@@ -36,7 +36,9 @@ export default function Footer() {
             있으므로, 각 상품 페이지에서 구체적인 내용을 확인하시기 바랍니다.
           </p>
         </div>
-        <p>COPYRIGHT ⓒ WOOJUNGYANG ALL RIGHTS RESERVED</p>
+        <p style={{ flexShrink: 0, marginLeft: 20 }}>
+          COPYRIGHT ⓒ WOOJUNGYANG ALL RIGHTS RESERVED
+        </p>
       </div>
     </div>
   );
