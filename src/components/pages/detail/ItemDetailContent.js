@@ -7,8 +7,13 @@ import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { Drawer, Rating } from "@mui/material";
 import classNames from "classnames";
+import { Device } from "models/device";
+import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "utilities";
 
+import { useUserDevice } from "hooks/size/useUserDevice";
+
+import { ItemCard } from "components/card";
 import { ListContent } from "components/common";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
@@ -17,6 +22,10 @@ import { formatDateTime, now } from "utilities/dateTime";
 import styles from "styles/_detail.module.scss";
 
 export default function ItemDetailContent() {
+  const navigation = useNavigate();
+
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
   const colorOptions = [...new Array(3)];
 
   const [toggleDelivery, setToggleDelivery] = useState(false);
@@ -37,6 +46,8 @@ export default function ItemDetailContent() {
   };
 
   const [activeTab, setActiveTab] = useState("detail");
+
+  const [bestItems, setBestItems] = useState([...new Array(8)]);
 
   return (
     <div className={styles.item_detail_container}>
@@ -239,17 +250,44 @@ export default function ItemDetailContent() {
           </button>
         </div>
       </div>
+      <div className={styles.recommend_container}>
+        <div className={styles.recommend_wrapper}>
+          <h3>More by + </h3>
+          <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
+            {bestItems.map((item, index) => (
+              <img
+                onClick={() => navigation(`/items/${item}`)}
+                src={require(`assets/images/main/main${index + 1}.jpg`)}
+                key={index}
+                style={{
+                  height: isDeskTop ? 250 : 200,
+                  width: "100%",
+                  minWidth: 120,
+                }}
+              />
+            ))}
+          </ScrollableSlider>
+        </div>
+      </div>
       <div className={styles.tab_menu_container}>
         <div className={styles.tab_menu_wrapper}>
-          <div
-            onClick={() => setActiveTab("detail")}
-            className={styles.tab_menu_wrap}
-          >
-            Detail
-          </div>
-          <div onClick={() => setActiveTab("review")}>Review</div>
+          <TabMenu
+            name="detail"
+            setActiveTab={setActiveTab}
+            activeTab={activeTab}
+          />
+          <TabMenu
+            name="review"
+            setActiveTab={setActiveTab}
+            activeTab={activeTab}
+          />
+          <TabMenu
+            name="q&a"
+            setActiveTab={setActiveTab}
+            activeTab={activeTab}
+          />
         </div>
-        {activeTab == "detail" && <div>detail</div>}
+        {activeTab == "detail" && <div>detaidddl</div>}
         {activeTab == "review" && <div>review</div>}
       </div>
       <Drawer
@@ -333,10 +371,19 @@ function DrawerContentWrapper({ children, title }) {
   );
 }
 
-function TabMenu(name = "", setActiveTab, activeTab) {
+function TabMenu({ name = "", setActiveTab, activeTab }) {
+  console.log("name", name);
+  console.log("activeTab", activeTab);
+  console.log(activeTab == name);
   return (
-    <div onClick={() => setActiveTab(name)} className={styles.tab_menu_wrap}>
-      Detail
+    <div
+      onClick={() => setActiveTab(name)}
+      className={classNames({
+        [styles.tab_menu_wrap]: true,
+        [styles.tab_menu_wrap_active]: activeTab == name,
+      })}
+    >
+      <p> {name.toUpperCase()}</p>
     </div>
   );
 }
