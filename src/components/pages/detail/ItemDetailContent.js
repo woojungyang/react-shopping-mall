@@ -1,11 +1,23 @@
-import React, { useMemo, useState } from "react";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { Drawer, Rating } from "@mui/material";
+import { Drawer, Rating, Table, TableContainer } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { useNavigate } from "react-router-dom";
@@ -46,8 +58,22 @@ export default function ItemDetailContent() {
   };
 
   const [activeTab, setActiveTab] = useState("detail");
+  const detailRef = useRef(null);
 
   const [bestItems, setBestItems] = useState([...new Array(8)]);
+  const [moreContents, setMoreContents] = useState(true);
+
+  useEffect(() => {
+    // setTimeout을 사용하여 초기 렌더링 후에 높이를 측정
+    setTimeout(() => {
+      if (detailRef.current) {
+        const clientHeight = detailRef.current.clientHeight;
+        setMoreContents(clientHeight > 1499);
+      }
+    }, 0);
+  }, []); // 빈 배열을 의존성 배열로 사용하여 초기 렌더링 후에만 실행
+
+  console.log(moreContents);
 
   return (
     <div className={styles.item_detail_container}>
@@ -252,7 +278,7 @@ export default function ItemDetailContent() {
       </div>
       <div className={styles.recommend_container}>
         <div className={styles.recommend_wrapper}>
-          <h3>More by + </h3>
+          <h3>Recommended for you </h3>
           <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
             {bestItems.map((item, index) => (
               <img
@@ -270,24 +296,62 @@ export default function ItemDetailContent() {
         </div>
       </div>
       <div className={styles.tab_menu_container}>
-        <div className={styles.tab_menu_wrapper}>
-          <TabMenu
-            name="detail"
-            setActiveTab={setActiveTab}
-            activeTab={activeTab}
-          />
-          <TabMenu
-            name="review"
-            setActiveTab={setActiveTab}
-            activeTab={activeTab}
-          />
-          <TabMenu
-            name="q&a"
-            setActiveTab={setActiveTab}
-            activeTab={activeTab}
-          />
+        <TabsWrapper activeTab="detail" />
+        <div
+          className={styles.detail_content_bottom_wrapper}
+          ref={detailRef}
+          style={{
+            maxHeight: !moreContents ? "100%" : isDeskTop ? 1500 : 700,
+            overflow: "hidden",
+          }}
+        >
+          {bestItems.map((item, index) => (
+            <img
+              onClick={() => navigation(`/items/${item}`)}
+              src={require(`assets/images/main/main${index + 1}.jpg`)}
+              key={index}
+              style={{
+                width: "100%",
+              }}
+            />
+          ))}
+          {moreContents && (
+            <div className={styles.detail_more_button_wrapper}>
+              <button
+                onClick={() => setMoreContents(!moreContents)}
+                className={
+                  styles.button_background_100_outline_mb_color_dark_300
+                }
+              >
+                상품정보
+                <KeyboardArrowDownIcon />
+              </button>
+            </div>
+          )}
         </div>
-        {activeTab == "detail" && <div>detaidddl</div>}
+        <div className={styles.recommend_container}>
+          <div className={styles.recommend_wrapper}>
+            <div className={styles.brand_information_card_wrapper}>
+              <img src={require(`assets/images/main/main10.jpg`)} alt="" />
+            </div>
+            <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
+              {bestItems.map((item, index) => (
+                <img
+                  onClick={() => navigation(`/items/${item}`)}
+                  src={require(`assets/images/main/main${index + 1}.jpg`)}
+                  key={index}
+                  style={{
+                    height: isDeskTop ? 250 : 200,
+                    width: "100%",
+                    minWidth: 120,
+                  }}
+                />
+              ))}
+            </ScrollableSlider>
+          </div>
+        </div>
+
+        <TabsWrapper activeTab="review" />
         {activeTab == "review" && <div>review</div>}
       </div>
       <Drawer
@@ -371,10 +435,25 @@ function DrawerContentWrapper({ children, title }) {
   );
 }
 
+function TabsWrapper({ activeTab }) {
+  return (
+    <div className={styles.tab_menu_wrapper}>
+      <TabMenu
+        name="detail"
+        // setActiveTab={setActiveTab}
+        activeTab={activeTab}
+      />
+      <TabMenu
+        name="review"
+        // setActiveTab={setActiveTab}
+        activeTab={activeTab}
+      />
+      <TabMenu name="q&a" activeTab={activeTab} />
+    </div>
+  );
+}
+
 function TabMenu({ name = "", setActiveTab, activeTab }) {
-  console.log("name", name);
-  console.log("activeTab", activeTab);
-  console.log(activeTab == name);
   return (
     <div
       onClick={() => setActiveTab(name)}

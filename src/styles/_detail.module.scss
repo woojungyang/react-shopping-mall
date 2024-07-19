@@ -333,6 +333,12 @@
         font-size: $padding;
       }
     }
+    .brand_information_card_wrapper {
+      img {
+        @include default-image;
+        height: 468px;
+      }
+    }
   }
 }
 
@@ -372,6 +378,20 @@
         border: none !important;
         border-bottom: 2px solid black !important;
       }
+    }
+  }
+  .detail_content_bottom_wrapper {
+    max-width: $breakpoint-tablet;
+    margin: auto;
+    padding-top: $margin * 15;
+    padding-bottom: $margin * 15;
+    position: relative;
+    .detail_more_button_wrapper {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding-top: $default * 2;
+      background: linear-gradient(transparent, rgba(255, 255, 255, 0.8) 40%);
     }
   }
 }
