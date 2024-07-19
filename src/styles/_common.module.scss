@@ -17,10 +17,7 @@ a:active {
 
 body {
   transition: all 0.5s ease;
-  li::marker {
-    content: "• ";
-    font-size: 1.2em;
-  }
+ 
 }
 
 .default_flex {

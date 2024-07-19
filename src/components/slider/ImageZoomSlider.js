@@ -2,6 +2,8 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import classNames from "classnames";
 import { Device } from "models/device";
 import Slider from "react-slick";
@@ -67,7 +69,7 @@ export const ImageZoomSlider = ({ images = [] }) => {
           {images.map((image, index) => (
             <div key={index} className={styles.slide}>
               <img
-                src={require(`assets/images/main/main${index + 1}.jpg`)}
+                src={require(`assets/images/sub/sub${index + 1}.jpg`)}
                 alt={`slide ${index + 1}`}
                 onMouseEnter={(e) => {
                   const element = e.currentTarget;
@@ -120,8 +122,8 @@ export const ImageZoomSlider = ({ images = [] }) => {
       )}
       {isDeskTop && (
         <div className={styles.slider_button}>
-          <ArrowBackIcon onClick={previous} />
-          <ArrowForwardIcon onClick={next} />
+          <KeyboardArrowLeftIcon onClick={previous} />
+          <KeyboardArrowRightIcon onClick={next} />
         </div>
       )}
       <div className={styles.slider_pagination_wrapper}>

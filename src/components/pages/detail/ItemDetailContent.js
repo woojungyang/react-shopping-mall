@@ -1,31 +1,21 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import EastIcon from "@mui/icons-material/East";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { Drawer, Rating, Table, TableContainer } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import { Drawer, Pagination, Rating, Stack } from "@mui/material";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { useNavigate } from "react-router-dom";
-import { numberWithCommas } from "utilities";
+import { maskAccountName, numberWithCommas } from "utilities";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import { ItemCard } from "components/card";
+import { ItemCard, LikeHeart } from "components/card";
 import { ListContent } from "components/common";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
@@ -61,7 +51,14 @@ export default function ItemDetailContent() {
   const detailRef = useRef(null);
 
   const [bestItems, setBestItems] = useState([...new Array(8)]);
+  const [brandItems, setBrandItems] = useState([...new Array(5)]);
   const [moreContents, setMoreContents] = useState(true);
+
+  const [reviews, setReviews] = useState([...new Array(5)]);
+  const [reviewPage, setReviewPage] = useState(1);
+  const handleChange = (event, value) => {
+    setReviewPage(value);
+  };
 
   useEffect(() => {
     // setTimeout을 사용하여 초기 렌더링 후에 높이를 측정
@@ -283,10 +280,10 @@ export default function ItemDetailContent() {
             {bestItems.map((item, index) => (
               <img
                 onClick={() => navigation(`/items/${item}`)}
-                src={require(`assets/images/main/main${index + 1}.jpg`)}
+                src={require(`assets/images/sub/sub${index + 1}.jpg`)}
                 key={index}
                 style={{
-                  height: isDeskTop ? 250 : 200,
+                  height: isDeskTop ? 200 : 150,
                   width: "100%",
                   minWidth: 120,
                 }}
@@ -315,44 +312,81 @@ export default function ItemDetailContent() {
               }}
             />
           ))}
-          {moreContents && (
-            <div className={styles.detail_more_button_wrapper}>
-              <button
-                onClick={() => setMoreContents(!moreContents)}
-                className={
-                  styles.button_background_100_outline_mb_color_dark_300
-                }
-              >
-                상품정보
-                <KeyboardArrowDownIcon />
-              </button>
-            </div>
-          )}
         </div>
-        <div className={styles.recommend_container}>
+        {moreContents && (
+          <div className={styles.detail_more_button_wrapper}>
+            <button
+              onClick={() => setMoreContents(!moreContents)}
+              className={styles.button_background_100_outline_mb_color_dark_300}
+            >
+              상품정보
+              <KeyboardArrowDownIcon />
+            </button>
+          </div>
+        )}
+        <div
+          className={styles.recommend_container}
+          style={{ marginBottom: 150 }}
+        >
           <div className={styles.recommend_wrapper}>
             <div className={styles.brand_information_card_wrapper}>
               <img src={require(`assets/images/main/main10.jpg`)} alt="" />
+              <div className={styles.brand_information_content}>
+                <div className={styles.brand_texts}>
+                  <p>브랜드명</p>
+                  <h1>brandname</h1>
+                  <h4>트렌드에 따라 유연하게 변화하는 컨템포러리 브랜드</h4>
+                  <div className={styles.preference_wrapper}>
+                    <LikeHeart position={{ position: "relative" }} />
+                    <span>12345</span>
+                  </div>
+                </div>
+                <button className={styles.brand_home_button}>
+                  Brand Home
+                  <EastIcon />
+                </button>
+              </div>
             </div>
             <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
-              {bestItems.map((item, index) => (
-                <img
-                  onClick={() => navigation(`/items/${item}`)}
-                  src={require(`assets/images/main/main${index + 1}.jpg`)}
+              {brandItems.map((item, index) => (
+                <ItemCard
                   key={index}
+                  showBrand={false}
+                  product={item}
                   style={{
-                    height: isDeskTop ? 250 : 200,
-                    width: "100%",
-                    minWidth: 120,
+                    height: 300,
+                    minWidth: 100,
                   }}
                 />
               ))}
             </ScrollableSlider>
           </div>
         </div>
-
         <TabsWrapper activeTab="review" />
-        {activeTab == "review" && <div>review</div>}
+        <div className={styles.review_bottom_wrapper}>
+          <p className={styles.rating_title}>
+            상품 평균 만족도<span>(481)</span>
+          </p>
+          <div className={styles.rating_wrapper}>
+            <ReviewRating size="2.5em" value={2} />
+            <span className={styles.rating_value}>
+              <span>5</span> / 5.0
+            </span>
+          </div>
+        </div>
+
+        <div className={styles.reviews_wrapper}>
+          {reviews.map((review, index) => (
+            <Review review={review} key={index} />
+          ))}
+          <Stack alignItems="center" sx={{ marginTop: "20px" }}>
+            <Pagination
+              count={reviewPage.length}
+              page={reviewPage}
+              onChange={handleChange}
+            />
+          </Stack>
+        </div>
       </div>
       <Drawer
         anchor="right"
@@ -444,25 +478,69 @@ function TabsWrapper({ activeTab }) {
         activeTab={activeTab}
       />
       <TabMenu
-        name="review"
+        name="review(480)"
         // setActiveTab={setActiveTab}
         activeTab={activeTab}
       />
-      <TabMenu name="q&a" activeTab={activeTab} />
+      <TabMenu name="q&a(1)" activeTab={activeTab} />
     </div>
   );
 }
 
 function TabMenu({ name = "", setActiveTab, activeTab }) {
+  const filteredName = name.match(/[A-Za-z]+/g);
   return (
     <div
-      onClick={() => setActiveTab(name)}
+      onClick={() => setActiveTab(filteredName)}
       className={classNames({
         [styles.tab_menu_wrap]: true,
-        [styles.tab_menu_wrap_active]: activeTab == name,
+        [styles.tab_menu_wrap_active]: activeTab == filteredName,
       })}
     >
       <p> {name.toUpperCase()}</p>
+    </div>
+  );
+}
+
+function ReviewRating({ size = "1em", value = 0 }) {
+  return (
+    <Rating
+      name="half-rating-read"
+      defaultValue={value}
+      precision={0.5}
+      readOnly
+      sx={{
+        fontSize: size,
+        color: "black",
+      }}
+    />
+  );
+}
+
+function Review({ review }) {
+  return (
+    <div className={styles.detail_review}>
+      <div className={styles.detail_first_content}>
+        <ReviewRating value={2} />
+        <img src={require(`assets/images/main/main10.jpg`)} alt="" />
+      </div>
+      <div className={styles.detail_second_content}>
+        <div className={styles.detail_review_information}>
+          <p>구매옵션 : skinny 05 mute brown</p>
+          <p>
+            <span style={{ marginRight: 10 }}>
+              {maskAccountName("username")}
+            </span>
+            <span>{formatDateTime(now())}</span>
+          </p>
+        </div>
+        <p className={styles.written_review}>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut dolore
+          facilis odit assumenda id minima soluta libero aperiam dolorum. Aut a
+          reiciendis officia id maxime illum doloremque dignissimos itaque
+          ducimus!
+        </p>
+      </div>
     </div>
   );
 }
