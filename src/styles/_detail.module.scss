@@ -9,9 +9,38 @@
   margin-top: $header-height * 2;
 
   width: 100%;
+  position: relative;
 
-  @include mobile {
+  @include tablet {
     margin-top: 0;
+  }
+  .item_bottom_navigation {
+    z-index: 999;
+    position: fixed;
+    bottom: 0;
+    right: $margin * 3;
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    .navigation_button {
+      cursor: pointer;
+      margin-bottom: $default;
+      background-color: $color-background-100;
+      border: 1px solid $color-skeleton-100;
+      border-radius: 50%;
+      width: 2.5em;
+      height: 2.5em;
+      @include flex;
+
+      svg {
+        width: 1.3em;
+        height: 1.3em;
+      }
+    }
+    @include tablet {
+      bottom: $margin * 5;
+      right: $padding;
+    }
   }
 
   .item_detail_wrapper {
@@ -21,18 +50,18 @@
     display: flex;
     flex-wrap: wrap;
     transition: flex-direction 0.3s ease;
-    @include mobile {
+    @include tablet {
       flex-direction: column;
     }
     .item_content_scroll_wrapper {
       flex: 1.2;
-      @include mobile {
+      @include tablet {
         flex: 1;
       }
       margin-right: $default * 3;
       height: 800px;
-      max-width: 100%; // 최대 너비를 100%로 설정하여 부모 컨테이너의 너비에 맞춤
-      min-width: 0; // 최소 너비 설정 (flexbox 문제 해결)
+      max-width: 100%;
+      min-width: 0;
 
       .image_zoom_container {
         position: relative;
@@ -97,7 +126,7 @@
       padding-left: $padding;
       padding-right: $padding;
       flex: 0.8;
-      @include mobile {
+      @include tablet {
         margin-top: $margin * 2;
         width: calc(100% - $padding * 2);
         // padding-left: 0;
@@ -316,9 +345,8 @@
   margin-top: $margin * 4;
   margin-bottom: $margin * 4;
 
-  @include mobile {
-    border-top: 10px solid rgba($color-skeleton-100, 0.3);
-    margin-top: $margin * 2;
+  @include tablet {
+    @include mobile-boundary;
     margin-bottom: 0;
   }
   .recommend_wrapper {
@@ -332,7 +360,7 @@
         margin-right: 0px;
       }
     }
-    @include mobile {
+    @include tablet {
       margin-top: $margin * 2;
       width: calc(100% - $padding * 2);
       margin: auto;
@@ -346,6 +374,9 @@
       font-size: 16px;
       overflow: hidden;
       margin-bottom: $default * 2;
+      @include tablet {
+        margin-top: $padding * 2;
+      }
       img {
         @include default-image;
         height: 468px;
@@ -398,14 +429,14 @@
   max-width: 1240px;
   margin: auto;
   margin-top: $margin;
-  @include mobile {
+  @include tablet {
     border-top: 10px solid rgba($color-skeleton-100, 0.3);
   }
   .tab_menu_wrapper {
     display: flex;
     height: $padding * 3;
     font-size: 18px;
-    @include mobile {
+    @include tablet {
       font-size: 14px;
     }
     cursor: pointer;
@@ -419,14 +450,14 @@
       &:last-child {
         border-right: 0.5px solid rgba($color-skeleton-100, 0.9);
       }
-      @include mobile {
+      @include tablet {
         border: none;
       }
     }
     .tab_menu_wrap_active {
       border: 2px solid black !important;
       border-bottom: 0px !important;
-      @include mobile {
+      @include tablet {
         border: none !important;
         border-bottom: 2px solid black !important;
       }
@@ -437,105 +468,176 @@
     margin: auto;
     padding-top: $margin * 10;
     padding-bottom: $margin * 10;
-  }
-  .review_bottom_wrapper {
-    max-width: $breakpoint-tablet;
-    margin: auto;
-    text-align: center;
-    padding: $margin * 5 0px;
-    .rating_title {
-      font-weight: 500;
-      font-size: 1.5em;
-      span {
-        margin-left: $default/2;
-        font-size: 0.9em;
-      }
+    @include tablet {
+      padding: $margin * 5 $padding;
     }
-    .rating_wrapper {
-      margin: auto;
-      margin-top: $default * 2;
-      @include flex;
+  }
+  .review_bottom_container {
+    margin-bottom: $margin * 5;
+    @include tablet {
+      @include mobile-boundary;
+      margin-bottom: 0;
+    }
 
-      .rating_value {
-        margin-right: $default;
-        margin-top: 10px;
-        font-weight: 600;
-        color: $color-skeleton-200;
-        font-size: 2em;
+    .review_bottom_wrapper {
+      max-width: $breakpoint-tablet;
+      margin: auto;
+      text-align: center;
+      padding: $margin * 5 0px;
+      @include tablet {
+        padding: $margin * 2 0px;
+      }
+      .rating_title {
+        font-weight: 500;
+        font-size: 1.5em;
         span {
-          color: $color-dark-300;
-        }
-      }
-    }
-  }
-  .reviews_wrapper {
-    .detail_review {
-      padding-top: $padding;
-      padding-bottom: $padding;
-      @include flex($justify-content: space-between, $align-items: flex-start);
-      border-bottom: 1px solid $color-skeleton-100;
-      &:first-child {
-        border-top: 2px solid $color-dark-100;
-      }
-      &:last-child {
-        border-bottom: 2px solid $color-dark-100;
-      }
-      .detail_first_content {
-        img {
-          @include default-image;
-          width: 100px;
-          height: 100px;
-        }
-      }
-      .detail_second_content {
-        height: 100%;
-        .detail_review_information {
-          @include flex($justify-content: space-between);
-          color: $color-skeleton-100;
+          margin-left: $default/2;
           font-size: 0.9em;
         }
-        .written_review {
-          margin-top: $padding;
-          line-height: 160%;
+        @include tablet {
+          font-size: 1em;
+        }
+      }
+      .rating_wrapper {
+        margin: auto;
+        margin-top: $default * 2;
+        @include flex;
+        @include tablet {
+          margin-top: $default;
+        }
+
+        .rating_value {
+          margin-right: $default;
+          margin-top: $default;
+          font-weight: 600;
+          color: $color-skeleton-200;
+          font-size: 2em;
+          span {
+            color: $color-dark-300;
+          }
+          @include tablet {
+            font-size: 1em;
+            margin-top: $default/3;
+          }
+        }
+      }
+    }
+    .reviews_wrapper {
+      @include tablet {
+        padding: $padding;
+      }
+      .detail_review {
+        padding-top: $padding;
+        padding-bottom: $padding;
+
+        @include flex(
+          $justify-content: space-between,
+          $align-items: flex-start
+        );
+        border-bottom: 1px solid $color-skeleton-100;
+        &:first-child {
+          border-top: 2px solid $color-dark-100;
+        }
+        &:last-child {
+          border-bottom: 2px solid $color-dark-100;
+        }
+        .detail_first_content {
+          img {
+            @include default-image;
+            width: 100px;
+            height: 100px;
+          }
+        }
+        .detail_second_content {
+          height: 100%;
+          @include tablet {
+            margin-left: $padding;
+          }
+          .detail_review_information {
+            @include flex($justify-content: space-between);
+            color: $color-skeleton-100;
+            font-size: 0.9em;
+            @include tablet {
+              @include flex(
+                $direction: column,
+                $justify-content: flex-start,
+                $align-items: flex-start
+              );
+              .detail_review_writer {
+                margin-top: $default/2;
+                span {
+                  width: 100%;
+                  display: inline-block;
+                  line-height: 140%;
+                }
+              }
+              font-size: 0.8em;
+            }
+          }
+          .written_review {
+            margin-top: $padding;
+            line-height: 160%;
+            @include tablet {
+              font-size: 0.9em;
+            }
+          }
         }
       }
     }
   }
-  .questions_wrapper {
-    margin-top: $margin * 2;
 
-    .question_detail_wrap {
-      font-size: 16px;
-      @include flex($justify-content: space-between);
-      height: 60px;
-      border-bottom: 1px solid rgba($color-skeleton-100, 0.3);
-      &:last-child {
-        border-bottom: 1px solid $color-dark-300;
+  .questions_container {
+    @include tablet {
+      @include mobile-boundary;
+      margin-bottom: 0;
+    }
+    .questions_wrapper {
+      @include tablet {
+        padding: $padding;
       }
-      &:first-child {
-        border-top: 1px solid $color-dark-300;
-      }
-      .question_detail_information {
-        flex-shrink: 0;
-        display: flex;
-        font-size: 0.9em;
-        color: $color-skeleton-200;
-        span {
-          margin-left: $margin;
+
+      .question_detail_wrap {
+        font-size: 16px;
+        @include flex($justify-content: space-between);
+        height: 60px;
+        border-bottom: 1px solid rgba($color-skeleton-100, 0.3);
+        &:last-child {
+          border-bottom: 1px solid $color-dark-300;
         }
-      }
-      .question_detail_content {
-        @include flex;
-        span {
+        // &:first-child {
+        //   border-top: 1px solid $color-dark-300;
+        // }
+        .question_detail_information {
           flex-shrink: 0;
-          margin-right: $margin;
-          font-size: 0.6em;
-          background-color: $color-dark-300;
-          color: $color-background-100;
-          padding: $default/2;
+          display: flex;
+          font-size: 0.9em;
+          color: $color-skeleton-200;
+          span {
+            margin-left: $margin;
+          }
+          @include tablet {
+            flex-direction: column;
+            span {
+              margin-left: 0;
+            }
+          }
         }
-        p {
-          @include overflow-text;
+        .question_detail_content {
+          @include flex;
+          span {
+            flex-shrink: 0;
+            margin-right: $margin;
+            font-size: 0.6em;
+            background-color: $color-dark-300;
+            color: $color-background-100;
+            padding: $default/2;
+          }
+          p {
+            @include overflow-text;
+          }
+          @include tablet {
+            font-size: 14px;
+          }
         }
       }
     }
@@ -546,6 +648,9 @@
   bottom: 0;
   margin: auto;
   width: 100%;
+  @include tablet {
+    width: calc(100% - $padding * 2);
+  }
 }
 .empty_list_wrapper {
   margin-top: $margin * 2;
