@@ -10,9 +10,11 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { Drawer, Pagination, Rating, Stack } from "@mui/material";
 import classNames from "classnames";
 import { Device } from "models/device";
+import { getQuestionStateLabel } from "models/notice";
 import { useNavigate } from "react-router-dom";
 import { maskAccountName, numberWithCommas } from "utilities";
 
+import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard, LikeHeart } from "components/card";
@@ -47,7 +49,6 @@ export default function ItemDetailContent() {
     setDeliveryModal(newOpen);
   };
 
-  const [activeTab, setActiveTab] = useState("detail");
   const detailRef = useRef(null);
 
   const [bestItems, setBestItems] = useState([...new Array(8)]);
@@ -60,17 +61,19 @@ export default function ItemDetailContent() {
     setReviewPage(value);
   };
 
+  const [questions, setQuestions] = useState([...new Array(5)]);
+  const [questionPage, setQuestionPage] = useState(1);
+
+  const { scrollToElement, setElementRef } = useScrollToElement();
+
   useEffect(() => {
-    // setTimeout을 사용하여 초기 렌더링 후에 높이를 측정
     setTimeout(() => {
       if (detailRef.current) {
         const clientHeight = detailRef.current.clientHeight;
         setMoreContents(clientHeight > 1499);
       }
     }, 0);
-  }, []); // 빈 배열을 의존성 배열로 사용하여 초기 렌더링 후에만 실행
-
-  console.log(moreContents);
+  }, []);
 
   return (
     <div className={styles.item_detail_container}>
@@ -293,25 +296,27 @@ export default function ItemDetailContent() {
         </div>
       </div>
       <div className={styles.tab_menu_container}>
-        <TabsWrapper activeTab="detail" />
-        <div
-          className={styles.detail_content_bottom_wrapper}
-          ref={detailRef}
-          style={{
-            maxHeight: !moreContents ? "100%" : isDeskTop ? 1500 : 700,
-            overflow: "hidden",
-          }}
-        >
-          {bestItems.map((item, index) => (
-            <img
-              onClick={() => navigation(`/items/${item}`)}
-              src={require(`assets/images/main/main${index + 1}.jpg`)}
-              key={index}
-              style={{
-                width: "100%",
-              }}
-            />
-          ))}
+        <TabsWrapper scrollToElement={scrollToElement} activeTab="detail" />
+        <div ref={setElementRef("detail")} id="detail">
+          <div
+            className={styles.detail_content_bottom_wrapper}
+            ref={detailRef}
+            style={{
+              maxHeight: !moreContents ? "100%" : isDeskTop ? 1500 : 700,
+              overflow: "hidden",
+            }}
+          >
+            {bestItems.map((item, index) => (
+              <img
+                onClick={() => navigation(`/items/${item}`)}
+                src={require(`assets/images/main/main${index + 1}.jpg`)}
+                key={index}
+                style={{
+                  width: "100%",
+                }}
+              />
+            ))}
+          </div>
         </div>
         {moreContents && (
           <div className={styles.detail_more_button_wrapper}>
@@ -362,30 +367,98 @@ export default function ItemDetailContent() {
             </ScrollableSlider>
           </div>
         </div>
-        <TabsWrapper activeTab="review" />
-        <div className={styles.review_bottom_wrapper}>
-          <p className={styles.rating_title}>
-            상품 평균 만족도<span>(481)</span>
-          </p>
-          <div className={styles.rating_wrapper}>
-            <ReviewRating size="2.5em" value={2} />
-            <span className={styles.rating_value}>
-              <span>5</span> / 5.0
-            </span>
-          </div>
+        <TabsWrapper scrollToElement={scrollToElement} activeTab="review" />
+        <div ref={setElementRef("review")} style={{ marginBottom: 100 }}>
+          {reviews.length ? (
+            <>
+              <div className={styles.review_bottom_wrapper}>
+                <p className={styles.rating_title}>
+                  상품 평균 만족도<span>(481)</span>
+                </p>
+                <div className={styles.rating_wrapper}>
+                  <ReviewRating size="2.5em" value={2} />
+                  <span className={styles.rating_value}>
+                    <span>5</span> / 5.0
+                  </span>
+                </div>
+              </div>
+              <div className={styles.reviews_wrapper}>
+                {reviews.map((review, index) => (
+                  <div className={styles.detail_review} key={index}>
+                    <div className={styles.detail_first_content}>
+                      <ReviewRating value={2} />
+                      <img
+                        src={require(`assets/images/main/main10.jpg`)}
+                        alt=""
+                      />
+                    </div>
+                    <div className={styles.detail_second_content}>
+                      <div className={styles.detail_review_information}>
+                        <p>구매옵션 : skinny 05 mute brown</p>
+                        <p>
+                          <span style={{ marginRight: 10 }}>
+                            {maskAccountName("username")}
+                          </span>
+                          <span>{formatDateTime(now())}</span>
+                        </p>
+                      </div>
+                      <p className={styles.written_review}>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Ut dolore facilis odit assumenda id minima soluta libero
+                        aperiam dolorum. Aut a reiciendis officia id maxime
+                        illum doloremque dignissimos itaque ducimus!
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Stack alignItems="center" sx={{ marginTop: "20px" }}>
+                <Pagination
+                  count={reviewPage.length}
+                  page={reviewPage}
+                  onChange={handleChange}
+                />
+              </Stack>
+            </>
+          ) : (
+            <EmptyList comment="이 상품의 첫번째 리뷰를 작성해주세요!" />
+          )}
         </div>
-
-        <div className={styles.reviews_wrapper}>
-          {reviews.map((review, index) => (
-            <Review review={review} key={index} />
-          ))}
-          <Stack alignItems="center" sx={{ marginTop: "20px" }}>
-            <Pagination
-              count={reviewPage.length}
-              page={reviewPage}
-              onChange={handleChange}
-            />
-          </Stack>
+        <TabsWrapper scrollToElement={scrollToElement} activeTab="q&a" />
+        <div ref={setElementRef("q&a")}>
+          {questions.length ? (
+            <>
+              <div className={styles.questions_wrapper}>
+                {questions.map((question, index) => (
+                  <div className={styles.question_detail_wrap}>
+                    <div className={styles.question_detail_content}>
+                      <span> {getQuestionStateLabel(question?.state)}</span>
+                      <p>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Nostrum consequuntur totam, vel perspiciatis
+                        consequatur, est aliquid unde quos eius praesentium ipsa
+                        voluptatum facilis, quasi quidem excepturi ducimus hic!
+                        Ipsam, ducimus.
+                      </p>
+                    </div>
+                    <div className={styles.question_detail_information}>
+                      <p>{maskAccountName("username")}</p>
+                      <span>{formatDateTime(now())}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Stack alignItems="center" sx={{ marginTop: "20px" }}>
+                <Pagination
+                  count={questionPage.length}
+                  page={questionPage}
+                  onChange={handleChange}
+                />
+              </Stack>
+            </>
+          ) : (
+            <EmptyList comment="등록된 상품 Q&A가 없습니다." />
+          )}
         </div>
       </div>
       <Drawer
@@ -469,35 +542,30 @@ function DrawerContentWrapper({ children, title }) {
   );
 }
 
-function TabsWrapper({ activeTab }) {
+function TabsWrapper({ activeTab, scrollToElement }) {
+  const tabMenus = [
+    { label: "detail" },
+    { label: "review", count: 0 },
+    { label: "q&a", count: 1 },
+  ];
+
   return (
     <div className={styles.tab_menu_wrapper}>
-      <TabMenu
-        name="detail"
-        // setActiveTab={setActiveTab}
-        activeTab={activeTab}
-      />
-      <TabMenu
-        name="review(480)"
-        // setActiveTab={setActiveTab}
-        activeTab={activeTab}
-      />
-      <TabMenu name="q&a(1)" activeTab={activeTab} />
-    </div>
-  );
-}
-
-function TabMenu({ name = "", setActiveTab, activeTab }) {
-  const filteredName = name.match(/[A-Za-z]+/g);
-  return (
-    <div
-      onClick={() => setActiveTab(filteredName)}
-      className={classNames({
-        [styles.tab_menu_wrap]: true,
-        [styles.tab_menu_wrap_active]: activeTab == filteredName,
-      })}
-    >
-      <p> {name.toUpperCase()}</p>
+      {tabMenus.map((tab, index) => (
+        <div
+          onClick={() => scrollToElement(tab.label)}
+          key={index}
+          className={classNames({
+            [styles.tab_menu_wrap]: true,
+            [styles.tab_menu_wrap_active]: activeTab == tab.label,
+          })}
+        >
+          <p>
+            {tab.label.toUpperCase()}
+            {!!tab.count ? `(${tab.count})` : ""}{" "}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }
@@ -517,29 +585,11 @@ function ReviewRating({ size = "1em", value = 0 }) {
   );
 }
 
-function Review({ review }) {
+function EmptyList({ comment = "" }) {
   return (
-    <div className={styles.detail_review}>
-      <div className={styles.detail_first_content}>
-        <ReviewRating value={2} />
-        <img src={require(`assets/images/main/main10.jpg`)} alt="" />
-      </div>
-      <div className={styles.detail_second_content}>
-        <div className={styles.detail_review_information}>
-          <p>구매옵션 : skinny 05 mute brown</p>
-          <p>
-            <span style={{ marginRight: 10 }}>
-              {maskAccountName("username")}
-            </span>
-            <span>{formatDateTime(now())}</span>
-          </p>
-        </div>
-        <p className={styles.written_review}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut dolore
-          facilis odit assumenda id minima soluta libero aperiam dolorum. Aut a
-          reiciendis officia id maxime illum doloremque dignissimos itaque
-          ducimus!
-        </p>
+    <div className={styles.empty_list_wrapper}>
+      <div className={styles.empty_review_wrap}>
+        <p>{comment}</p>
       </div>
     </div>
   );
