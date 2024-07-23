@@ -4,6 +4,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 
 import { ItemCard, SmallCard } from "components/card";
+import { DefaultButton } from "components/common";
 import {
   BasicSlider,
   ImageSlider,
@@ -107,10 +108,10 @@ export default function MainContentMb() {
         </div>
         {/* </div> */}
 
-        <button className={styles.button_background_100_outline_mb}>
+        <DefaultButton className={styles.button_background_100_outline}>
           <p>추천상품 전체보기</p>
           <KeyboardArrowRightIcon />
-        </button>
+        </DefaultButton>
       </div>
 
       <div className={styles.event_wrapper_mb}>
@@ -132,10 +133,10 @@ export default function MainContentMb() {
           ))}
         </ScrollableSlider>
 
-        <button className={styles.button_dark_300_mb}>
+        <DefaultButton className={styles.button_dark_300}>
           <p>다른 기획전 보기 1/1</p>
           <RotateLeftIcon />
-        </button>
+        </DefaultButton>
       </div>
       <div className={styles.best_item_wrapper}>
         <h3>Best Item</h3>
@@ -154,10 +155,10 @@ export default function MainContentMb() {
           ))}
         </ScrollableSlider>
 
-        <button className={styles.button_background_100_outline_mb}>
+        <DefaultButton className={styles.button_background_100_outline}>
           <p>상품 더보기</p>
           <KeyboardArrowRightIcon />
-        </button>
+        </DefaultButton>
       </div>
       <div className={styles.brand_news_wrapper}>
         <div className={styles.band_thumbnail_wrapper}>
@@ -224,10 +225,10 @@ export default function MainContentMb() {
           ))}
         </ScrollableSlider>
 
-        <button className={styles.button_background_100_outline_mb}>
+        <DefaultButton className={styles.button_background_100_outline}>
           <p>스타일 더보기</p>
           <KeyboardArrowRightIcon />
-        </button>
+        </DefaultButton>
       </div>
     </div>
   );

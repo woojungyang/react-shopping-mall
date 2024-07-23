@@ -65,17 +65,16 @@
 @mixin default-button {
   width: 100%;
   @include flex;
-  height: 38px;
-  border-radius: 8px;
+
   svg {
     width: 15px;
     height: 15px;
   }
 }
-@mixin default-button_mb {
-  @include default-button;
-  @include flex;
-}
+// @mixin default-button_mb {
+//   @include default-button;
+//   @include flex;
+// }
 @mixin default-button_desktop {
   @include default-button;
   height: 48px;

@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { PhotoCard, SmallCard } from "components/card";
+import { DefaultButton } from "components/common";
 import { BestCardsSlider, ImageSlider } from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
@@ -255,8 +256,14 @@ export default function MainContent() {
             </p>
             <div className={styles.information_button_wrapper}>
               <div>
-                <button className={styles.information_button}>FAQ</button>
-                <button className={styles.information_button}>1:1문의</button>
+                <DefaultButton
+                  className={styles.information_button}
+                  label="FAQ"
+                />
+                <DefaultButton
+                  className={styles.information_button}
+                  label="1:1문의"
+                />
               </div>
               <div className={styles.default_flex}>
                 <SnsWrapper>

@@ -1,3 +1,5 @@
+import { useUserDevice } from "hooks/size/useUserDevice";
+
 import { enumerate } from "utilities/enumeration";
 
 export const Device = enumerate({

@@ -21,7 +21,7 @@ import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard, LikeHeart } from "components/card";
 import { ListContent } from "components/common";
-import { CommonLayout } from "components/common";
+import { CommonLayout, DefaultButton } from "components/common";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
 import { formatDateTime, now } from "utilities/dateTime";
@@ -298,14 +298,15 @@ export default function ItemDetail() {
                 </div>
               </div>
             </DetailContentWrapper>
-            <button className={styles.button_dark_300_color_background_100}>
-              주문하기
-            </button>
-            <button
-              className={styles.button_background_100_outline_mb_color_dark_300}
-            >
-              장바구니
-            </button>
+            <DefaultButton
+              className={styles.button_dark_300_color_background_100}
+              label="주문하기"
+            />
+
+            <DefaultButton
+              className={styles.button_background_100_outline_color_dark_300}
+              label="장바구니"
+            />
           </div>
         </div>
         <div className={styles.recommend_container}>
@@ -352,15 +353,13 @@ export default function ItemDetail() {
           </div>
           {moreContents && (
             <div className={styles.detail_more_button_wrapper}>
-              <button
+              <DefaultButton
                 onClick={() => setMoreContents(!moreContents)}
-                className={
-                  styles.button_background_100_outline_mb_color_dark_300
-                }
+                className={styles.button_background_100_outline_color_dark_300}
               >
                 상품정보
                 <KeyboardArrowDownIcon />
-              </button>
+              </DefaultButton>
             </div>
           )}
           <div
@@ -382,10 +381,10 @@ export default function ItemDetail() {
                       <span>12345</span>
                     </div>
                   </div>
-                  <button className={styles.brand_home_button}>
+                  <DefaultButton className={styles.brand_home_button}>
                     Brand Home
                     <EastIcon />
-                  </button>
+                  </DefaultButton>
                 </div>
               </div>
               <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
