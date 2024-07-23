@@ -9,3 +9,8 @@ export function checkPassword(password = "") {
 
   return passwordRegex.test(password);
 }
+
+export function checkPhoneNumber(phoneNumber = "") {
+  const phoneRegex = /^01[016789]\d{7,8}$/;
+  return phoneRegex.test(phoneNumber);
+}

@@ -65,6 +65,22 @@
       color: $color-orange;
     }
   }
+  .tab_menu_wrapper {
+    width: 100%;
+    @include flex;
+    .tab_wrap {
+      width: 100%;
+      border-collapse: collapse;
+      outline: 1px solid $color-skeleton-100;
+      padding: $padding;
+      margin-right: 1px;
+      cursor: pointer;
+    }
+    .tab_wrap_active {
+      background-color: $color-skeleton-200;
+      color: $color-background-100;
+    }
+  }
   @include mobile {
     padding: $padding;
     margin-top: $header-height * 2;

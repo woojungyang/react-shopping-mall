@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import FindMember from "pages/FindMember";
 import ItemDetail from "pages/ItemDetail";
 import Join from "pages/Join";
 import Login from "pages/Login";
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
   {
     path: "/join",
     element: <Join />,
+  },
+  {
+    path: "/find",
+    element: <FindMember />,
   },
   {
     path: "*",

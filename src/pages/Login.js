@@ -71,9 +71,13 @@ export default function Login() {
           label="간편회원가입"
         />
         <div className={styles.find_information_wrapper}>
-          <span>아이디 찾기</span>
+          <span onClick={() => navigation("/find?findType=id")}>
+            아이디 찾기
+          </span>
           <span>|</span>
-          <span>비밀번호 찾기</span>
+          <span onClick={() => navigation("/find?findType=password")}>
+            비밀번호 찾기
+          </span>
         </div>
       </div>
     </CommonLayout>

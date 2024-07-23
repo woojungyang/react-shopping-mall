@@ -85,7 +85,7 @@ export default function Header() {
               </div>
             </div>
             <div className={styles.user_wrapper}>
-              <Link to="/login">Login</Link>
+              <Link to="/login">LOGIN</Link>
               <p onClick={() => setShowSearch(!showSearch)}>SEARCH</p>
               <Link to="/login">CART</Link>
             </div>

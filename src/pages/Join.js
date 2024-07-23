@@ -9,7 +9,11 @@ import { useNavigate } from "react-router-dom";
 import { CommonLayout, DefaultButton } from "components/common";
 import { DefaultInput } from "components/common/DefaultInput";
 
-import { checkEmail, checkPassword } from "utilities/checkExpression";
+import {
+  checkEmail,
+  checkPassword,
+  checkPhoneNumber,
+} from "utilities/checkExpression";
 
 import styles from "styles/_user.module.scss";
 
@@ -77,6 +81,11 @@ export default function Join() {
     try {
       if (!inputValues.name) alert("이름을 입력해주세요.");
       else if (!inputValues.birthDate) alert("생년월일을 입력해주세요.");
+      else if (
+        !inputValues.phoneNumber ||
+        !checkPhoneNumber(inputValues?.phoneNumber)
+      )
+        alert("휴대폰번호를 입력해주세요.");
       else {
         alert("회원가입완료");
         navigation("/login");
@@ -162,6 +171,13 @@ export default function Join() {
               value={inputValues?.birthDate?.slice(0, 8)}
               onChange={onChange}
               placeholder="생년월일"
+            />
+            <DefaultInput
+              name="phoneNumber"
+              type="number"
+              value={inputValues?.phoneNumber}
+              onChange={onChange}
+              placeholder="휴대전화번호"
             />
           </>
         )}
