@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useNavigate } from "react-router-dom";
 
 import { CommonLayout, DefaultButton } from "components/common";
 import { DefaultInput } from "components/common/DefaultInput";
@@ -11,6 +12,8 @@ import { checkEmail, checkPassword } from "utilities/checkExpression";
 import styles from "styles/_user.module.scss";
 
 export default function Login() {
+  const navigation = useNavigate();
+
   const [inputValues, setInputValues] = useState({});
   function onChange(e) {
     setInputValues({ ...inputValues, [e.target.name]: e.target.value });
@@ -33,7 +36,7 @@ export default function Login() {
 
   return (
     <CommonLayout>
-      <div className={styles.login_container}>
+      <div className={styles.user_container}>
         <h1>로그인</h1>
         <DefaultInput
           name="username"
@@ -64,6 +67,7 @@ export default function Login() {
         </DefaultButton>
         <DefaultButton
           className={styles.button_background_100_outline_color_dark_300}
+          onClick={() => navigation("/join")}
           label="간편회원가입"
         />
         <div className={styles.find_information_wrapper}>
