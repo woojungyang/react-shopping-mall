@@ -65,6 +65,10 @@
 @mixin default-button {
   width: 100%;
   @include flex;
+  border: none;
+  cursor: pointer;
+
+  margin-top: $default;
 
   svg {
     width: 15px;

@@ -11,7 +11,7 @@ import styles from "styles/_navigation.module.scss";
 
 export default function BottomNavigation() {
   const navigation = useNavigate();
-  useNavigate();
+
   const bottomMenu = [
     { id: 1, name: "카테고리", onClick: () => {}, icon: <ManageSearchIcon /> },
     { id: 2, name: "브랜드", onClick: () => {}, icon: <StoreIcon /> },

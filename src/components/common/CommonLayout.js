@@ -23,7 +23,7 @@ export const CommonLayout = ({ children }) => {
       }}
     >
       <Header />
-      <div className={styles.common_layout_content_wrapper}> {children}</div>
+      <div className={styles.common_layout_content_wrapper}>{children}</div>
       {!isDeskTop && <BottomNavigation />}
       <Footer />
     </div>

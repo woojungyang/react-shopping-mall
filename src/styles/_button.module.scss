@@ -3,8 +3,6 @@
 
 .button_dark_300 {
   @include default-button_desktop;
-  margin-top: $margin;
-  width: $width_padding;
   border: none;
   background-color: rgba($color: $color-dark-300, $alpha: 0.2);
   color: $color-background-100;
@@ -12,30 +10,32 @@
 
 .button_background_100_outline {
   @include default-button_desktop;
-  margin-top: $margin;
-  width: $width_padding;
   background-color: $color-background-100;
   color: $color-skeleton-100;
   border: 1px solid $color-skeleton-100;
 }
 .button_background_100_outline_color_dark_300 {
   @include default-button_desktop;
-  margin-top: $default;
   background-color: $color-background-100;
   color: $color-dark-300;
   border: 1px solid $color-skeleton-100;
 }
 .button_orange_color_background_100 {
   @include default-button_desktop;
-  margin-top: $default;
   background-color: $color-orange;
   color: $color-background-100;
-  border: none;
 }
 .button_dark_300_color_background_100 {
   @include default-button_desktop;
-  margin-top: $default;
   background-color: $color-dark-300;
   color: $color-background-100;
-  border: none;
+}
+.button_kakao {
+  @include default-button_desktop;
+  background-color: #fee500;
+  color: #191919;
+
+  svg {
+    color: #000000, 90%;
+  }
 }
