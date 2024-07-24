@@ -27,7 +27,7 @@ export default function Join() {
   }
   const [showPassword, setShowPassword] = useState(false);
 
-  async function checkUserName() {
+  async function checkUsername() {
     try {
       if (!inputValues.username || !checkEmail(inputValues.username))
         alert("이메일 아이디를 확인해주세요");
@@ -186,7 +186,7 @@ export default function Join() {
           className={styles.button_dark_300_color_background_100}
           label={stage == 3 ? "완료" : "다음"}
           onClick={() => {
-            if (stage == 1) checkUserName();
+            if (stage == 1) checkUsername();
             else if (stage == 2) checkUserPassword();
             else if (stage == 3) requestJoinMember();
           }}

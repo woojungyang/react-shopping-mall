@@ -33,6 +33,14 @@
       }
     }
   }
+  .username {
+    height: 100px;
+    margin-top: $margin;
+    width: 100%;
+    @include flex;
+    border-top: 1px solid $color-dark-300;
+    border-bottom: 1px solid $color-skeleton-100;
+  }
   .process_wrapper {
     width: 100%;
     background-color: rgba($color-skeleton-100, 0.8);
