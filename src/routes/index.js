@@ -6,6 +6,7 @@ import Join from "pages/Join";
 import Login from "pages/Login";
 import Main from "pages/Main";
 import NotFound from "pages/NotFound";
+import Search from "pages/Search";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
   {
     path: "/find",
     element: <FindMember />,
+  },
+  {
+    path: "/search",
+    element: <Search />,
   },
   {
     path: "*",

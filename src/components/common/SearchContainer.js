@@ -6,11 +6,12 @@ import { useNavigate } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import styles from "styles/_navigation.module.scss";
+import styles from "styles/_search.module.scss";
 
 import { SearchInput } from "./SearchInput";
 
 export const SearchContainer = ({ visible, setVisible }) => {
+  const navigation = useNavigate();
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
@@ -25,7 +26,13 @@ export const SearchContainer = ({ visible, setVisible }) => {
       {isDeskTop ? (
         <div className={styles.search_container}>
           <div className={styles.search_wrapper}>
-            <SearchInput value={searchValue} setValue={setSearchValue} />
+            <SearchInput
+              value={searchValue}
+              setValue={setSearchValue}
+              onKeyDown={() => {
+                navigation(`/search?keyword=${searchValue}`);
+              }}
+            />
             <div className={styles.keyword_wrapper}>
               <div className={styles.keyword_wrap1}>
                 <p className={styles.keyword_title}>추천 검색어</p>

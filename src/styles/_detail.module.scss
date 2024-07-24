@@ -46,7 +46,7 @@
   .item_detail_wrapper {
     margin: auto;
     width: 100%;
-    max-width: 1240px;
+    max-width: $max-width;
     display: flex;
     flex-wrap: wrap;
     transition: flex-direction 0.3s ease;
@@ -340,7 +340,7 @@
   }
 }
 .recommend_container {
-  max-width: 1240px;
+  max-width: $max-width;
   margin: auto;
   margin-top: $margin * 4;
   margin-bottom: $margin * 4;
@@ -426,7 +426,7 @@
 }
 
 .tab_menu_container {
-  max-width: 1240px;
+  max-width: $max-width;
   margin: auto;
   margin-top: $margin;
   @include tablet {

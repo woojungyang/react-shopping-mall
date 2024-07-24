@@ -1,0 +1,215 @@
+@import "./common.module";
+
+@mixin default_search {
+  position: absolute;
+  position: 9999999;
+  width: 100%;
+  background-color: $color-background-100;
+}
+
+.search_container {
+  top: $margin * 4.5;
+  height: 500px;
+  @include default_search;
+
+  @include flex;
+  transform: translateY(-10px);
+  animation: slideDown 0.5s forwards ease-out;
+
+  .search_wrapper {
+    width: 100%;
+    max-width: 620px;
+    @include flex($direction: column);
+    .keyword_wrapper {
+      color: $color-dark-200;
+      width: 100%;
+      overflow: hidden;
+      .keyword_title {
+        font-weight: 700;
+        text-align: left;
+        margin-bottom: $padding/2;
+        font-size: $padding;
+      }
+      .keyword_wrap1 {
+        width: 100%;
+        margin-top: $margin * 1.5;
+        margin-bottom: $margin * 1.5;
+        overflow: scroll;
+        .keyword1 {
+          margin-right: $padding/3;
+          max-width: 100px;
+          border: 1px solid $color-orange;
+          padding: $padding/2;
+          color: $color-orange;
+          font-size: $padding * 0.9;
+          @include overflow-text;
+          flex-shrink: 0;
+          cursor: pointer;
+        }
+      }
+      .keyword_wrap2 {
+        width: 100%;
+        margin-top: $padding;
+        overflow: scroll;
+        .keyword2 {
+          span {
+            font-weight: 600;
+            font-size: $margin;
+            margin-right: $padding;
+            color: $color-dark-300;
+          }
+          width: 100%;
+          border-bottom: 1px solid
+            rgba($color: $color-skeleton-100, $alpha: 0.2);
+          padding: $padding/2;
+          color: $color-dark-300;
+          font-size: $padding * 0.9;
+          @include overflow-text;
+          flex-shrink: 0;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.search_container_mb {
+  @include default_search;
+  width: 100%;
+  height: 100vh;
+
+  background-color: $color-background-100;
+  top: 0;
+  transform: translateX(10px);
+  animation: slideSide 0.5s forwards ease-out;
+  .search_header {
+    height: $header-height_mb;
+    position: relative;
+    @include flex;
+    .go_back {
+      position: absolute;
+      cursor: pointer;
+      left: 16px;
+      svg {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+  .search_body {
+    width: calc(97% - $padding * 3);
+    @include flex($direction: column, $justify-content: flex-start);
+    margin: auto;
+    text-align: center;
+    height: 100%;
+    padding-top: $margin * 5;
+    .keyword_wrapper_mb {
+      margin-top: $margin * 5;
+      .keyword_title {
+        font-weight: 700;
+        font-size: 18px;
+        color: $color-orange;
+        line-height: 180%;
+        margin-bottom: $default;
+      }
+      .keyword_mb {
+        line-height: 200%;
+        font-weight: 500;
+        color: $color-skeleton-200;
+      }
+    }
+  }
+}
+
+.search_result_container {
+  max-width: $max-width;
+  width: 100%;
+  margin: auto;
+
+  height: 100%;
+
+  flex-grow: 1;
+
+  flex-direction: column;
+
+  padding-top: $header-height * 2;
+  .search_input_wrapper {
+    // margin: $margin * 2 0px;
+    width: 100%;
+    @include flex($direction: column);
+    .search_result_text {
+      font-size: 1.8em;
+      white-space: pre-wrap;
+
+      width: 100%;
+      text-align: center;
+      padding: $margin * 2 0px;
+      border-bottom: 1px solid $color-skeleton-200;
+
+      font-weight: 400;
+      @include mobile {
+        font-size: 1em;
+      }
+    }
+  }
+  .search_result_filter_wrapper {
+    margin-bottom: $padding;
+    font-size: 0.9em;
+    @include flex($justify-content: space-between);
+    .checkbox_wrap {
+      span {
+        margin-top: -2px;
+      }
+    }
+    .filter_wrap {
+      span {
+        margin-left: $default;
+        cursor: pointer;
+        color: $color-skeleton-100;
+      }
+      .active_filter {
+        font-weight: 500;
+        color: $color-dark-300;
+      }
+    }
+  }
+
+  .search_result_item_wrapper {
+    @include display-grid($colum: repeat(6, 1fr));
+    @include tablet {
+      @include display-grid($colum: repeat(4, 1fr));
+    }
+    @include mobile {
+      @include display-grid($colum: repeat(2, 1fr));
+    }
+  }
+  @include mobile {
+    padding: $padding;
+    margin-top: $header-height * 1.2;
+  }
+}
+
+.select_box_container {
+  position: relative;
+  font-size: 1em;
+  .selected_value {
+    @include flex;
+    padding: 1px $default/2;
+    cursor: pointer;
+  }
+  .select_options_wrap {
+    box-shadow: 2px 2px 2px rgba($color-skeleton-100, 0.3);
+    position: absolute;
+    z-index: 10;
+    background-color: $color-background-100;
+    width: 150px;
+    right: 0;
+    border-radius: 4px;
+    overflow: hidden;
+
+    p {
+      padding: $default;
+      cursor: pointer;
+    }
+  }
+}
