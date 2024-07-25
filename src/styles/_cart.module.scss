@@ -1,0 +1,233 @@
+@import "./common.module";
+
+.cart_container {
+  max-width: $max-width;
+  width: 100%;
+  margin: auto;
+
+  height: 100%;
+
+  flex-grow: 1;
+
+  flex-direction: column;
+
+  padding-top: $header-height * 2;
+  .cart_title {
+    text-align: center;
+    margin-bottom: $margin * 2;
+    font-size: $margin * 1.8;
+  }
+  .stage_wrap {
+    width: 100%;
+    margin-bottom: $margin * 4;
+    @include flex;
+    .stage {
+      color: $color-skeleton-100;
+      @include flex;
+      svg {
+        margin: 0px $margin;
+        margin-top: -2px;
+        color: $color-skeleton-100 !important;
+      }
+    }
+    .current_stage {
+      color: $color-dark-300;
+    }
+  }
+  .cart_content_wrapper {
+    display: flex;
+    .cart_list_wrapper {
+      flex: 2;
+    }
+    .payment_information_wrapper {
+      height: 100%;
+      flex: 1;
+      flex-shrink: 0;
+      min-width: 336px;
+      margin-left: $margin;
+      background-color: #f5f5f5;
+      padding: $margin * 2 $default * 3;
+      .payment_title {
+        font-weight: 700;
+        margin-top: $default;
+        padding-bottom: $margin;
+        border-bottom: 1px solid $color-dark-300;
+      }
+      .total_price_wrap {
+        @include flex($justify-content: space-between);
+        font-size: $padding;
+        font-weight: 600;
+        border-top: 1px solid $color-dark-300;
+        border-bottom: 1px solid $color-skeleton-100;
+        padding: $margin 0px;
+        margin: $margin 0px;
+        .price {
+          font-size: $default * 3;
+          color: $color-primary-200;
+          span {
+            font-size: $padding;
+            font-weight: 400;
+          }
+        }
+      }
+      .receipt_wrap {
+        margin-top: $padding;
+        font-size: $margin;
+        .receipt_title {
+          color: $color-skeleton-100;
+          font-weight: 600;
+        }
+        .receipt_detail_wrap {
+          font-size: $padding;
+          margin-top: $default;
+          padding-left: $default;
+          border-left: 2px solid $color-skeleton-100;
+          > div {
+            margin-bottom: $default;
+            .receipt_title {
+              font-weight: 400;
+            }
+          }
+        }
+      }
+      .payment_guid {
+        @include flex($justify-content: space-between);
+        color: $color-skeleton-200;
+        margin-bottom: $default * 3;
+      }
+    }
+  }
+  .cart_subtitle {
+    border-top: 2px solid $color-dark-300;
+    border-bottom: 1px solid $color-skeleton-100;
+    padding: $margin 0px;
+    font-size: $margin * 1.2;
+  }
+  .cart_header_wrap {
+    margin-top: $padding;
+    @include flex($justify-content: space-between, $align-items: baseline);
+
+    margin-bottom: $default;
+    .header_icon_wrap {
+      @include flex;
+      &:first-child {
+        .item_total {
+          font-weight: 500;
+          font-size: 1.2em;
+          margin-left: $default/2;
+        }
+      }
+
+      &:last-child {
+        cursor: pointer;
+        font-size: 0.8em;
+        color: $color-skeleton-200;
+      }
+    }
+  }
+  .cart_item_wrapper {
+    height: 180px;
+    border: 1px solid $color-skeleton-100;
+    border-radius: 4px;
+    margin-bottom: $default;
+    &:last-child {
+      margin-bottom: 0px;
+    }
+    .cart_item_header {
+      background-color: rgba($color-skeleton-100, 0.13);
+      @include flex($justify-content: flex-start);
+      padding: $default $margin;
+      font-size: 14px;
+
+      svg {
+        margin-right: $default/2;
+        width: $padding;
+        color: $color-skeleton-100;
+      }
+    }
+    .cart_item_body {
+      padding: $padding;
+      @include flex($justify-content: space-between);
+      img {
+        @include default-image;
+        width: 77px;
+        height: 102px;
+      }
+      .first_item_content {
+        @include flex($justify-content: flex-start);
+        width: 100%;
+        .item_option_wrap {
+          height: 102px;
+          width: 100%;
+
+          margin-left: $margin;
+          display: flex;
+
+          flex-direction: column;
+          justify-content: space-between;
+          .item_options {
+            color: $color-skeleton-200;
+            font-size: 0.8em;
+            .item_option_button {
+              width: 90px;
+              cursor: pointer;
+              margin-top: $default;
+              @include flex;
+              background-color: $color-background-100;
+              border: 1px solid $color-skeleton-100;
+              border-radius: 2px;
+              padding: 1px 2px;
+              font-size: 12px;
+              color: $color-skeleton-200;
+              svg {
+                width: $default;
+              }
+            }
+          }
+        }
+      }
+      .second_item_content {
+        flex-shrink: 0;
+        @include flex;
+        .price_wrap {
+          text-align: center;
+          margin: 0 $margin * 4;
+          .original_price {
+            text-decoration: line-through;
+            font-size: 0.9em;
+            color: $color-skeleton-100;
+          }
+          .total_price {
+            font-weight: 500;
+            font-size: 1.2em;
+          }
+        }
+        .buy_button_wrap {
+          .buy_button {
+            cursor: pointer;
+            background-color: $color-dark-300;
+            color: $color-background-100;
+            padding: $default $margin * 1.5;
+
+            margin-bottom: $default;
+          }
+          font-size: 0.9em;
+          .delete_button {
+            cursor: pointer;
+            color: $color-skeleton-100;
+            @include flex;
+            svg {
+              width: $margin;
+              margin-bottom: 1px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @include mobile {
+    padding: $padding;
+    margin-top: $header-height * 2;
+  }
+}

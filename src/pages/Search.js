@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Checkbox } from "@mui/material";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +13,7 @@ import { useUserDevice } from "hooks/size/useUserDevice";
 import { ItemCard } from "components/card";
 import {
   CommonLayout,
+  DefaultCheckbox,
   DefaultPagination,
   SearchInput,
 } from "components/common";
@@ -62,15 +62,9 @@ export default function Search() {
         </div>
         <div className={styles.search_result_filter_wrapper}>
           <div className={styles.checkbox_wrap}>
-            <Checkbox
+            <DefaultCheckbox
               checked={excludingSoldOut}
               onChange={() => setExcludingSoldOut(!excludingSoldOut)}
-              sx={{
-                color: "black",
-                "&.Mui-checked": {
-                  color: "black",
-                },
-              }}
             />
             <span>품절 제외</span>
           </div>

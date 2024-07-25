@@ -87,7 +87,7 @@ export default function Header() {
             <div className={styles.user_wrapper}>
               <Link to="/login">LOGIN</Link>
               <p onClick={() => setShowSearch(!showSearch)}>SEARCH</p>
-              <Link to="/login">CART</Link>
+              <Link to="/cart">CART</Link>
             </div>
           </div>
           {showSearch && (
@@ -115,10 +115,9 @@ export default function Header() {
                 className={styles.user_icon}
                 onClick={() => setShowSearch(!showSearch)}
               />
-              <ShoppingBagIcon className={styles.user_icon} />
+              <ShoppingBagIcon className={styles.user_icon} onClick={()=>navigation('/cart')} />
             </div>
           </div>
-          {/* {switchPosition && ( */}
           <div className={styles.mb_scroll_menu_wrapper}>
             {mobileMenu.map((e, index) => (
               <p
@@ -131,7 +130,6 @@ export default function Header() {
               </p>
             ))}
           </div>
-          {/* )} */}
           {showSearch && (
             <SearchContainer visible={showSearch} setVisible={setShowSearch} />
           )}

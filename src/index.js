@@ -1,6 +1,9 @@
 import React from "react";
 
+import store from "app/store";
+
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
@@ -12,7 +15,9 @@ import "./styles/_common.module.scss";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>,
 );
 

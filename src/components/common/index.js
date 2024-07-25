@@ -5,3 +5,4 @@ export * from "./SearchInput";
 export * from "./ListContent";
 export * from "./DefaultButton";
 export * from "./DefaultPagination";
+export * from "./DefaultCheckbox";

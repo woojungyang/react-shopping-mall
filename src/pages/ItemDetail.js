@@ -312,7 +312,7 @@ export default function ItemDetail() {
 
             <DefaultButton
               className={styles.button_background_100_outline_color_dark_300}
-              label="장바구니"
+              label="쇼핑백"
             />
           </div>
         </div>
