@@ -21,6 +21,11 @@ export const SearchContainer = ({ visible, setVisible }) => {
 
   const [searchValue, setSearchValue] = useState("");
 
+  function searchItems(query) {
+    navigation(`/search?keyword=${query}`);
+    setVisible(false);
+  }
+
   return (
     <>
       {isDeskTop ? (
@@ -30,7 +35,7 @@ export const SearchContainer = ({ visible, setVisible }) => {
               value={searchValue}
               setValue={setSearchValue}
               onKeyDown={() => {
-                navigation(`/search?keyword=${searchValue}`);
+                searchItems(searchValue);
               }}
             />
             <div className={styles.keyword_wrapper}>
@@ -38,14 +43,22 @@ export const SearchContainer = ({ visible, setVisible }) => {
                 <p className={styles.keyword_title}>추천 검색어</p>
                 <div className={styles.default_flex}>
                   {recommendedKeywords?.map((recommendedKeyword) => (
-                    <p className={styles.keyword1}>{recommendedKeyword}</p>
+                    <p
+                      className={styles.keyword1}
+                      onClick={() => searchItems(recommendedKeyword)}
+                    >
+                      {recommendedKeyword}
+                    </p>
                   ))}
                 </div>
               </div>
               <div className={styles.keyword_wrap2}>
                 <p className={styles.keyword_title}>인기 검색어</p>
                 {hotKeywords?.map((hotKeyword, index) => (
-                  <p className={styles.keyword2}>
+                  <p
+                    className={styles.keyword2}
+                    onClick={() => searchItems(hotKeyword)}
+                  >
                     <span>{index + 1}</span>
                     {hotKeyword}
                   </p>
@@ -71,7 +84,9 @@ export const SearchContainer = ({ visible, setVisible }) => {
               </p>
 
               {hotKeywords?.map((hotKeyword, index) => (
-                <p className={styles.keyword_mb}>{hotKeyword}</p>
+                <p className={styles.keyword_mb} key={index}>
+                  {hotKeyword} onClick={() => searchItems(hotKeyword)}
+                </p>
               ))}
             </div>
           </div>

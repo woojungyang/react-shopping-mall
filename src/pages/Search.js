@@ -7,11 +7,16 @@ import { Device } from "models/device";
 import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "utilities";
 
+import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard } from "components/card";
-import { CommonLayout, SearchInput } from "components/common";
+import {
+  CommonLayout,
+  DefaultPagination,
+  SearchInput,
+} from "components/common";
 
 import styles from "styles/_search.module.scss";
 
@@ -34,6 +39,10 @@ export default function Search() {
     { label: "높은가격순", sort: "heighPrice" },
   ];
   const [sort, changeSort] = useQueryString("sort", filterList[0].sort);
+
+  const [{ page, perPage: limit, offset }, changePage, getPageCount] =
+    usePageQueryString("page", 20);
+  const handleChangePage = (_event, page) => changePage(page);
 
   return (
     <CommonLayout>
@@ -92,6 +101,11 @@ export default function Search() {
             <ItemCard key={index} showStatus={true} style={{ height: 350 }} />
           ))}
         </div>
+        <DefaultPagination
+          count={getPageCount(searchedItems?.length)}
+          page={page}
+          onChange={handleChangePage}
+        />
       </div>
     </CommonLayout>
   );

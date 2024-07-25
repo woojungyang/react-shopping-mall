@@ -11,7 +11,7 @@
   width: 100%;
   position: relative;
 
-  @include tablet {
+  @include mobile {
     margin-top: 0;
   }
   .item_bottom_navigation {

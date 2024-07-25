@@ -16,11 +16,12 @@ import { getQuestionStateLabel } from "models/notice";
 import { useNavigate } from "react-router-dom";
 import { maskAccountName, numberWithCommas } from "utilities";
 
+import usePageQueryString from "hooks/queryString/usePageQueryString";
 import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard, LikeHeart } from "components/card";
-import { ListContent } from "components/common";
+import { DefaultPagination, ListContent } from "components/common";
 import { CommonLayout, DefaultButton } from "components/common";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
@@ -59,13 +60,19 @@ export default function ItemDetail() {
   const [moreContents, setMoreContents] = useState(true);
 
   const [reviews, setReviews] = useState([...new Array(5)]);
-  const [reviewPage, setReviewPage] = useState(1);
-  const handleChange = (event, value) => {
-    setReviewPage(value);
-  };
+  const [
+    { page: reviewPage, perPage: limit, offset: reviewOffset },
+    changePage,
+    getPageCount,
+  ] = usePageQueryString("reviewPage", 5);
+  const handleChangePage = (_event, page) => changePage(page);
 
   const [questions, setQuestions] = useState([...new Array(5)]);
-  const [questionPage, setQuestionPage] = useState(1);
+  const [
+    { page: questionPage, perPage: questionLimit, offset: questionOffset },
+    questionChangePage,
+  ] = usePageQueryString("questionPage", 5);
+  const handleQuestionChangePage = (_event, page) => questionChangePage(page);
 
   const { scrollToElement, setElementRef } = useScrollToElement();
 
@@ -454,13 +461,11 @@ export default function ItemDetail() {
                     </div>
                   ))}
                 </div>
-                <Stack alignItems="center" sx={{ marginTop: "20px" }}>
-                  <Pagination
-                    count={reviewPage.length}
-                    page={reviewPage}
-                    onChange={handleChange}
-                  />
-                </Stack>
+                <DefaultPagination
+                  count={getPageCount(reviews?.length)}
+                  page={reviewPage}
+                  onChange={handleChangePage}
+                />
               </>
             ) : (
               <EmptyList comment="이 상품의 첫번째 리뷰를 작성해주세요!" />
@@ -493,13 +498,11 @@ export default function ItemDetail() {
                     </div>
                   ))}
                 </div>
-                <Stack alignItems="center" sx={{ marginTop: "20px" }}>
-                  <Pagination
-                    count={questionPage.length}
-                    page={questionPage}
-                    onChange={handleChange}
-                  />
-                </Stack>
+                <DefaultPagination
+                  count={getPageCount(questions?.length)}
+                  page={questionPage}
+                  onChange={handleQuestionChangePage}
+                />
               </>
             ) : (
               <EmptyList comment="등록된 상품 Q&A가 없습니다." />
