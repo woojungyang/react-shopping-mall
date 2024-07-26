@@ -6,6 +6,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import classNames from "classnames";
+import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas } from "utilities";
 
@@ -82,11 +83,6 @@ export default function Cart() {
   }
   const [sameAsOrderer, setSamAsOrder] = useState(false);
   const autoCompleteOrderSheet = useMemo(() => {
-    // if (!orderSheet?.ordererName || !orderSheet?.ordererPhoneNumber) {
-    //   alert("주문 고객 정보를 먼저 기입해주세요.");
-    //   setSamAsOrder(false);
-    // } else {
-    //   setSamAsOrder(true);
     if (sameAsOrderer)
       setOrderSheet({
         ...orderSheet,
@@ -97,6 +93,16 @@ export default function Cart() {
   }, [sameAsOrderer, orderSheet?.ordererName, orderSheet?.ordererPhoneNumber]);
 
   const [showItemList, setShowItemList] = useState(false);
+
+  const [findAddressModal, setFindAddressModal] = useState(false);
+  function completeAddressHandler(data) {
+    setFindAddressModal(false);
+    setOrderSheet({
+      ...orderSheet,
+      zipCode: data?.zonecode,
+      address: data?.address,
+    });
+  }
 
   return (
     <CommonLayout>
@@ -221,7 +227,10 @@ export default function Cart() {
                         className={styles.delivery_custom_input}
                         style={{ width: "40%" }}
                       />
-                      <button className={styles.zipcode_button}>
+                      <button
+                        className={styles.zipcode_button}
+                        onClick={() => setFindAddressModal(true)}
+                      >
                         우편번호 찾기
                       </button>
                     </div>
@@ -236,6 +245,7 @@ export default function Cart() {
                         value={orderSheet?.addressDetail}
                         onChange={onChange}
                         name="addressDetail"
+                        placeholder="상세주소"
                       />
                     </div>
                   </DeliveryForm>
@@ -244,6 +254,7 @@ export default function Cart() {
                       value={orderSheet?.memo}
                       onChange={onChange}
                       name="memo"
+                      placeholder="메세지를 작성해주세요"
                     />
                   </DeliveryForm>
                 </DeliveryFormWrapper>
@@ -255,7 +266,7 @@ export default function Cart() {
                     <p>상품정보</p>
                     <p className={styles.item_total_information}>
                       {calculateSum(checkedItems.map((e) => e.count))}건 |{" "}
-                      {numberWithCommas(receipt?.totalPrice)}
+                      {numberWithCommas(receipt?.totalPrice)}원
                       {showItemList ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                     </p>
                   </div>
@@ -343,6 +354,20 @@ export default function Cart() {
               onClick={() => setChangeOptionsModal(false)}
             />
           </div>
+        </ModalContainer>
+      )}
+      {findAddressModal && (
+        <ModalContainer
+          title="우편번호 찾기"
+          visible={findAddressModal}
+          setVisible={setFindAddressModal}
+        >
+          <DaumPostcode
+            style={{
+              width: "400px",
+            }}
+            onComplete={completeAddressHandler}
+          />
         </ModalContainer>
       )}
     </CommonLayout>

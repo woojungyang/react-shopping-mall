@@ -300,6 +300,7 @@
           background-color: rgba($color-skeleton-100, 0.13);
           width: 70%;
           border: none;
+          font-size: $padding;
 
           &:focus {
             background-color: $color-background-100;
