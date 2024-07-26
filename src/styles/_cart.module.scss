@@ -237,6 +237,24 @@
       }
     }
   }
+  .success_order_container {
+    @include flex($direction: column);
+
+    .description {
+      margin-top: $margin;
+      text-align: center;
+      line-height: 160%;
+      width: 100%;
+      padding-top: $margin * 2;
+      padding-bottom: $margin * 3;
+      border-bottom: 1px solid $color-dark-300;
+
+      span {
+        color: $color-orange;
+        font-weight: 500;
+      }
+    }
+  }
 
   @include mobile {
     padding: $padding;
@@ -351,14 +369,4 @@
       }
     }
   }
-}
-
-#payment-widget {
-  background-color: #f0f0f0; /* 배경색 변경 */
-  padding: 20px; /* 패딩 추가 */
-}
-
-#payment-widget .payment-method {
-  border: 1px solid #ccc; /* 결제 방법의 테두리 색 변경 */
-  border-radius: 5px; /* 테두리 둥글게 */
 }

@@ -5,12 +5,14 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
+import { loadTossPayments } from "@tosspayments/payment-sdk";
 import classNames from "classnames";
 import { customAlphabet, nanoid } from "nanoid";
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas } from "utilities";
+
+import useQueryString from "hooks/queryString/useQueryString";
 
 import {
   CommonLayout,
@@ -20,6 +22,7 @@ import {
 import { ColorOptions, QuantityOptions, SizeOptions } from "components/detail";
 import { ModalContainer } from "components/modal";
 
+import { checkPhoneNumber } from "utilities/checkExpression";
 import { formatDateTime, now } from "utilities/dateTime";
 
 import styles from "styles/_cart.module.scss";
@@ -55,6 +58,10 @@ export default function Cart() {
   }
 
   const checkedItems = useMemo(() => items.filter((e) => e.checked), [items]);
+  const totalCount = useMemo(
+    () => calculateSum(checkedItems.map((e) => e.count)),
+    [checkedItems],
+  );
   const updateAllItemsCheckedStatus = useMemo(() => {
     if (items.length > 0 && checkedItems.length == items.length)
       setCheckedAll(true);
@@ -106,25 +113,50 @@ export default function Cart() {
     });
   }
 
-  const paymentWidgetRef = useRef(null);
-  useEffect(() => {
-    if (currentStage === 2) {
-      (async () => {
-        const paymentWidget = await loadPaymentWidget(
-          process.env.REACT_APP_TOSS_CLIENT_KEY,
-          process.env.REACT_APP_TOSS_CUSTOMER_KEY,
-        );
+  async function requestPayment() {
+    try {
+      const numbers = "0123456789";
+      const nanoid = customAlphabet(numbers, 10);
+      const clientKey = process.env.REACT_APP_TOSS_CLIENT_KEY;
 
-        paymentWidget.renderPaymentMethods(
-          "#payment-widget",
-          receipt?.totalPrice,
-        );
+      const tossPayments = await loadTossPayments(clientKey);
 
-        paymentWidgetRef.current = paymentWidget;
-      })();
+      const result = tossPayments
+        .requestPayment("카드", {
+          amount: receipt?.totalPrice,
+          orderId: `${formatDateTime(now(), "yyyyMMdd")}-${nanoid()}`,
+          orderName:
+            totalCount > 1 ? `상품결제 외 ${totalCount - 1}건` : "상품결제 1건",
+          customerName: "홍길동",
+          customerEmail: "customer@example.com",
+          successUrl: `${window.location.origin}/cart`, // 결제 성공 시 리디렉션할 URL
+          failUrl: `${window.location.origin}/cart`, // 결제 실패 시 리디렉션할 URL
+        })
+        .catch(function (error) {
+          // 결제 요청 실패 처리
+          if (error.code === "USER_CANCEL") {
+            alert("사용자가 결제를 취소하였습니다.");
+          } else if (
+            error.code === "INVALID_ORDER_NAME" ||
+            error.code === "INVALID_ORDER_ID"
+          ) {
+            alert("유효하지 않은 결제 정보입니다.");
+          } else {
+            alert("결제 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+          }
+        });
+    } catch (error) {
+      console.error(error);
     }
-  }, [currentStage]);
+  }
 
+  const [paymentKey] = useQueryString("paymentKey");
+  const [orderId] = useQueryString("orderId");
+  useEffect(() => {
+    if (!!paymentKey) {
+      setCurrentStage(3);
+    }
+  }, [paymentKey]);
   return (
     <CommonLayout>
       <div className={styles.cart_container}>
@@ -143,7 +175,10 @@ export default function Cart() {
           ))}
         </div>
         <div className={styles.cart_content_wrapper}>
-          <div className={styles.cart_list_wrapper}>
+          <div
+            className={styles.cart_list_wrapper}
+            style={currentStage == 3 ? { width: "100%", margin: "auto" } : {}}
+          >
             {currentStage == 1 && (
               <>
                 <p className={styles.cart_subtitle}>상품정보</p>
@@ -286,13 +321,12 @@ export default function Cart() {
                   >
                     <p>상품정보</p>
                     <p className={styles.item_total_information}>
-                      {calculateSum(checkedItems.map((e) => e.count))}건 |{" "}
-                      {numberWithCommas(receipt?.totalPrice)}원
+                      {totalCount}건 | {numberWithCommas(receipt?.totalPrice)}원
                       {showItemList ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                     </p>
                   </div>
                   {showItemList && (
-                    <div style={{ paddingTop: 20, paddingBottom: 20 }}>
+                    <div style={{ padding: "20px 0px" }}>
                       <ItemsList
                         items={checkedItems}
                         currentStage={currentStage}
@@ -300,68 +334,80 @@ export default function Cart() {
                     </div>
                   )}
                 </DeliveryFormWrapper>
-                <DeliveryFormWrapper title="결제 수단"></DeliveryFormWrapper>
-                <div id="payment-widget" style={{ padding: 0 }} />
               </>
             )}
+            {currentStage == 3 && (
+              <div className={styles.success_order_container}>
+                <h1>주문이 완료되었습니다.</h1>
+                <p className={styles.description}>
+                  {formatDateTime(now())} 주문하신 상품의 <br />
+                  주문번호는 <span>{orderId}</span>입니다
+                </p>
+                <div
+                  style={{ paddingTop: 20, paddingBottom: 20, width: "100%" }}
+                >
+                  <ItemsList items={checkedItems} currentStage={currentStage} />
+                </div>
+              </div>
+            )}
           </div>
-          <div className={styles.payment_information_wrapper}>
-            <p className={styles.payment_title}>결제정보</p>
-            <div className={styles.receipt_wrap}>
-              <div className={styles.default_flex_space}>
-                <p className={styles.receipt_title}>주문금액</p>
-                <p>
-                  <strong>{numberWithCommas(receipt?.originalPrice)}</strong> 원
+          {currentStage < 3 && (
+            <div className={styles.payment_information_wrapper}>
+              <p className={styles.payment_title}>결제정보</p>
+              <div className={styles.receipt_wrap}>
+                <div className={styles.default_flex_space}>
+                  <p className={styles.receipt_title}>주문금액</p>
+                  <p>
+                    <strong>{numberWithCommas(receipt?.originalPrice)}</strong>{" "}
+                    원
+                  </p>
+                </div>
+                <div className={styles.receipt_detail_wrap}>
+                  <div className={styles.default_flex_space}>
+                    <p className={styles.receipt_title}>상품 금액</p>
+                    <p>{numberWithCommas(receipt?.totalPrice)}원</p>
+                  </div>
+                  <div className={styles.default_flex_space}>
+                    <p className={styles.receipt_title}>할인금액</p>
+                    <p>{numberWithCommas(receipt?.discountPrice)}원</p>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.total_price_wrap}>
+                <p>최종 결제 금액</p>
+                <p className={styles.price}>
+                  {numberWithCommas(receipt?.totalPrice)}
+                  <span>원</span>
                 </p>
               </div>
-              <div className={styles.receipt_detail_wrap}>
-                <div className={styles.default_flex_space}>
-                  <p className={styles.receipt_title}>상품 금액</p>
-                  <p>{numberWithCommas(receipt?.totalPrice)}원</p>
-                </div>
-                <div className={styles.default_flex_space}>
-                  <p className={styles.receipt_title}>할인금액</p>
-                  <p>{numberWithCommas(receipt?.discountPrice)}원</p>
-                </div>
-              </div>
-            </div>
-            <div className={styles.total_price_wrap}>
-              <p>최종 결제 금액</p>
-              <p className={styles.price}>
-                {numberWithCommas(receipt?.totalPrice)}
-                <span>원</span>
+              <p className={styles.payment_guid}>
+                주문 내용을 확인했고, 약관에 동의합니다 <ChevronRightIcon />
               </p>
+              <DefaultButton
+                className={styles.button_dark_300_color_background_100}
+                label="결제하기"
+                onClick={async () => {
+                  if (!checkedItems.length)
+                    alert("구매하실 상품을 먼저 선택해주세요.");
+                  else if (currentStage == 1) setCurrentStage(currentStage + 1);
+                  // else
+                  else {
+                    if (
+                      !orderSheet?.ordererName ||
+                      !orderSheet?.ordererPhoneNumber ||
+                      !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
+                      !orderSheet?.receiverName ||
+                      !orderSheet?.receiverPhoneNumber ||
+                      !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
+                      !orderSheet?.zipCode
+                    )
+                      alert("주문서를 확인해주세요");
+                    else requestPayment();
+                  }
+                }}
+              />
             </div>
-            <p className={styles.payment_guid}>
-              주문 내용을 확인했고, 약관에 동의합니다 <ChevronRightIcon />
-            </p>
-            <DefaultButton
-              className={styles.button_dark_300_color_background_100}
-              label="결제하기"
-              onClick={async () => {
-                if (!checkedItems.length)
-                  alert("구매하실 상품을 먼저 선택해주세요.");
-                else if (currentStage == 1) setCurrentStage(currentStage + 1);
-                // else {
-                //   const paymentWidget = paymentWidgetRef.current;
-                //   const numbers = "0123456789";
-                //   const nanoid = customAlphabet(numbers, 10);
-                //   try {
-                //     await paymentWidget?.requestPayment({
-                //       orderId: `${formatDateTime(now(), "yyyyMMdd")}-${nanoid()}`,
-                //       orderName: "상품결제",
-                //       customerName: orderSheet?.ordererName,
-                //       customerEmail: "customer123@gmail.com",
-                //       successUrl: `${window.location.origin}/success`,
-                //       failUrl: `${window.location.origin}/fail`,
-                //     });
-                //   } catch (err) {
-                //     console.log(err);
-                //   }
-                // }
-              }}
-            />
-          </div>
+          )}
         </div>
       </div>
       {changeOptionsModal && (
