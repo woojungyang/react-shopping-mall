@@ -74,6 +74,13 @@ export default function Cart() {
   const [selectedItem, setSelectedItem] = useState({});
   const colorOptions = [...new Array(3)];
 
+  const [orderSheet, setOrderSheet] = useState({});
+  function onChange(e) {
+    setOrderSheet({ ...orderSheet, [e.target.name]: e.target.value });
+  }
+
+  const [showItemList, setShowItemList] = useState(false);
+
   return (
     <CommonLayout>
       <div className={styles.cart_container}>
@@ -139,8 +146,77 @@ export default function Cart() {
               <>
                 <DeliveryFormWrapper title="주문고객">
                   <DeliveryForm title="이름">
-                    <DeliveryInput />
+                    <DeliveryInput
+                      value={orderSheet?.ordererName}
+                      onChange={onChange}
+                      name="ordererName"
+                    />
                   </DeliveryForm>
+                  <DeliveryForm title="휴대폰 번호">
+                    <DeliveryInput
+                      type="number"
+                      value={orderSheet?.ordererPhoneNumber}
+                      onChange={onChange}
+                      name="ordererPhoneNumber"
+                    />
+                  </DeliveryForm>
+                </DeliveryFormWrapper>
+                <DeliveryFormWrapper title="배송지 정보">
+                  <DeliveryForm title="배송지 선택"></DeliveryForm>
+                  <DeliveryForm title="받으시는 분">
+                    <DeliveryInput
+                      type="number"
+                      value={orderSheet?.receiverName}
+                      onChange={onChange}
+                      name="receiverName"
+                    />
+                  </DeliveryForm>
+                  <DeliveryForm title="휴대폰 번호">
+                    <DeliveryInput
+                      type="number"
+                      value={orderSheet?.receiverPhoneNumber}
+                      onChange={onChange}
+                      name="receiverPhoneNumber"
+                    />
+                  </DeliveryForm>
+                  <DeliveryForm title="배송 주소">
+                    <div className={styles.default_flex}>
+                      <DeliveryInput
+                        disabled={true}
+                        value={orderSheet?.zipCode}
+                        onChange={onChange}
+                        name="zipCode"
+                      />
+                      <DefaultButton label="우편번호 찾기" />
+                    </div>
+                    <DeliveryInput
+                      disabled={true}
+                      value={orderSheet?.address}
+                      onChange={onChange}
+                      name="address"
+                    />
+                  </DeliveryForm>
+                  <DeliveryForm title="배송 메세지">
+                    <DeliveryInput
+                      value={orderSheet?.memo}
+                      onChange={onChange}
+                      name="memo"
+                    />
+                  </DeliveryForm>
+                </DeliveryFormWrapper>
+                <DeliveryFormWrapper title="주문상품">
+                  <div
+                    className={styles.toggle_order_item_list}
+                    onClick={() => setShowItemList(!showItemList)}
+                  >
+                    ddd
+                  </div>
+                  {showItemList && (
+                    <ItemsList
+                      items={checkedItems}
+                      currentStage={currentStage}
+                    />
+                  )}
                 </DeliveryFormWrapper>
               </>
             )}
@@ -163,10 +239,6 @@ export default function Cart() {
                   <p className={styles.receipt_title}>할인금액</p>
                   <p>{numberWithCommas(receipt?.discountPrice)}원</p>
                 </div>
-                {/*  <div className={styles.default_flex_space}>
-                  <p className={styles.receipt_title}>배송비</p>
-                  <p>{numberWithCommas(receipt?.deliveryPrice)}원</p>
-                </div> */}
               </div>
             </div>
             <div className={styles.total_price_wrap}>
@@ -293,18 +365,20 @@ function ItemsList({
                   {numberWithCommas(10000)}원
                 </p>
               </div>
-              <div className={styles.buy_button_wrap}>
-                <p className={styles.buy_button}>바로 구매</p>
-                <div
-                  className={styles.delete_button}
-                  onClick={() => {
-                    setItems(items.filter((e) => e.id !== item.id));
-                  }}
-                >
-                  <DeleteForeverIcon />
-                  <p>삭제</p>
+              {isFirstStage && (
+                <div className={styles.buy_button_wrap}>
+                  <p className={styles.buy_button}>바로 구매</p>
+                  <div
+                    className={styles.delete_button}
+                    onClick={() => {
+                      setItems(items.filter((e) => e.id !== item.id));
+                    }}
+                  >
+                    <DeleteForeverIcon />
+                    <p>삭제</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -333,12 +407,14 @@ function DeliveryForm({ title = "", children }) {
 
 function DeliveryInput({
   placeholder = "",
+  type = "text",
   value,
   onChange,
   disabled = false,
 }) {
   return (
     <input
+      type={type}
       className={styles.delivery_custom_input}
       disabled={disabled}
       value={value}
