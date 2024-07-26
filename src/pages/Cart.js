@@ -1,11 +1,13 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
 import classNames from "classnames";
+import { customAlphabet, nanoid } from "nanoid";
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas } from "utilities";
@@ -18,10 +20,11 @@ import {
 import { ColorOptions, QuantityOptions, SizeOptions } from "components/detail";
 import { ModalContainer } from "components/modal";
 
+import { formatDateTime, now } from "utilities/dateTime";
+
 import styles from "styles/_cart.module.scss";
 
 export default function Cart() {
-  const navigation = useNavigate();
   const stages = [
     { id: 1, label: "쇼핑백" },
     { id: 2, label: "주문서" },
@@ -68,7 +71,6 @@ export default function Cart() {
       originalPrice: originalPrice, //원가
       price: price, //현재판매가
       discountPrice: (originalPrice - price) * -1,
-
       totalPrice: price,
     };
   }, [items]);
@@ -103,6 +105,25 @@ export default function Cart() {
       address: data?.address,
     });
   }
+
+  const paymentWidgetRef = useRef(null);
+  useEffect(() => {
+    if (currentStage === 2) {
+      (async () => {
+        const paymentWidget = await loadPaymentWidget(
+          process.env.REACT_APP_TOSS_CLIENT_KEY,
+          process.env.REACT_APP_TOSS_CUSTOMER_KEY,
+        );
+
+        paymentWidget.renderPaymentMethods(
+          "#payment-widget",
+          receipt?.totalPrice,
+        );
+
+        paymentWidgetRef.current = paymentWidget;
+      })();
+    }
+  }, [currentStage]);
 
   return (
     <CommonLayout>
@@ -279,6 +300,8 @@ export default function Cart() {
                     </div>
                   )}
                 </DeliveryFormWrapper>
+                <DeliveryFormWrapper title="결제 수단"></DeliveryFormWrapper>
+                <div id="payment-widget" style={{ padding: 0 }} />
               </>
             )}
           </div>
@@ -315,10 +338,27 @@ export default function Cart() {
             <DefaultButton
               className={styles.button_dark_300_color_background_100}
               label="결제하기"
-              onClick={() => {
+              onClick={async () => {
                 if (!checkedItems.length)
                   alert("구매하실 상품을 먼저 선택해주세요.");
-                else setCurrentStage(currentStage + 1);
+                else if (currentStage == 1) setCurrentStage(currentStage + 1);
+                // else {
+                //   const paymentWidget = paymentWidgetRef.current;
+                //   const numbers = "0123456789";
+                //   const nanoid = customAlphabet(numbers, 10);
+                //   try {
+                //     await paymentWidget?.requestPayment({
+                //       orderId: `${formatDateTime(now(), "yyyyMMdd")}-${nanoid()}`,
+                //       orderName: "상품결제",
+                //       customerName: orderSheet?.ordererName,
+                //       customerEmail: "customer123@gmail.com",
+                //       successUrl: `${window.location.origin}/success`,
+                //       failUrl: `${window.location.origin}/fail`,
+                //     });
+                //   } catch (err) {
+                //     console.log(err);
+                //   }
+                // }
               }}
             />
           </div>
