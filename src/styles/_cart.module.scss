@@ -11,7 +11,8 @@
 
   flex-direction: column;
 
-  padding-top: $header-height * 2;
+  margin-top: $header-height * 2;
+
   .cart_title {
     text-align: center;
     margin-bottom: $margin * 2;
@@ -35,26 +36,16 @@
     }
   }
   .cart_content_wrapper {
+    display: flex;
     position: relative;
-    background-color: pink;
-    .cart_list_wrapper {
-      flex: 2;
-      overflow-y: auto;
-      .empty_cart {
-        @include flex;
-        height: 100px;
-      }
-    }
-    .payment_information_wrapper {
-      position: fixed;
-      z-index: 99999;
-      left: 0px;
-      height: fit-content; // 높이를 fit-content로 변경
-      flex: 1;
 
-      flex-shrink: 0;
-      width: 336px;
-      margin-left: $margin;
+    .payment_information_wrapper {
+      position: sticky;
+      top: 30%;
+      right: 10%;
+      width: 360px;
+      height: 100%;
+      flex-shrink: 1;
       background-color: #f5f5f5;
       padding: $margin * 2 $default * 3;
       .payment_title {
@@ -104,6 +95,15 @@
         @include flex($justify-content: space-between);
         color: $color-skeleton-200;
         margin-bottom: $default * 3;
+      }
+    }
+    .cart_list_wrapper {
+      width: calc(100% - 366px);
+      margin-right: $default * 3;
+
+      .empty_cart {
+        @include flex;
+        height: 100px;
       }
     }
   }
@@ -281,12 +281,12 @@
       border-bottom: 1px solid $color-skeleton-100;
       color: $color-skeleton-200;
       min-height: 48px;
-      background-color: beige;
+
       .delivery_form_title {
         flex-shrink: 0;
         height: 100%;
         min-width: 150px;
-        background-color: pink;
+
         margin-right: $margin * 2;
       }
       .delivery_form_input_wrapper {
@@ -300,10 +300,10 @@
           background-color: rgba($color-skeleton-100, 0.13);
           width: 70%;
           border: none;
-          border: 1px solid red;
+
           &:focus {
             background-color: $color-background-100;
-            outline: none;
+            outline: 1px solid $color-dark-300;
           }
           &:not(:first-child) {
             margin-top: $default;
@@ -312,6 +312,41 @@
       }
       &:last-child {
         border-bottom: 0px;
+      }
+    }
+    .toggle_order_item_list {
+      cursor: pointer;
+      @include flex($justify-content: space-between);
+      padding: $padding;
+      color: $color-skeleton-200;
+      .item_total_information {
+        @include flex;
+        svg {
+          margin-left: $margin;
+        }
+      }
+    }
+  }
+  .delivery_flex_box {
+    @include flex($justify-content: flex-start);
+
+    .zipcode_button {
+      background-color: $color-skeleton-200;
+      height: 48px;
+      margin-left: $default;
+      padding: 0px $margin * 2.5;
+      border: none;
+      color: $color-background-100;
+    }
+  }
+  .delivery_address_wrapper {
+    margin-top: $default;
+    @include flex($justify-content: flex-start);
+    input {
+      margin-bottom: 0;
+      margin-top: 0 !important;
+      &:first-child {
+        margin-right: $default;
       }
     }
   }

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import classNames from "classnames";
@@ -31,6 +32,7 @@ export default function Cart() {
     Array.from({ length: 4 }, (v, index) => ({
       id: index,
       checked: true,
+      count: index,
       name: "item" + index,
       price: 12344 + index,
       originalPrice: 21233 - index,
@@ -78,6 +80,21 @@ export default function Cart() {
   function onChange(e) {
     setOrderSheet({ ...orderSheet, [e.target.name]: e.target.value });
   }
+  const [sameAsOrderer, setSamAsOrder] = useState(false);
+  const autoCompleteOrderSheet = useMemo(() => {
+    // if (!orderSheet?.ordererName || !orderSheet?.ordererPhoneNumber) {
+    //   alert("주문 고객 정보를 먼저 기입해주세요.");
+    //   setSamAsOrder(false);
+    // } else {
+    //   setSamAsOrder(true);
+    if (sameAsOrderer)
+      setOrderSheet({
+        ...orderSheet,
+        receiverName: orderSheet?.ordererName,
+        receiverPhoneNumber: orderSheet?.ordererPhoneNumber,
+      });
+    // }
+  }, [sameAsOrderer, orderSheet?.ordererName, orderSheet?.ordererPhoneNumber]);
 
   const [showItemList, setShowItemList] = useState(false);
 
@@ -162,10 +179,25 @@ export default function Cart() {
                   </DeliveryForm>
                 </DeliveryFormWrapper>
                 <DeliveryFormWrapper title="배송지 정보">
-                  <DeliveryForm title="배송지 선택"></DeliveryForm>
+                  <DeliveryForm title="배송지 선택">
+                    <div className={styles.delivery_flex_box}>
+                      <DefaultCheckbox
+                        checked={sameAsOrderer}
+                        onChange={() => {
+                          if (
+                            !orderSheet?.ordererName ||
+                            !orderSheet?.ordererPhoneNumber
+                          )
+                            alert("주문 고객 정보를 먼저 기입해주세요.");
+                          else setSamAsOrder(!sameAsOrderer);
+                        }}
+                      />
+                      <span>주문자와 동일</span>
+                    </div>
+                  </DeliveryForm>
                   <DeliveryForm title="받으시는 분">
                     <DeliveryInput
-                      type="number"
+                      disabled={sameAsOrderer}
                       value={orderSheet?.receiverName}
                       onChange={onChange}
                       name="receiverName"
@@ -173,6 +205,7 @@ export default function Cart() {
                   </DeliveryForm>
                   <DeliveryForm title="휴대폰 번호">
                     <DeliveryInput
+                      disabled={sameAsOrderer}
                       type="number"
                       value={orderSheet?.receiverPhoneNumber}
                       onChange={onChange}
@@ -180,21 +213,31 @@ export default function Cart() {
                     />
                   </DeliveryForm>
                   <DeliveryForm title="배송 주소">
-                    <div className={styles.default_flex}>
+                    <div className={styles.delivery_flex_box}>
+                      <input
+                        type="text"
+                        disabled
+                        value={orderSheet?.zipCode}
+                        className={styles.delivery_custom_input}
+                        style={{ width: "40%" }}
+                      />
+                      <button className={styles.zipcode_button}>
+                        우편번호 찾기
+                      </button>
+                    </div>
+                    <div className={styles.delivery_address_wrapper}>
                       <DeliveryInput
                         disabled={true}
-                        value={orderSheet?.zipCode}
+                        value={orderSheet?.address}
                         onChange={onChange}
-                        name="zipCode"
+                        name="address"
                       />
-                      <DefaultButton label="우편번호 찾기" />
+                      <DeliveryInput
+                        value={orderSheet?.addressDetail}
+                        onChange={onChange}
+                        name="addressDetail"
+                      />
                     </div>
-                    <DeliveryInput
-                      disabled={true}
-                      value={orderSheet?.address}
-                      onChange={onChange}
-                      name="address"
-                    />
                   </DeliveryForm>
                   <DeliveryForm title="배송 메세지">
                     <DeliveryInput
@@ -209,13 +252,20 @@ export default function Cart() {
                     className={styles.toggle_order_item_list}
                     onClick={() => setShowItemList(!showItemList)}
                   >
-                    ddd
+                    <p>상품정보</p>
+                    <p className={styles.item_total_information}>
+                      {calculateSum(checkedItems.map((e) => e.count))}건 |{" "}
+                      {numberWithCommas(receipt?.totalPrice)}
+                      {showItemList ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    </p>
                   </div>
                   {showItemList && (
-                    <ItemsList
-                      items={checkedItems}
-                      currentStage={currentStage}
-                    />
+                    <div style={{ paddingTop: 20, paddingBottom: 20 }}>
+                      <ItemsList
+                        items={checkedItems}
+                        currentStage={currentStage}
+                      />
+                    </div>
                   )}
                 </DeliveryFormWrapper>
               </>
@@ -406,6 +456,7 @@ function DeliveryForm({ title = "", children }) {
 }
 
 function DeliveryInput({
+  name = "",
   placeholder = "",
   type = "text",
   value,
@@ -414,6 +465,7 @@ function DeliveryInput({
 }) {
   return (
     <input
+      name={name}
       type={type}
       className={styles.delivery_custom_input}
       disabled={disabled}
