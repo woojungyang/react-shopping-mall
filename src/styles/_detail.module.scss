@@ -289,54 +289,6 @@
         }
       }
     }
-    .color_options_wrapper {
-      .selected_color_option {
-        img {
-          border-bottom: 4px solid $color-dark-300;
-          cursor: pointer;
-        }
-      }
-    }
-    .size_options_wrapper {
-      @include display-grid($colum: repeat(4, 1fr));
-      gap: 1px;
-      .size_option {
-        @include flex;
-        border-collapse: collapse;
-        outline: 1px solid $color-dark-300;
-        height: 40px;
-        cursor: pointer;
-      }
-      .size_option_disabled {
-        background-color: rgba($color: $color-skeleton-100, $alpha: 0.3);
-        outline: 1px solid $color-skeleton-100;
-        color: $color-skeleton-100;
-        cursor: auto;
-      }
-      .selected_size_option {
-        background-color: $color-dark-300;
-        color: $color-background-100;
-      }
-    }
-    .detail_quantity_wrapper {
-      @include flex($justify-content: space-between);
-      padding: $default;
-      outline: 1px solid $color-dark-300;
-      input {
-        text-align: center;
-        width: 100%;
-        outline: none;
-        border: none;
-        margin-right: $default;
-        margin-left: $default;
-      }
-      .quantity_button {
-        width: 30px;
-        height: 30px;
-        @include flex;
-        cursor: pointer;
-      }
-    }
   }
 }
 .recommend_container {
@@ -702,5 +654,57 @@
     &:last-child {
       margin-bottom: 0px;
     }
+  }
+}
+
+.color_options_wrapper {
+  img {
+    margin-right: $default/2;
+  }
+  .selected_color_option {
+    img {
+      border-bottom: 4px solid $color-dark-300;
+      cursor: pointer;
+    }
+  }
+}
+.size_options_wrapper {
+  @include display-grid($colum: repeat(4, 1fr));
+  gap: 1px;
+  .size_option {
+    @include flex;
+    border-collapse: collapse;
+    outline: 1px solid $color-dark-300;
+    height: 40px;
+    cursor: pointer;
+  }
+  .size_option_disabled {
+    background-color: rgba($color: $color-skeleton-100, $alpha: 0.3);
+    outline: 1px solid $color-skeleton-100;
+    color: $color-skeleton-100;
+    cursor: auto;
+  }
+  .selected_size_option {
+    background-color: $color-dark-300;
+    color: $color-background-100;
+  }
+}
+.detail_quantity_wrapper {
+  @include flex($justify-content: space-between);
+  padding: $default;
+  outline: 1px solid $color-dark-300;
+  input {
+    text-align: center;
+    width: 100%;
+    outline: none;
+    border: none;
+    margin-right: $default;
+    margin-left: $default;
+  }
+  .quantity_button {
+    width: 30px;
+    height: 30px;
+    @include flex;
+    cursor: pointer;
   }
 }

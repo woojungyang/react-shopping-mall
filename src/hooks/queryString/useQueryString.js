@@ -4,14 +4,15 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function useQueryString(key, defaultValue = "") {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const searchedQueryString = searchParams.get(key);
 
   function change(newValue) {
-    searchParams.set(key, newValue);
-    setSearchParams(searchParams);
-    navigate("?" + searchParams.toString());
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set(key, newValue);
+
+    navigate("?" + newSearchParams.toString(), { replace: true });
   }
 
   useEffect(() => {

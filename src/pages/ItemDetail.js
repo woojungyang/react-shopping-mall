@@ -1,15 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import EastIcon from "@mui/icons-material/East";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import RemoveIcon from "@mui/icons-material/Remove";
 import ShareIcon from "@mui/icons-material/Share";
-import { Drawer, Pagination, Rating, Stack } from "@mui/material";
+import { Drawer, Rating } from "@mui/material";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { getQuestionStateLabel } from "models/notice";
@@ -23,6 +21,12 @@ import { useUserDevice } from "hooks/size/useUserDevice";
 import { ItemCard, LikeHeart } from "components/card";
 import { DefaultPagination, ListContent } from "components/common";
 import { CommonLayout, DefaultButton } from "components/common";
+import {
+  ColorOptions,
+  DetailContentWrapper,
+  QuantityOptions,
+  SizeOptions,
+} from "components/detail";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
 import { formatDateTime, now } from "utilities/dateTime";
@@ -213,98 +217,20 @@ export default function ItemDetail() {
                 </p>
               </div>
             </DetailContentWrapper>
-            <DetailContentWrapper title="COLOR">
-              <div className={styles.color_options_wrapper}>
-                <p className={styles.selected_option_name}>
-                  {selectedItemOptions?.color}
-                </p>
-                <ScrollableSlider>
-                  {colorOptions.map((option, index) => {
-                    const isSelected = selectedItemOptions.color == index;
-                    return (
-                      <div
-                        key={index}
-                        onClick={() => {
-                          setSelectedOptions({
-                            ...selectedItemOptions,
-                            color: isSelected ? null : index,
-                          });
-                        }}
-                        className={classNames({
-                          [styles.detail_color_options]: true,
-                          [styles.selected_color_option]: isSelected,
-                        })}
-                      >
-                        <img
-                          src={require("assets/images/sub/sub24.jpg")}
-                          className={styles.color_option_thumbnail}
-                          style={{
-                            height: 90,
-                            flex: "0 0 calc(6%)",
-                            width: 70,
-                          }}
-                        />
-                      </div>
-                    );
-                  })}
-                </ScrollableSlider>
-              </div>
-            </DetailContentWrapper>
-            <DetailContentWrapper title="SIZE">
-              <p className={styles.selected_option_name}>
-                {selectedItemOptions?.size}
-              </p>
-              <div className={styles.size_options_wrapper}>
-                {sizeOptions.map((size, index) => {
-                  const isSelected = selectedItemOptions.size == index;
-                  return (
-                    <p
-                      onClick={() =>
-                        setSelectedOptions({
-                          ...selectedItemOptions,
-                          size: isSelected ? null : index,
-                        })
-                      }
-                      className={classNames({
-                        [styles.size_option]: true,
-                        [styles.selected_size_option]: isSelected,
-                        [styles.size_option_disabled]: disabled_size == index,
-                      })}
-                    >
-                      {index}
-                    </p>
-                  );
-                })}
-              </div>
-            </DetailContentWrapper>
-            <DetailContentWrapper>
-              <div className={styles.detail_quantity_wrapper}>
-                <div
-                  className={styles.quantity_button}
-                  onClick={() => {
-                    if (selectedItemOptions.quantity > 1)
-                      setSelectedOptions({
-                        ...selectedItemOptions,
-                        quantity: selectedItemOptions.quantity - 1,
-                      });
-                  }}
-                >
-                  <RemoveIcon />
-                </div>
-                <input type="number" value={selectedItemOptions?.quantity} />
-                <div
-                  className={styles.quantity_button}
-                  onClick={() => {
-                    setSelectedOptions({
-                      ...selectedItemOptions,
-                      quantity: selectedItemOptions.quantity + 1,
-                    });
-                  }}
-                >
-                  <AddIcon />
-                </div>
-              </div>
-            </DetailContentWrapper>
+            <ColorOptions
+              selectedItemOptions={selectedItemOptions}
+              setSelectedOptions={setSelectedOptions}
+              colorOptions={colorOptions}
+            />
+            <SizeOptions
+              selectedItemOptions={selectedItemOptions}
+              setSelectedOptions={setSelectedOptions}
+              sizeOptions={sizeOptions}
+            />
+            <QuantityOptions
+              selectedItemOptions={selectedItemOptions}
+              setSelectedOptions={setSelectedOptions}
+            />
             <DefaultButton
               className={styles.button_dark_300_color_background_100}
               label="주문하기"
@@ -569,19 +495,6 @@ export default function ItemDetail() {
         </Drawer>
       </div>
     </CommonLayout>
-  );
-}
-
-function DetailContentWrapper({ children, title = "", border = false }) {
-  return (
-    <div
-      className={styles.detail_content_wrapper}
-      style={{ borderBottom: border ? "1px solid #b6b5b5" : "" }}
-    >
-      {title && <p className={styles.detail_title}>{title}</p>}
-
-      <div className={styles.detail_content_wrap}>{children}</div>
-    </div>
   );
 }
 
