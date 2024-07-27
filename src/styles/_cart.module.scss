@@ -370,3 +370,66 @@
     }
   }
 }
+
+.mobile_cart_container {
+  margin-top: $header-height-mb2;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  background-color: rgba($color-skeleton-100, 0.1);
+  .mobile_cart_wrapper {
+    padding: 0px $padding;
+    .cart_header_wrap {
+      margin-top: $padding;
+      @include flex($justify-content: space-between, $align-items: baseline);
+      margin-bottom: $default;
+      background-color: pink;
+      .header_icon_wrap {
+        font-size: 14px;
+        @include flex;
+        &:first-child {
+          .item_total {
+            font-weight: 500;
+            font-size: 1em;
+            margin-left: $default/2;
+          }
+        }
+
+        &:last-child {
+          cursor: pointer;
+
+          color: $color-skeleton-200;
+        }
+      }
+    }
+  }
+  // background-color: teal;
+  .order_bottom_container {
+    position: absolute;
+    z-index: 10;
+
+    background-color: $color-background-100;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -0.3125rem 0.625rem 0 rgba(0, 0, 0, 0.08);
+    .order_info_wrap {
+      height: 48px;
+      padding: 0px $padding;
+      p {
+        color: $color-skeleton-200;
+        font-size: 14px;
+        strong {
+          color: $color-dark-300;
+        }
+      }
+      @include flex($justify-content: space-between);
+    }
+    button {
+      margin: 0px !important;
+      height: $margin * 3 !important;
+      font-size: $padding !important;
+    }
+  }
+}
