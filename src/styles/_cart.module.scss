@@ -312,22 +312,6 @@
         height: 100%;
 
         width: 100%;
-        .delivery_custom_input {
-          height: 48px;
-          padding: 0 $padding;
-          background-color: rgba($color-skeleton-100, 0.13);
-          width: 70%;
-          border: none;
-          font-size: $padding;
-
-          &:focus {
-            background-color: $color-background-100;
-            outline: 1px solid $color-dark-300;
-          }
-          &:not(:first-child) {
-            margin-top: $default;
-          }
-        }
       }
       &:last-child {
         border-bottom: 0px;
@@ -378,14 +362,16 @@
   flex-direction: column;
   position: relative;
   width: 100%;
+  padding-bottom: 140px;
   background-color: rgba($color-skeleton-100, 0.1);
   .mobile_cart_wrapper {
     padding: 0px $padding;
+
     .cart_header_wrap {
       margin-top: $padding;
-      @include flex($justify-content: space-between, $align-items: baseline);
+      @include flex($justify-content: space-between);
       margin-bottom: $default;
-      background-color: pink;
+
       .header_icon_wrap {
         font-size: 14px;
         @include flex;
@@ -405,9 +391,74 @@
       }
     }
   }
+  .success_order_container {
+    @include flex($direction: column);
+
+    padding: $padding;
+    h3 {
+      margin-top: $margin;
+    }
+    .description {
+      text-align: center;
+      line-height: 160%;
+      width: 100%;
+      padding-top: $margin;
+      padding-bottom: $margin;
+      border-bottom: 1px solid $color-dark-300;
+
+      span {
+        color: $color-orange;
+        font-weight: 500;
+      }
+    }
+  }
+  .delivery_form_container_mb {
+    background-color: white;
+
+    margin-bottom: $default;
+    padding: $padding;
+    position: relative;
+    .form_title {
+      font-size: $padding;
+      margin-bottom: $margin;
+    }
+    .delivery_check_box {
+      position: absolute;
+      top: $padding;
+      right: $padding;
+      @include flex;
+      span {
+        font-size: 0.9em;
+      }
+    }
+    .zipcode_flex_box {
+      margin-top: $default;
+      @include flex;
+      .zipcode_button {
+        margin-left: $default;
+        flex-shrink: 0;
+        height: 38px;
+        padding: $default;
+        background-color: $color-background-100;
+        border: 1px solid $color-skeleton-100;
+      }
+    }
+  }
+  .payment_guid {
+    @include flex($justify-content: space-between);
+    color: $color-skeleton-200;
+    margin-bottom: $default * 3;
+    > div {
+      @include flex($justify-content: flex-start);
+      span {
+        font-size: 0.9em;
+        // margin-left: $default;
+      }
+    }
+  }
   // background-color: teal;
   .order_bottom_container {
-    position: absolute;
+    position: fixed;
     z-index: 10;
 
     background-color: $color-background-100;
@@ -431,5 +482,131 @@
       height: $margin * 3 !important;
       font-size: $padding !important;
     }
+  }
+}
+
+.delivery_custom_input {
+  height: 48px;
+  padding: 0 $padding;
+  background-color: rgba($color-skeleton-100, 0.13);
+  width: 70%;
+  border: none;
+  font-size: $padding;
+
+  &:focus {
+    background-color: $color-background-100;
+    outline: 1px solid $color-dark-300;
+  }
+  &:not(:first-child) {
+    margin-top: $default;
+  }
+}
+
+.delivery_custom_input_mb {
+  height: 38px;
+  font-size: 0.8em;
+  width: 100%;
+  border: 1px solid rgba($color-skeleton-100, 0.4);
+}
+
+.cart_item_wrapper_mb {
+  background-color: $color-background-100;
+  border: 1px solid rgba($color-skeleton-100, 0.4);
+  padding: $padding $default;
+  margin-bottom: $default;
+  &:last-child {
+    margin-bottom: 0px;
+  }
+  .item_content_wrap {
+    @include flex($justify-content: flex-start, $align-items: flex-start);
+    height: 80px;
+    .item_thumbnail {
+      @include default-image;
+      width: 72px;
+      margin-left: $default;
+    }
+    .cart_item_information {
+      height: 100%;
+      @include flex($justify-content: space-between, $align-items: flex-start);
+      width: 100%;
+      margin-left: $default;
+
+      font-size: 0.8em;
+
+      .brand_name {
+        margin-bottom: $default/3;
+        color: $color-dark-300;
+        font-weight: 500;
+      }
+      p {
+        color: $color-skeleton-200;
+        font-size: 0.8em;
+        @include overflow-text;
+        line-height: 140%;
+      }
+      .price_info {
+        height: 100%;
+        flex-shrink: 0;
+        margin-left: $margin;
+
+        @include flex(
+          $direction: column,
+          $justify-content: space-between,
+          $align-items: flex-end
+        );
+        flex-grow: 0;
+        svg {
+          margin-bottom: $padding;
+          cursor: pointer;
+          color: $color-skeleton-200;
+          width: $margin;
+        }
+        .original_price {
+          font-size: 0.8em;
+          color: $color-skeleton-100;
+          text-decoration: line-through;
+          text-align: right;
+        }
+        .price {
+          font-weight: 500;
+          color: $color-dark-200;
+          font-size: 1em;
+        }
+      }
+    }
+  }
+  .item_button_wrap {
+    @include flex;
+    margin-top: $default/2;
+    button {
+      margin-right: 1px;
+      font-size: 12px !important;
+    }
+  }
+}
+
+.receipt_detail_wrap {
+  margin-top: $margin * 1.5;
+  padding: 0px $padding;
+
+  font-weight: 500;
+  color: $color-skeleton-200;
+  font-size: 15px;
+  line-height: 160%;
+  strong {
+    font-weight: 500;
+  }
+  .receipt_title {
+    font-weight: 350;
+    font-size: 14px;
+  }
+}
+.total_price_wrap {
+  margin-top: $margin;
+  border-top: 1px solid rgba($color-skeleton-100, 0.4);
+  padding: $padding;
+  @include flex($justify-content: space-between);
+  .price {
+    color: $color-orange;
   }
 }

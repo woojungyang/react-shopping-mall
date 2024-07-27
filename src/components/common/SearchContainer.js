@@ -76,7 +76,13 @@ export const SearchContainer = ({ visible, setVisible }) => {
             <h3>SEARCH</h3>
           </div>
           <div className={styles.search_body}>
-            <SearchInput value={searchValue} setValue={setSearchValue} />
+            <SearchInput
+              value={searchValue}
+              setValue={setSearchValue}
+              onKeyDown={() => {
+                searchItems(searchValue);
+              }}
+            />
 
             <div className={styles.keyword_wrapper_mb}>
               <p className={styles.keyword_title}>
@@ -84,8 +90,12 @@ export const SearchContainer = ({ visible, setVisible }) => {
               </p>
 
               {hotKeywords?.map((hotKeyword, index) => (
-                <p className={styles.keyword_mb} key={index}>
-                  {hotKeyword} onClick={() => searchItems(hotKeyword)}
+                <p
+                  className={styles.keyword_mb}
+                  key={index}
+                  onClick={() => searchItems(hotKeyword)}
+                >
+                  {hotKeyword}
                 </p>
               ))}
             </div>

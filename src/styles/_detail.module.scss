@@ -708,3 +708,17 @@
     cursor: pointer;
   }
 }
+.detail_quantity_wrapper_mb {
+  outline: 1px solid $color-skeleton-100;
+  height: 40px;
+  color: $color-skeleton-200;
+  input {
+    color: $color-skeleton-200;
+  }
+  svg {
+    width: 20px;
+    height: 20px;
+    @include flex;
+    cursor: pointer;
+  }
+}

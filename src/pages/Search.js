@@ -84,7 +84,7 @@ export default function Search() {
           ) : (
             <SelectBox
               options={filterList}
-              selectedValue={sort}
+              selectedValue={sort || filterList[0]?.sort}
               onChange={changeSort}
             />
           )}

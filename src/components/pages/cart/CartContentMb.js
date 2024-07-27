@@ -2,25 +2,21 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { loadTossPayments } from "@tosspayments/payment-sdk";
 import classNames from "classnames";
 import { customAlphabet } from "nanoid";
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
-import { calculateSum, numberWithCommas } from "utilities";
+import { calculateSum, numberWithCommas, scrollTop } from "utilities";
 
 import useQueryString from "hooks/queryString/useQueryString";
 
 import {
-  CommonLayout,
   DefaultButton,
   DefaultCheckbox,
   MobileLayout,
 } from "components/common";
-import { ColorOptions, QuantityOptions, SizeOptions } from "components/detail";
+import { OptionsMobile } from "components/detail";
 import { ModalContainer } from "components/modal";
 
 import { checkPhoneNumber } from "utilities/checkExpression";
@@ -28,19 +24,17 @@ import { formatDateTime, now } from "utilities/dateTime";
 
 import styles from "styles/_cart.module.scss";
 
+import DeliveryInput from "./DeliveryInput";
+
 export default function CartContentMb() {
-  const stages = [
-    { id: 1, label: "쇼핑백" },
-    { id: 2, label: "주문서" },
-    { id: 3, label: "주문완료" },
-  ];
+  const navigation = useNavigate();
   const [currentStage, setCurrentStage] = useState(1);
 
   const [items, setItems] = useState(
     Array.from({ length: 4 }, (v, index) => ({
       id: index,
       checked: true,
-      count: index,
+      quantity: index,
       name: "item" + index,
       price: 12344 + index,
       originalPrice: 21233 - index,
@@ -60,7 +54,7 @@ export default function CartContentMb() {
 
   const checkedItems = useMemo(() => items.filter((e) => e.checked), [items]);
   const totalCount = useMemo(
-    () => calculateSum(checkedItems.map((e) => e.count)),
+    () => calculateSum(checkedItems.map((e) => e.quantity)),
     [checkedItems],
   );
   const updateAllItemsCheckedStatus = useMemo(() => {
@@ -74,12 +68,19 @@ export default function CartContentMb() {
       checkedItems.map((item) => item.originalPrice),
     );
     const price = calculateSum(checkedItems.map((item) => item.price));
+    const totalPrice = calculateSum(
+      checkedItems.map((item) => item.price * item.quantity),
+    );
+    const originalTotalPrice = calculateSum(
+      checkedItems.map((item) => item.originalPrice * item.quantity),
+    );
 
     return {
       originalPrice: originalPrice, //원가
       price: price, //현재판매가
-      discountPrice: (originalPrice - price) * -1,
-      totalPrice: price,
+      discountPrice: (originalTotalPrice - totalPrice) * -1,
+      totalPrice: totalPrice,
+      originalTotalPrice: originalTotalPrice,
     };
   }, [items]);
 
@@ -101,8 +102,6 @@ export default function CartContentMb() {
       });
     // }
   }, [sameAsOrderer, orderSheet?.ordererName, orderSheet?.ordererPhoneNumber]);
-
-  const [showItemList, setShowItemList] = useState(false);
 
   const [findAddressModal, setFindAddressModal] = useState(false);
   function completeAddressHandler(data) {
@@ -158,46 +157,305 @@ export default function CartContentMb() {
       setCurrentStage(3);
     }
   }, [paymentKey]);
+
+  const [optionsChanges, setOptionChanges] = useState({});
+
+  useEffect(() => {
+    if (changeOptionsModal) document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [changeOptionsModal]);
   return (
-    <MobileLayout headerTitle="쇼핑백">
-      <div className={styles.mobile_cart_container}>
-        <div className={styles.mobile_cart_wrapper}>
-          <div className={styles.cart_header_wrap}>
-            <div className={styles.header_icon_wrap}>
-              <DefaultCheckbox
-                checked={checkedAll}
-                onChange={toggleAllItemsChecked}
+    <MobileLayout headerTitle={currentStage == 1 ? "쇼핑백" : "주문/결제"}>
+      <div
+        className={styles.mobile_cart_container}
+        style={
+          currentStage == 3
+            ? { backgroundColor: "white", paddingBottom: 0 }
+            : {}
+        }
+      >
+        {currentStage == 1 && (
+          <div className={styles.mobile_cart_wrapper}>
+            <div className={styles.cart_header_wrap}>
+              <div className={styles.header_icon_wrap}>
+                <DefaultCheckbox
+                  checked={checkedAll}
+                  onChange={toggleAllItemsChecked}
+                />
+                <p>
+                  선택 상품
+                  <span className={styles.item_total}>
+                    ({checkedItems.length})
+                  </span>
+                </p>
+              </div>
+              <div
+                className={styles.header_icon_wrap}
+                onClick={() => {
+                  setItems(items.filter((e) => !e.checked));
+                }}
+              >
+                <p>선택 삭제</p>
+              </div>
+            </div>
+            <ItemsList
+              currentStage={currentStage}
+              items={items}
+              setItems={setItems}
+              setChangeOptionsModal={setChangeOptionsModal}
+              setSelectedItem={setSelectedItem}
+              directPayment={() => {
+                scrollTop();
+                setCurrentStage(currentStage + 1);
+              }}
+            />
+          </div>
+        )}
+        {currentStage == 2 && (
+          <div>
+            <DeliveryFormWrapper title="주문고객">
+              <DeliveryInput
+                value={orderSheet?.ordererName}
+                onChange={onChange}
+                name="ordererName"
+                placeholder="이름을 입력해주세요."
               />
-              <p>
-                선택 상품
-                <span className={styles.item_total}>
-                  ({checkedItems.length})
+
+              <DeliveryInput
+                type="number"
+                value={orderSheet?.ordererPhoneNumber}
+                onChange={onChange}
+                name="ordererPhoneNumber"
+                placeholder="연락처를 입력해주세요."
+              />
+            </DeliveryFormWrapper>
+            <DeliveryFormWrapper title="배송지 정보">
+              <div className={styles.delivery_check_box}>
+                <DefaultCheckbox
+                  checked={sameAsOrderer}
+                  onChange={() => {
+                    if (
+                      !orderSheet?.ordererName ||
+                      !orderSheet?.ordererPhoneNumber
+                    )
+                      alert("주문 고객 정보를 먼저 기입해주세요.");
+                    else setSamAsOrder(!sameAsOrderer);
+                  }}
+                />
+                <span>주문자와 동일</span>
+              </div>
+
+              <DeliveryInput
+                disabled={sameAsOrderer}
+                value={orderSheet?.receiverName}
+                onChange={onChange}
+                name="receiverName"
+                placeholder="이름을 입력해주세요."
+              />
+
+              <DeliveryInput
+                disabled={sameAsOrderer}
+                type="number"
+                value={orderSheet?.receiverPhoneNumber}
+                onChange={onChange}
+                name="receiverPhoneNumber"
+                placeholder="연락처를 입력해주세요."
+              />
+
+              <div className={styles.zipcode_flex_box}>
+                <DeliveryInput disabled value={orderSheet?.zipCode} />
+                <button
+                  className={styles.zipcode_button}
+                  onClick={() => setFindAddressModal(true)}
+                >
+                  우편번호 검색
+                </button>
+              </div>
+
+              <DeliveryInput
+                disabled={true}
+                value={orderSheet?.address}
+                onChange={onChange}
+                name="address"
+              />
+              <DeliveryInput
+                value={orderSheet?.addressDetail}
+                onChange={onChange}
+                name="addressDetail"
+                placeholder="상세주소"
+              />
+
+              <DeliveryInput
+                value={orderSheet?.memo}
+                onChange={onChange}
+                name="memo"
+                placeholder="메세지를 작성해주세요"
+              />
+            </DeliveryFormWrapper>
+            <DeliveryFormWrapper title="주문상품">
+              <ItemsList
+                currentStage={currentStage}
+                items={items}
+                setItems={setItems}
+                setChangeOptionsModal={setChangeOptionsModal}
+                setSelectedItem={setSelectedItem}
+              />
+            </DeliveryFormWrapper>
+          </div>
+        )}
+        <div
+          className={classNames({
+            [styles.delivery_form_container_mb]: currentStage == 2,
+          })}
+        >
+          {currentStage == 2 && (
+            <p className={styles.form_title}>최종 결제 정보</p>
+          )}
+          {currentStage < 3 && (
+            <>
+              <div className={styles.receipt_detail_wrap}>
+                <div className={styles.default_flex_space}>
+                  <p className={styles.receipt_title}>상품 금액</p>
+                  <p>
+                    <strong>
+                      {numberWithCommas(receipt?.originalTotalPrice)}
+                    </strong>
+                    원
+                  </p>
+                </div>
+                <div className={styles.default_flex_space}>
+                  <p className={styles.receipt_title}>할인금액</p>
+                  <p>
+                    <strong>{numberWithCommas(receipt?.discountPrice)}</strong>
+                    원
+                  </p>
+                </div>
+              </div>
+              <div className={styles.total_price_wrap}>
+                <p>최종 결제 금액</p>
+                <p className={styles.price}>
+                  <strong> {numberWithCommas(receipt?.totalPrice)}</strong>
+                  <span>원</span>
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+        {currentStage == 2 && (
+          <DeliveryFormWrapper>
+            <p className={styles.payment_guid}>
+              <div>
+                <DefaultCheckbox />
+                <span style={{ marginLeft: 3 }}>
+                  {" "}
+                  주문 내용을 확인했고, 약관에 동의합니다
                 </span>
+              </div>
+              <ChevronRightIcon />
+            </p>
+          </DeliveryFormWrapper>
+        )}
+        {currentStage < 3 && (
+          <div className={styles.order_bottom_container}>
+            <div className={styles.order_info_wrap}>
+              <p>
+                총 <strong>{totalCount}</strong>개
+              </p>
+              <p>
+                <strong>{numberWithCommas(receipt?.totalPrice)}</strong> 원
               </p>
             </div>
-            <div
-              className={styles.header_icon_wrap}
+            <DefaultButton
+              label={currentStage == 1 ? "주문하기" : "결제하기"}
               onClick={() => {
-                setItems(items.filter((e) => !e.checked));
+                scrollTop();
+                if (!checkedItems.length)
+                  alert("구매하실 상품을 먼저 선택해주세요.");
+                else if (currentStage == 1) setCurrentStage(currentStage + 1);
+                else {
+                  requestPayment();
+                  // if (
+                  //   !orderSheet?.ordererName ||
+                  //   !orderSheet?.ordererPhoneNumber ||
+                  //   !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
+                  //   !orderSheet?.receiverName ||
+                  //   !orderSheet?.receiverPhoneNumber ||
+                  //   !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
+                  //   !orderSheet?.zipCode
+                  // )
+                  //   alert("주문서를 확인해주세요");
+                  // else requestPayment();
+                }
               }}
-            >
-              <DeleteForeverIcon />
-              <p>선택 삭제</p>
+            />
+          </div>
+        )}
+        {currentStage == 3 && (
+          <div className={styles.success_order_container}>
+            <h3>주문이 완료되었습니다.</h3>
+            <p className={styles.description}>
+              {formatDateTime(now())} 주문하신 상품의 <br />
+              주문번호는 <span>{orderId}</span>입니다
+            </p>
+
+            <div style={{ padding: "20px 16px", width: "100%" }}>
+              <ItemsList items={checkedItems} currentStage={currentStage} />
             </div>
+            <DefaultButton
+              label="홈으로 돌아가기"
+              onClick={() => navigation("/", { replace: true })}
+            />
           </div>
-        </div>
-        <div className={styles.order_bottom_container}>
-          <div className={styles.order_info_wrap}>
-            <p>
-              총 <strong>{totalCount}</strong>개
-            </p>
-            <p>
-              <strong>{numberWithCommas(receipt?.totalPrice)}</strong> 원
-            </p>
-          </div>
-          <DefaultButton label="주문하기" />
-        </div>
+        )}
       </div>
+
+      {changeOptionsModal && (
+        <OptionsMobile
+          setVisible={setChangeOptionsModal}
+          optionsChanges={optionsChanges}
+          setOptionChanges={setOptionChanges}
+          leftButton={{
+            label: "취소",
+            onClick: () => setChangeOptionsModal(false),
+          }}
+          rightButton={{
+            label: "변경 저장",
+            onClick: () => {
+              setChangeOptionsModal(false);
+              setItems(
+                items.map((item) => {
+                  if (item.id == selectedItem.id) {
+                    return {
+                      ...item,
+                      quantity: optionsChanges.quantity,
+                      option: optionsChanges?.option,
+                    };
+                  } else {
+                    return item;
+                  }
+                }),
+              );
+            },
+          }}
+        />
+      )}
+      {findAddressModal && (
+        <ModalContainer
+          title="우편번호 찾기"
+          visible={findAddressModal}
+          setVisible={setFindAddressModal}
+        >
+          <DaumPostcode
+            style={{
+              width: "200px",
+            }}
+            onComplete={completeAddressHandler}
+          />
+        </ModalContainer>
+      )}
     </MobileLayout>
   );
 }
@@ -208,82 +466,82 @@ function ItemsList({
   setItems,
   setSelectedItem,
   setChangeOptionsModal,
+  directPayment,
 }) {
   const navigation = useNavigate();
   const isFirstStage = currentStage == 1;
   return (
     <>
       {items.map((item, index) => (
-        <div key={index} className={styles.cart_item_wrapper}>
-          <div className={styles.cart_item_header}>
-            <LocalOfferIcon />
-            <p>브랜드명</p>
-          </div>
-          <div className={styles.cart_item_body}>
-            <div className={styles.first_item_content}>
-              {isFirstStage && (
-                <DefaultCheckbox
-                  checked={item.checked}
-                  onChange={() => {
-                    setItems(
-                      items.map((e) => {
-                        if (e.id == item.id)
-                          return { ...e, checked: !item.checked };
-                        else return e;
-                      }),
-                    );
-                  }}
-                />
-              )}
-              <img
-                src={require("assets/images/sub/sub17.jpg")}
-                alt=""
-                onClick={() => navigation(`/items/${item.id}`)}
+        <div key={index} className={styles.cart_item_wrapper_mb}>
+          <div className={styles.item_content_wrap}>
+            {isFirstStage && (
+              <DefaultCheckbox
+                checked={item.checked}
+                onChange={() => {
+                  setItems(
+                    items.map((e) => {
+                      if (e.id == item.id)
+                        return { ...e, checked: !item.checked };
+                      else return e;
+                    }),
+                  );
+                }}
               />
-              <div className={styles.item_option_wrap}>
+            )}
+            <img
+              className={styles.item_thumbnail}
+              src={require("assets/images/sub/sub17.jpg")}
+              alt=""
+              onClick={() => navigation(`/items/${item.id}`)}
+            />
+            <div className={styles.cart_item_information}>
+              <div>
+                <p className={styles.brand_name}>브랜드명</p>
                 <p>상품명</p>
-                <div className={styles.item_options}>
-                  <p>옵션명</p>
-                  {isFirstStage && (
-                    <div
-                      className={styles.item_option_button}
-                      onClick={() => {
-                        setSelectedItem(item);
-                        setChangeOptionsModal(true);
-                      }}
-                    >
-                      옵션/수량 변경
-                      <ExpandMoreIcon />
-                    </div>
-                  )}
-                </div>
+                <p>옵션명</p>
+                <p>수량 : {item?.quantity}</p>
               </div>
-            </div>
-            <div className={styles.second_item_content}>
-              <div className={styles.price_wrap}>
-                <p className={styles.original_price}>
-                  {numberWithCommas(10000)}원
-                </p>
-                <p className={styles.total_price}>
-                  {numberWithCommas(10000)}원
-                </p>
-              </div>
-              {isFirstStage && (
-                <div className={styles.buy_button_wrap}>
-                  <p className={styles.buy_button}>바로 구매</p>
-                  <div
-                    className={styles.delete_button}
+              <div className={styles.price_info}>
+                {isFirstStage ? (
+                  <DeleteForeverIcon
                     onClick={() => {
                       setItems(items.filter((e) => e.id !== item.id));
                     }}
-                  >
-                    <DeleteForeverIcon />
-                    <p>삭제</p>
-                  </div>
+                  />
+                ) : (
+                  <div></div>
+                )}
+                <div>
+                  <p className={styles.original_price}>
+                    {numberWithCommas(item.originalPrice)}원
+                  </p>
+                  <p className={styles.price}>
+                    {numberWithCommas(item.price)}원
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
           </div>
+          {isFirstStage && (
+            <div className={styles.item_button_wrap}>
+              <DefaultButton
+                onClick={() => {
+                  setSelectedItem(item);
+                  setChangeOptionsModal(true);
+                }}
+                label="옵션/수량 변경"
+                className={styles.button_background_100_outline_color_dark_300}
+              />
+              <DefaultButton
+                label="바로구매"
+                onClick={() => {
+                  setItems([{ ...item, checked: true }]);
+                  directPayment();
+                }}
+              />
+            </div>
+          )}
         </div>
       ))}
     </>
@@ -292,39 +550,9 @@ function ItemsList({
 
 function DeliveryFormWrapper({ title = "", children }) {
   return (
-    <div className={styles.delivery_form_container}>
+    <div className={styles.delivery_form_container_mb}>
       <p className={styles.form_title}>{title}</p>
       <div className={styles.delivery_form_wrapper}>{children}</div>
     </div>
-  );
-}
-
-function DeliveryForm({ title = "", children }) {
-  return (
-    <div className={styles.delivery_form_wrap}>
-      <p className={styles.delivery_form_title}>{title}</p>
-      <div className={styles.delivery_form_input_wrapper}>{children}</div>
-    </div>
-  );
-}
-
-function DeliveryInput({
-  name = "",
-  placeholder = "",
-  type = "text",
-  value,
-  onChange,
-  disabled = false,
-}) {
-  return (
-    <input
-      name={name}
-      type={type}
-      className={styles.delivery_custom_input}
-      disabled={disabled}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-    />
   );
 }

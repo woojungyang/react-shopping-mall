@@ -12,7 +12,7 @@ import classNames from "classnames";
 import { Device } from "models/device";
 import { getQuestionStateLabel } from "models/notice";
 import { useNavigate } from "react-router-dom";
-import { maskAccountName, numberWithCommas } from "utilities";
+import { maskAccountName, numberWithCommas, scrollTop } from "utilities";
 
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import { useScrollToElement } from "hooks/scroll/useScrollToElement";
@@ -101,10 +101,7 @@ export default function ItemDetail() {
           <div className={styles.navigation_button}>
             <ShareIcon style={{ width: "1em", height: "1em" }} />
           </div>
-          <div
-            className={styles.navigation_button}
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
+          <div className={styles.navigation_button} onClick={scrollTop}>
             <KeyboardArrowUpIcon />
           </div>
           <div className={styles.navigation_button}>

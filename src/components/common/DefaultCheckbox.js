@@ -14,6 +14,7 @@ export const DefaultCheckbox = ({ checked, onChange }) => {
       onChange={onChange}
       sx={{
         "& .MuiSvgIcon-root": { fontSize: isDeskTop ? 24 : 20 },
+        padding: "0 !important",
         color: "black",
         "&.Mui-checked": {
           color: "black",

@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import classNames from "classnames";
+import { Device } from "models/device";
+
+import { useUserDevice } from "hooks/size/useUserDevice";
 
 import styles from "styles/_detail.module.scss";
 
@@ -11,9 +15,21 @@ export const QuantityOptions = ({
   setSelectedOptions,
   selectedItemOptions,
 }) => {
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
+
+  const initValue = useMemo(() => {
+    if (!selectedItemOptions?.quantity)
+      setSelectedOptions({ ...selectedItemOptions, quantity: 1 });
+  }, []);
   return (
     <DetailContentWrapper>
-      <div className={styles.detail_quantity_wrapper}>
+      <div
+        className={classNames({
+          [styles.detail_quantity_wrapper]: true,
+          [styles.detail_quantity_wrapper_mb]: !isDeskTop,
+        })}
+      >
         <div
           className={styles.quantity_button}
           onClick={() => {

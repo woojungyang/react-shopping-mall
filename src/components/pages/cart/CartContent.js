@@ -10,7 +10,7 @@ import classNames from "classnames";
 import { customAlphabet } from "nanoid";
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
-import { calculateSum, numberWithCommas } from "utilities";
+import { calculateSum, numberWithCommas, scrollTop } from "utilities";
 
 import useQueryString from "hooks/queryString/useQueryString";
 
@@ -26,6 +26,8 @@ import { checkPhoneNumber } from "utilities/checkExpression";
 import { formatDateTime, now } from "utilities/dateTime";
 
 import styles from "styles/_cart.module.scss";
+
+import DeliveryInput from "./DeliveryInput";
 
 export default function CartContent() {
   const stages = [
@@ -386,7 +388,8 @@ export default function CartContent() {
               <DefaultButton
                 className={styles.button_dark_300_color_background_100}
                 label="결제하기"
-                onClick={async () => {
+                onClick={() => {
+                  scrollTop();
                   if (!checkedItems.length)
                     alert("구매하실 상품을 먼저 선택해주세요.");
                   else if (currentStage == 1) setCurrentStage(currentStage + 1);
@@ -563,26 +566,5 @@ function DeliveryForm({ title = "", children }) {
       <p className={styles.delivery_form_title}>{title}</p>
       <div className={styles.delivery_form_input_wrapper}>{children}</div>
     </div>
-  );
-}
-
-function DeliveryInput({
-  name = "",
-  placeholder = "",
-  type = "text",
-  value,
-  onChange,
-  disabled = false,
-}) {
-  return (
-    <input
-      name={name}
-      type={type}
-      className={styles.delivery_custom_input}
-      disabled={disabled}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-    />
   );
 }
