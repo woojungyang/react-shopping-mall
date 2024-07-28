@@ -7,6 +7,7 @@ import Join from "pages/Join";
 import Login from "pages/Login";
 import Main from "pages/Main";
 import NotFound from "pages/NotFound";
+import Payment from "pages/Payment";
 import Search from "pages/Search";
 
 export const router = createBrowserRouter([
@@ -37,6 +38,10 @@ export const router = createBrowserRouter([
   {
     path: "/cart",
     element: <Cart />,
+  },
+  {
+    path: "/payment",
+    element: <Payment />,
   },
   {
     path: "*",

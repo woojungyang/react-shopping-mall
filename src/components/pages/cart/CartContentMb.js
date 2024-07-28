@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { loadTossPayments } from "@tosspayments/payment-sdk";
 import classNames from "classnames";
@@ -9,15 +10,12 @@ import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas, scrollTop } from "utilities";
 
-import useQueryString from "hooks/queryString/useQueryString";
-
 import {
   DefaultButton,
   DefaultCheckbox,
   MobileLayout,
 } from "components/common";
 import { OptionsMobile } from "components/detail";
-import { ModalContainer } from "components/modal";
 
 import { checkPhoneNumber } from "utilities/checkExpression";
 import { formatDateTime, now } from "utilities/dateTime";
@@ -27,7 +25,6 @@ import styles from "styles/_cart.module.scss";
 import DeliveryInput from "./DeliveryInput";
 
 export default function CartContentMb() {
-  const navigation = useNavigate();
   const [currentStage, setCurrentStage] = useState(1);
 
   const [items, setItems] = useState(
@@ -86,7 +83,6 @@ export default function CartContentMb() {
 
   const [changeOptionsModal, setChangeOptionsModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
-  const colorOptions = [...new Array(3)];
 
   const [orderSheet, setOrderSheet] = useState({});
   function onChange(e) {
@@ -129,9 +125,10 @@ export default function CartContentMb() {
             totalCount > 1 ? `상품결제 외 ${totalCount - 1}건` : "상품결제 1건",
           customerName: "홍길동",
           customerEmail: "customer@example.com",
-          successUrl: `${window.location.origin}/cart`, // 결제 성공 시 리디렉션할 URL
-          failUrl: `${window.location.origin}/cart`, // 결제 실패 시 리디렉션할 URL
+          successUrl: `${window.location.origin}/payment`, // 결제 성공 시 리디렉션할 URL
+          failUrl: `${window.location.origin}/payment`, // 결제 실패 시 리디렉션할 URL
         })
+
         .catch(function (error) {
           // 결제 요청 실패 처리
           if (error.code === "USER_CANCEL") {
@@ -150,25 +147,19 @@ export default function CartContentMb() {
     }
   }
 
-  const [paymentKey] = useQueryString("paymentKey");
-  const [orderId] = useQueryString("orderId");
-  useEffect(() => {
-    if (!!paymentKey) {
-      setCurrentStage(3);
-    }
-  }, [paymentKey]);
-
   const [optionsChanges, setOptionChanges] = useState({});
 
   useEffect(() => {
-    if (changeOptionsModal) document.body.style.overflow = "hidden";
+    if (changeOptionsModal || findAddressModal)
+      document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [changeOptionsModal]);
+  }, [changeOptionsModal, findAddressModal]);
+
   return (
-    <MobileLayout headerTitle={currentStage == 1 ? "쇼핑백" : "주문/결제"}>
+    <MobileLayout headerTitle={"쇼핑백"}>
       <div
         className={styles.mobile_cart_container}
         style={
@@ -348,9 +339,16 @@ export default function CartContentMb() {
           <DeliveryFormWrapper>
             <p className={styles.payment_guid}>
               <div>
-                <DefaultCheckbox />
+                <DefaultCheckbox
+                  value={orderSheet?.checkOrder}
+                  onChange={() => {
+                    setOrderSheet({
+                      ...orderSheet,
+                      checkOrder: !orderSheet.checkOrder,
+                    });
+                  }}
+                />
                 <span style={{ marginLeft: 3 }}>
-                  {" "}
                   주문 내용을 확인했고, 약관에 동의합니다
                 </span>
               </div>
@@ -358,58 +356,40 @@ export default function CartContentMb() {
             </p>
           </DeliveryFormWrapper>
         )}
-        {currentStage < 3 && (
-          <div className={styles.order_bottom_container}>
-            <div className={styles.order_info_wrap}>
-              <p>
-                총 <strong>{totalCount}</strong>개
-              </p>
-              <p>
-                <strong>{numberWithCommas(receipt?.totalPrice)}</strong> 원
-              </p>
-            </div>
-            <DefaultButton
-              label={currentStage == 1 ? "주문하기" : "결제하기"}
-              onClick={() => {
-                scrollTop();
-                if (!checkedItems.length)
-                  alert("구매하실 상품을 먼저 선택해주세요.");
-                else if (currentStage == 1) setCurrentStage(currentStage + 1);
-                else {
-                  requestPayment();
-                  // if (
-                  //   !orderSheet?.ordererName ||
-                  //   !orderSheet?.ordererPhoneNumber ||
-                  //   !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
-                  //   !orderSheet?.receiverName ||
-                  //   !orderSheet?.receiverPhoneNumber ||
-                  //   !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
-                  //   !orderSheet?.zipCode
-                  // )
-                  //   alert("주문서를 확인해주세요");
-                  // else requestPayment();
-                }
-              }}
-            />
-          </div>
-        )}
-        {currentStage == 3 && (
-          <div className={styles.success_order_container}>
-            <h3>주문이 완료되었습니다.</h3>
-            <p className={styles.description}>
-              {formatDateTime(now())} 주문하신 상품의 <br />
-              주문번호는 <span>{orderId}</span>입니다
-            </p>
 
-            <div style={{ padding: "20px 16px", width: "100%" }}>
-              <ItemsList items={checkedItems} currentStage={currentStage} />
-            </div>
-            <DefaultButton
-              label="홈으로 돌아가기"
-              onClick={() => navigation("/", { replace: true })}
-            />
+        <div className={styles.order_bottom_container}>
+          <div className={styles.order_info_wrap}>
+            <p>
+              총 <strong>{totalCount}</strong>개
+            </p>
+            <p>
+              <strong>{numberWithCommas(receipt?.totalPrice)}</strong> 원
+            </p>
           </div>
-        )}
+          <DefaultButton
+            label={currentStage == 1 ? "주문하기" : "결제하기"}
+            onClick={() => {
+              scrollTop();
+              if (!checkedItems.length)
+                alert("구매하실 상품을 먼저 선택해주세요.");
+              else if (currentStage == 1) setCurrentStage(currentStage + 1);
+              else {
+                if (
+                  !orderSheet?.ordererName ||
+                  !orderSheet?.ordererPhoneNumber ||
+                  !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
+                  !orderSheet?.receiverName ||
+                  !orderSheet?.receiverPhoneNumber ||
+                  !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
+                  !orderSheet?.zipCode ||
+                  !orderSheet?.checkOrder
+                )
+                  alert("주문서를 확인해주세요");
+                else requestPayment();
+              }
+            }}
+          />
+        </div>
       </div>
 
       {changeOptionsModal && (
@@ -443,18 +423,21 @@ export default function CartContentMb() {
         />
       )}
       {findAddressModal && (
-        <ModalContainer
-          title="우편번호 찾기"
-          visible={findAddressModal}
-          setVisible={setFindAddressModal}
-        >
+        <div className={styles.postcode_container}>
+          <div className={styles.postcode_header}>
+            <p>우편번호 찾기</p>
+            <div
+              className={styles.close_button}
+              onClick={() => setFindAddressModal(false)}
+            >
+              <CloseIcon />
+            </div>
+          </div>
           <DaumPostcode
-            style={{
-              width: "200px",
-            }}
+            style={{ height: "100%", marginTop: 20 }}
             onComplete={completeAddressHandler}
           />
-        </ModalContainer>
+        </div>
       )}
     </MobileLayout>
   );

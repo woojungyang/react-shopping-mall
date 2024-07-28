@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -12,13 +12,7 @@ import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas, scrollTop } from "utilities";
 
-import useQueryString from "hooks/queryString/useQueryString";
-
-import {
-  CommonLayout,
-  DefaultButton,
-  DefaultCheckbox,
-} from "components/common";
+import { DefaultButton, DefaultCheckbox } from "components/common";
 import { ColorOptions, QuantityOptions, SizeOptions } from "components/detail";
 import { ModalContainer } from "components/modal";
 
@@ -41,7 +35,7 @@ export default function CartContent() {
     Array.from({ length: 4 }, (v, index) => ({
       id: index,
       checked: true,
-      count: index,
+      quantity: index,
       name: "item" + index,
       price: 12344 + index,
       originalPrice: 21233 - index,
@@ -61,7 +55,7 @@ export default function CartContent() {
 
   const checkedItems = useMemo(() => items.filter((e) => e.checked), [items]);
   const totalCount = useMemo(
-    () => calculateSum(checkedItems.map((e) => e.count)),
+    () => calculateSum(checkedItems.map((e) => e.quantity)),
     [checkedItems],
   );
   const updateAllItemsCheckedStatus = useMemo(() => {
@@ -75,12 +69,19 @@ export default function CartContent() {
       checkedItems.map((item) => item.originalPrice),
     );
     const price = calculateSum(checkedItems.map((item) => item.price));
+    const totalPrice = calculateSum(
+      checkedItems.map((item) => item.price * item.quantity),
+    );
+    const originalTotalPrice = calculateSum(
+      checkedItems.map((item) => item.originalPrice * item.quantity),
+    );
 
     return {
       originalPrice: originalPrice, //원가
       price: price, //현재판매가
-      discountPrice: (originalPrice - price) * -1,
-      totalPrice: price,
+      discountPrice: (originalTotalPrice - totalPrice) * -1,
+      totalPrice: totalPrice,
+      originalTotalPrice: originalTotalPrice,
     };
   }, [items]);
 
@@ -131,8 +132,8 @@ export default function CartContent() {
             totalCount > 1 ? `상품결제 외 ${totalCount - 1}건` : "상품결제 1건",
           customerName: "홍길동",
           customerEmail: "customer@example.com",
-          successUrl: `${window.location.origin}/cart`, // 결제 성공 시 리디렉션할 URL
-          failUrl: `${window.location.origin}/cart`, // 결제 실패 시 리디렉션할 URL
+          successUrl: `${window.location.origin}/payment`, // 결제 성공 시 리디렉션할 URL
+          failUrl: `${window.location.origin}/payment`, // 결제 실패 시 리디렉션할 URL
         })
         .catch(function (error) {
           // 결제 요청 실패 처리
@@ -152,13 +153,6 @@ export default function CartContent() {
     }
   }
 
-  const [paymentKey] = useQueryString("paymentKey");
-  const [orderId] = useQueryString("orderId");
-  useEffect(() => {
-    if (!!paymentKey) {
-      setCurrentStage(3);
-    }
-  }, [paymentKey]);
   return (
     <>
       <div className={styles.cart_container}>
@@ -215,6 +209,10 @@ export default function CartContent() {
                     setItems={setItems}
                     setChangeOptionsModal={setChangeOptionsModal}
                     setSelectedItem={setSelectedItem}
+                    directPayment={() => {
+                      scrollTop();
+                      setCurrentStage(currentStage + 1);
+                    }}
                   />
                 ) : (
                   <p className={styles.empty_cart}>
@@ -338,79 +336,63 @@ export default function CartContent() {
                 </DeliveryFormWrapper>
               </>
             )}
-            {currentStage == 3 && (
-              <div className={styles.success_order_container}>
-                <h1>주문이 완료되었습니다.</h1>
-                <p className={styles.description}>
-                  {formatDateTime(now())} 주문하신 상품의 <br />
-                  주문번호는 <span>{orderId}</span>입니다
-                </p>
-                <div
-                  style={{ paddingTop: 20, paddingBottom: 20, width: "100%" }}
-                >
-                  <ItemsList items={checkedItems} currentStage={currentStage} />
-                </div>
-              </div>
-            )}
           </div>
-          {currentStage < 3 && (
-            <div className={styles.payment_information_wrapper}>
-              <p className={styles.payment_title}>결제정보</p>
-              <div className={styles.receipt_wrap}>
-                <div className={styles.default_flex_space}>
-                  <p className={styles.receipt_title}>주문금액</p>
-                  <p>
-                    <strong>{numberWithCommas(receipt?.originalPrice)}</strong>{" "}
-                    원
-                  </p>
-                </div>
-                <div className={styles.receipt_detail_wrap}>
-                  <div className={styles.default_flex_space}>
-                    <p className={styles.receipt_title}>상품 금액</p>
-                    <p>{numberWithCommas(receipt?.totalPrice)}원</p>
-                  </div>
-                  <div className={styles.default_flex_space}>
-                    <p className={styles.receipt_title}>할인금액</p>
-                    <p>{numberWithCommas(receipt?.discountPrice)}원</p>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.total_price_wrap}>
-                <p>최종 결제 금액</p>
-                <p className={styles.price}>
-                  {numberWithCommas(receipt?.totalPrice)}
-                  <span>원</span>
+
+          <div className={styles.payment_information_wrapper}>
+            <p className={styles.payment_title}>결제정보</p>
+            <div className={styles.receipt_wrap}>
+              <div className={styles.default_flex_space}>
+                <p className={styles.receipt_title}>주문금액</p>
+                <p>
+                  <strong>{numberWithCommas(receipt?.originalPrice)}</strong> 원
                 </p>
               </div>
-              <p className={styles.payment_guid}>
-                주문 내용을 확인했고, 약관에 동의합니다 <ChevronRightIcon />
-              </p>
-              <DefaultButton
-                className={styles.button_dark_300_color_background_100}
-                label="결제하기"
-                onClick={() => {
-                  scrollTop();
-                  if (!checkedItems.length)
-                    alert("구매하실 상품을 먼저 선택해주세요.");
-                  else if (currentStage == 1) setCurrentStage(currentStage + 1);
-                  // else
-                  else {
-                    if (
-                      !orderSheet?.ordererName ||
-                      !orderSheet?.ordererPhoneNumber ||
-                      !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
-                      !orderSheet?.receiverName ||
-                      !orderSheet?.receiverPhoneNumber ||
-                      !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
-                      !orderSheet?.zipCode
-                    )
-                      alert("주문서를 확인해주세요");
-                    else requestPayment();
-                  }
-                }}
-              />
+              <div className={styles.receipt_detail_wrap}>
+                <div className={styles.default_flex_space}>
+                  <p className={styles.receipt_title}>상품 금액</p>
+                  <p>{numberWithCommas(receipt?.originalTotalPrice)}원</p>
+                </div>
+                <div className={styles.default_flex_space}>
+                  <p className={styles.receipt_title}>할인금액</p>
+                  <p>{numberWithCommas(receipt?.discountPrice)}원</p>
+                </div>
+              </div>
             </div>
-          )}
+            <div className={styles.total_price_wrap}>
+              <p>최종 결제 금액</p>
+              <p className={styles.price}>
+                {numberWithCommas(receipt?.totalPrice)}
+                <span>원</span>
+              </p>
+            </div>
+            <p className={styles.payment_guid}>
+              주문 내용을 확인했고, 약관에 동의합니다 <ChevronRightIcon />
+            </p>
+            <DefaultButton
+              className={styles.button_dark_300_color_background_100}
+              label="결제하기"
+              onClick={() => {
+                scrollTop();
+                if (!checkedItems.length)
+                  alert("구매하실 상품을 먼저 선택해주세요.");
+                else if (currentStage == 1) setCurrentStage(currentStage + 1);
+                // else
+                else {
+                  if (
+                    !orderSheet?.ordererName ||
+                    !orderSheet?.ordererPhoneNumber ||
+                    !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
+                    !orderSheet?.receiverName ||
+                    !orderSheet?.receiverPhoneNumber ||
+                    !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
+                    !orderSheet?.zipCode
+                  )
+                    alert("주문서를 확인해주세요");
+                  else requestPayment();
+                }
+              }}
+            />
+          </div>
         </div>
       </div>
       {changeOptionsModal && (
@@ -469,6 +451,7 @@ function ItemsList({
   setItems,
   setSelectedItem,
   setChangeOptionsModal,
+  directPayment,
 }) {
   const navigation = useNavigate();
   const isFirstStage = currentStage == 1;
@@ -531,7 +514,15 @@ function ItemsList({
               </div>
               {isFirstStage && (
                 <div className={styles.buy_button_wrap}>
-                  <p className={styles.buy_button}>바로 구매</p>
+                  <p
+                    className={styles.buy_button}
+                    onClick={() => {
+                      setItems([{ ...item, checked: true }]);
+                      directPayment();
+                    }}
+                  >
+                    바로 구매
+                  </p>
                   <div
                     className={styles.delete_button}
                     onClick={() => {
