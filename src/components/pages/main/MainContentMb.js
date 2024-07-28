@@ -40,6 +40,7 @@ export default function MainContentMb() {
     <div className={styles.main_container_mb}>
       <div className="slider-container" style={{ position: "relative" }}>
         <ImageSlider
+          autoplay={false}
           images={[...new Array(totalImages)]}
           currentIndex={currentMainSliderIndex}
           setCurrentIndex={setCurrentMainSliderIndex}

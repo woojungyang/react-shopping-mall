@@ -7,6 +7,9 @@
 
 .item_detail_container {
   margin-top: $header-height * 2;
+  @include tablet {
+    margin-top: $header-height-mb2;
+  }
 
   width: 100%;
   position: relative;
@@ -69,6 +72,9 @@
           width: 100%;
           height: 800px;
           object-fit: cover !important;
+          @include tablet {
+            height: 520px;
+          }
         }
         .slider_button {
           position: absolute;
@@ -118,6 +124,18 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
           }
         }
+        .slider_mobile_pagination {
+          position: absolute;
+          bottom: 10px;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: rgba($color-dark-100, 0.5);
+          color: $color-background-100;
+          padding: $default/2 $padding;
+          border-radius: 40px;
+          letter-spacing: 1px;
+          font-size: 0.9em;
+        }
       }
     }
 
@@ -128,7 +146,7 @@
       flex: 0.8;
       @include tablet {
         margin-top: $margin * 2;
-        width: calc(100% - $padding * 2);
+        width: 100%;
         // padding-left: 0;
         // padding-right: 0;
       }
@@ -147,6 +165,9 @@
         }
         .item_name {
           margin-top: $default;
+          @include tablet {
+            font-size: 1.2em;
+          }
         }
         .review_icon_wrap {
           cursor: pointer;
@@ -720,5 +741,55 @@
     height: 20px;
     @include flex;
     cursor: pointer;
+  }
+}
+
+.mobile_item_detail_container {
+  margin-top: $header-height-mb2;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  padding-bottom: 140px;
+  background-color: pink;
+  .order_bottom_container {
+    position: fixed;
+    z-index: 10;
+
+    background-color: $color-background-100;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -0.3125rem 0.625rem 0 rgba(0, 0, 0, 0.08);
+    .order_info_wrap {
+      height: 48px;
+      padding: 0px $padding;
+      p {
+        color: $color-skeleton-200;
+        font-size: 14px;
+        strong {
+          color: $color-dark-300;
+        }
+      }
+      @include flex($justify-content: space-between);
+    }
+    .like_btn_wrap {
+      width: $default * 8;
+
+      @include flex($direction: column);
+      color: $color-skeleton-200;
+      svg {
+        width: $default * 3;
+        color: $color-skeleton-200;
+      }
+      p {
+        font-size: 0.8em;
+      }
+    }
+    button {
+      margin: 0px !important;
+      height: $margin * 3 !important;
+      font-size: $padding !important;
+    }
   }
 }

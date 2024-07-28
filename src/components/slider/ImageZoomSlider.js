@@ -120,22 +120,30 @@ export const ImageZoomSlider = ({ images = [] }) => {
           setCurrentIndex={setCurrentIndex}
         />
       )}
-      {isDeskTop && (
-        <div className={styles.slider_button}>
-          <KeyboardArrowLeftIcon onClick={previous} />
-          <KeyboardArrowRightIcon onClick={next} />
+      {isDeskTop ? (
+        <>
+          <div className={styles.slider_button}>
+            <KeyboardArrowLeftIcon onClick={previous} />
+            <KeyboardArrowRightIcon onClick={next} />
+          </div>
+          <div className={styles.slider_pagination_wrapper}>
+            {pagerArray.map((e, index) => (
+              <SquarePager
+                key={index}
+                currentIndex={currentIndex}
+                changeSlider={changeSlider}
+                page={e}
+              />
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className={styles.slider_mobile_pagination}>
+          <p>
+            {currentIndex + 1} / {images.length}
+          </p>
         </div>
       )}
-      <div className={styles.slider_pagination_wrapper}>
-        {pagerArray.map((e, index) => (
-          <SquarePager
-            key={index}
-            currentIndex={currentIndex}
-            changeSlider={changeSlider}
-            page={e}
-          />
-        ))}
-      </div>
     </div>
   );
 };
