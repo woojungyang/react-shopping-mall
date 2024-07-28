@@ -52,14 +52,10 @@
     display: flex;
     flex-wrap: wrap;
     transition: flex-direction 0.3s ease;
-    @include tablet {
-      flex-direction: column;
-    }
+
     .item_content_scroll_wrapper {
       flex: 1.2;
-      @include tablet {
-        flex: 1;
-      }
+
       margin-right: $default * 3;
       height: 800px;
       max-width: 100%;
@@ -71,9 +67,6 @@
           width: 100%;
           height: 800px;
           object-fit: cover !important;
-          @include tablet {
-            height: 520px;
-          }
         }
         .slider_button {
           position: absolute;
@@ -131,12 +124,6 @@
       padding-left: $padding;
       padding-right: $padding;
       flex: 0.8;
-      @include tablet {
-        margin-top: $margin * 2;
-        width: 100%;
-        // padding-left: 0;
-        // padding-right: 0;
-      }
 
       .item_header_icon_wrapper {
         @include flex($justify-content: flex-end);
@@ -152,9 +139,6 @@
         }
         .item_name {
           margin-top: $default;
-          @include tablet {
-            font-size: 1.2em;
-          }
         }
         .review_icon_wrap {
           cursor: pointer;
@@ -305,10 +289,6 @@
   margin-top: $margin * 4;
   margin-bottom: $margin * 4;
 
-  @include tablet {
-    @include mobile-boundary;
-    margin-bottom: 0;
-  }
   .recommend_wrapper {
     h3 {
       margin-bottom: $padding;
@@ -320,23 +300,13 @@
         margin-right: 0px;
       }
     }
-    @include tablet {
-      margin-top: $margin * 2;
-      width: calc(100% - $padding * 2);
-      margin: auto;
-      h3 {
-        margin-top: $padding;
-        font-size: $padding;
-      }
-    }
+
     .brand_information_card_wrapper {
       position: relative;
       font-size: 16px;
       overflow: hidden;
       margin-bottom: $default * 2;
-      @include tablet {
-        margin-top: $padding * 2;
-      }
+
       img {
         @include default-image;
         height: 468px;
@@ -389,16 +359,12 @@
   max-width: $max-width;
   margin: auto;
   margin-top: $margin;
-  @include tablet {
-    border-top: 10px solid rgba($color-skeleton-100, 0.3);
-  }
+
   .tab_menu_wrapper {
     display: flex;
     height: $padding * 3;
     font-size: 18px;
-    @include tablet {
-      font-size: 14px;
-    }
+
     cursor: pointer;
 
     .tab_menu_wrap {
@@ -410,17 +376,10 @@
       &:last-child {
         border-right: 0.5px solid rgba($color-skeleton-100, 0.9);
       }
-      @include tablet {
-        border: none;
-      }
     }
     .tab_menu_wrap_active {
       border: 2px solid black !important;
       border-bottom: 0px !important;
-      @include tablet {
-        border: none !important;
-        border-bottom: 2px solid black !important;
-      }
     }
   }
   .detail_content_bottom_wrapper {
@@ -428,9 +387,6 @@
     margin: auto;
     padding-top: $margin * 10;
     padding-bottom: $margin * 10;
-    @include tablet {
-      padding: $margin * 5 $padding;
-    }
   }
   .review_bottom_container {
     @include mobile-boundary;
@@ -441,9 +397,7 @@
       margin: auto;
       text-align: center;
       padding: $margin * 5 0px;
-      @include tablet {
-        padding: $margin * 2 0px;
-      }
+
       .rating_title {
         font-weight: 500;
         font-size: 1.5em;
@@ -451,17 +405,11 @@
           margin-left: $default/2;
           font-size: 0.9em;
         }
-        @include tablet {
-          font-size: 1em;
-        }
       }
       .rating_wrapper {
         margin: auto;
         margin-top: $default * 2;
         @include flex;
-        @include tablet {
-          margin-top: $default;
-        }
 
         .rating_value {
           margin-right: $default;
@@ -472,17 +420,10 @@
           span {
             color: $color-dark-300;
           }
-          @include tablet {
-            font-size: 1em;
-            margin-top: $default/3;
-          }
         }
       }
     }
     .reviews_wrapper {
-      @include tablet {
-        padding: $padding;
-      }
       .detail_review {
         padding-top: $padding;
         padding-bottom: $padding;
@@ -507,29 +448,11 @@
         }
         .detail_second_content {
           height: 100%;
-          @include tablet {
-            margin-left: $padding;
-          }
+
           .detail_review_information {
             @include flex($justify-content: space-between);
             color: $color-skeleton-100;
             font-size: 0.9em;
-            @include tablet {
-              @include flex(
-                $direction: column,
-                $justify-content: flex-start,
-                $align-items: flex-start
-              );
-              .detail_review_writer {
-                margin-top: $default/2;
-                span {
-                  width: 100%;
-                  display: inline-block;
-                  line-height: 140%;
-                }
-              }
-              font-size: 0.8em;
-            }
           }
           .written_review {
             margin-top: $padding;
@@ -544,15 +467,7 @@
   }
 
   .questions_container {
-    @include tablet {
-      @include mobile-boundary;
-      margin-bottom: 0;
-    }
     .questions_wrapper {
-      @include tablet {
-        padding: $padding;
-      }
-
       .question_detail_wrap {
         font-size: 16px;
         @include flex($justify-content: space-between);
@@ -572,12 +487,6 @@
           span {
             margin-left: $margin;
           }
-          @include tablet {
-            flex-direction: column;
-            span {
-              margin-left: 0;
-            }
-          }
         }
         .question_detail_content {
           @include flex;
@@ -591,9 +500,6 @@
           }
           p {
             @include overflow-text;
-          }
-          @include tablet {
-            font-size: 14px;
           }
         }
       }
@@ -952,12 +858,6 @@
         &:last-child {
           border-right: 0.5px solid rgba($color-skeleton-100, 0.9);
         }
-        @include tablet {
-          border: none;
-          &:last-child {
-            border-right: none;
-          }
-        }
       }
       .tab_menu_wrap_active {
         border: none !important;
@@ -1002,17 +902,10 @@
             span {
               color: $color-dark-300;
             }
-            @include tablet {
-              font-size: 1em;
-              margin-top: $default/3;
-            }
           }
         }
       }
       .reviews_wrapper {
-        @include tablet {
-          padding: $padding;
-        }
         .detail_review {
           padding-top: $padding;
           padding-bottom: $padding;
@@ -1037,36 +930,15 @@
           }
           .detail_second_content {
             height: 100%;
-            @include tablet {
-              margin-left: $padding;
-            }
+
             .detail_review_information {
               @include flex($justify-content: space-between);
               color: $color-skeleton-100;
               font-size: 0.9em;
-              @include tablet {
-                @include flex(
-                  $direction: column,
-                  $justify-content: flex-start,
-                  $align-items: flex-start
-                );
-                .detail_review_writer {
-                  margin-top: $default/2;
-                  span {
-                    width: 100%;
-                    display: inline-block;
-                    line-height: 140%;
-                  }
-                }
-                font-size: 0.8em;
-              }
             }
             .written_review {
               margin-top: $padding;
               line-height: 160%;
-              @include tablet {
-                font-size: 0.9em;
-              }
             }
           }
         }
@@ -1120,9 +992,8 @@
             p {
               @include overflow-text;
             }
-            @include tablet {
-              font-size: 14px;
-            }
+
+            font-size: 14px;
           }
         }
       }
