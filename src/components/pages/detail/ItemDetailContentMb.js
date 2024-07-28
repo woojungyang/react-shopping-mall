@@ -1,38 +1,19 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import { ChevronLeft } from "@mui/icons-material";
-import CloseIcon from "@mui/icons-material/Close";
-import EastIcon from "@mui/icons-material/East";
-import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
-import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import ShareIcon from "@mui/icons-material/Share";
-import { Drawer, Rating } from "@mui/material";
-import classNames from "classnames";
-import { Device } from "models/device";
+import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import { getQuestionStateLabel } from "models/notice";
 import { useNavigate } from "react-router-dom";
-import { maskAccountName, numberWithCommas, scrollTop } from "utilities";
+import { maskAccountName, numberWithCommas } from "utilities";
 
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import { useScrollToElement } from "hooks/scroll/useScrollToElement";
-import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard, LikeHeart } from "components/card";
-import {
-  DefaultPagination,
-  ListContent,
-  MobileLayout,
-} from "components/common";
-import { CommonLayout, DefaultButton } from "components/common";
-import {
-  ColorOptions,
-  DetailContentWrapper,
-  QuantityOptions,
-  SizeOptions,
-} from "components/detail";
+import { DefaultPagination, MobileLayout } from "components/common";
+import { DefaultButton } from "components/common";
+import { OptionsMobile } from "components/detail";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
 import { formatDateTime, now } from "utilities/dateTime";
@@ -47,10 +28,6 @@ import TabsWrapper from "./TabsWrapper";
 export default function ItemDetailContentMb() {
   const navigation = useNavigate();
 
-  const userDevice = useUserDevice();
-  const isDeskTop = userDevice == Device.Desktop;
-  const colorOptions = [...new Array(3)];
-
   const [toggleDelivery, setToggleDelivery] = useState(false);
   const [deliveryModal, setDeliveryModal] = useState(false);
 
@@ -60,9 +37,6 @@ export default function ItemDetailContentMb() {
     color: 0,
     quantity: 1,
   });
-
-  const sizeOptions = [...new Array(5)];
-  const disabled_size = 4;
 
   const toggleDrawer = (newOpen) => () => {
     setDeliveryModal(newOpen);
@@ -91,14 +65,25 @@ export default function ItemDetailContentMb() {
 
   const { scrollToElement, setElementRef } = useScrollToElement();
 
+  const [showOptionModal, setShowOptionModal] = useState(false);
+  const [optionsChanges, setOptionChanges] = useState({});
+
   useEffect(() => {
     setTimeout(() => {
       if (detailRef.current) {
         const clientHeight = detailRef.current.clientHeight;
-        setMoreContents(clientHeight > (isDeskTop ? 1499 : 500));
+        setMoreContents(clientHeight > 500);
       }
     }, 0);
   }, []);
+
+  useEffect(() => {
+    if (showOptionModal) document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showOptionModal]);
 
   return (
     <MobileLayout>
@@ -108,9 +93,30 @@ export default function ItemDetailContentMb() {
         </div>
         <div className={styles.item_content_information_wrapper}>
           <div className={styles.item_header_wrapper}>
-            <span className={styles.item_brand_name}>
-              brandName | WXWP30644-BKS{" "}
-            </span>
+            <div className={styles.item_brand_name}>
+              <p>brandName</p>
+              <KeyboardArrowRightIcon />
+            </div>
+            <div className={styles.review_wrap}>
+              <div className={styles.rating_wrap}>
+                <ReviewRating
+                  size={"1.2em"}
+                  value={1}
+                  color="#F27A46"
+                  readOnly
+                />
+                <strong>4.0</strong>
+              </div>
+              <p
+                className={styles.review_flag_button}
+                onClick={() => scrollToElement("review")}
+              >
+                {numberWithCommas(1)}개 리뷰
+                <KeyboardArrowRightIcon />
+              </p>
+
+              <ShareOutlinedIcon className={styles.share_icon} />
+            </div>{" "}
             <h1 className={styles.item_name}>자가드 포켓 우븐 팬츠</h1>
           </div>
           <div className={styles.price_information_wrapper}>
@@ -122,26 +128,23 @@ export default function ItemDetailContentMb() {
               <strong>{numberWithCommas(149000)}</strong>원
             </p>
           </div>
-          <div className={styles.review_wrap}>
-            <div className={styles.rating_wrap}>
-              <ReviewRating size={"1.2em"} value={1} color="#F27A46" readOnly />
-              <strong>4.0</strong>
-            </div>
-            <p className={styles.review_flag_button}>
-              {numberWithCommas(1)}개 리뷰
-              <KeyboardArrowRightIcon />
-            </p>
-          </div>
+
           <div className={styles.delivery_wrap}>
-            <p className={styles.title}>배송정보</p>
-            <div className={styles.delivery_content}>
-              <p>결제완료 후 평균 3일이내 출고 (공휴일 주문 건 제외)</p>
-              <p>제작기간이 별도로 소요되는 상품의 경우 상세페이지 참조.</p>
-              <p className={styles.delivery_more_information}>
-                <span onClick={toggleDrawer(true)}>
-                  배송/교환/반품/AS 관련 유의사항
-                </span>
-              </p>
+            <div>
+              <p className={styles.title}>상품명</p>
+              <p className={styles.delivery_content}>상품코드</p>
+            </div>
+            <div>
+              <p className={styles.title}>배송정보</p>
+              <div className={styles.delivery_content}>
+                <p>결제완료 후 평균 3일이내 출고 (공휴일 주문 건 제외)</p>
+                <p>제작기간이 별도로 소요되는 상품의 경우 상세페이지 참조</p>
+                <p className={styles.delivery_more_information}>
+                  <span onClick={toggleDrawer(true)}>
+                    배송/교환/반품/AS 관련 유의사항
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -155,7 +158,7 @@ export default function ItemDetailContentMb() {
                   src={require(`assets/images/sub/sub${index + 1}.jpg`)}
                   key={index}
                   style={{
-                    height: isDeskTop ? 200 : 150,
+                    height: 150,
                     width: "100%",
                     minWidth: 120,
                   }}
@@ -171,7 +174,7 @@ export default function ItemDetailContentMb() {
               className={styles.detail_content_bottom_wrapper}
               ref={detailRef}
               style={{
-                maxHeight: !moreContents ? "100%" : isDeskTop ? 1500 : 700,
+                maxHeight: !moreContents ? "100%" : 700,
                 overflow: "hidden",
               }}
             >
@@ -201,28 +204,11 @@ export default function ItemDetailContentMb() {
           <div
             className={styles.mobile_recommend_container}
             style={{
-              marginBottom: 50,
+              marginBottom: 30,
             }}
           >
             <div className={styles.recommend_wrapper}>
-              <div className={styles.brand_information_card_wrapper}>
-                <img src={require(`assets/images/main/main10.jpg`)} alt="" />
-                <div className={styles.brand_information_content}>
-                  <div className={styles.brand_texts}>
-                    <p>브랜드명</p>
-                    <h1>brandname</h1>
-                    <h4>트렌드에 따라 유연하게 변화하는 컨템포러리 브랜드</h4>
-                    <div className={styles.preference_wrapper}>
-                      <LikeHeart position={{ position: "relative" }} />
-                      <span>12345</span>
-                    </div>
-                  </div>
-                  <DefaultButton className={styles.brand_home_button}>
-                    Brand Home
-                    <EastIcon />
-                  </DefaultButton>
-                </div>
-              </div>
+              <h3>Related items </h3>
               <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
                 {brandItems.map((item, index) => (
                   <ItemCard
@@ -250,35 +236,31 @@ export default function ItemDetailContentMb() {
                     상품 평균 만족도<span>(481)</span>
                   </p>
                   <div className={styles.rating_wrapper}>
-                    <ReviewRating
-                      size={isDeskTop ? "2.5em" : "1.5em"}
-                      value={2}
-                    />
+                    <ReviewRating size={"2em"} value={2} />
                     <span className={styles.rating_value}>
-                      <span>5</span> / 5.0
+                      <p>
+                        5 <span> / 5.0</span>
+                      </p>
                     </span>
                   </div>
                 </div>
                 <div className={styles.reviews_wrapper}>
                   {reviews.map((review, index) => (
                     <div className={styles.detail_review} key={index}>
-                      <div className={styles.detail_first_content}>
+                      <div className={styles.default_flex_space}>
                         <ReviewRating value={2} />
+                        <span className={styles.writer_info}>
+                          {maskAccountName("username")}
+                        </span>
+                      </div>
+                      <div className={styles.user_option_wrap}>
+                        skinny 05 mute brown
+                      </div>
+                      <div className={styles.review_content_wrap}>
                         <img
                           src={require(`assets/images/main/main10.jpg`)}
                           alt=""
                         />
-                      </div>
-                      <div className={styles.detail_second_content}>
-                        <div className={styles.detail_review_information}>
-                          <p>구매옵션 : skinny 05 mute brown</p>
-                          <div className={styles.detail_review_writer}>
-                            <span style={{ marginRight: 10 }}>
-                              {maskAccountName("username")}
-                            </span>
-                            <span>{formatDateTime(now())}</span>
-                          </div>
-                        </div>
                         <p className={styles.written_review}>
                           Lorem ipsum dolor sit amet consectetur adipisicing
                           elit. Ut dolore facilis odit assumenda id minima
@@ -340,7 +322,6 @@ export default function ItemDetailContentMb() {
         </div>
 
         <div className={styles.order_bottom_container}>
-          {/* <div className={styles.order_info_wrap}></div> */}
           <div className={styles.default_flex}>
             <div className={styles.like_btn_wrap}>
               <LikeHeart
@@ -349,10 +330,30 @@ export default function ItemDetailContentMb() {
               />
               <p>234</p>
             </div>
-            <DefaultButton label="구매하기" onClick={() => {}} />
+            <DefaultButton
+              label="구매하기"
+              onClick={() => setShowOptionModal(true)}
+            />
           </div>
         </div>
         <DeliveryDrawer visible={deliveryModal} setVisible={setDeliveryModal} />
+        {showOptionModal && (
+          <OptionsMobile
+            setVisible={setShowOptionModal}
+            optionsChanges={showOptionModal}
+            setOptionChanges={setOptionChanges}
+            leftButton={{
+              label: "바로구매",
+              onClick: () => {},
+            }}
+            rightButton={{
+              label: "쇼핑백에 담기",
+              onClick: () => {
+                setShowOptionModal(false);
+              },
+            }}
+          />
+        )}
       </div>
     </MobileLayout>
   );

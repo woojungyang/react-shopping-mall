@@ -7,15 +7,12 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ShareIcon from "@mui/icons-material/Share";
 import { Rating } from "@mui/material";
-import classNames from "classnames";
-import { Device } from "models/device";
 import { getQuestionStateLabel } from "models/notice";
 import { useNavigate } from "react-router-dom";
 import { maskAccountName, numberWithCommas, scrollTop } from "utilities";
 
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import { useScrollToElement } from "hooks/scroll/useScrollToElement";
-import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard, LikeHeart } from "components/card";
 import { DefaultPagination, ListContent } from "components/common";
@@ -40,8 +37,6 @@ import TabsWrapper from "./TabsWrapper";
 export default function ItemDetailContent() {
   const navigation = useNavigate();
 
-  const userDevice = useUserDevice();
-  const isDeskTop = userDevice == Device.Desktop;
   const colorOptions = [...new Array(3)];
 
   const [toggleDelivery, setToggleDelivery] = useState(false);
@@ -55,7 +50,6 @@ export default function ItemDetailContent() {
   });
 
   const sizeOptions = [...new Array(5)];
-  const disabled_size = 4;
 
   const toggleDrawer = (newOpen) => () => {
     setDeliveryModal(newOpen);
@@ -88,7 +82,7 @@ export default function ItemDetailContent() {
     setTimeout(() => {
       if (detailRef.current) {
         const clientHeight = detailRef.current.clientHeight;
-        setMoreContents(clientHeight > (isDeskTop ? 1499 : 500));
+        setMoreContents(clientHeight > 1499);
       }
     }, 0);
   }, []);
@@ -97,11 +91,6 @@ export default function ItemDetailContent() {
     <CommonLayout>
       <div className={styles.item_detail_container}>
         <div className={styles.item_bottom_navigation}>
-          {!isDeskTop && (
-            <div className={styles.navigation_button}>
-              <LikeHeart defaultColor="dark" position={{ top: "3%" }} />
-            </div>
-          )}
           <div className={styles.navigation_button}>
             <ShareIcon style={{ width: "1em", height: "1em" }} />
           </div>
@@ -124,15 +113,14 @@ export default function ItemDetailContent() {
             <ImageZoomSlider images={[...new Array(9)]} />
           </div>
           <div className={styles.item_content_information_wrapper}>
-            {isDeskTop && (
-              <div className={styles.item_header_icon_wrapper}>
-                <LikeHeart
-                  defaultColor="dark"
-                  position={{ position: "relative" }}
-                />
-                9.1만
-              </div>
-            )}
+            <div className={styles.item_header_icon_wrapper}>
+              <LikeHeart
+                defaultColor="dark"
+                position={{ position: "relative" }}
+              />
+              9.1만
+            </div>
+
             <div className={styles.item_header_wrapper}>
               <span className={styles.item_brand_name}>
                 brandName | WXWP30644-BKS{" "}
@@ -253,7 +241,7 @@ export default function ItemDetailContent() {
                   src={require(`assets/images/sub/sub${index + 1}.jpg`)}
                   key={index}
                   style={{
-                    height: isDeskTop ? 200 : 150,
+                    height: 200,
                     width: "100%",
                     minWidth: 120,
                   }}
@@ -269,7 +257,7 @@ export default function ItemDetailContent() {
               className={styles.detail_content_bottom_wrapper}
               ref={detailRef}
               style={{
-                maxHeight: !moreContents ? "100%" : isDeskTop ? 1500 : 700,
+                maxHeight: !moreContents ? "100%" : 1500,
                 overflow: "hidden",
               }}
             >
@@ -299,7 +287,7 @@ export default function ItemDetailContent() {
           <div
             className={styles.recommend_container}
             style={{
-              marginBottom: isDeskTop ? 150 : 50,
+              marginBottom: 150,
             }}
           >
             <div className={styles.recommend_wrapper}>
@@ -328,8 +316,8 @@ export default function ItemDetailContent() {
                     showBrand={false}
                     product={item}
                     style={{
-                      height: isDeskTop ? 300 : 200,
-                      minWidth: isDeskTop ? 100 : 200,
+                      height: 300,
+                      minWidth: 100,
                     }}
                   />
                 ))}
@@ -348,10 +336,7 @@ export default function ItemDetailContent() {
                     상품 평균 만족도<span>(481)</span>
                   </p>
                   <div className={styles.rating_wrapper}>
-                    <ReviewRating
-                      size={isDeskTop ? "2.5em" : "1.5em"}
-                      value={2}
-                    />
+                    <ReviewRating size={"2.5em"} value={2} />
                     <span className={styles.rating_value}>
                       <span>5</span> / 5.0
                     </span>
