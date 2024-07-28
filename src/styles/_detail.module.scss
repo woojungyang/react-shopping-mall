@@ -2,7 +2,6 @@
 
 @mixin mobile-boundary {
   border-top: 10px solid rgba($color-skeleton-100, 0.3);
-  margin-top: $margin * 2;
 }
 
 .item_detail_container {
@@ -123,18 +122,6 @@
             pointer-events: none;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
           }
-        }
-        .slider_mobile_pagination {
-          position: absolute;
-          bottom: 10px;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background-color: rgba($color-dark-100, 0.5);
-          color: $color-background-100;
-          padding: $default/2 $padding;
-          border-radius: 40px;
-          letter-spacing: 1px;
-          font-size: 0.9em;
         }
       }
     }
@@ -752,7 +739,155 @@
   position: relative;
   width: 100%;
   padding-bottom: 140px;
-  background-color: pink;
+
+  .item_content_scroll_wrapper {
+    margin-right: $default * 3;
+    width: 100%;
+    .image_zoom_container {
+      position: relative;
+      width: 100%;
+      img {
+        width: 100%;
+        object-fit: cover !important;
+        height: 520px;
+      }
+      .slider_mobile_pagination {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba($color-dark-100, 0.5);
+        color: $color-background-100;
+        padding: $default/2 $padding;
+        border-radius: 40px;
+        letter-spacing: 1px;
+        font-size: 0.9em;
+      }
+    }
+  }
+  .item_content_information_wrapper {
+    width: 100%;
+    padding-left: $padding;
+    padding-right: $padding;
+
+    margin-top: $margin;
+    width: 100%;
+
+    .item_header_wrapper {
+      .item_brand_name {
+        width: 100%;
+        font-size: 0.9em;
+        color: $color-skeleton-200;
+        font-weight: 400;
+      }
+      .item_name {
+        margin-top: $default;
+        padding-top: $padding;
+        padding-bottom: $padding;
+
+        border-top: 1px solid rgba($color-skeleton-100, 0.5);
+
+        font-size: 1.2em;
+      }
+    }
+    .price_information_wrapper {
+      width: 100%;
+
+      .total_price {
+        margin-top: $default/2;
+        font-size: 20px;
+        strong {
+          font-size: 22px;
+        }
+      }
+      .original_price {
+        text-decoration: line-through;
+        font-size: 14px;
+        color: $color-skeleton-100;
+      }
+      .sale_percent {
+        text-decoration: none !important;
+        color: $color-orange;
+        font-weight: 800;
+        font-size: 18px;
+        margin-right: $default/2;
+      }
+    }
+    .review_wrap {
+      margin: $margin 0px;
+      @include flex($justify-content: flex-start);
+      .rating_wrap {
+        strong {
+          margin-left: $default/2;
+        }
+        @include flex($justify-content: flex-start);
+      }
+      .review_flag_button {
+        margin-left: $padding;
+        font-size: 0.8em;
+        color: $color-skeleton-200;
+        svg {
+          width: $padding;
+          height: $padding;
+        }
+        @include flex($justify-content: flex-start);
+      }
+    }
+
+    .item_code {
+      width: 100%;
+      font-size: 13px;
+    }
+    .delivery_wrap {
+      border-top: 1px solid rgba($color-skeleton-100, 0.5);
+      padding: $padding 0px;
+      @include flex($justify-content: flex-start, $align-items: flex-start);
+
+      font-size: 14px;
+      .title {
+        color: $color-skeleton-100;
+        flex-shrink: 0;
+        margin-right: $margin;
+      }
+      .delivery_content {
+        color: $color-skeleton-200;
+        line-height: 160%;
+        .delivery_more_information {
+          margin-top: $padding;
+          font-size: 13px;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    // .color_option_thumbnail {
+    //   @include default-image;
+    //   margin: $default/2;
+    // }
+  }
+  .mobile_recommend_container {
+    width: 100%;
+
+    @include mobile-boundary;
+
+    .recommend_wrapper {
+      padding: 0px $padding;
+      img {
+        cursor: pointer;
+        margin-right: $default;
+        &:last-child {
+          margin-right: 0px;
+        }
+      }
+      margin-top: $margin * 2;
+      width: 100%;
+      margin: auto;
+      h3 {
+        margin: $padding 0px;
+        font-size: $padding;
+      }
+    }
+  }
   .order_bottom_container {
     position: fixed;
     z-index: 10;
