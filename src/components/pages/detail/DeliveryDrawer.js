@@ -7,7 +7,7 @@ import { ListContent } from "components/common";
 
 import styles from "styles/_detail.module.scss";
 
-export const DeliveryDrawer = ({ visible, setVisible }) => {
+export default function DeliveryDrawer({ visible, setVisible }) {
   const toggleDrawer = (newOpen) => () => {
     setVisible(newOpen);
   };
@@ -68,7 +68,7 @@ export const DeliveryDrawer = ({ visible, setVisible }) => {
       </div>
     </Drawer>
   );
-};
+}
 
 function DrawerContentWrapper({ children, title }) {
   return (

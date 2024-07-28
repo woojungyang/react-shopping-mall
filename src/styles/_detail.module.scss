@@ -433,11 +433,8 @@
     }
   }
   .review_bottom_container {
-    margin-bottom: $margin * 5;
-    @include tablet {
-      @include mobile-boundary;
-      margin-bottom: 0;
-    }
+    @include mobile-boundary;
+    margin-bottom: 0;
 
     .review_bottom_wrapper {
       max-width: $breakpoint-tablet;
@@ -608,9 +605,6 @@
   bottom: 0;
   margin: auto;
   width: 100%;
-  @include tablet {
-    width: calc(100% - $padding * 2);
-  }
 }
 .empty_list_wrapper {
   margin-top: $margin * 2;
@@ -738,7 +732,7 @@
   flex-direction: column;
   position: relative;
   width: 100%;
-  padding-bottom: 140px;
+  padding-bottom: 100px;
 
   .item_content_scroll_wrapper {
     margin-right: $default * 3;
@@ -885,6 +879,252 @@
       h3 {
         margin: $padding 0px;
         font-size: $padding;
+      }
+    }
+    .brand_information_card_wrapper {
+      position: relative;
+      font-size: 16px;
+      overflow: hidden;
+
+      margin-top: $padding * 2;
+
+      img {
+        @include default-image;
+        height: 468px;
+      }
+      .brand_texts {
+        padding-top: $padding * 4;
+        h1 {
+          margin-top: $default;
+          margin-bottom: $margin;
+        }
+        .preference_wrapper {
+          margin-top: $margin;
+          span {
+            font-size: 0.8em;
+          }
+        }
+      }
+      .brand_information_content {
+        position: absolute;
+        color: $color-background-100;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 468px;
+        padding-left: $padding * 4;
+        padding-right: $padding * 4;
+
+        // padding: $padding * 4;
+        background-color: rgba($color-dark-300, 0.4);
+        .brand_home_button {
+          cursor: pointer;
+          position: absolute;
+          bottom: 10%;
+          max-width: 210px;
+          width: 100%;
+          @include flex($justify-content: space-between);
+          height: 51px;
+          padding: $default;
+          border: 1px solid $color-background-100;
+          background-color: transparent;
+          color: $color-background-100;
+        }
+      }
+    }
+  }
+  .mobile_tab_menu_container {
+    margin-top: $margin;
+
+    border-top: 10px solid rgba($color-skeleton-100, 0.3);
+
+    .tab_menu_wrapper {
+      display: flex;
+      height: $padding * 3;
+
+      font-size: 14px;
+      .tab_menu_wrap {
+        width: 100%;
+        @include flex;
+        border: 0.5px solid rgba($color-skeleton-100, 0.9);
+        border-right: 0px;
+        border-bottom: 2px solid black;
+        &:last-child {
+          border-right: 0.5px solid rgba($color-skeleton-100, 0.9);
+        }
+        @include tablet {
+          border: none;
+          &:last-child {
+            border-right: none;
+          }
+        }
+      }
+      .tab_menu_wrap_active {
+        border: none !important;
+        border-bottom: 2px solid black !important;
+      }
+    }
+    .detail_content_bottom_wrapper {
+      max-width: $breakpoint-tablet;
+      margin: auto;
+      padding: $margin * 5 $padding;
+    }
+    .review_bottom_container {
+      @include mobile-boundary;
+      margin-bottom: $margin;
+
+      .review_bottom_wrapper {
+        max-width: $breakpoint-tablet;
+        margin: auto;
+        text-align: center;
+        padding: $margin * 2 0px;
+
+        .rating_title {
+          font-weight: 500;
+          span {
+            margin-left: $default/2;
+            font-size: 0.9em;
+          }
+
+          font-size: 1em;
+        }
+        .rating_wrapper {
+          margin: auto;
+          @include flex;
+          margin-top: $default;
+
+          .rating_value {
+            margin-right: $default;
+            margin-top: $default;
+            font-weight: 600;
+            color: $color-skeleton-200;
+            font-size: 2em;
+            span {
+              color: $color-dark-300;
+            }
+            @include tablet {
+              font-size: 1em;
+              margin-top: $default/3;
+            }
+          }
+        }
+      }
+      .reviews_wrapper {
+        @include tablet {
+          padding: $padding;
+        }
+        .detail_review {
+          padding-top: $padding;
+          padding-bottom: $padding;
+
+          @include flex(
+            $justify-content: space-between,
+            $align-items: flex-start
+          );
+          border-bottom: 1px solid $color-skeleton-100;
+          &:first-child {
+            border-top: 2px solid $color-dark-100;
+          }
+          &:last-child {
+            border-bottom: 2px solid $color-dark-100;
+          }
+          .detail_first_content {
+            img {
+              @include default-image;
+              width: 100px;
+              height: 100px;
+            }
+          }
+          .detail_second_content {
+            height: 100%;
+            @include tablet {
+              margin-left: $padding;
+            }
+            .detail_review_information {
+              @include flex($justify-content: space-between);
+              color: $color-skeleton-100;
+              font-size: 0.9em;
+              @include tablet {
+                @include flex(
+                  $direction: column,
+                  $justify-content: flex-start,
+                  $align-items: flex-start
+                );
+                .detail_review_writer {
+                  margin-top: $default/2;
+                  span {
+                    width: 100%;
+                    display: inline-block;
+                    line-height: 140%;
+                  }
+                }
+                font-size: 0.8em;
+              }
+            }
+            .written_review {
+              margin-top: $padding;
+              line-height: 160%;
+              @include tablet {
+                font-size: 0.9em;
+              }
+            }
+          }
+        }
+      }
+    }
+    .detail_more_button_wrapper {
+      width: 100%;
+      padding: 0 $padding;
+      padding-bottom: $margin * 4;
+    }
+
+    .questions_container {
+      @include mobile-boundary;
+      margin-bottom: 0;
+
+      .questions_wrapper {
+        padding: $padding;
+
+        .question_detail_wrap {
+          font-size: 16px;
+          @include flex($justify-content: space-between);
+          height: 60px;
+          border-bottom: 1px solid rgba($color-skeleton-100, 0.3);
+          &:last-child {
+            border-bottom: 1px solid $color-dark-300;
+          }
+          // &:first-child {
+          //   border-top: 1px solid $color-dark-300;
+          // }
+          .question_detail_information {
+            flex-shrink: 0;
+            display: flex;
+            font-size: 0.9em;
+            color: $color-skeleton-200;
+
+            flex-direction: column;
+            span {
+              margin-left: 0;
+            }
+          }
+          .question_detail_content {
+            @include flex;
+            span {
+              flex-shrink: 0;
+              margin-right: $margin;
+              font-size: 0.6em;
+              background-color: $color-dark-300;
+              color: $color-background-100;
+              padding: $default/2;
+            }
+            p {
+              @include overflow-text;
+            }
+            @include tablet {
+              font-size: 14px;
+            }
+          }
+        }
       }
     }
   }

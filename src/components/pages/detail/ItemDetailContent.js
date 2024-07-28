@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import CloseIcon from "@mui/icons-material/Close";
 import EastIcon from "@mui/icons-material/East";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ShareIcon from "@mui/icons-material/Share";
-import { Drawer, Rating } from "@mui/material";
+import { Rating } from "@mui/material";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { getQuestionStateLabel } from "models/notice";
@@ -33,7 +32,10 @@ import { formatDateTime, now } from "utilities/dateTime";
 
 import styles from "styles/_detail.module.scss";
 
-import { DeliveryDrawer } from "./DeliveryDrawer";
+import DeliveryDrawer from "./DeliveryDrawer";
+import EmptyList from "./EmptyList";
+import ReviewRating from "./ReviewRating";
+import TabsWrapper from "./TabsWrapper";
 
 export default function ItemDetailContent() {
   const navigation = useNavigate();
@@ -437,58 +439,5 @@ export default function ItemDetailContent() {
         <DeliveryDrawer visible={deliveryModal} setVisible={setDeliveryModal} />
       </div>
     </CommonLayout>
-  );
-}
-
-function TabsWrapper({ activeTab, scrollToElement }) {
-  const tabMenus = [
-    { label: "detail" },
-    { label: "review", count: 0 },
-    { label: "q&a", count: 1 },
-  ];
-
-  return (
-    <div className={styles.tab_menu_wrapper}>
-      {tabMenus.map((tab, index) => (
-        <div
-          onClick={() => scrollToElement(tab.label)}
-          key={index}
-          className={classNames({
-            [styles.tab_menu_wrap]: true,
-            [styles.tab_menu_wrap_active]: activeTab == tab.label,
-          })}
-        >
-          <p>
-            {tab.label.toUpperCase()}
-            {!!tab.count ? `(${tab.count})` : ""}{" "}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ReviewRating({ size = "1em", value = 0 }) {
-  return (
-    <Rating
-      name="half-rating-read"
-      defaultValue={value}
-      precision={0.5}
-      readOnly
-      sx={{
-        fontSize: size,
-        color: "black",
-      }}
-    />
-  );
-}
-
-function EmptyList({ comment = "" }) {
-  return (
-    <div className={styles.empty_list_wrapper}>
-      <div className={styles.empty_review_wrap}>
-        <p>{comment}</p>
-      </div>
-    </div>
   );
 }
