@@ -535,13 +535,16 @@
   height: 100vh;
   .drawer_header {
     width: 100%;
-    @include flex($justify-content: space-between);
+    position: relative;
     margin-bottom: $margin * 3;
     p {
       font-weight: 500;
       font-size: 1.2em;
     }
     .close_button {
+      position: absolute;
+      right: 0;
+      top: -20px;
       cursor: pointer;
     }
   }
@@ -553,6 +556,7 @@
       margin-bottom: $padding;
     }
     .brand_information {
+      margin-top: $padding;
       font-size: 0.9em;
       line-height: 160%;
       padding-bottom: 100px;

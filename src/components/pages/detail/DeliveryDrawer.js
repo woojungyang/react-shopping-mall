@@ -2,6 +2,7 @@ import React from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { Drawer } from "@mui/material";
+import { CustomOverlayMap, Map } from "react-kakao-maps-sdk";
 
 import { ListContent } from "components/common";
 
@@ -58,11 +59,30 @@ export default function DeliveryDrawer({ visible, setVisible }) {
           <ListContent content="제품이 반송된 후 당사에서 회수처리가 완료된 후 교환 및 환불처리가 진행 됩니다." />
         </DrawerContentWrapper>
         <DrawerContentWrapper title="교환 및 반품 주소">
+          <Map
+            center={{ lat: 37.566295, lng: 126.977945 }}
+            style={{ width: "100%", height: "300px" }}
+            level={2}
+          >
+            <CustomOverlayMap position={{ lat: 37.566295, lng: 126.977945 }}>
+              <div
+                className="overlay"
+                style={{
+                  backgroundColor: "#FF8C00",
+                  color: "white",
+                  padding: "5px",
+                  borderRadius: "5px",
+                }}
+              >
+                Here!
+              </div>
+            </CustomOverlayMap>
+          </Map>
           <p className={styles.brand_information}>
-            하이츠스토어
-            <br /> (04043) 서울시 마포구 양화로12길 16-8 2층
+            브랜드명
+            <br /> (04524) 서울특별시 중구 세종대로 110 (태평로1가, 서울시청)
             <br />
-            help@heights-store.com
+            help@example.com
           </p>
         </DrawerContentWrapper>
       </div>

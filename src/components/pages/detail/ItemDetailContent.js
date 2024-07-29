@@ -151,8 +151,7 @@ export default function ItemDetailContent() {
                   onClick={() => setToggleDelivery(!toggleDelivery)}
                 >
                   <p>
-                    {numberWithCommas(30000)}원 이상 구매시 무료 (도서산간 추가{" "}
-                    {numberWithCommas(3000)}) <br />
+                    무료 (도서산간 추가 {numberWithCommas(3000)}) <br />
                     <span className={styles.delivery_description}>
                       <span className={styles.delivery_}>{today} 도착예정</span>{" "}
                       (지금 결제 시)
