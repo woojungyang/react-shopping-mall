@@ -16,7 +16,7 @@ export default function MyPageContentMb() {
   ];
 
   const menuList = [
-    { id: 1, label: "주문내역" },
+    { id: 1, label: "주문관리" },
     { id: 2, label: "리뷰 작성" },
     { id: 3, label: "상품 Q&A" },
     { id: 4, label: "1:1문의 내역" },
