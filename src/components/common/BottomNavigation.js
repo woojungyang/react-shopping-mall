@@ -13,18 +13,34 @@ export default function BottomNavigation() {
   const navigation = useNavigate();
 
   const bottomMenu = [
-    { id: 1, name: "카테고리", onClick: () => {}, icon: <ManageSearchIcon /> },
-    { id: 2, name: "브랜드", onClick: () => {}, icon: <StoreIcon /> },
+    {
+      id: 1,
+      name: "카테고리",
+      onClick: () => alert("준비중입니다"),
+      icon: <ManageSearchIcon />,
+    },
+    {
+      id: 2,
+      name: "브랜드",
+      onClick: () => alert("준비중입니다"),
+
+      icon: <StoreIcon />,
+    },
     {
       id: 3,
       name: "홈",
-      onClick: () => {
-        navigation(`/login`);
-      },
+      onClick: () => navigation(`/`),
+
       icon: <HomeIcon />,
     },
     { id: 4, name: "좋아요", onClick: () => {}, icon: <FavoriteBorderIcon /> },
-    { id: 5, name: "마이", onClick: () => {}, icon: <PersonIcon /> },
+    {
+      id: 5,
+      name: "마이",
+      onClick: () => navigation(`/mypage`),
+
+      icon: <PersonIcon />,
+    },
   ];
 
   return (

@@ -8,10 +8,15 @@ import { scrollTop } from "utilities";
 
 import styles from "styles/_common.module.scss";
 
+import BottomNavigation from "./BottomNavigation";
+import Footer from "./Footer";
+
 export const MobileLayout = ({
   headerTitle = "",
   children,
   showIcon = true,
+  isFooter = false,
+  isBottomNavigation = false,
 }) => {
   const [position, setPosition] = useState(0);
   const switchPosition = position > 50;
@@ -41,6 +46,8 @@ export const MobileLayout = ({
           <KeyboardArrowUpIcon />
         </div>
       )}
+      {isBottomNavigation && <BottomNavigation />}
+      {isFooter && <Footer />}
     </div>
   );
 };

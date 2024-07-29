@@ -6,6 +6,7 @@ import ItemDetail from "pages/ItemDetail";
 import Join from "pages/Join";
 import Login from "pages/Login";
 import Main from "pages/Main";
+import MyPage from "pages/MyPage";
 import NotFound from "pages/NotFound";
 import Payment from "pages/Payment";
 import Search from "pages/Search";
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
   {
     path: "/payment",
     element: <Payment />,
+  },
+  {
+    path: "/mypage",
+    element: <MyPage />,
   },
   {
     path: "*",

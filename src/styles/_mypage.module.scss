@@ -1,0 +1,86 @@
+@import "./common.module";
+
+.mypage_container {
+  max-width: $max-width;
+  width: 100%;
+  margin: auto;
+
+  height: 100%;
+
+  flex-grow: 1;
+
+  flex-direction: column;
+
+  margin-top: $header-height * 2;
+}
+
+.mobile_mypage_container {
+  margin-top: $header-height-mb2;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  position: relative;
+  padding: 0 $padding;
+  width: 100%;
+
+  // background-color: rgba($color-skeleton-100, 0.1);
+  .profile_wrapper {
+    @include flex($direction: column);
+    .avatar {
+      margin-top: $margin * 4;
+      @include default-image;
+      width: 100px;
+      height: 100px;
+      border-radius: 20px;
+    }
+    .nickname {
+      margin: $margin 0px;
+      max-width: 50%;
+      text-align: center;
+      font-weight: 600;
+      font-size: $margin;
+    }
+    .my_info_button {
+      background-color: rgba(#ff8c00, 0.1);
+      border: none;
+      padding: $default $padding;
+      border-radius: 10px;
+    }
+  }
+  .order_stages {
+    width: 100%;
+    background-color: rgba($color-skeleton-100, 0.1);
+    border-radius: 10px;
+    margin: $margin 0px;
+    @include display-grid($colum: repeat(4, 1fr), $colum-gap: 0);
+    padding: $padding;
+    .stage {
+      border-left: 1px solid rgba($color-skeleton-100, 0.3);
+      &:first-child {
+        border: none;
+      }
+      width: 100%;
+      text-align: center;
+      .order_count {
+        font-weight: 600;
+        text-decoration: underline;
+        margin-bottom: $default/2;
+      }
+      .order_label {
+        font-size: 14px;
+      }
+    }
+  }
+  .menu_wrapper {
+    margin-top: $margin;
+    .menu {
+      width: 100%;
+      @include flex($justify-content: space-between);
+      padding: $padding;
+      border-bottom: 1px solid rgba($color-skeleton-100, 0.1);
+      &:last-child {
+        border: none;
+      }
+    }
+  }
+}

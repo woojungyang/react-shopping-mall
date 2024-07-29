@@ -186,10 +186,30 @@
     }
   }
 }
+.mobile_footer_header_wrap {
+  margin-top: $margin * 3;
+  width: 100%;
+  background-color: $color-skeleton-100;
+  height: 40px;
+  @include flex($justify-content: space-between);
+  padding: 0px $padding;
+  .footer_header {
+    color: $color-background-100;
+    text-align: center;
+    width: 100%;
+    font-size: 14px;
+    border-right: 1px solid $color-background-100;
+    &:last-child {
+      border: none;
+    }
+  }
+}
+
 .footer_container_mb {
   height: 300px;
   padding: $padding;
   padding-bottom: $padding * 5;
+  margin-top: 0;
   .footer_wrapper {
     @include flex($direction: column);
     text-align: center;

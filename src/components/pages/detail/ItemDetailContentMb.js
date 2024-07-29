@@ -86,7 +86,7 @@ export default function ItemDetailContentMb() {
   }, [showOptionModal]);
 
   return (
-    <MobileLayout>
+    <MobileLayout isFooter={true}>
       <div className={styles.mobile_item_detail_container}>
         <div className={styles.item_content_scroll_wrapper}>
           <ImageZoomSlider images={[...new Array(9)]} />
