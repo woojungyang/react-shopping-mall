@@ -86,6 +86,7 @@ export default function Header() {
             </div>
             <div className={styles.user_wrapper}>
               <Link to="/login">LOGIN</Link>
+              <Link to="/mypage">MY</Link>
               <p onClick={() => setShowSearch(!showSearch)}>SEARCH</p>
               <Link to="/cart">CART</Link>
             </div>
@@ -115,7 +116,10 @@ export default function Header() {
                 className={styles.user_icon}
                 onClick={() => setShowSearch(!showSearch)}
               />
-              <ShoppingBagIcon className={styles.user_icon} onClick={()=>navigation('/cart')} />
+              <ShoppingBagIcon
+                className={styles.user_icon}
+                onClick={() => navigation("/cart")}
+              />
             </div>
           </div>
           <div className={styles.mb_scroll_menu_wrapper}>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -17,9 +17,11 @@ export default function useQueryString(key, defaultValue = "") {
 
   useEffect(() => {
     if (!searchedQueryString && defaultValue) {
-      change(defaultValue);
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set(key, defaultValue);
+      navigate("?" + newSearchParams.toString(), { replace: true });
     }
-  }, [searchedQueryString, defaultValue]);
+  }, [searchedQueryString, defaultValue, key, searchParams, navigate]);
 
-  return [searchedQueryString || "", change];
+  return [searchedQueryString || defaultValue, change];
 }

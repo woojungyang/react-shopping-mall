@@ -62,25 +62,67 @@
       width: 100%;
       .order_stages {
         width: 100%;
-        background-color: rgba($color-skeleton-100, 0.3);
-        border-radius: 10px;
-        margin: $margin 0px;
+        background-color: rgba($color-primary-100, 0.1);
+
+        margin-bottom: $margin * 3;
+        // margin: $margin 0px;
         @include display-grid($colum: repeat(4, 1fr), $colum-gap: 0);
         padding: $padding;
         .stage {
-          border-left: 1px solid rgba($color-skeleton-100, 0.3);
-          &:first-child {
+          height: 120px;
+          position: relative;
+          @include flex;
+          border-right: 1px solid rgba($color-primary-300, 0.3);
+          &:last-child {
             border: none;
           }
-          width: 100%;
-          text-align: center;
-          .order_count {
-            font-size: $margin;
-            font-weight: 600;
-            text-decoration: underline;
-            margin-bottom: $default;
-          }
+
           .order_label {
+            top: $default;
+            left: $padding;
+            position: absolute;
+            font-size: 14px;
+            font-weight: 500;
+            color: $color-primary-300;
+          }
+          .order_count {
+            padding-top: $padding;
+            font-weight: 700;
+            font-size: 22px;
+          }
+        }
+      }
+      .order_wrapper {
+        .order_title {
+          margin-top: $margin;
+          margin-bottom: $padding;
+          font-weight: 600;
+          font-size: $margin;
+          span {
+            margin-left: $default/2;
+            color: $color-skeleton-100;
+            font-size: 15px;
+          }
+        }
+        .tab_wrapper {
+          cursor: pointer;
+          // margin-top: $margin * 3;
+          margin-bottom: $margin;
+          // padding-bottom: $padding;
+          border-bottom: 1px solid rgba($color-skeleton-100, 0.2);
+
+          @include flex($justify-content: flex-start);
+          .tab {
+            cursor: pointer;
+            width: 120px;
+            text-align: center;
+            padding: $default;
+            font-weight: 600;
+            color: $color-skeleton-200;
+          }
+          .tab_active {
+            border-bottom: 3px solid $color-primary-200;
+            color: $color-dark-300;
           }
         }
       }
@@ -88,6 +130,40 @@
   }
 }
 
+.search_filter_container {
+  width: 100%;
+  height: 70px;
+  @include flex;
+  background-color: rgba($color-skeleton-100, 0.2);
+  margin-bottom: $margin;
+
+  @mixin filter-btn {
+    height: 30px;
+    padding: $default/2 $padding;
+    cursor: pointer;
+  }
+
+  .filter_btn_default {
+    @include filter-btn;
+    border: 1px solid $color-skeleton-100;
+    margin-right: $default;
+    background-color: white;
+    // &:last-child {
+    //   margin-right: $margin;
+    // }
+  }
+  .filter_btn_active {
+    background-color: $color-skeleton-200;
+    color: $color-background-100;
+  }
+
+  .filter_btn_search {
+    @include filter-btn;
+    margin-left: $margin;
+    background-color: $color-dark-300;
+    color: $color-background-100;
+  }
+}
 .mobile_mypage_container {
   margin-top: $header-height-mb2;
   display: flex;

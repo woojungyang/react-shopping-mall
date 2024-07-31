@@ -443,3 +443,49 @@ input[type="number"] {
     }
   }
 }
+
+.table_container {
+  table-layout: fixed;
+  width: 100%;
+  font-size: 14px;
+  border-collapse: collapse;
+
+  th,
+  td {
+    border: 1px solid rgba($color: $color-skeleton-200, $alpha: 0.14);
+    padding: 8px;
+    // word-wrap: break-word;
+    // word-break: break-all;
+  }
+
+  .table_header {
+    color: $color-skeleton-200;
+    background-color: rgba($color: $color-skeleton-100, $alpha: 0.1);
+
+    > tr {
+      > th {
+        height: 50px;
+
+        font-weight: 500;
+        padding: 0 $padding * 1.1;
+
+        min-width: 120px;
+        overflow: hidden;
+        word-wrap: break-word;
+        word-break: break-all;
+      }
+    }
+  }
+
+  .table_row {
+    > td {
+      // border-bottom: 1px solid rgba($color: $color-skeleton-100, $alpha: 0.2);
+      text-align: center;
+      padding: $margin;
+      font-weight: 400;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}

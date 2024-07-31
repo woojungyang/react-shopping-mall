@@ -27,3 +27,10 @@ export function formatDateTime(value, format = "yyyy-MM-dd") {
 
   return dateTimeFormat;
 }
+
+/**
+ * 월 단위 가감 연산
+ */
+export function addMonths(value, count) {
+  return dateTime.addMonths(dateTime.date(value), count);
+}
