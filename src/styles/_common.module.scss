@@ -489,3 +489,52 @@ input[type="number"] {
     }
   }
 }
+
+.table_filter_wrap {
+  @mixin active_bg {
+    border: 1px solid $color-skeleton-100;
+    background-color: $color-background-100;
+  }
+
+  margin-bottom: $default;
+  font-size: 14px;
+  color: $color-skeleton-200;
+  @include flex($justify-content: flex-end);
+  .table_select_container {
+    position: relative;
+    .table_select_wrapper {
+      cursor: pointer;
+      margin-left: $margin;
+      width: 220px;
+      height: 40px;
+      padding: $default;
+      background-color: rgba($color: $color-skeleton-100, $alpha: 0.2);
+      color: $color-dark-300;
+      p {
+        padding-left: $default/2;
+      }
+      @include flex($justify-content: space-between);
+    }
+    .table_select_wrapper_active {
+      @include active_bg;
+    }
+
+    .table_select_wrap {
+      cursor: pointer;
+      position: absolute;
+      top: 39px;
+      right: 0px;
+      width: 220px;
+      height: 200px;
+      overflow: scroll;
+      @include active_bg;
+      p {
+        color: $color-dark-300;
+        padding: 14px;
+        &:hover {
+          background-color: rgba($color: $color-skeleton-100, $alpha: 0.2);
+        }
+      }
+    }
+  }
+}

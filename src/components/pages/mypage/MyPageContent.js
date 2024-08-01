@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import classNames from "classnames";
 import { OrderState, getOrderState } from "models/order";
@@ -38,6 +38,9 @@ export default function MyPageContent() {
       formatDateTime(now()),
     );
 
+  const [selectedOrderState, changeSelectedOrderState] =
+    useQueryString("selectedOrderState");
+
   return (
     <CommonLayout>
       <div className={styles.mypage_container}>
@@ -45,14 +48,6 @@ export default function MyPageContent() {
 
         <div className={styles.mypage_wrapper}>
           <div className={styles.side_menu_wrap}>
-            {/*  <div className={styles.profile_wrapper}>
-              <img
-                src={require(`assets/images/sub/sub10.jpg`)}
-                className={styles.avatar}
-              />
-
-              <p className={styles.nickname}>닉네임이들어가는 자님</p>
-            </div> */}
             {menuList.map((menu, index) => (
               <p
                 onClick={() => {
@@ -85,7 +80,7 @@ export default function MyPageContent() {
                     </div>
                   ))}
                 </div>
-                <div className={styles.tab_wrapper}>
+                {/* <div className={styles.tab_wrapper}>
                   {orderTabMenu.map((order, index) => (
                     <p
                       key={index}
@@ -98,7 +93,7 @@ export default function MyPageContent() {
                       {order.label}
                     </p>
                   ))}
-                </div>
+                </div> */}
                 <SearchFilter
                   startDate={startDate}
                   changeStartDate={changeStartDate}
@@ -125,6 +120,12 @@ export default function MyPageContent() {
                     { label: "수량" },
                     { label: "상품금액" },
                   ]}
+                  filterOptions={Object.entries(OrderState).map((e) => ({
+                    id: e[1],
+                    label: getOrderState(e[1]),
+                  }))}
+                  selectedOption={selectedOrderState}
+                  onChangeOption={changeSelectedOrderState}
                 >
                   {orderList?.map((e) => (
                     <TableRow key={e.orderNumber}>
@@ -133,7 +134,7 @@ export default function MyPageContent() {
                       <td>{e.orderNumber}</td>
                       <td>{e.name}</td>
                       <td>{e.quantity}</td>
-                      <td>{e.price}</td>
+                      <td>{numberWithCommas(e.price)}원</td>
                     </TableRow>
                   ))}
                 </Table>
@@ -157,10 +158,10 @@ const menuList = [
 ];
 
 const orderStages = [
-  { id: 1, label: "주문접수", count: 1 },
-  { id: 2, label: "상품준비중", count: 2 },
-  { id: 3, label: "배송중", count: 3 },
-  { id: 4, label: "배송완료", count: 4 },
+  { id: OrderState.PaymentPending, label: "주문접수", count: 1 },
+  { id: OrderState.Preparing, label: "상품준비중", count: 2 },
+  { id: OrderState.Delivery, label: "배송중", count: 3 },
+  { id: OrderState.DeliveryCompleted, label: "배송완료", count: 4 },
 ];
 
 const orderTabMenu = [
@@ -175,5 +176,8 @@ const orderList = Array.from({ length: 8 }, (v, index) => ({
   quantity: index,
   name: "item" + index,
   price: 12344 + index,
-  state: OrderState[Math.floor(Math.random() * OrderState.length)],
+  state:
+    Object.values(OrderState)[
+      Math.floor(Math.random() * Object.values(OrderState).length)
+    ],
 }));
