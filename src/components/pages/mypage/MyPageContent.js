@@ -41,6 +41,8 @@ export default function MyPageContent() {
   const [selectedOrderState, changeSelectedOrderState] =
     useQueryString("selectedOrderState");
 
+  console.log(startDate);
+
   return (
     <CommonLayout>
       <div className={styles.mypage_container}>
@@ -74,7 +76,17 @@ export default function MyPageContent() {
                   {orderStages.map((stage, index) => (
                     <div key={index} className={styles.stage}>
                       <p className={styles.order_label}>{stage.label}</p>
-                      <p className={styles.order_count}>
+                      <p
+                        className={styles.order_count}
+                        onClick={() => {
+                          console.log(formatDateTime(addMonths(now(), -12)));
+                          // changeSelectedOrderState(stage.id);
+                          changeStartDate(
+                            formatDateTime(addMonths(now(), -12)),
+                          );
+                          changeEndDate(formatDateTime(now()));
+                        }}
+                      >
                         {numberWithCommas(stage.count)}
                       </p>
                     </div>
@@ -158,10 +170,10 @@ const menuList = [
 ];
 
 const orderStages = [
-  { id: OrderState.PaymentPending, label: "주문접수", count: 1 },
+  { id: OrderState.ConfirmedOrder, label: "주문접수", count: 1 },
   { id: OrderState.Preparing, label: "상품준비중", count: 2 },
   { id: OrderState.Delivery, label: "배송중", count: 3 },
-  { id: OrderState.DeliveryCompleted, label: "배송완료", count: 4 },
+  { id: OrderState.CompletedDelivery, label: "배송완료", count: 4 },
 ];
 
 const orderTabMenu = [

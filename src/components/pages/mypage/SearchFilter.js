@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -10,6 +10,7 @@ import {
   endOfMonth,
   formatDateTime,
   isBeforeDateTime,
+  isEqualDateTime,
   now,
 } from "utilities/dateTime";
 
@@ -24,7 +25,16 @@ export default function SearchFilter({
   const [currentActive, setCurrentActive] = useState(buttons[0].id);
 
   const [start, setStart] = useState(startDate);
+
   const [end, setEnd] = useState(endDate);
+
+  useEffect(() => {
+    setStart(startDate);
+  }, [startDate]);
+
+  useEffect(() => {
+    setEnd(endDate);
+  }, [endDate]);
 
   return (
     <div className={styles.search_filter_container}>

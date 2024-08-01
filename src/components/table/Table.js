@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import classNames from "classnames";
@@ -18,11 +18,14 @@ export const Table = ({
   onChangeOption,
 }) => {
   const options = [...[{ id: "", label: "전체" }].concat(filterOptions)];
-  const [option, setOption] = useState(
-    !!selectedOption
-      ? options.find((e) => e.id == selectedOption).label
-      : options[0].label,
-  );
+
+  const updateOption = useMemo(() => {
+    return (
+      options.find((e) => e.id == selectedOption).label || options[0].label
+    );
+  }, [selectedOption]);
+
+  // console.log("selectedOption", selectedOption);
 
   const [showOptions, setShowOptions] = useState(false);
 
@@ -54,7 +57,7 @@ export const Table = ({
               })}
               onClick={() => setShowOptions(!showOptions)}
             >
-              <p className={styles.table_select_placeholder}>{option}</p>
+              <p className={styles.table_select_placeholder}>{updateOption}</p>
               <KeyboardArrowDownIcon />
             </div>
             {showOptions && (
@@ -65,7 +68,7 @@ export const Table = ({
                     onClick={(event) => {
                       event.stopPropagation();
                       onChangeOption(option.id);
-                      setOption(option.label);
+
                       setShowOptions(false);
                     }}
                   >

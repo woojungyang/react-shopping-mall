@@ -63,3 +63,11 @@ export function getDiffDateTime(value, comparing, unit = "days") {
 export function isBeforeDateTime(value, comparing) {
   return dateTime.isBefore(dateTime.date(value), dateTime.date(comparing));
 }
+
+/**
+ * 동일 날짜 비교
+ 
+ */
+export function isEqualDateTime(value, comparing) {
+  return dateTime.isEqual(value, comparing);
+}
