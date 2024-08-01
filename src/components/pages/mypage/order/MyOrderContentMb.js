@@ -7,7 +7,7 @@ import { MobileLayout } from "components/common";
 
 import styles from "styles/_mypage.module.scss";
 
-export default function MyPageContentMb() {
+export default function MyOrderContentMb() {
   const orderStages = [
     { id: 1, label: "주문접수", count: 1 },
     { id: 2, label: "상품준비중", count: 2 },
