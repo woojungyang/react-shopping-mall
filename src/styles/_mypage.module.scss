@@ -86,6 +86,8 @@
             color: $color-primary-300;
           }
           .order_count {
+            cursor: pointer;
+            text-decoration: underline;
             padding-top: $padding;
             font-weight: 700;
             font-size: 22px;

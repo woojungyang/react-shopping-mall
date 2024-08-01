@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { DateTime } from "luxon";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -12,55 +12,53 @@ export default function useDateIntervalQueryString(
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const searchedStartDate = searchParams.get(startKey);
-  const searchedEndDate = searchParams.get(endKey);
-
   const formatDateTime = (date) =>
     DateTime.fromISO(date).toFormat("yyyy-MM-dd'T'HH:mm:ss");
-
   const parseDate = (date) => DateTime.fromFormat(date, "yyyy-MM-dd").toISO();
 
-  const changeDate = (key, newValue) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set(key, formatDateTime(newValue));
-    navigate("?" + newSearchParams.toString(), { replace: true });
-  };
+  const [startDate, setStartDate] = useState(() =>
+    getInitialDate(searchParams, startKey, defaultStartDate),
+  );
+  const [endDate, setEndDate] = useState(() =>
+    getInitialDate(searchParams, endKey, defaultEndDate),
+  );
+
+  function getInitialDate(params, key, defaultDate) {
+    const queriedDate = params.get(key);
+    return queriedDate || formatDateTime(parseDate(defaultDate));
+  }
+
+  function updateDate(key, newDate) {
+    if (key === startKey) {
+      setStartDate(formatDateTime(newDate));
+    } else if (key === endKey) {
+      setEndDate(formatDateTime(newDate));
+    }
+  }
 
   useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    let updated = false;
+    const updatedParams = new URLSearchParams(searchParams);
+    let hasChanges = false;
 
-    if (!searchedStartDate && defaultStartDate) {
-      newSearchParams.set(
-        startKey,
-        formatDateTime(parseDate(defaultStartDate)),
-      );
-      updated = true;
+    if (startDate !== searchParams.get(startKey)) {
+      updatedParams.set(startKey, startDate);
+      hasChanges = true;
     }
 
-    if (!searchedEndDate && defaultEndDate) {
-      newSearchParams.set(endKey, formatDateTime(parseDate(defaultEndDate)));
-      updated = true;
+    if (endDate !== searchParams.get(endKey)) {
+      updatedParams.set(endKey, endDate);
+      hasChanges = true;
     }
 
-    if (updated) {
-      navigate("?" + newSearchParams.toString(), { replace: true });
+    if (hasChanges) {
+      navigate("?" + updatedParams.toString(), { replace: true });
     }
-  }, [
-    searchedStartDate,
-    searchedEndDate,
-    defaultStartDate,
-    defaultEndDate,
-    startKey,
-    endKey,
-    searchParams,
-    navigate,
-  ]);
+  }, [startDate, endDate, searchParams, navigate, startKey, endKey]);
 
   return [
-    searchedStartDate || formatDateTime(parseDate(defaultStartDate)),
-    searchedEndDate || formatDateTime(parseDate(defaultEndDate)),
-    (newStartDate) => changeDate(startKey, newStartDate),
-    (newEndDate) => changeDate(endKey, newEndDate),
+    startDate,
+    endDate,
+    (newStartDate) => updateDate(startKey, newStartDate),
+    (newEndDate) => updateDate(endKey, newEndDate),
   ];
 }

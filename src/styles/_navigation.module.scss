@@ -2,6 +2,7 @@
 
 @mixin menu {
   a,
+  div,
   p {
     margin-right: $margin * 2;
     font-size: $margin;

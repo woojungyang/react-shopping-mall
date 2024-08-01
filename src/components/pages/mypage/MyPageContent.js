@@ -25,11 +25,6 @@ export default function MyPageContent() {
     menuList[0].id,
   );
 
-  const [orderTab, changeOrderTab] = useQueryString(
-    "orderTab",
-    orderTabMenu[0].id,
-  );
-
   const [startDate, endDate, changeStartDate, changeEndDate] =
     useDateIntervalQueryString(
       "startDate",
@@ -41,7 +36,9 @@ export default function MyPageContent() {
   const [selectedOrderState, changeSelectedOrderState] =
     useQueryString("selectedOrderState");
 
-  console.log(startDate);
+  function changeTabMenu(menuId) {
+    navigation(`/mypage?activeTab=${menuId}`);
+  }
 
   return (
     <CommonLayout>
@@ -53,7 +50,7 @@ export default function MyPageContent() {
             {menuList.map((menu, index) => (
               <p
                 onClick={() => {
-                  if (menu.id == 1) changeActiveTab(menu.id);
+                  if (menu.id < 3) changeTabMenu(menu.id);
                   else alert("준비중입니다");
                 }}
                 key={index}
@@ -80,7 +77,7 @@ export default function MyPageContent() {
                         className={styles.order_count}
                         onClick={() => {
                           console.log(formatDateTime(addMonths(now(), -12)));
-                          // changeSelectedOrderState(stage.id);
+                          changeSelectedOrderState(stage.id);
                           changeStartDate(
                             formatDateTime(addMonths(now(), -12)),
                           );

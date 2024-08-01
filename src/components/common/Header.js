@@ -55,7 +55,7 @@ export default function Header() {
   const [activeMobilMenu, setActiveMobileMenu] = useState("");
 
   return (
-    <>
+    <Link>
       {isDeskTop ? (
         <div
           ref={searchRef}
@@ -139,7 +139,7 @@ export default function Header() {
           )}
         </div>
       )}
-    </>
+    </Link>
   );
 }
 

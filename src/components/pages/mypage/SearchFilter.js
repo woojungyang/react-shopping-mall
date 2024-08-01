@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -10,7 +10,6 @@ import {
   endOfMonth,
   formatDateTime,
   isBeforeDateTime,
-  isEqualDateTime,
   now,
 } from "utilities/dateTime";
 
@@ -23,9 +22,7 @@ export default function SearchFilter({
   changeEndDate,
 }) {
   const [currentActive, setCurrentActive] = useState(buttons[0].id);
-
   const [start, setStart] = useState(startDate);
-
   const [end, setEnd] = useState(endDate);
 
   useEffect(() => {
@@ -35,6 +32,15 @@ export default function SearchFilter({
   useEffect(() => {
     setEnd(endDate);
   }, [endDate]);
+
+  const handleSearch = () => {
+    if (isBeforeDateTime(end, start)) {
+      alert("종료일이 시작일보다 이전일 수 없습니다.");
+    } else {
+      changeStartDate(start);
+      changeEndDate(end);
+    }
+  };
 
   return (
     <div className={styles.search_filter_container}>
@@ -46,12 +52,12 @@ export default function SearchFilter({
             button={button}
             onClick={() => {
               setCurrentActive(button.id);
-              if (button.id == 1) {
+              if (button.id === 1) {
                 setStart(formatDateTime(addMonths(now(), -1)));
                 setEnd(formatDateTime(now()));
               } else {
                 const startDay = formatDateTime(
-                  addMonths(now(), button.id == 2 ? -1 : -2),
+                  addMonths(now(), button.id === 2 ? -1 : -2),
                 );
                 const endDay = formatDateTime(endOfMonth(startDay));
                 setStart(startDay);
@@ -69,14 +75,7 @@ export default function SearchFilter({
       <DefaultButton
         button="조회"
         className={styles.filter_btn_search}
-        onClick={() => {
-          if (isBeforeDateTime(end, start))
-            alert("종료일이 시작일보다 이전일 수 없습니다.");
-          else {
-            changeEndDate(end);
-            changeStartDate(start);
-          }
-        }}
+        onClick={handleSearch}
       />
     </div>
   );
@@ -87,7 +86,7 @@ function DefaultButton({ button, onClick, className, active }) {
     <button
       className={classNames({
         [className || styles.filter_btn_default]: true,
-        [styles.filter_btn_active]: button?.id == active,
+        [styles.filter_btn_active]: button?.id === active,
       })}
       onClick={onClick}
     >
@@ -118,7 +117,7 @@ function CustomPicker({ value, onChange }) {
           },
           "& .MuiSvgIcon-root": {
             marginRight: "4px",
-            fontSize: "20px", // Adjust the icon size
+            fontSize: "20px",
           },
         }}
         format="yyyy-MM-dd"
