@@ -6,12 +6,13 @@ import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "utilities";
 
+import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
 import { CommonLayout } from "components/common";
 import { Table, TableRow } from "components/table";
 
-import { formatDateTime, now } from "utilities/dateTime";
+import { addMonths, formatDateTime, now } from "utilities/dateTime";
 
 import styles from "styles/_mypage.module.scss";
 
@@ -28,6 +29,14 @@ export default function MyPageContent() {
     "orderTab",
     orderTabMenu[0].id,
   );
+
+  const [startDate, endDate, changeStartDate, changeEndDate] =
+    useDateIntervalQueryString(
+      "startDate",
+      "endDate",
+      formatDateTime(addMonths(now(), -1)),
+      formatDateTime(now()),
+    );
 
   return (
     <CommonLayout>
@@ -90,8 +99,13 @@ export default function MyPageContent() {
                     </p>
                   ))}
                 </div>
-                <SearchFilter />
-                <div>
+                <SearchFilter
+                  startDate={startDate}
+                  changeStartDate={changeStartDate}
+                  endDate={endDate}
+                  changeEndDate={changeEndDate}
+                />
+                <div className={styles.filter_description}>
                   <p>
                     * 한번에 조회 가능한 기간은 최대 6개월이며 2008년 1월 1일
                     이후의 주문에 대해서만 조회하실 수 있습니다.

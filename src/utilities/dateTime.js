@@ -34,3 +34,32 @@ export function formatDateTime(value, format = "yyyy-MM-dd") {
 export function addMonths(value, count) {
   return dateTime.addMonths(dateTime.date(value), count);
 }
+
+/**
+ * 월 기준 시작 날짜
+ */
+export function startOfMonth(value) {
+  return dateTime.startOfMonth(dateTime.date(value));
+}
+
+/**
+ * 월 기준 끝 날짜
+ */
+export function endOfMonth(value) {
+  return dateTime.endOfMonth(dateTime.date(value));
+}
+
+/**
+ * 날짜 간 차이 연산
+
+ */
+export function getDiffDateTime(value, comparing, unit = "days") {
+  return dateTime.getDiff(dateTime.date(value), dateTime.date(comparing), unit);
+}
+
+/**
+ * 전 날짜 비교
+ */
+export function isBeforeDateTime(value, comparing) {
+  return dateTime.isBefore(dateTime.date(value), dateTime.date(comparing));
+}

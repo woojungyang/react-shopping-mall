@@ -125,6 +125,13 @@
             color: $color-dark-300;
           }
         }
+        .filter_description {
+          font-size: 14px;
+          line-height: 160%;
+          color: $color-skeleton-200;
+
+          margin-bottom: $margin * 4;
+        }
       }
     }
   }
@@ -148,9 +155,6 @@
     border: 1px solid $color-skeleton-100;
     margin-right: $default;
     background-color: white;
-    // &:last-child {
-    //   margin-right: $margin;
-    // }
   }
   .filter_btn_active {
     background-color: $color-skeleton-200;
@@ -162,6 +166,12 @@
     margin-left: $margin;
     background-color: $color-dark-300;
     color: $color-background-100;
+  }
+  .datepicker_wrap {
+    @include flex;
+    .datepicker_icon {
+      margin: 0 $default/2;
+    }
   }
 }
 .mobile_mypage_container {
