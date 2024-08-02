@@ -12,7 +12,7 @@ export default function Main() {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
-  const [toastMessage, setToastMessage] = useState("aaa");
+  const [toastMessage, setToastMessage] = useState("");
 
   return (
     <CommonLayout toastMessage={toastMessage}>

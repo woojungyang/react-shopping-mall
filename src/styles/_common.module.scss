@@ -597,3 +597,25 @@ input[type="number"] {
     }
   }
 }
+
+.not_found_container {
+  @include flex($direction: column);
+  max-width: $max-width;
+  width: 100%;
+  margin: auto;
+  height: 100vh;
+  padding: $padding;
+  img {
+    max-width: 300px;
+    width: 100%;
+  }
+  a {
+    margin-top: $default;
+    color: $color-skeleton-100 !important;
+    font-size: $default;
+  }
+  button {
+    max-width: 300px;
+    width: 100%;
+  }
+}
