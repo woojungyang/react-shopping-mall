@@ -42,7 +42,7 @@ export const MyPageLayout = ({ children }) => {
 };
 
 const menuList = [
-  { id: 1, label: "주문관리", url: "/mypage/order" },
+  { id: 1, label: "주문관리", url: "/mypage" },
   { id: 2, label: "리뷰 작성", url: "/mypage/review" },
   { id: 3, label: "상품 Q&A" },
   { id: 4, label: "1:1문의 내역" },

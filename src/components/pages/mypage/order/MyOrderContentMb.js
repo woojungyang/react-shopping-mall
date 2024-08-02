@@ -3,33 +3,38 @@ import React from "react";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { numberWithCommas } from "utilities";
 
+import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
+
 import { MobileLayout } from "components/common";
+
+import { addMonths, formatDateTime, now } from "utilities/dateTime";
 
 import styles from "styles/_mypage.module.scss";
 
-export default function MyOrderContentMb() {
-  const orderStages = [
-    { id: 1, label: "주문접수", count: 1 },
-    { id: 2, label: "상품준비중", count: 2 },
-    { id: 3, label: "배송중", count: 3 },
-    { id: 4, label: "배송완료", count: 4 },
-  ];
+import SearchFilter from "../SearchFilter";
 
-  const menuList = [
-    { id: 1, label: "주문관리" },
-    { id: 2, label: "리뷰 작성" },
-    { id: 3, label: "상품 Q&A" },
-    { id: 4, label: "1:1문의 내역" },
-    { id: 5, label: "공지사항" },
-    { id: 6, label: "고객센터" },
-  ];
+export default function MyOrderContentMb() {
+  const [startDate, endDate, changeStartDate, changeEndDate] =
+    useDateIntervalQueryString(
+      "startDate",
+      "endDate",
+      formatDateTime(addMonths(now(), -1)),
+      formatDateTime(now()),
+    );
   return (
     <MobileLayout
-      headerTitle="MY PAGE"
+      headerTitle="주문관리"
       isBottomNavigation={true}
       isFooter={true}
     >
-      <div className={styles.mobile_mypage_container}>ddd</div>
+      <div className={styles.mobile_mypage_container}>
+        <SearchFilter
+          startDate={startDate}
+          changeStartDate={changeStartDate}
+          endDate={endDate}
+          changeEndDate={changeEndDate}
+        />
+      </div>
     </MobileLayout>
   );
 }

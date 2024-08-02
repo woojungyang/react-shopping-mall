@@ -176,6 +176,37 @@
     }
   }
 }
+.mobile_search_filter_container {
+  .mobile_search_filter_button_wrap {
+    @include flex($justify-content: space-between);
+    margin-top: $padding;
+    border: 1px solid $color-skeleton-100;
+    height: 40px;
+    p {
+      color: $color-skeleton-200;
+      font-size: 14px;
+      width: 100%;
+      height: 100%;
+      @include flex;
+      text-align: center;
+      border-right: 1px solid $color-skeleton-100;
+      &:last-child {
+        border-right: 0px;
+      }
+    }
+    .button_active {
+      background-color: $color-dark-300;
+      color: $color-background-100;
+    }
+  }
+  .datepicker_wrap {
+    @include flex;
+    margin-top: $default;
+    .datepicker_icon {
+      margin: 0px $default/2;
+    }
+  }
+}
 .mobile_mypage_container {
   margin-top: $header-height-mb2;
   display: flex;

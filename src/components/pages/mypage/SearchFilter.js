@@ -4,6 +4,9 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import classNames from "classnames";
 import { DateTime } from "luxon";
+import { Device } from "models/device";
+
+import { useUserDevice } from "hooks/size/useUserDevice";
 
 import {
   addMonths,
@@ -21,6 +24,9 @@ export default function SearchFilter({
   endDate,
   changeEndDate,
 }) {
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
+
   const [currentActive, setCurrentActive] = useState(buttons[0].id);
   const [start, setStart] = useState(startDate);
   const [end, setEnd] = useState(endDate);
@@ -42,42 +48,92 @@ export default function SearchFilter({
     }
   };
 
+  const [showDateFilter, setShowDateFilter] = useState(false);
+
+  function handleButton(buttonId) {
+    setCurrentActive(buttonId);
+    if (buttonId !== 4) setShowDateFilter(false);
+    if (buttonId === 1) {
+      setStart(formatDateTime(addMonths(now(), -1)));
+      setEnd(formatDateTime(now()));
+    } else if (buttonId === 4) {
+      setShowDateFilter(true);
+    } else {
+      const startDay = formatDateTime(
+        addMonths(now(), buttonId === 2 ? -1 : -2),
+      );
+      const endDay = formatDateTime(endOfMonth(startDay));
+      setStart(startDay);
+      setEnd(endDay);
+    }
+  }
+
   return (
-    <div className={styles.search_filter_container}>
-      <div className={styles.default_flex}>
-        {buttons.map((button, index) => (
+    <>
+      {isDeskTop ? (
+        <div className={styles.search_filter_container}>
+          <div className={styles.default_flex}>
+            {buttons.map((button, index) => (
+              <DefaultButton
+                key={index}
+                active={currentActive}
+                button={button}
+                onClick={() => handleButton(button.id)}
+              />
+            ))}
+          </div>
+          <div className={styles.datepicker_wrap}>
+            <CustomPicker value={start} onChange={setStart} />
+            <p className={styles.datepicker_icon}>~</p>
+            <CustomPicker value={end} onChange={setEnd} />
+          </div>
           <DefaultButton
-            key={index}
-            active={currentActive}
-            button={button}
-            onClick={() => {
-              setCurrentActive(button.id);
-              if (button.id === 1) {
-                setStart(formatDateTime(addMonths(now(), -1)));
-                setEnd(formatDateTime(now()));
-              } else {
-                const startDay = formatDateTime(
-                  addMonths(now(), button.id === 2 ? -1 : -2),
-                );
-                const endDay = formatDateTime(endOfMonth(startDay));
-                setStart(startDay);
-                setEnd(endDay);
-              }
-            }}
+            button="조회"
+            className={styles.filter_btn_search}
+            onClick={handleSearch}
           />
-        ))}
-      </div>
-      <div className={styles.datepicker_wrap}>
-        <CustomPicker value={start} onChange={setStart} />
-        <p className={styles.datepicker_icon}>~</p>
-        <CustomPicker value={end} onChange={setEnd} />
-      </div>
-      <DefaultButton
-        button="조회"
-        className={styles.filter_btn_search}
-        onClick={handleSearch}
-      />
-    </div>
+        </div>
+      ) : (
+        <div className={styles.mobile_search_filter_container}>
+          <div className={styles.mobile_search_filter_button_wrap}>
+            {[...buttons.concat({ id: 4, label: "기간조회" })].map(
+              (button, index) => (
+                <p
+                  key={index}
+                  className={classNames({
+                    [styles.button_active]: currentActive == button.id,
+                  })}
+                  onClick={() => handleButton(button.id)}
+                >
+                  {button.label}
+                </p>
+              ),
+            )}
+          </div>
+          {showDateFilter && (
+            <div className={styles.datepicker_wrap}>
+              <CustomPicker
+                value={start}
+                onChange={(newValue) => {
+                  setStart(newValue);
+                  changeStartDate(newValue);
+                }}
+                isDeskTop={false}
+              />
+              <p className={styles.datepicker_icon}>-</p>
+              <CustomPicker
+                value={end}
+                onChange={(newValue) => {
+                  setEnd(newValue);
+                  changeEndDate(newValue);
+                }}
+                isDeskTop={false}
+              />
+            </div>
+          )}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -95,7 +151,7 @@ function DefaultButton({ button, onClick, className, active }) {
   );
 }
 
-function CustomPicker({ value, onChange }) {
+function CustomPicker({ value, onChange, isDeskTop = true }) {
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <DatePicker
@@ -103,7 +159,8 @@ function CustomPicker({ value, onChange }) {
         sx={{
           backgroundColor: "white",
           "& .MuiInputBase-root": {
-            width: "160px",
+            maxWidth: isDeskTop ? "160px" : "auto",
+            width: "100%",
             height: "30px",
             borderRadius: 0,
             paddingRight: "8px",

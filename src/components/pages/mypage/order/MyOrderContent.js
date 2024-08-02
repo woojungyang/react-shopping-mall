@@ -118,16 +118,6 @@ export default function MyOrderContent() {
   );
 }
 
-const menuList = [
-  { id: 1, label: "주문관리" },
-  { id: 2, label: "리뷰 작성" },
-  { id: 3, label: "상품 Q&A" },
-  { id: 4, label: "1:1문의 내역" },
-  { id: 5, label: "회원정보 수정" },
-  { id: 6, label: "공지사항" },
-  { id: 7, label: "고객센터" },
-];
-
 const orderStages = [
   { id: OrderState.ConfirmedOrder, label: "주문접수", count: 1 },
   { id: OrderState.Preparing, label: "상품준비중", count: 2 },
