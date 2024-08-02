@@ -35,9 +35,11 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+
   .common_layout_content_wrapper {
     flex-grow: 1;
     height: 100%;
+    margin-top: $header-height;
 
     display: flex;
     flex-direction: column;
@@ -46,6 +48,33 @@ body {
     // @include navigation-default-padding;
 
     // @include flex($align-items: flex-start);
+  }
+  .toast_wrapper {
+    position: fixed;
+    z-index: 999999;
+    top: $header-height;
+    right: $padding;
+    @include tablet {
+      top: $header-height-mb2 * 1.5;
+    }
+    // transform: translate(-50%, -50%);
+    padding: $padding;
+    width: 100%;
+    max-width: 300px;
+
+    background-color: rgba($color: $color-dark-300, $alpha: 0.5);
+    color: $color-background-100;
+    border-radius: 5px;
+    font-weight: 500;
+
+    .toast_title {
+      margin-bottom: $default/2;
+      @include flex($justify-content: flex-start);
+      svg {
+        width: $margin;
+        margin-right: $default/2;
+      }
+    }
   }
 }
 
@@ -534,6 +563,38 @@ input[type="number"] {
         &:hover {
           background-color: rgba($color: $color-skeleton-100, $alpha: 0.2);
         }
+      }
+    }
+  }
+}
+
+.confirm_modal_wrapper {
+  width: 450px;
+  padding: $margin * 2;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  .confirm_modal_title {
+    text-align: center;
+    white-space: pre-wrap;
+    padding: $margin * 2 0px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .button_wrap {
+    width: 100%;
+    @include flex;
+
+    .confirm_modal_button {
+      cursor: pointer;
+      margin-right: $padding;
+      color: $color-background-100;
+      border: none;
+      height: $margin * 2;
+      width: 100%;
+      background-color: $color-dark-300;
+      &:last-child {
+        margin-right: 0;
       }
     }
   }

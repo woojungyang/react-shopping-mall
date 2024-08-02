@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Device } from "models/device";
 
@@ -12,8 +12,10 @@ export default function Main() {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
+  const [toastMessage, setToastMessage] = useState("aaa");
+
   return (
-    <CommonLayout>
+    <CommonLayout toastMessage={toastMessage}>
       {isDeskTop ? <MainContent /> : <MainContentMb />}
     </CommonLayout>
   );

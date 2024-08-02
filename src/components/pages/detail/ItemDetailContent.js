@@ -23,6 +23,7 @@ import {
   QuantityOptions,
   SizeOptions,
 } from "components/detail";
+import { ConfirmModal } from "components/modal";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
 import { formatDateTime, now } from "utilities/dateTime";
@@ -77,6 +78,9 @@ export default function ItemDetailContent() {
   const handleQuestionChangePage = (_event, page) => questionChangePage(page);
 
   const { scrollToElement, setElementRef } = useScrollToElement();
+
+  const [confirmModal, setConfirmModal] = useState(true);
+  const [confirmModalContents, setConfirmModalContents] = useState({});
 
   useEffect(() => {
     setTimeout(() => {
@@ -227,6 +231,21 @@ export default function ItemDetailContent() {
             <DefaultButton
               className={styles.button_background_100_outline_color_dark_300}
               label="쇼핑백"
+              onClick={() => {
+                setConfirmModal(true);
+                setConfirmModalContents({
+                  title: "선택하신 상품이\n 쇼핑백에 추가 되었습니다.",
+                  leftButton: {
+                    label: "쇼핑 계속하기",
+                    color: "skeleton",
+                    onClick: () => setConfirmModal(false),
+                  },
+                  rightButton: {
+                    label: "쇼핑백 확인",
+                    onClick: () => navigation("/cart"),
+                  },
+                });
+              }}
             />
           </div>
         </div>
@@ -421,6 +440,13 @@ export default function ItemDetailContent() {
           </div>
         </div>
         <DeliveryDrawer visible={deliveryModal} setVisible={setDeliveryModal} />
+        {confirmModal && (
+          <ConfirmModal
+            visible={confirmModal}
+            setVisible={setConfirmModal}
+            contents={confirmModalContents}
+          />
+        )}
       </div>
     </CommonLayout>
   );

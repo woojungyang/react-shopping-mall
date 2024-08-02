@@ -76,12 +76,12 @@
           @include flex($justify-content: space-between);
 
           svg {
-            width: $margin * 1.5;
+            width: $margin * 2;
             height: $margin * 2.3;
             background-color: rgba($color: #fff, $alpha: 0.5);
             color: rgba($color-skeleton-200, 0.7);
 
-            padding: $default;
+            // padding: $default;
             cursor: pointer;
           }
         }

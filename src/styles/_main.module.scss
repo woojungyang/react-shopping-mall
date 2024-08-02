@@ -2,6 +2,7 @@
 
 .main_image_container {
   width: 100%;
+
   position: relative;
   // @include tablet {
   //   padding-left: $padding;
@@ -432,7 +433,7 @@
 
 .main_image {
   @include default-image;
-  height: 80vh;
+  height: 60vh;
   cursor: pointer;
 }
 .main_image_disabled {
