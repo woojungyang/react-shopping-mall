@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import Person2Icon from "@mui/icons-material/Person2";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import classNames from "classnames";
@@ -15,22 +17,9 @@ import { SearchContainer } from "./SearchContainer";
 export default function Header() {
   const navigation = useNavigate();
   const location = useLocation();
-  const isMainPage = location.pathname == "/";
 
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
-
-  const [position, setPosition] = useState(0);
-  const switchPosition = position > 100;
-  function onScroll() {
-    setPosition(window.scrollY);
-  }
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
 
   const searchRef = useRef(null);
   const [showSearch, setShowSearch] = useState(false);
@@ -57,38 +46,40 @@ export default function Header() {
   return (
     <Link>
       {isDeskTop ? (
-        <div
-          ref={searchRef}
-          className={classNames(
-            { [styles.header_container]: true },
-            { [styles.header_container_dark]: switchPosition || !isMainPage },
-          )}
-        >
+        <div ref={searchRef} className={styles.header_container}>
           <div className={styles.header_wrapper}>
-            <div className={styles.category_wrapper}>
+            <div className={styles.header_wrap}>
               <img
-                src={
-                  switchPosition || !isMainPage
-                    ? require("assets/images/common/logo.png")
-                    : require("assets/images/common/logo_trans.png")
-                }
+                src={require("assets/images/common/logo.png")}
                 alt="logo"
                 className={styles.header_logo}
                 onClick={() => navigation("/")}
               />
-              <div className={styles.category}>
-                <Link to="/category/women">WOMEN</Link>
-                <Link to="/category/men">MEN</Link>
-                <Link to="/category/beauty">BEAUTY</Link>
-                <Link to="/category/life">LIFE</Link>
-                <Link to="/event">EVENT</Link>
+              <div className={styles.user_wrapper}>
+                <div onClick={() => navigation("/login")}>
+                  <ExitToAppIcon />
+                  <p>LOGIN</p>
+                </div>
+                <div onClick={() => navigation("/mypage/order")}>
+                  <Person2Icon />
+                  <p>MY</p>
+                </div>
+                <div onClick={() => setShowSearch(!showSearch)}>
+                  <SearchIcon />
+                  <p>SEARCH</p>
+                </div>
+                <div onClick={() => navigation("/cart")}>
+                  <ShoppingBagIcon />
+                  <p>CART</p>
+                </div>
               </div>
             </div>
-            <div className={styles.user_wrapper}>
-              <Link to="/login">LOGIN</Link>
-              <Link to="/mypage/order">MY</Link>
-              <p onClick={() => setShowSearch(!showSearch)}>SEARCH</p>
-              <Link to="/cart">CART</Link>
+            <div className={styles.nav_wrapper}>
+              <Link to="/category/women">WOMEN</Link>
+              <Link to="/category/men">MEN</Link>
+              <Link to="/category/beauty">BEAUTY</Link>
+              <Link to="/category/life">LIFE</Link>
+              <Link to="/event">EVENT</Link>
             </div>
           </div>
           {showSearch && (

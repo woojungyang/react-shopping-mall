@@ -2,6 +2,7 @@
 
 .main_image_container {
   width: 100%;
+  margin-top: $desktop-margin-top;
 
   position: relative;
   // @include tablet {
@@ -18,14 +19,12 @@
     margin-bottom: $margin * 1.5;
   }
   .main_slider_wrapper {
-    position: absolute;
-    bottom: 5%;
-    max-width: $breakpoint-desktop;
+    max-width: $max-width;
     width: 100%;
     @include flex;
-    left: 50%;
-    transform: translate(-50%, -5%);
-    border: 1px solid red;
+    margin: auto;
+    margin-top: $margin;
+
     .main_slider_button {
       border: 2px solid $color-background-100;
       @include flex;
@@ -39,19 +38,19 @@
       }
     }
     .main_slider_bottom {
-      width: 400px;
-      height: 5px;
-      background-color: rgba($color: #ffffff, $alpha: 0.5);
+      width: 300px;
+      height: 3px;
+      background-color: rgba($color: $color-dark-300, $alpha: 0.1);
       margin-right: $padding;
       border-radius: 3px;
       // position: relative;
     }
     .main_slider_percent {
-      max-width: 400px;
+      max-width: 300px;
       height: 100%;
       width: 0;
-      height: 5px;
-      background-color: $color-background-100;
+      height: 3px;
+      background-color: $color-dark-300;
       left: 0px;
       top: 0px;
       position: absolute;
@@ -62,7 +61,7 @@
       margin-right: $margin;
       flex-shrink: 0;
       font-weight: 600;
-      color: $color-background-100;
+      color: $color-dark-300;
       margin-bottom: -4px;
     }
     // @include mobile {
@@ -79,7 +78,7 @@
     // }
   }
   .main_content_container {
-    max-width: $breakpoint-desktop;
+    max-width: $max-width;
     margin: auto;
 
     .items_contents_container {
@@ -433,11 +432,44 @@
 
 .main_image {
   @include default-image;
-  height: 60vh;
+  height: 800px;
   cursor: pointer;
 }
-.main_image_disabled {
-  filter: grayscale(90%);
+.desktop_slider_image_wrapper {
+  position: relative;
+  width: 100%;
+  height: 800px;
+  overflow: hidden;
+  .background_slider_image {
+    @include default-image;
+    filter: blur(200rem);
+  }
+  .silder_image {
+    position: absolute;
+    max-width: $max-width * 1.2;
+    width: 100%;
+    top: 0;
+    height: 100%;
+    object-fit: cover;
+
+    left: 18%;
+  }
+}
+.desktop_slider_button_wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: $max-width;
+  width: 100%;
+
+  @include flex($justify-content: space-between);
+  svg {
+    color: $color-background-100;
+    width: $margin * 2;
+    height: $margin * 3;
+    cursor: pointer;
+  }
 }
 
 .main_container_mb {

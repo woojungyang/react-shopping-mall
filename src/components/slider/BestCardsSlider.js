@@ -14,7 +14,7 @@ export const BestCardsSlider = () => {
   const isDeskTop = userDevice == Device.Desktop;
 
   const cardSize = useMemo(
-    () => [0, 0, 0, 0, 1, 1, 1].sort(() => Math.random() - 0.5),
+    () => [0, 0, 0, 1, 1].sort(() => Math.random() - 0.5),
     [isDeskTop],
   );
 
