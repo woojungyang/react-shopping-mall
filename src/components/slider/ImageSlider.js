@@ -14,7 +14,7 @@ export const ImageSlider = ({
   images,
   currentIndex = 0,
   setCurrentIndex,
-  autoplay = true,
+  autoplay = false,
 }) => {
   const slider = useRef(null);
   const userDevice = useUserDevice();
@@ -45,6 +45,7 @@ export const ImageSlider = ({
                   src={require(`assets/images/main/main${index + 1}.jpg`)}
                   className={styles.background_slider_image}
                 />
+
                 <img
                   src={require(`assets/images/main/main${index + 1}.jpg`)}
                   className={styles.silder_image}

@@ -10,13 +10,14 @@
   flex-grow: 1;
 
   flex-direction: column;
+  margin-top: $desktop-margin-top * 1.4;
   .mypage_title {
     text-align: center;
     margin-bottom: $margin * 2;
     font-size: $margin * 1.8;
   }
 
-  margin-top: $header-height * 2;
+  // margin-top: $header-height * 2;
   .profile_wrapper {
     @include flex($direction: column);
     .avatar {

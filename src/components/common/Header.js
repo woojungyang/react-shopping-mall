@@ -60,7 +60,7 @@ export default function Header() {
                   <ExitToAppIcon />
                   <p>LOGIN</p>
                 </div>
-                <div onClick={() => navigation("/mypage/order")}>
+                <div onClick={() => navigation("/mypage")}>
                   <Person2Icon />
                   <p>MY</p>
                 </div>
