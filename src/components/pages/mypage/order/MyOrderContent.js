@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { OrderState, getOrderState } from "models/order";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
-import { numberWithCommas } from "utilities";
+import { calculateSum, numberWithCommas } from "utilities";
 
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
@@ -16,6 +17,7 @@ import styles from "styles/_mypage.module.scss";
 
 import { MyPageLayout } from "../MyPageLayout";
 import SearchFilter from "../SearchFilter";
+import Order from "./Order";
 
 export default function MyOrderContent() {
   const navigation = useNavigate();
@@ -91,7 +93,7 @@ export default function MyOrderContent() {
             { label: "진행상황" },
             { label: "주문일" },
             { label: "주문번호", width: "20%" },
-            { label: "상품정보", width: "40%" },
+            { label: "상품정보", width: "35%" },
             { label: "수량" },
             { label: "상품금액" },
           ]}
@@ -102,16 +104,26 @@ export default function MyOrderContent() {
           selectedOption={selectedOrderState}
           onChangeOption={changeSelectedOrderState}
         >
-          {orderList?.map((e) => (
-            <TableRow key={e.orderNumber}>
-              <td>{getOrderState(e.state)}</td>
-              <td>{e.orderDate}</td>
-              <td>{e.orderNumber}</td>
-              <td>{e.name}</td>
-              <td>{e.quantity}</td>
-              <td>{numberWithCommas(e.price)}원</td>
-            </TableRow>
-          ))}
+          {orderList?.map((order, index) => {
+            const productCount = order.products.length - 1;
+
+            const totalPrice = calculateSum(
+              order.products.map((product) => product.price),
+            );
+            return (
+              <TableRow key={index}>
+                <td>{getOrderState(order.state)}</td>
+                <td>{order.orderDate}</td>
+                <td>{order.orderNumber}</td>
+                <td>
+                  {order.products[0].itemName}
+                  {productCount > 0 ? ` 외 ${productCount}개의 상품` : ""}
+                </td>
+                <td>{order.products.length}</td>
+                <td>{numberWithCommas(totalPrice)}원</td>
+              </TableRow>
+            );
+          })}
         </Table>
       </div>
     </MyPageLayout>
@@ -129,21 +141,15 @@ const orderList = Array.from({ length: 8 }, (v, index) => ({
   id: index,
   orderDate: formatDateTime(now()),
   orderNumber: nanoid(),
-  name: "item" + index,
-  products: Array.from({ length: 8 }, (v, index) => ({
+  products: Array.from({ length: index + 1 }, (v, index) => ({
     id: index,
     itemName: "item" + nanoid(),
     option: "skyblue",
     quantity: index,
     price: 12344 + index,
-    state:
-      Object.values(OrderState)[
-        Math.floor(Math.random() * Object.values(OrderState).length)
-      ],
   })),
-  // price: 12344 + index,
-  // state:
-  //   Object.values(OrderState)[
-  //     Math.floor(Math.random() * Object.values(OrderState).length)
-  //   ],
+  state:
+    Object.values(OrderState)[
+      Math.floor(Math.random() * Object.values(OrderState).length)
+    ],
 }));

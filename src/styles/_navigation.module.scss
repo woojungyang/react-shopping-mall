@@ -204,9 +204,10 @@
 
 .footer_container_mb {
   min-height: 300px;
-  padding: $padding * 8 $padding;
+  padding: $padding * 2 $padding;
 
-  margin-bottom: $margin * 3;
+  padding-bottom: $margin * 3 !important;
+  height: 100%;
   margin-top: 0;
   .footer_wrapper {
     @include flex($direction: column);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +27,8 @@ export const MyPageLayout = ({ children }) => {
                 key={index}
                 className={classNames({
                   [styles.menu]: true,
-                  [styles.active_tab]: menu.url == pathname,
+                  [styles.active_tab]:
+                    menu.url == pathname || menu.url == "/mypage",
                 })}
               >
                 {menu.label}

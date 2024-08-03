@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React from "react";
 
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import classNames from "classnames";
 import { numberWithCommas } from "utilities";
 
 import { DefaultPagination } from "components/common";
 
 import styles from "styles/_common.module.scss";
+
+import { TableFilter } from "./TableFilter";
 
 export const Table = ({
   children,
@@ -18,67 +18,16 @@ export const Table = ({
   selectedOption = "",
   onChangeOption,
 }) => {
-  const options = [...[{ id: "", label: "전체" }].concat(filterOptions)];
-
-  const updateOption = useMemo(() => {
-    return (
-      options.find((e) => e.id == selectedOption).label || options[0].label
-    );
-  }, [selectedOption]);
-
-  // console.log("selectedOption", selectedOption);
-
-  const [showOptions, setShowOptions] = useState(false);
-
-  const selectRef = useRef();
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (selectRef.current && !selectRef.current.contains(event.target)) {
-        setShowOptions(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [selectRef]);
-
   return (
     <div>
       <div className={styles.table_filter_wrap}>
-        {pagination && <p>총 {numberWithCommas(count)}건</p>}
+        {pagination && <p>전체 {numberWithCommas(count)}건</p>}
         {!!filterOptions.length && (
-          <div className={styles.table_select_container} ref={selectRef}>
-            <div
-              className={classNames({
-                [styles.table_select_wrapper]: true,
-                [styles.table_select_wrapper_active]: showOptions,
-              })}
-              onClick={() => setShowOptions(!showOptions)}
-            >
-              <p className={styles.table_select_placeholder}>{updateOption}</p>
-              <KeyboardArrowDownIcon />
-            </div>
-            {showOptions && (
-              <div className={styles.table_select_wrap}>
-                {options.map((option, index) => (
-                  <p
-                    key={index}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onChangeOption(option.id);
-
-                      setShowOptions(false);
-                    }}
-                  >
-                    {option.label}
-                  </p>
-                ))}
-              </div>
-            )}
-          </div>
+          <TableFilter
+            filterOptions={filterOptions}
+            selectedOption={selectedOption}
+            onClick={(id) => onChangeOption(id)}
+          />
         )}
       </div>
       <table className={styles.table_container}>

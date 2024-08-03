@@ -1,3 +1,3 @@
 export * from "./Table";
-export * from "./TableHeader";
+export * from "./TableFilter";
 export * from "./TableRow";
