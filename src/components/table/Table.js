@@ -48,7 +48,7 @@ export const Table = ({
   return (
     <div>
       <div className={styles.table_filter_wrap}>
-        <p>총 {numberWithCommas(count)}건</p>
+        {pagination && <p>총 {numberWithCommas(count)}건</p>}
         {!!filterOptions.length && (
           <div className={styles.table_select_container} ref={selectRef}>
             <div

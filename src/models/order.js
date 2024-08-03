@@ -6,10 +6,13 @@ export const OrderState = enumerate({
   Preparing: 3,
   Delivery: 4,
   CompletedDelivery: 5,
-  PendingExchange: 6,
-  CompletedExchange: 7,
-  PendingRefund: 8,
-  CompletedRefund: 9,
+  ConfirmedPurchase: 6,
+  PendingExchange: 7,
+  CompletedExchange: 8,
+  PendingRefund: 9,
+  CompletedRefund: 10,
+  CanceledOrder: 11,
+  IssuedPayment: 12,
 });
 
 export function getOrderState(state) {
@@ -22,6 +25,8 @@ export function getOrderState(state) {
       return "배송중";
     case OrderState.CompletedDelivery:
       return "배송완료";
+    case OrderState.ConfirmedPurchase:
+      return "구매확정";
     case OrderState.PendingExchange:
       return "교환신청";
     case OrderState.CompletedExchange:
@@ -30,6 +35,10 @@ export function getOrderState(state) {
       return "환불신청";
     case OrderState.CompletedRefund:
       return "환불완료";
+    case OrderState.CanceledOrder:
+      return "주문취소";
+    case OrderState.IssuedPayment:
+      return "결제오류";
     default:
       return "결제대기";
   }

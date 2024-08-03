@@ -16,6 +16,7 @@ import { addMonths, formatDateTime, now } from "utilities/dateTime";
 import styles from "styles/_mypage.module.scss";
 
 import SearchFilter from "../SearchFilter";
+import Order from "./Order";
 
 export default function MyOrderContentMb() {
   const [startDate, endDate, changeStartDate, changeEndDate] =
@@ -29,11 +30,7 @@ export default function MyOrderContentMb() {
     useQueryString("selectedOrderState");
 
   return (
-    <MobileLayout
-      headerTitle="주문관리"
-      isBottomNavigation={true}
-      isFooter={true}
-    >
+    <MobileLayout headerTitle="주문관리" isFooter={true}>
       <div className={styles.mobile_mypage_container} style={{ padding: 0 }}>
         <div className={styles.order_header_filter_wrap}>
           <SearchFilter
@@ -61,15 +58,7 @@ export default function MyOrderContentMb() {
           </div>
         </div>
         <div className={styles.order_table_wrap}>
-          <Table
-            pagination={false}
-            filterOptions={Object.entries(OrderState).map((e) => ({
-              id: e[1],
-              label: getOrderState(e[1]),
-            }))}
-            selectedOption={selectedOrderState}
-            onChangeOption={changeSelectedOrderState}
-          >
+          <Table pagination={false}>
             {orderList?.map((order, index) => (
               <TableRow key={index}>
                 <td
@@ -80,35 +69,14 @@ export default function MyOrderContentMb() {
                 >
                   <div className={styles.order_header}>
                     <p className={styles.order_number}>
-                      주문번호 <span>{order.orderNumber}</span>
+                      {order.orderDate} |<span> {order.orderNumber}</span>
                     </p>
                     <ChevronRightIcon />
                   </div>
                   <div className={styles.order_body}>
-                    <OrderContent
-                      content={{ title: "상품명", content: order.name }}
-                    />
-                    <OrderContent
-                      content={{
-                        title: "결제일시",
-                        content: formatDateTime(
-                          order.orderDate,
-                          "yyyy-MM-dd HH:mm:ss",
-                        ),
-                      }}
-                    />
-                    <OrderContent
-                      content={{
-                        title: "결제금액",
-                        content: `${numberWithCommas(order.price)}원`,
-                      }}
-                    />
-                    <OrderContent
-                      content={{
-                        title: "주문상태",
-                        content: getOrderState(order.state),
-                      }}
-                    />
+                    {order.products.map((product, index) => (
+                      <Order key={index} product={product} />
+                    ))}
                   </div>
                   <DefaultButton
                     label="주문상세"
@@ -120,19 +88,16 @@ export default function MyOrderContentMb() {
               </TableRow>
             ))}
           </Table>
+          <div className={styles.button_wrap}>
+            <DefaultButton
+              label="이전 주문 내역 더보기"
+              className={styles.button_skeleton_100_color_background_100}
+            />
+          </div>
           {/* <div>ddd</div> */}
         </div>
       </div>
     </MobileLayout>
-  );
-}
-
-function OrderContent({ content }) {
-  return (
-    <div className={styles.order_content_wrap}>
-      <p className={styles.order_content_title}>{content?.title}</p>
-      <p className={styles.order_content_content}>{content?.content}</p>
-    </div>
   );
 }
 
@@ -145,13 +110,17 @@ const orderStages = [
 
 const orderList = Array.from({ length: 8 }, (v, index) => ({
   id: index,
-  orderDate: formatDateTime(now(), "yyyy-MM-dd HH:mm:ss"),
+  orderDate: formatDateTime(now()),
   orderNumber: nanoid(),
-  quantity: index,
-  name: "item" + index,
-  price: 12344 + index,
-  state:
-    Object.values(OrderState)[
-      Math.floor(Math.random() * Object.values(OrderState).length)
-    ],
+  products: Array.from({ length: index + 1 }, (v, index) => ({
+    id: index,
+    itemName: "item" + nanoid(),
+    option: "skyblue",
+    quantity: index,
+    price: 12344 + index,
+    state:
+      Object.values(OrderState)[
+        Math.floor(Math.random() * Object.values(OrderState).length)
+      ],
+  })),
 }));

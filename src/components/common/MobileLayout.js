@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import OtherHousesOutlinedIcon from "@mui/icons-material/OtherHousesOutlined";
 import { useNavigate } from "react-router-dom";
-import { scrollTop } from "utilities";
+import { scrollBottom, scrollTop } from "utilities";
 
 import styles from "styles/_common.module.scss";
 
@@ -42,9 +43,18 @@ export const MobileLayout = ({
       </div>
       {children}
       {switchPosition && (
-        <div className={styles.mobile_scroll_top_button} onClick={scrollTop}>
-          <KeyboardArrowUpIcon />
-        </div>
+        <>
+          <div className={styles.mobile_scroll_top_button} onClick={scrollTop}>
+            <KeyboardArrowUpIcon />
+          </div>
+          <div
+            className={styles.mobile_scroll_top_button}
+            style={{ bottom: 35 }}
+            onClick={scrollBottom}
+          >
+            <KeyboardArrowDownIcon />
+          </div>
+        </>
       )}
       {isBottomNavigation && <BottomNavigation />}
       {isFooter && <Footer />}
