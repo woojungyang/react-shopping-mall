@@ -182,6 +182,7 @@
     margin-top: $padding;
     border: 1px solid $color-skeleton-100;
     height: 40px;
+    background-color: $color-background-100;
     p {
       color: $color-skeleton-200;
       font-size: 14px;
@@ -264,6 +265,39 @@
       }
     }
   }
+  .order_stages_bg_white {
+    width: 100%;
+    border: 1px solid $color-skeleton-100;
+    background-color: $color-background-100;
+
+    margin: $margin 0px;
+    @include flex($justify-content: space-between);
+    padding: $padding;
+    .stage {
+      @include flex;
+      font-size: 16px;
+      position: relative;
+      width: 100%;
+      text-align: center;
+      .order_count {
+        font-weight: 600;
+        font-size: $margin;
+        margin-bottom: $default;
+      }
+      .order_label {
+        font-size: 0.8em;
+        font-weight: 300;
+      }
+      .arrow_wrap {
+        position: absolute;
+        right: 1px;
+        top: -10px;
+        padding: $default;
+        width: $margin;
+        color: $color-skeleton-100;
+      }
+    }
+  }
   .menu_wrapper {
     margin-top: $margin;
     .menu {
@@ -273,6 +307,73 @@
       border-bottom: 1px solid rgba($color-skeleton-100, 0.1);
       &:last-child {
         border: none;
+      }
+    }
+  }
+  .order_header_filter_wrap {
+    padding: $padding;
+    background-color: rgba($color-skeleton-100, 0.1);
+  }
+  .order_table_wrap {
+    // padding: $padding;
+    table {
+      th,
+      td {
+        border: none;
+      }
+    }
+    .order_content {
+      width: 100%;
+      text-align: left;
+
+      border-bottom: 10px solid rgba($color-skeleton-100, 0.2);
+      .order_header {
+        padding: $default 0;
+        @include flex($justify-content: space-between);
+        border-bottom: 1px solid rgba($color-skeleton-100, 0.2);
+        .order_number {
+          width: 100%;
+          font-weight: 500;
+          font-size: 14px;
+
+          @include overflow-text;
+          span {
+            margin-left: $default/2;
+            color: $color-orange;
+          }
+        }
+        svg {
+          margin-left: $default;
+          color: $color-skeleton-100;
+        }
+      }
+      .order_body {
+        padding: $padding 0;
+        .order_content_wrap {
+          display: flex;
+          justify-content: flex-start;
+          margin-bottom: $default;
+
+          &:last-child {
+            margin-bottom: 0px;
+          }
+          p {
+            word-wrap: break-word;
+            word-break: break-all;
+            white-space: normal;
+            height: auto;
+          }
+          .order_content_title {
+            max-width: 80px;
+            width: 100%;
+
+            margin-right: $default;
+            flex-shrink: 0;
+          }
+          .order_content_content {
+            width: 100%;
+          }
+        }
       }
     }
   }

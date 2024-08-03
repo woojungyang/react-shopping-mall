@@ -129,11 +129,21 @@ const orderList = Array.from({ length: 8 }, (v, index) => ({
   id: index,
   orderDate: formatDateTime(now()),
   orderNumber: nanoid(),
-  quantity: index,
   name: "item" + index,
-  price: 12344 + index,
-  state:
-    Object.values(OrderState)[
-      Math.floor(Math.random() * Object.values(OrderState).length)
-    ],
+  products: Array.from({ length: 8 }, (v, index) => ({
+    id: index,
+    itemName: "item" + nanoid(),
+    option: "skyblue",
+    quantity: index,
+    price: 12344 + index,
+    state:
+      Object.values(OrderState)[
+        Math.floor(Math.random() * Object.values(OrderState).length)
+      ],
+  })),
+  // price: 12344 + index,
+  // state:
+  //   Object.values(OrderState)[
+  //     Math.floor(Math.random() * Object.values(OrderState).length)
+  //   ],
 }));

@@ -13,6 +13,7 @@ export const Table = ({
   headers = [],
   count = 1,
   page = 1,
+  pagination = true,
   filterOptions = [],
   selectedOption = "",
   onChangeOption,
@@ -98,7 +99,7 @@ export const Table = ({
         </thead>
         <tbody>{children}</tbody>
       </table>
-      <DefaultPagination count={count} page={page} />
+      {pagination && <DefaultPagination count={count} page={page} />}
     </div>
   );
 };
