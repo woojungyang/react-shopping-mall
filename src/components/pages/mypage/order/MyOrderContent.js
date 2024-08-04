@@ -32,6 +32,12 @@ export default function MyOrderContent() {
   const [selectedOrderState, changeSelectedOrderState] =
     useQueryString("selectedOrderState");
 
+  function onClickStage(stageId) {
+    changeSelectedOrderState(stageId);
+    changeStartDate(formatDateTime(addMonths(now(), -12)));
+    changeEndDate(formatDateTime(now()));
+  }
+
   return (
     <MyPageLayout>
       <div className={styles.order_wrapper}>
@@ -44,11 +50,7 @@ export default function MyOrderContent() {
               <div key={index} className={styles.stage}>
                 <p
                   className={styles.order_count}
-                  onClick={() => {
-                    changeSelectedOrderState(stage.id);
-                    changeStartDate(formatDateTime(addMonths(now(), -12)));
-                    changeEndDate(formatDateTime(now()));
-                  }}
+                  onClick={() => onClickStage(stage.id)}
                 >
                   {numberWithCommas(stage.count)}
                 </p>
@@ -57,7 +59,17 @@ export default function MyOrderContent() {
               </div>
             ))}
           </div>
-          <div className={styles.order_canceled_wrap}>ddd</div>
+          <div className={styles.order_canceled_wrap}>
+            {canceledStage.map((stage) => (
+              <div
+                onClick={() => onClickStage(stage.id)}
+                className={styles.default_flex_space}
+              >
+                <p>{stage.label}</p>
+                <p>{stage.count}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <SearchFilter
@@ -148,6 +160,13 @@ const orderStages = [
   { id: OrderState.Preparing, label: "상품준비중", count: 2 },
   { id: OrderState.Delivery, label: "배송중", count: 3 },
   { id: OrderState.CompletedDelivery, label: "배송완료", count: 4 },
+  { id: OrderState.ConfirmedPurchase, label: "구매 확정", count: 4 },
+];
+
+const canceledStage = [
+  { id: OrderState.CanceledOrder, label: "취소", count: 2 },
+  { id: OrderState.PendingRefund, label: "반품", count: 1 },
+  { id: OrderState.PendingExchange, label: "교환", count: 1 },
 ];
 
 const orderList = Array.from({ length: 5 }, (v, index) => ({

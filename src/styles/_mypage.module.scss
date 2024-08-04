@@ -101,8 +101,20 @@
         border-top: 1px solid $color-dark-300;
         border-bottom: 1px solid $color-skeleton-100;
         .order_canceled_wrap {
-          width: 200px;
+          width: 300px;
           background-color: rgba($color-skeleton-100, 0.2);
+          @include flex($direction: column);
+          padding: 0 $margin * 2;
+
+          > div {
+            cursor: pointer;
+            width: 100%;
+
+            margin-bottom: $default;
+            &:last-child {
+              margin-bottom: 0px;
+            }
+          }
         }
         .order_stages_wrap {
           @include flex($justify-content: flex-start);
@@ -115,19 +127,15 @@
             position: relative;
 
             .order_label {
-              // top: $default;
-              // left: $padding;
-              // position: absolute;
               font-size: $padding;
-              // padding-top: $padding;
-              font-weight: 500;
+              margin-top: $padding;
+              font-weight: 400;
             }
             .order_count {
-              height: 100%;
               cursor: pointer;
 
               font-weight: 700;
-              font-size: $default * 3;
+              font-size: $default * 3.2;
             }
             svg {
               position: absolute;
