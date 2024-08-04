@@ -4,3 +4,7 @@ export function maskAccountName(accountName = "") {
     (match, p1, p2) => p1 + "*".repeat(p2.length),
   );
 }
+
+export function maskPhoneNumber(phoneNumber) {
+  return phoneNumber.replace(/(\d{3})[- ]?(\d{3,4})[- ]?(\d{4})/, "$1-****-$3");
+}

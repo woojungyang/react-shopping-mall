@@ -7,21 +7,19 @@ import { useUserDevice } from "hooks/size/useUserDevice";
 
 import styles from "styles/_common.module.scss";
 
-export const ToastModal = ({ toastMessage = "" }) => {
+export const ToastModal = ({ toastMessage = "", setToastMessage }) => {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
-  const [message, setMessage] = useState(toastMessage);
-
   useEffect(() => {
-    setMessage(toastMessage);
+    // setMessage(toastMessage);
     const timer = setTimeout(() => {
-      setMessage("");
+      setToastMessage("");
     }, 4000);
 
     return () => clearTimeout(timer);
   }, [toastMessage]);
-  if (!message) return null;
+  if (!toastMessage) return null;
   return (
     <div
       className={styles.toast_wrapper}
@@ -37,7 +35,7 @@ export const ToastModal = ({ toastMessage = "" }) => {
           알림
         </p>
       )}
-      <p>{message}</p>
+      <p>{toastMessage}</p>
     </div>
   );
 };

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { OrderState, getOrderState } from "models/order";
 import { nanoid } from "nanoid";
-import { numberWithCommas } from "utilities";
+import { maskAccountName, maskPhoneNumber, numberWithCommas } from "utilities";
 
+import { ToastModal } from "components/modal";
 import { Table, TableRow } from "components/table";
 
 import { formatDateTime, now } from "utilities/dateTime";
@@ -14,13 +15,14 @@ import styles from "styles/_mypage.module.scss";
 import { MyPageLayout } from "../MyPageLayout";
 
 export default function OrderDetailContent() {
+  const [toastMessage, setToastMessage] = useState("");
   return (
     <MyPageLayout>
       <div className={styles.order_detail_wrapper}>
         <p className={styles.order_title}>주문 상세 조회</p>
-        <div>
-          <p>주문번호 |{nanoid()} </p>
-          <p>주문일 |{formatDateTime(now())} </p>
+        <div className={styles.order_item_header}>
+          <p>No. {nanoid()} </p>
+          <p>{formatDateTime(now())} </p>
         </div>
 
         <div className={styles.order_item_list}>
@@ -31,6 +33,7 @@ export default function OrderDetailContent() {
               { label: "수량" },
               { label: "상품금액" },
               { label: "진행상황" },
+              { label: "배송조회" },
             ]}
           >
             {order.products.map((product, index) => (
@@ -53,29 +56,73 @@ export default function OrderDetailContent() {
                 <td>{product.quantity}</td>
                 <td>{numberWithCommas(product.price)}</td>
                 <td>{getOrderState(product.state)}</td>
+                <td>
+                  <button
+                    className={styles.delivery_info_wrap}
+                    onClick={() => setToastMessage("준비중입니다.")}
+                  >
+                    배송 조회
+                  </button>
+                </td>
               </TableRow>
             ))}
           </Table>
         </div>
-        {/* <p>
-          No.{nanoid()} | 주문일 {formatDateTime(now())}
-        </p> */}
-        {/* <p>주문정보</p>
-        <div>
+        <div className={styles.gray_table_container}>
+          <p className={styles.gray_table_title}>주문자 정보</p>
           <DoubleGrayContent
-            content1={{ title: "주문번호", content: nanoid() }}
-            content2={{ title: "주문일자", content: formatDateTime(now()) }}
+            content1={{ title: "주문자명", content: "홍길동" }}
+            content2={{
+              title: "이메일주소",
+              content: maskAccountName("username@naver.com"),
+            }}
           />
           <DoubleGrayContent
-            content1={{ title: "주문자명", content: nanoid() }}
-            content2={{ title: "", content: formatDateTime(now()) }}
+            content1={{
+              title: "휴대폰번호",
+              content: maskPhoneNumber("01012341234"),
+            }}
+            content2={{ title: "", content: "" }}
           />
-        </div> */}
-        {/* <p className={styles.order_title}>주문 상세</p>
-        <p>
-          No.{nanoid()} | {formatDateTime(now())}
-        </p> */}
+        </div>
+        <div className={styles.gray_table_container}>
+          <p className={styles.gray_table_title}>배송지 정보</p>
+          <DoubleGrayContent
+            content1={{ title: "수취인", content: "홍길동" }}
+            content2={{
+              title: "연락처",
+              content: maskPhoneNumber("01012341234"),
+            }}
+          />
+          <GrayContent
+            content={{
+              title: "주소",
+              content: "[12345] 서울특별시어어어어엉어쩌구",
+            }}
+          />
+        </div>
+        <div className={styles.gray_table_container}>
+          <p className={styles.gray_table_title}>결제 정보</p>
+          <GrayContent
+            content={{
+              title: "결제방법",
+              content: "카드",
+            }}
+          />
+          <GrayContent
+            content={{
+              title: "결제금액",
+              content: `${numberWithCommas(1234444)}원`,
+            }}
+          />
+        </div>
       </div>
+      {toastMessage && (
+        <ToastModal
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        />
+      )}
     </MyPageLayout>
   );
 }
