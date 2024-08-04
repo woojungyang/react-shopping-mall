@@ -19,35 +19,58 @@
 
   // margin-top: $header-height * 2;
   .profile_wrapper {
-    @include flex($direction: column);
-    .avatar {
-      @include default-image;
-
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      flex-shrink: 0;
+    margin-bottom: $margin * 4;
+    background-color: $color-dark-200;
+    padding: $padding $margin;
+    @include flex;
+    color: $color-background-100;
+    height: 150px;
+    > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
     }
-    .nickname {
-      width: 100%;
-      text-align: center;
-      padding: $padding;
-      font-weight: 500;
+    .membership_wrap1 {
+      width: 50%;
+      height: 100%;
+    }
+    .membership_wrap2 {
+      width: 25%;
+      height: 100%;
+      border-left: 1px solid $color-skeleton-100;
+      padding: 0 $padding;
+    }
+    .membership_title {
+      @include flex($justify-content: flex-start);
+      color: $color-skeleton-100;
+      font-weight: 600;
+      svg {
+        width: $margin;
+        height: $margin;
+      }
+    }
+    .membership_count {
+      font-size: $margin * 1.5;
+      font-weight: 700;
     }
   }
 
   .mypage_wrapper {
+    display: flex;
     .side_menu_wrap {
-      width: 100%;
+      width: 200px;
 
-      @include flex($justify-content: space-between);
+      display: flex;
+      flex-direction: column;
 
       margin-right: $margin * 3;
       .menu {
         width: 100%;
-        text-align: center;
+        // text-align: center;
         cursor: pointer;
-        padding: $padding;
+        color: $color-skeleton-100;
+        padding: $default $padding;
         font-weight: 500;
         margin-bottom: $padding;
         &:last-child {
@@ -55,49 +78,102 @@
         }
       }
       .active_tab {
-        font-weight: 600;
-        background-color: rgba($color-skeleton-100, 0.2);
+        position: relative;
+        color: $color-dark-300;
+        border-left: 5px solid $color-orange;
+        svg {
+          position: absolute;
+          right: 0;
+          top: 20%;
+
+          color: $color-orange;
+        }
+        // font-weight: 600;
+        // background-color: rgba($color-skeleton-100, 0.2);
       }
     }
     .content_wrap {
       width: 100%;
-      .order_stages {
-        width: 100%;
-        background-color: rgba($color-primary-100, 0.1);
+      .order_stages_wrapper {
+        height: 144px;
+        display: flex;
+        margin-bottom: $margin * 2;
+        border-top: 1px solid $color-dark-300;
+        border-bottom: 1px solid $color-skeleton-100;
+        .order_canceled_wrap {
+          width: 200px;
+          background-color: rgba($color-skeleton-100, 0.2);
+        }
+        .order_stages_wrap {
+          @include flex($justify-content: flex-start);
+          width: 100%;
+          .stage {
+            height: 100%;
+            width: 100%;
 
-        margin-bottom: $margin * 3;
-        // margin: $margin 0px;
-        @include display-grid($colum: repeat(4, 1fr), $colum-gap: 0);
-        padding: $padding;
-        .stage {
-          height: 120px;
-          position: relative;
-          @include flex;
-          border-right: 1px solid rgba($color-primary-300, 0.3);
-          &:last-child {
-            border: none;
-          }
+            @include flex($direction: column);
+            position: relative;
 
-          .order_label {
-            top: $default;
-            left: $padding;
-            position: absolute;
-            font-size: 14px;
-            font-weight: 500;
-            color: $color-primary-300;
+            .order_label {
+              // top: $default;
+              // left: $padding;
+              // position: absolute;
+              font-size: $padding;
+              // padding-top: $padding;
+              font-weight: 500;
+            }
+            .order_count {
+              height: 100%;
+              cursor: pointer;
+
+              font-weight: 700;
+              font-size: $default * 3;
+            }
+            svg {
+              position: absolute;
+              right: -15.5px;
+              width: $default * 3;
+              height: $default * 3;
+              color: $color-skeleton-100;
+            }
           }
-          .order_count {
-            cursor: pointer;
-            text-decoration: underline;
-            padding-top: $padding;
-            font-weight: 700;
-            font-size: 22px;
-          }
+          /*   width: 100%;
+          // background-color: rgba($color-primary-100, 0.1);
+
+          margin-bottom: $margin * 3;
+          // margin: $margin 0px;
+          @include display-grid($colum: repeat(4, 1fr), $colum-gap: 0);
+          padding: $padding;
+          .stage {
+            height: 120px;
+            position: relative;
+            @include flex;
+            border-right: 1px solid rgba($color-primary-300, 0.3);
+            &:last-child {
+              border: none;
+            }
+
+            .order_label {
+              top: $default;
+              left: $padding;
+              position: absolute;
+              font-size: 14px;
+              font-weight: 500;
+              color: $color-primary-300;
+            }
+            .order_count {
+              cursor: pointer;
+              text-decoration: underline;
+              padding-top: $padding;
+              font-weight: 700;
+              font-size: 22px;
+            }
+          } */
         }
       }
       .order_wrapper {
         .order_title {
-          margin-top: $margin;
+          // margin-top: $margin;
           margin-bottom: $padding;
           font-weight: 600;
           font-size: $margin;

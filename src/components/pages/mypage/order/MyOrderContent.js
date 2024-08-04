@@ -1,5 +1,6 @@
 import React from "react";
 
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { OrderState, getOrderState } from "models/order";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
@@ -35,25 +36,28 @@ export default function MyOrderContent() {
     <MyPageLayout>
       <div className={styles.order_wrapper}>
         <p className={styles.order_title}>
-          나의 주문 현황 <span>최근 1년</span>
+          진행중인 주문 <span>최근 1년</span>
         </p>
-        <div className={styles.order_stages}>
-          {orderStages.map((stage, index) => (
-            <div key={index} className={styles.stage}>
-              <p className={styles.order_label}>{stage.label}</p>
-              <p
-                className={styles.order_count}
-                onClick={() => {
-                  console.log(formatDateTime(addMonths(now(), -12)));
-                  changeSelectedOrderState(stage.id);
-                  changeStartDate(formatDateTime(addMonths(now(), -12)));
-                  changeEndDate(formatDateTime(now()));
-                }}
-              >
-                {numberWithCommas(stage.count)}
-              </p>
-            </div>
-          ))}
+        <div className={styles.order_stages_wrapper}>
+          <div className={styles.order_stages_wrap}>
+            {orderStages.map((stage, index) => (
+              <div key={index} className={styles.stage}>
+                <p
+                  className={styles.order_count}
+                  onClick={() => {
+                    changeSelectedOrderState(stage.id);
+                    changeStartDate(formatDateTime(addMonths(now(), -12)));
+                    changeEndDate(formatDateTime(now()));
+                  }}
+                >
+                  {numberWithCommas(stage.count)}
+                </p>
+                <p className={styles.order_label}>{stage.label}</p>
+                {index + 1 != orderStages.length && <ChevronRightIcon />}
+              </div>
+            ))}
+          </div>
+          <div className={styles.order_canceled_wrap}>ddd</div>
         </div>
 
         <SearchFilter
@@ -139,6 +143,7 @@ export default function MyOrderContent() {
 }
 
 const orderStages = [
+  { id: OrderState.PendingPayment, label: "결제대기", count: 1 },
   { id: OrderState.ConfirmedOrder, label: "주문접수", count: 1 },
   { id: OrderState.Preparing, label: "상품준비중", count: 2 },
   { id: OrderState.Delivery, label: "배송중", count: 3 },
