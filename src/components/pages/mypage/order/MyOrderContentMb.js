@@ -7,6 +7,7 @@ import SortIcon from "@mui/icons-material/Sort";
 import { Drawer } from "@mui/material";
 import { OrderState, getOrderState } from "models/order";
 import { nanoid } from "nanoid";
+import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "utilities";
 
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
@@ -23,6 +24,8 @@ import SearchFilter from "../SearchFilter";
 import Order from "./Order";
 
 export default function MyOrderContentMb() {
+  const navigation = useNavigate();
+
   const [startDate, endDate, changeStartDate, changeEndDate] =
     useDateIntervalQueryString(
       "startDate",
@@ -40,7 +43,7 @@ export default function MyOrderContentMb() {
     setShowFilter(newOpen);
   };
 
-  const [option, setOption] = useState("");
+  const [option, setOption] = useState(selectedOrderState);
 
   return (
     <MobileLayout headerTitle="주문관리" isFooter={true}>
@@ -55,7 +58,10 @@ export default function MyOrderContentMb() {
         <div className={styles.order_table_wrap}>
           <Table pagination={false}>
             {orderList?.map((order, index) => (
-              <TableRow key={index}>
+              <TableRow
+                key={index}
+                onClick={() => navigation(`/mypage/my-order-list/${order.id}`)}
+              >
                 <td
                   className={styles.order_content}
                   style={{

@@ -107,7 +107,42 @@
             font-size: 15px;
           }
         }
+        .order_list_table {
+          .cancel_button {
+            border: 1px solid $color-skeleton-100;
+            background-color: $color-background-100;
+            width: 100%;
+            font-size: 12px;
+            margin-top: $default/2;
+            padding: $default/4 $default;
+          }
+          .order_number {
+            text-decoration: underline;
+            cursor: pointer;
+          }
+          .order_product_wrap {
+            .order_info {
+              display: flex;
 
+              img {
+                @include default-image;
+                width: 60px;
+                height: 80px;
+                margin-right: $margin;
+                flex-shrink: 0;
+                cursor: pointer;
+              }
+              .order_item {
+                width: 100%;
+                text-align: left;
+                color: $color-skeleton-200;
+                .item_name {
+                  margin-bottom: $padding;
+                }
+              }
+            }
+          }
+        }
         .tab_wrapper {
           cursor: pointer;
           // margin-top: $margin * 3;
@@ -134,6 +169,82 @@
           line-height: 160%;
           color: $color-skeleton-200;
           margin-bottom: $margin * 2;
+        }
+      }
+      .order_detail_wrapper {
+        .order_title {
+          margin-top: $margin;
+          margin-bottom: $padding;
+          font-weight: 600;
+          font-size: $margin;
+          span {
+            margin-left: $default/2;
+            color: $color-skeleton-100;
+            font-size: 15px;
+          }
+        }
+        .order_item_list {
+          .item_info {
+            display: flex;
+            img {
+              @include default-image;
+              width: 80px;
+              height: 100px;
+              margin-right: $margin;
+            }
+            .item_info_text {
+              height: 100%;
+              font-size: 12px;
+
+              text-align: left;
+              color: $color-skeleton-200;
+              p {
+                margin-bottom: $default;
+              }
+              .option_button {
+                cursor: pointer;
+                @include flex($justify-content: flex-start);
+                width: 60px;
+                color: $color-skeleton-200;
+
+                background-color: $color-background-100;
+                border: none;
+                font-size: 12px;
+                border-bottom: 1px solid $color-skeleton-100;
+                svg {
+                  width: $default * 1.3;
+                }
+              }
+            }
+          }
+        }
+        .double_gray_content_wrap {
+          display: flex;
+          > div {
+            width: 100%;
+          }
+        }
+        .gray_content_wrap {
+          color: $color-skeleton-200;
+          display: flex;
+          border-bottom: 1px solid rgba($color-skeleton-100, 0.4);
+          .gray_content_title {
+            min-height: 56px;
+            flex-shrink: 0;
+            width: 200px;
+            @include flex($justify-content: flex-start);
+            background-color: rgba($color-skeleton-100, 0.2);
+            padding: $default $margin;
+          }
+          .gray_content_content {
+            width: 100%;
+            @include flex($justify-content: flex-start);
+            padding: $default $margin;
+            word-wrap: break-word; /* 단어를 적절히 줄바꿈 */
+            word-break: break-all; /* 단어를 강제로 줄바꿈 */
+            white-space: normal; /* 공백 처리를 기본값으로 설정 */
+            height: auto; /* 자동 높이 */
+          }
         }
       }
     }
@@ -324,7 +435,7 @@
 
       border-bottom: 10px solid rgba($color-skeleton-100, 0.2);
       .order_header {
-        padding: $default 0;
+        padding-bottom: $default;
         @include flex($justify-content: space-between);
         border-bottom: 1px solid rgba($color-skeleton-100, 0.2);
         .order_number {

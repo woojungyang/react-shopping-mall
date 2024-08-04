@@ -16,7 +16,7 @@ export default function Cart() {
     <>
       {isDeskTop ? (
         <CommonLayout>
-          <CartContent /> :
+          <CartContent />
         </CommonLayout>
       ) : (
         <CartContentMb />

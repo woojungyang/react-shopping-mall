@@ -38,72 +38,76 @@
   .cart_content_wrapper {
     display: flex;
     position: relative;
-
+    width: 100%;
+    align-items: flex-start;
+    .cart_items_list {
+      width: 100%;
+      .empty_cart {
+        @include flex;
+        height: 100px;
+      }
+    }
     .payment_information_wrapper {
-      position: sticky;
-      top: 30%;
-      right: 10%;
       width: 360px;
-      height: 100%;
-      flex-shrink: 1;
-      background-color: #f5f5f5;
-      padding: $margin * 2 $default * 3;
-      .payment_title {
-        font-weight: 700;
-        margin-top: $default;
-        padding-bottom: $margin;
-        border-bottom: 1px solid $color-dark-300;
-      }
-      .total_price_wrap {
-        @include flex($justify-content: space-between);
-        font-size: $padding;
-        font-weight: 600;
-        border-top: 1px solid $color-dark-300;
-        border-bottom: 1px solid $color-skeleton-100;
-        padding: $margin 0px;
-        margin: $margin 0px;
-        .price {
-          font-size: $default * 3;
-          color: $color-primary-200;
-          span {
-            font-size: $padding;
-            font-weight: 400;
-          }
-        }
-      }
-      .receipt_wrap {
-        margin-top: $padding;
-        font-size: $margin;
-        .receipt_title {
-          color: $color-skeleton-100;
-          font-weight: 600;
-        }
-        .receipt_detail_wrap {
-          font-size: $padding;
+      margin-left: $margin;
+      background-color: blue;
+      .payment_information_wrap {
+        position: sticky;
+        top: 30%;
+        right: 10%;
+        width: 360px;
+        height: 100%;
+        flex-shrink: 1;
+        background-color: #f5f5f5;
+        padding: $margin * 2 $default * 3;
+        .payment_title {
+          font-weight: 700;
           margin-top: $default;
-          padding-left: $default;
-          border-left: 2px solid $color-skeleton-100;
-          > div {
-            margin-bottom: $default;
-            .receipt_title {
+          padding-bottom: $margin;
+          border-bottom: 1px solid $color-dark-300;
+        }
+        .total_price_wrap {
+          @include flex($justify-content: space-between);
+          font-size: $padding;
+          font-weight: 600;
+          border-top: 1px solid $color-dark-300;
+          border-bottom: 1px solid $color-skeleton-100;
+          padding: $margin 0px;
+          margin: $margin 0px;
+          .price {
+            font-size: $default * 3;
+            color: $color-primary-200;
+            span {
+              font-size: $padding;
               font-weight: 400;
             }
           }
         }
-      }
-      .payment_guid {
-        @include flex($justify-content: space-between);
-        color: $color-skeleton-200;
-        margin-bottom: $default * 3;
-      }
-    }
-    .cart_list_wrapper {
-      width: calc(100% - 366px);
-      margin-right: $default * 3;
-
-      .empty_cart {
-        @include flex;
-        height: 100px;
+        .receipt_wrap {
+          margin-top: $padding;
+          font-size: $margin;
+          .receipt_title {
+            color: $color-skeleton-100;
+            font-weight: 600;
+          }
+          .receipt_detail_wrap {
+            font-size: $padding;
+            margin-top: $default;
+            padding-left: $default;
+            border-left: 2px solid $color-skeleton-100;
+            > div {
+              margin-bottom: $default;
+              .receipt_title {
+                font-weight: 400;
+              }
+            }
+          }
+        }
+        .payment_guid {
+          @include flex($justify-content: space-between);
+          color: $color-skeleton-200;
+          margin-bottom: $default * 3;
+        }
       }
     }
   }

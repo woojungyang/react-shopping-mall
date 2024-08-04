@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { OrderState, getOrderState } from "models/order";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
-import { calculateSum, numberWithCommas } from "utilities";
+import { numberWithCommas } from "utilities";
 
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
@@ -17,7 +16,6 @@ import styles from "styles/_mypage.module.scss";
 
 import { MyPageLayout } from "../MyPageLayout";
 import SearchFilter from "../SearchFilter";
-import Order from "./Order";
 
 export default function MyOrderContent() {
   const navigation = useNavigate();
@@ -57,20 +55,7 @@ export default function MyOrderContent() {
             </div>
           ))}
         </div>
-        {/* <div className={styles.tab_wrapper}>
-                  {orderTabMenu.map((order, index) => (
-                    <p
-                      key={index}
-                      className={classNames({
-                        [styles.tab]: true,
-                        [styles.tab_active]: orderTab == order.id,
-                      })}
-                      onClick={() => changeOrderTab(order.id)}
-                    >
-                      {order.label}
-                    </p>
-                  ))}
-                </div> */}
+
         <SearchFilter
           startDate={startDate}
           changeStartDate={changeStartDate}
@@ -88,43 +73,66 @@ export default function MyOrderContent() {
           </p>
         </div>
 
-        <Table
-          headers={[
-            { label: "진행상황" },
-            { label: "주문일" },
-            { label: "주문번호", width: "20%" },
-            { label: "상품정보", width: "35%" },
-            { label: "수량" },
-            { label: "상품금액" },
-          ]}
-          filterOptions={Object.entries(OrderState).map((e) => ({
-            id: e[1],
-            label: getOrderState(e[1]),
-          }))}
-          selectedOption={selectedOrderState}
-          onChangeOption={changeSelectedOrderState}
-        >
-          {orderList?.map((order, index) => {
-            const productCount = order.products.length - 1;
-
-            const totalPrice = calculateSum(
-              order.products.map((product) => product.price),
-            );
-            return (
-              <TableRow key={index}>
-                <td>{getOrderState(order.state)}</td>
-                <td>{order.orderDate}</td>
-                <td>{order.orderNumber}</td>
-                <td>
-                  {order.products[0].itemName}
-                  {productCount > 0 ? ` 외 ${productCount}개의 상품` : ""}
-                </td>
-                <td>{order.products.length}</td>
-                <td>{numberWithCommas(totalPrice)}원</td>
-              </TableRow>
-            );
-          })}
-        </Table>
+        <div className={styles.order_list_table}>
+          <Table
+            headers={[
+              { label: "주문일" },
+              { label: "주문번호", width: "18%" },
+              { label: "상품정보", width: "40%" },
+              { label: "수량" },
+              { label: "상품금액" },
+              { label: "진행상황" },
+            ]}
+            filterOptions={Object.entries(OrderState).map((e) => ({
+              id: e[1],
+              label: getOrderState(e[1]),
+            }))}
+            selectedOption={selectedOrderState}
+            onChangeOption={changeSelectedOrderState}
+          >
+            {orderList.map((order) =>
+              order.products.map((product, index) => (
+                <TableRow cursor={false} key={`${order.id}-${product.id}`}>
+                  {index === 0 && (
+                    <>
+                      <td rowSpan={order.products.length}>{order.orderDate}</td>
+                      <td
+                        rowSpan={order.products.length}
+                        onClick={() =>
+                          navigation(`/mypage/my-order-list/${order.id}`)
+                        }
+                        className={styles.order_number}
+                      >
+                        {order.orderNumber}
+                      </td>
+                    </>
+                  )}
+                  <td
+                    className={styles.order_product_wrap}
+                    onClick={() => navigation(`/items/${product.id}`)}
+                  >
+                    <div className={styles.order_info}>
+                      <img src={require(`assets/images/sub/sub12.jpg`)} />
+                      <div className={styles.order_item}>
+                        <p className={styles.item_name}>{product.itemName}</p>
+                        <p>옵션: {product.option}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{product.quantity}</td>
+                  <td>{product.price.toLocaleString()}</td>
+                  <td className="order-status">
+                    {getOrderState(product.state)}
+                    <br />
+                    {product.state === OrderState.ConfirmedOrder && (
+                      <button className={styles.cancel_button}>취소신청</button>
+                    )}
+                  </td>
+                </TableRow>
+              )),
+            )}
+          </Table>
+        </div>
       </div>
     </MyPageLayout>
   );
@@ -137,7 +145,7 @@ const orderStages = [
   { id: OrderState.CompletedDelivery, label: "배송완료", count: 4 },
 ];
 
-const orderList = Array.from({ length: 8 }, (v, index) => ({
+const orderList = Array.from({ length: 5 }, (v, index) => ({
   id: index,
   orderDate: formatDateTime(now()),
   orderNumber: nanoid(),
@@ -145,11 +153,11 @@ const orderList = Array.from({ length: 8 }, (v, index) => ({
     id: index,
     itemName: "item" + nanoid(),
     option: "skyblue",
-    quantity: index,
+    quantity: index + 1,
     price: 12344 + index,
+    state:
+      Object.values(OrderState)[
+        Math.floor(Math.random() * Object.values(OrderState).length)
+      ],
   })),
-  state:
-    Object.values(OrderState)[
-      Math.floor(Math.random() * Object.values(OrderState).length)
-    ],
 }));

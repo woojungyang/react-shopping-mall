@@ -79,7 +79,7 @@ export default function ItemDetailContent() {
 
   const { scrollToElement, setElementRef } = useScrollToElement();
 
-  const [confirmModal, setConfirmModal] = useState(true);
+  const [confirmModal, setConfirmModal] = useState(false);
   const [confirmModalContents, setConfirmModalContents] = useState({});
 
   useEffect(() => {

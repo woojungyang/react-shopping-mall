@@ -13,7 +13,7 @@ import { DetailContentWrapper } from "./DetailContentWrapper";
 
 export const QuantityOptions = ({
   setSelectedOptions,
-  selectedItemOptions,
+  selectedItemOptions = {},
 }) => {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
