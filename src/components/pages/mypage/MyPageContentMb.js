@@ -13,20 +13,20 @@ export default function MyPageContentMb() {
 
   return (
     <MobileLayout
-      headerTitle="MY PAGE"
+      headerTitle="마이페이지"
       isBottomNavigation={true}
       isFooter={true}
     >
       <div className={styles.mobile_mypage_container}>
-        <div className={styles.profile_wrapper}>
+        {/* <div className={styles.profile_wrapper}>
           <img
             src={require(`assets/images/sub/sub10.jpg`)}
             className={styles.avatar}
           />
           <p className={styles.nickname}>닉네임이들어가는 자님</p>
           <button className={styles.my_info_button}>내정보수정</button>
-        </div>
-        <div className={styles.order_stages}>
+        </div> */}
+        {/*  <div className={styles.order_stages}>
           {orderStages.map((stage, index) => (
             <div key={index} className={styles.stage}>
               <p className={styles.order_count}>
@@ -35,8 +35,8 @@ export default function MyPageContentMb() {
               <p className={styles.order_label}>{stage.label}</p>
             </div>
           ))}
-        </div>
-        <div className={styles.menu_wrapper}>
+        </div> */}
+        {/* <div className={styles.menu_wrapper}>
           {menuList.map((menu, index) => (
             <p
               key={index}
@@ -49,7 +49,7 @@ export default function MyPageContentMb() {
               {menu.label} <ChevronRightIcon />
             </p>
           ))}
-        </div>
+        </div> */}
       </div>
     </MobileLayout>
   );

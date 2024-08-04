@@ -17,6 +17,11 @@ export const MyPageLayout = ({ children }) => {
 
   const [toastMessage, setToastMessage] = useState("");
 
+  const [showMenu, setShowMenu] = useState(false);
+  const [selectedMenu, setSelectedMenu] = useState([]);
+
+  console.log(selectedMenu);
+
   return (
     <CommonLayout>
       <div className={styles.mypage_container}>
@@ -25,8 +30,8 @@ export const MyPageLayout = ({ children }) => {
         <div className={styles.profile_wrapper}>
           {membershipInformation.map((membership, index) => (
             <div
-              onClick={() => setToastMessage("준비중입니다.")}
               key={index}
+              onClick={() => setToastMessage("준비중입니다.")}
               className={membership.className || styles.membership_wrap2}
             >
               <p className={styles.membership_title}>
@@ -40,20 +45,46 @@ export const MyPageLayout = ({ children }) => {
           <div className={styles.side_menu_wrap}>
             {menuList.map((menu, index) => {
               const isActive = menu.url == pathname || menu.url == "/mypage";
+              const hasSubMenu = menu?.sub?.length;
               return (
                 <div
                   onClick={() => {
-                    if (menu.id < 3) navigation(menu.url);
-                    else alert("준비중입니다");
+                    if (menu.id < 3 && !hasSubMenu) navigation(menu.url);
+                    else if (!!hasSubMenu) {
+                      setShowMenu(!showMenu);
+                      if (selectedMenu.length) setSelectedMenu([]);
+                      else setSelectedMenu(menu);
+                    } else alert("준비중입니다.");
                   }}
                   key={index}
-                  className={classNames({
-                    [styles.menu]: true,
-                    [styles.active_tab]: isActive,
-                  })}
                 >
-                  <p>{menu.label}</p>
-                  {isActive && <TrendingFlatIcon />}
+                  <div
+                    className={classNames({
+                      [styles.menu]: true,
+                      [styles.active_tab]: isActive,
+                    })}
+                    style={{
+                      marginBottom:
+                        showMenu && menu.id == selectedMenu.id ? 0 : "none",
+                    }}
+                  >
+                    <p>{menu.label}</p>
+                    {isActive && <TrendingFlatIcon />}
+                  </div>
+                  {showMenu && menu.id == selectedMenu.id && (
+                    <div className={styles.sub_menu_wrap}>
+                      {selectedMenu.sub.map((menu2) => (
+                        <p
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setToastMessage("준비중입니다.");
+                          }}
+                        >
+                          {menu2.label}
+                        </p>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -71,10 +102,19 @@ export const MyPageLayout = ({ children }) => {
 
 const menuList = [
   { id: 1, label: "주문관리", url: "/mypage" },
-  { id: 2, label: "리뷰 작성", url: "/mypage/review" },
+  { id: 2, label: "상품 리뷰", url: "/mypage/review" },
   { id: 3, label: "상품 Q&A" },
   { id: 4, label: "1:1문의 내역" },
-  { id: 5, label: "회원정보 수정" },
+  {
+    id: 5,
+    label: "회원정보",
+    sub: [
+      { id: 1, label: "회원정보 수정" },
+      { id: 1, label: "멤버십등급" },
+      { id: 1, label: "쿠폰" },
+      { id: 1, label: "마일리지" },
+    ],
+  },
   { id: 6, label: "공지사항" },
   { id: 7, label: "고객센터" },
 ];
