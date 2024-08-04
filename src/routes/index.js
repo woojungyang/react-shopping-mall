@@ -51,11 +51,11 @@ export const router = createBrowserRouter([
     element: <MyPage />,
   },
   {
-    path: "/mypage/my-order-list",
+    path: "/my-order/my-order-list",
     element: <MyOrder />,
   },
   {
-    path: "/mypage/my-order-list/:id",
+    path: "/my-order/my-order-list/:id",
     element: <OrderDetail />,
   },
   {

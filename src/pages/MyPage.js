@@ -4,12 +4,12 @@ import { Device } from "models/device";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import MyPageContentMb from "components/pages/mypage/MyPageContentMb";
-import MyOrderContent from "components/pages/mypage/order/MyOrderContent";
+import MyPageContent from "components/pages/mypage/mypage/MyPageContent";
+import MyPageContentMb from "components/pages/mypage/mypage/MyPageContentMb";
 
 export default function MyPage() {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
-  return <>{isDeskTop ? <MyOrderContent /> : <MyPageContentMb />}</>;
+  return <>{isDeskTop ? <MyPageContent /> : <MyPageContentMb />}</>;
 }

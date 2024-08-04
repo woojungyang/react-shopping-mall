@@ -18,6 +18,7 @@ export const MobileLayout = ({
   showIcon = true,
   isFooter = false,
   isBottomNavigation = false,
+  currentTab = "/",
 }) => {
   const [position, setPosition] = useState(0);
   const switchPosition = position > 50;
@@ -56,7 +57,7 @@ export const MobileLayout = ({
           </div>
         </>
       )}
-      {isBottomNavigation && <BottomNavigation />}
+      {isBottomNavigation && <BottomNavigation currentTab={currentTab} />}
       {isFooter && <Footer />}
     </div>
   );

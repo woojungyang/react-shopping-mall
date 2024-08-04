@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import classNames from "classnames";
 import { Device } from "models/device";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
@@ -22,12 +23,10 @@ export const ToastModal = ({ toastMessage = "", setToastMessage }) => {
   if (!toastMessage) return null;
   return (
     <div
-      className={styles.toast_wrapper}
-      style={
-        isDeskTop
-          ? {}
-          : { left: "50%", right: "0%", transform: "translate(-50%,-30%)" }
-      }
+      className={classNames({
+        [styles.toast_wrapper]: isDeskTop,
+        [styles.toast_wrapper_mobile]: !isDeskTop,
+      })}
     >
       {isDeskTop && (
         <p className={styles.toast_title}>

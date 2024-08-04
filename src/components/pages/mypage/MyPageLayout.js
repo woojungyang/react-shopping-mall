@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import EastIcon from "@mui/icons-material/East";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import classNames from "classnames";
+import { mypageMenuList } from "models/mypage";
 import { useNavigate } from "react-router-dom";
 
 import { CommonLayout } from "components/common";
@@ -14,13 +14,9 @@ import styles from "styles/_mypage.module.scss";
 export const MyPageLayout = ({ children }) => {
   const navigation = useNavigate();
   const pathname = window.location.pathname;
+  const menuCategory = pathname.split("/")[1];
 
   const [toastMessage, setToastMessage] = useState("");
-
-  const [showMenu, setShowMenu] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState([]);
-
-  console.log(selectedMenu);
 
   return (
     <CommonLayout>
@@ -43,48 +39,40 @@ export const MyPageLayout = ({ children }) => {
         </div>
         <div className={styles.mypage_wrapper}>
           <div className={styles.side_menu_wrap}>
-            {menuList.map((menu, index) => {
-              const isActive = menu.url == pathname || menu.url == "/mypage";
+            {mypageMenuList.map((menu, index) => {
+              const isActive = menu.category == menuCategory;
               const hasSubMenu = menu?.sub?.length;
               return (
-                <div
-                  onClick={() => {
-                    if (menu.id < 3 && !hasSubMenu) navigation(menu.url);
-                    else if (!!hasSubMenu) {
-                      setShowMenu(!showMenu);
-                      if (selectedMenu.length) setSelectedMenu([]);
-                      else setSelectedMenu(menu);
-                    } else alert("준비중입니다.");
-                  }}
-                  key={index}
-                >
+                <div key={index}>
                   <div
                     className={classNames({
                       [styles.menu]: true,
                       [styles.active_tab]: isActive,
                     })}
                     style={{
-                      marginBottom:
-                        showMenu && menu.id == selectedMenu.id ? 0 : "none",
+                      marginBottom: hasSubMenu ? 0 : "none",
                     }}
                   >
                     <p>{menu.label}</p>
                     {isActive && <TrendingFlatIcon />}
                   </div>
-                  {showMenu && menu.id == selectedMenu.id && (
-                    <div className={styles.sub_menu_wrap}>
-                      {selectedMenu.sub.map((menu2) => (
+                  <div className={styles.sub_menu_wrap}>
+                    {hasSubMenu &&
+                      menu.sub.map((menu2, index2) => (
                         <p
+                          key={index2}
                           onClick={(e) => {
-                            e.stopPropagation();
-                            setToastMessage("준비중입니다.");
+                            if (!!menu2.url) navigation(menu2.url);
+                            else setToastMessage("준비중입니다.");
                           }}
+                          className={classNames({
+                            [styles.active_tab]: menu2?.url == pathname,
+                          })}
                         >
                           {menu2.label}
                         </p>
                       ))}
-                    </div>
-                  )}
+                  </div>
                 </div>
               );
             })}
@@ -99,25 +87,6 @@ export const MyPageLayout = ({ children }) => {
     </CommonLayout>
   );
 };
-
-const menuList = [
-  { id: 1, label: "주문관리", url: "/mypage" },
-  { id: 2, label: "상품 리뷰", url: "/mypage/review" },
-  { id: 3, label: "상품 Q&A" },
-  { id: 4, label: "1:1문의 내역" },
-  {
-    id: 5,
-    label: "회원정보",
-    sub: [
-      { id: 1, label: "회원정보 수정" },
-      { id: 1, label: "멤버십등급" },
-      { id: 1, label: "쿠폰" },
-      { id: 1, label: "마일리지" },
-    ],
-  },
-  { id: 6, label: "공지사항" },
-  { id: 7, label: "고객센터" },
-];
 
 const membershipInformation = [
   { label: "회원등급", content: "Green", className: styles.membership_wrap1 },

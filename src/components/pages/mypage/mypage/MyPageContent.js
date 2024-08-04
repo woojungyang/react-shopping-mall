@@ -1,8 +1,10 @@
 import React from "react";
 
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { OrderState, getOrderState } from "models/order";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
+import { numberWithCommas } from "utilities";
 
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
@@ -16,7 +18,7 @@ import styles from "styles/_mypage.module.scss";
 import { MyPageLayout } from "../MyPageLayout";
 import SearchFilter from "../SearchFilter";
 
-export default function MyOrderContent() {
+export default function MyPageContent() {
   const navigation = useNavigate();
 
   const [startDate, endDate, changeStartDate, changeEndDate] =
@@ -39,6 +41,37 @@ export default function MyOrderContent() {
   return (
     <MyPageLayout>
       <div className={styles.order_wrapper}>
+        <p className={styles.order_title}>
+          진행중인 주문 <span>최근 1년</span>
+        </p>
+        <div className={styles.order_stages_wrapper}>
+          <div className={styles.order_stages_wrap}>
+            {orderStages.map((stage, index) => (
+              <div key={index} className={styles.stage}>
+                <p
+                  className={styles.order_count}
+                  onClick={() => onClickStage(stage.id)}
+                >
+                  {numberWithCommas(stage.count)}
+                </p>
+                <p className={styles.order_label}>{stage.label}</p>
+                {index + 1 != orderStages.length && <ChevronRightIcon />}
+              </div>
+            ))}
+          </div>
+          <div className={styles.order_canceled_wrap}>
+            {canceledStage.map((stage) => (
+              <div
+                onClick={() => onClickStage(stage.id)}
+                className={styles.default_flex_space}
+              >
+                <p>{stage.label}</p>
+                <p>{stage.count}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <SearchFilter
           startDate={startDate}
           changeStartDate={changeStartDate}
@@ -120,6 +153,21 @@ export default function MyOrderContent() {
     </MyPageLayout>
   );
 }
+
+const orderStages = [
+  { id: OrderState.PendingPayment, label: "결제대기", count: 1 },
+  { id: OrderState.ConfirmedOrder, label: "주문접수", count: 1 },
+  { id: OrderState.Preparing, label: "상품준비중", count: 2 },
+  { id: OrderState.Delivery, label: "배송중", count: 3 },
+  { id: OrderState.CompletedDelivery, label: "배송완료", count: 4 },
+  { id: OrderState.ConfirmedPurchase, label: "구매 확정", count: 4 },
+];
+
+const canceledStage = [
+  { id: OrderState.CanceledOrder, label: "취소", count: 2 },
+  { id: OrderState.PendingRefund, label: "반품", count: 1 },
+  { id: OrderState.PendingExchange, label: "교환", count: 1 },
+];
 
 const orderList = Array.from({ length: 5 }, (v, index) => ({
   id: index,

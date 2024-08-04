@@ -219,7 +219,7 @@
   font-size: 14px;
   position: fixed;
   bottom: 0px;
-  background-color: $color-background-100;
+  background-color: #f6f6f6;
   width: 100%;
   z-index: 999;
   @include flex($justify-content: space-between);
@@ -230,6 +230,7 @@
     @include flex($direction: column);
 
     height: $margin * 3;
+    color: $color-skeleton-200;
     svg {
       width: 1em;
       height: 1em;
@@ -238,5 +239,8 @@
       font-size: 0.9em;
       margin-top: $default/2;
     }
+  }
+  .bottom_menu_wrapper_active {
+    color: $color-dark-300;
   }
 }
