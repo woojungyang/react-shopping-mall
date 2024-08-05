@@ -4,6 +4,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 
 export const LikeHeart = ({
+  readOnly = false,
   onClick,
   like = false,
   position = { top: "3%", right: "3%" },
@@ -11,7 +12,8 @@ export const LikeHeart = ({
 }) => {
   const [status, setStatus] = useState(like);
   function LikeItem() {
-    setStatus(!status);
+    if (readOnly) onClick?.();
+    else setStatus(!status);
   }
 
   const colors = {

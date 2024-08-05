@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import SortIcon from "@mui/icons-material/Sort";
+import TuneIcon from "@mui/icons-material/Tune";
 import { Drawer } from "@mui/material";
 import { OrderState, getOrderState } from "models/order";
 import { nanoid } from "nanoid";
@@ -51,7 +51,7 @@ export default function MyOrderContentMb() {
         <div className={styles.sort_wrap}>
           <p>전체 1건</p>
           <button className={styles.sort_button} onClick={toggleDrawer(true)}>
-            <SortIcon />
+            <TuneIcon />
             필터
           </button>
         </div>

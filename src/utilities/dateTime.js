@@ -34,6 +34,12 @@ export function formatDateTime(value, format = "yyyy-MM-dd") {
 export function addMonths(value, count) {
   return dateTime.addMonths(dateTime.date(value), count);
 }
+/**
+ * 일 단위 가감 연산
+ */
+export function addDays(value, count) {
+  return dateTime.addDays(dateTime.date(value), count);
+}
 
 /**
  * 월 기준 시작 날짜

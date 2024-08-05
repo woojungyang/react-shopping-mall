@@ -14,7 +14,7 @@ export const ImageSlider = ({
   images,
   currentIndex = 0,
   setCurrentIndex,
-  autoplay = false,
+  autoplay = true,
 }) => {
   const slider = useRef(null);
   const userDevice = useUserDevice();

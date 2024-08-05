@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Device } from "models/device";
+import { useLocation } from "react-router-dom";
+import { scrollTop } from "utilities";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
@@ -16,6 +18,11 @@ export const CommonLayout = ({ children, toastMessage = "" }) => {
   const { innerWidth } = window;
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
+  const location = useLocation();
+
+  useEffect(() => {
+    scrollTop();
+  }, [location]);
 
   return (
     <div

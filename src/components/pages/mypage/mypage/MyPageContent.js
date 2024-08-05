@@ -34,7 +34,7 @@ export default function MyPageContent() {
 
   function onClickStage(stageId) {
     changeSelectedOrderState(stageId);
-    changeStartDate(formatDateTime(addMonths(now(), -12)));
+    changeStartDate(formatDateTime(addMonths(now(), -3)));
     changeEndDate(formatDateTime(now()));
   }
 
@@ -42,7 +42,7 @@ export default function MyPageContent() {
     <MyPageLayout>
       <div className={styles.order_wrapper}>
         <p className={styles.order_title}>
-          진행중인 주문 <span>최근 1년</span>
+          진행중인 주문 <span>최근 3개월</span>
         </p>
         <div className={styles.order_stages_wrapper}>
           <div className={styles.order_stages_wrap}>
@@ -115,7 +115,7 @@ export default function MyPageContent() {
                       <td
                         rowSpan={order.products.length}
                         onClick={() =>
-                          navigation(`/mypage/my-order-list/${order.id}`)
+                          navigation(`/my-order/my-order-list/${order.id}`)
                         }
                         className={styles.order_number}
                       >
