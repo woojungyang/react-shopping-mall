@@ -4,7 +4,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import classNames from "classnames";
 import { mypageMenuList } from "models/mypage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { CommonLayout } from "components/common";
 import { ToastModal } from "components/modal";
@@ -15,6 +15,8 @@ export const MyPageLayout = ({ children }) => {
   const navigation = useNavigate();
   const pathname = window.location.pathname;
   const menuCategory = pathname.split("/")[1];
+
+  const { id } = useParams();
 
   const [toastMessage, setToastMessage] = useState("");
 
@@ -41,6 +43,7 @@ export const MyPageLayout = ({ children }) => {
           <div className={styles.side_menu_wrap}>
             {mypageMenuList.map((menu, index) => {
               const isActive = menu.category == menuCategory;
+
               const hasSubMenu = menu?.sub?.length;
               return (
                 <div key={index}>
@@ -49,6 +52,9 @@ export const MyPageLayout = ({ children }) => {
                       [styles.menu]: true,
                       [styles.active_tab]: isActive,
                     })}
+                    onClick={() => {
+                      if (menu.label == "쇼핑정보") navigation("/mypage");
+                    }}
                     style={{
                       marginBottom: hasSubMenu ? 0 : "none",
                     }}
@@ -66,7 +72,8 @@ export const MyPageLayout = ({ children }) => {
                             else setToastMessage("준비중입니다.");
                           }}
                           className={classNames({
-                            [styles.active_tab]: menu2?.url == pathname,
+                            [styles.active_tab]:
+                              menu2?.url == pathname.replace(`/${id}`, ""),
                           })}
                         >
                           {menu2.label}

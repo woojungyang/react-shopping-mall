@@ -265,23 +265,6 @@
     margin-top: $header-height * 2;
   }
 }
-.cart_change_options_modal {
-  width: 500px;
-  padding: $padding 0px;
-  border-top: 2px solid $color-dark-300;
-  border-bottom: 1px solid $color-skeleton-100;
-  margin-bottom: $margin;
-}
-.cart_modal_item_price_wrap {
-  &:first-child {
-    color: $color-skeleton-100;
-  }
-  margin-bottom: $margin;
-  @include flex($justify-content: space-between);
-  strong {
-    font-size: $default * 2.5;
-  }
-}
 
 .delivery_form_container {
   width: 100%;

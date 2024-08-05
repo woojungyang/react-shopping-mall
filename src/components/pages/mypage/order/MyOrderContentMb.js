@@ -8,7 +8,6 @@ import { Drawer } from "@mui/material";
 import { OrderState, getOrderState } from "models/order";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
-import { numberWithCommas } from "utilities";
 
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
@@ -60,7 +59,9 @@ export default function MyOrderContentMb() {
             {orderList?.map((order, index) => (
               <TableRow
                 key={index}
-                onClick={() => navigation(`/mypage/my-order-list/${order.id}`)}
+                onClick={() =>
+                  navigation(`/my-order/my-order-list/${order.id}`)
+                }
               >
                 <td
                   className={styles.order_content}
@@ -83,6 +84,9 @@ export default function MyOrderContentMb() {
                     label="주문상세"
                     className={
                       styles.button_background_100_outline_color_dark_300
+                    }
+                    onClick={() =>
+                      navigation(`/my-order/my-order-list/${order.id}`)
                     }
                   />
                 </td>

@@ -82,7 +82,7 @@ export default function MyOrderContent() {
                       <td
                         rowSpan={order.products.length}
                         onClick={() =>
-                          navigation(`/mypage/my-order-list/${order.id}`)
+                          navigation(`/my-order/my-order-list/${order.id}`)
                         }
                         className={styles.order_number}
                       >

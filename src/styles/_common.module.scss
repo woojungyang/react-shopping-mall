@@ -649,3 +649,21 @@ input[type="number"] {
     width: 100%;
   }
 }
+
+.change_item_options_modal {
+  width: 500px;
+  padding: $padding 0px;
+  border-top: 2px solid $color-dark-300;
+  border-bottom: 1px solid $color-skeleton-100;
+  margin-bottom: $margin;
+}
+.change_item_price_wrap {
+  @include flex($justify-content: space-between);
+  &:first-child {
+    color: $color-skeleton-100;
+  }
+  margin-bottom: $margin;
+  strong {
+    font-size: $default * 2.5;
+  }
+}

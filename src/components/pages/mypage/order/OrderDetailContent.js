@@ -5,7 +5,7 @@ import { OrderState, getOrderState } from "models/order";
 import { nanoid } from "nanoid";
 import { maskAccountName, maskPhoneNumber, numberWithCommas } from "utilities";
 
-import { ToastModal } from "components/modal";
+import { ChangeOptionModal, ToastModal } from "components/modal";
 import { Table, TableRow } from "components/table";
 
 import { formatDateTime, now } from "utilities/dateTime";
@@ -16,6 +16,13 @@ import { MyPageLayout } from "../MyPageLayout";
 
 export default function OrderDetailContent() {
   const [toastMessage, setToastMessage] = useState("");
+  const [changeOptionModal, setChangeOptionModal] = useState(false);
+
+  const colorOptions = [...new Array(3)];
+  const sizeOptions = [...new Array(3)];
+
+  const [selectedItem, setSelectedItem] = useState({});
+
   return (
     <MyPageLayout>
       <div className={styles.order_detail_wrapper}>
@@ -29,7 +36,7 @@ export default function OrderDetailContent() {
           <Table
             pagination={false}
             headers={[
-              { label: "상품정보", width: "70%" },
+              { label: "상품정보", width: "60%" },
               { label: "수량" },
               { label: "상품금액" },
               { label: "진행상황" },
@@ -45,7 +52,13 @@ export default function OrderDetailContent() {
                       <p>{product.itemName}</p>
                       <p>옵션 : {product.option}</p>
                       {product.state < OrderState.Preparing && (
-                        <button className={styles.option_button}>
+                        <button
+                          className={styles.option_button}
+                          onClick={() => {
+                            setChangeOptionModal(!changeOptionModal);
+                            setSelectedItem(product);
+                          }}
+                        >
                           옵션 변경
                           <ExpandMoreIcon />
                         </button>
@@ -79,7 +92,7 @@ export default function OrderDetailContent() {
           />
           <DoubleGrayContent
             content1={{
-              title: "휴대폰번호",
+              title: "연락처",
               content: maskPhoneNumber("01012341234"),
             }}
             content2={{ title: "", content: "" }}
@@ -121,6 +134,17 @@ export default function OrderDetailContent() {
         <ToastModal
           toastMessage={toastMessage}
           setToastMessage={setToastMessage}
+        />
+      )}
+      {changeOptionModal && (
+        <ChangeOptionModal
+          isQuantity={false}
+          visible={changeOptionModal}
+          setVisible={setChangeOptionModal}
+          colors={colorOptions}
+          sizes={sizeOptions}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
         />
       )}
     </MyPageLayout>

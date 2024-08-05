@@ -14,6 +14,7 @@ export const OptionsMobile = ({
   setVisible,
   setOptionChanges,
   optionsChanges,
+  isQuantity = true,
 }) => {
   const [showOptions, setShowOptions] = useState(false);
 
@@ -88,11 +89,12 @@ export const OptionsMobile = ({
             </div>
           )}
         </div>
-
-        <QuantityOptions
-          setSelectedOptions={setOptionChanges}
-          selectedItemOptions={optionsChanges}
-        />
+        {isQuantity && (
+          <QuantityOptions
+            setSelectedOptions={setOptionChanges}
+            selectedItemOptions={optionsChanges}
+          />
+        )}
 
         <div className={styles.options_button_warp}>
           <DefaultButton

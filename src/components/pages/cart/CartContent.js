@@ -14,7 +14,7 @@ import { calculateSum, numberWithCommas, scrollTop } from "utilities";
 
 import { DefaultButton, DefaultCheckbox } from "components/common";
 import { ColorOptions, QuantityOptions, SizeOptions } from "components/detail";
-import { ModalContainer } from "components/modal";
+import { ChangeOptionModal, ModalContainer } from "components/modal";
 
 import { checkPhoneNumber } from "utilities/checkExpression";
 import { formatDateTime, now } from "utilities/dateTime";
@@ -88,6 +88,7 @@ export default function CartContent() {
   const [changeOptionsModal, setChangeOptionsModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
   const colorOptions = [...new Array(3)];
+  const sizeOptions = [...new Array(3)];
 
   const [orderSheet, setOrderSheet] = useState({});
   function onChange(e) {
@@ -154,8 +155,6 @@ export default function CartContent() {
       console.error(error);
     }
   }
-
-  console.log(container.current?.offsetWidth);
 
   return (
     <>
@@ -405,39 +404,14 @@ export default function CartContent() {
         </div>
       </div>
       {changeOptionsModal && (
-        <ModalContainer
+        <ChangeOptionModal
           visible={changeOptionsModal}
           setVisible={setChangeOptionsModal}
-          title="옵션 변경"
-        >
-          <div className={styles.cart_change_options_modal}>
-            {!!colorOptions.length && (
-              <ColorOptions colorOptions={colorOptions} />
-            )}
-            {!!SizeOptions.length && <SizeOptions sizeOptions={colorOptions} />}
-            <QuantityOptions
-              setSelectedOptions={setSelectedItem}
-              selectedItemOptions={selectedItem}
-            />
-          </div>
-          <div className={styles.cart_modal_item_price_wrap}>
-            <p>결제 예정 금액</p>
-            <p>
-              <strong>{numberWithCommas(selectedItem.price)}</strong>원
-            </p>
-          </div>
-          <div className={styles.default_flex_space}>
-            <DefaultButton
-              label="취소"
-              className={styles.button_skeleton_100_color_background_100}
-              onClick={() => setChangeOptionsModal(false)}
-            />
-            <DefaultButton
-              label="변경"
-              onClick={() => setChangeOptionsModal(false)}
-            />
-          </div>
-        </ModalContainer>
+          colors={colorOptions}
+          sizes={sizeOptions}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
+        />
       )}
       {findAddressModal && (
         <ModalContainer

@@ -616,6 +616,102 @@
       padding: $padding;
     }
   }
+  .mobile_mypage_order_detail_wrapper {
+    border-bottom: 10px solid rgba($color-skeleton-100, 0.2);
+    .order_info {
+      padding: 0 $padding;
+      padding-top: $margin;
+      p {
+        font-size: 14px;
+        &:last-child {
+          color: $color-skeleton-200;
+          font-size: 12px;
+        }
+      }
+
+      @include flex($justify-content: space-between);
+    }
+    .order_item_wrapper {
+      width: 100%;
+      padding: $padding;
+      .order_item {
+        border-top: 1px solid rgba($color-skeleton-100, 0.3);
+        padding-top: $margin;
+        display: flex;
+        img {
+          @include default-image;
+          width: 90px;
+          height: 90px;
+        }
+        .item_info_wrap {
+          margin-left: $default;
+
+          width: 100%;
+          .item_name {
+            margin-top: $default/2;
+            font-size: 15px;
+            font-weight: 600;
+          }
+          .item_option_wrap {
+            @include flex($justify-content: space-between);
+            font-size: 15px;
+            color: $color-skeleton-200;
+            margin-bottom: $margin;
+
+            .option_button {
+              flex-shrink: 0;
+              font-size: 12px;
+              text-decoration: underline;
+            }
+          }
+          .order_price_wrap {
+            @include flex($justify-content: space-between);
+            font-size: 14px;
+            color: $color-skeleton-200;
+            margin-bottom: $default;
+            > p {
+              &:last-child {
+                color: $color-orange;
+              }
+            }
+          }
+          .order_price_wrap_first {
+            p {
+              font-size: 15px;
+              color: $color-dark-300 !important;
+            }
+            > p {
+              &:last-child {
+                font-weight: 500;
+              }
+            }
+          }
+        }
+      }
+    }
+    .order_delivery_wrapper {
+      border-top: 10px solid rgba($color-skeleton-100, 0.2);
+      padding: $margin $padding;
+      .order_delivery_title {
+        font-size: $padding;
+
+        font-weight: 500;
+      }
+      .order_delivery_wrap {
+        @include flex($justify-content: space-between);
+        margin-bottom: $default;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+        > p {
+          &:first-child {
+            color: $color-skeleton-100;
+          }
+        }
+      }
+    }
+  }
 }
 
 .order_header_filter_wrap {
