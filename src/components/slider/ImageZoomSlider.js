@@ -101,7 +101,7 @@ export const ImageZoomSlider = ({ images = [] }) => {
                     left: `${axisXY[0] - magnifierWidth / 2}px`,
                     opacity: "1",
                     backgroundColor: "white",
-                    backgroundImage: `url(${require(`assets/images/main/main${index + 1}.jpg`)})`,
+                    backgroundImage: `url(${require(`assets/images/sub/sub${index + 1}.jpg`)})`,
                     backgroundRepeat: "no-repeat",
                     backgroundSize: `${imageSize[0] * zoomLevel}px ${imageSize[1] * zoomLevel}px`,
                     backgroundPositionX: `${-axisXY[0] * zoomLevel + magnifierWidth / 2}px`,

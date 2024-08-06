@@ -1,35 +1,22 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 import Slider from "react-slick";
 
-export const BasicSlider = ({
-  children,
-  setCurrentIndex,
-  arrows = false,
-  settings = {
-    // infinite: false,
-    // centerPadding: "60px",
-    // slidesToShow: 1,
-    // variableWidth: true,
-    // swipeToSlide: true,
-    // afterChange: function (index) {
-    //   console.log(
-    //     `Slider Changed to: ${index + 1}, background: #222; color: #bada55`,
-    //   );
-    // },
+export const BasicSlider = forwardRef(
+  ({ children, setCurrentIndex, arrows = false, settings = {} }, ref) => {
+    return (
+      <div className="slider-container">
+        <Slider
+          ref={ref}
+          {...settings}
+          arrows={arrows}
+          afterChange={(newIndex) => {
+            setCurrentIndex?.(newIndex);
+          }}
+        >
+          {children}
+        </Slider>
+      </div>
+    );
   },
-}) => {
-  return (
-    <div className="slider-container">
-      <Slider
-        {...settings}
-        arrows={arrows}
-        afterChange={(newIndex) => {
-          setCurrentIndex?.(newIndex);
-        }}
-      >
-        {children}
-      </Slider>
-    </div>
-  );
-};
+);

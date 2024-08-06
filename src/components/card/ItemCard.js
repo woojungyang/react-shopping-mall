@@ -13,11 +13,9 @@ export const ItemCard = ({
   showStatus = false,
   showOriginalPrice = true,
   item,
-  style = {
-    // height: product ? 480 : 400,
-    // maxWidth: product ? 330 : 250,
-  },
+  style = {},
 }) => {
+
   const navigation = useNavigate();
   const contentRef = useRef(null);
 

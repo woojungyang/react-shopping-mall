@@ -112,29 +112,9 @@
         }
         .second_slider_container {
           .best_product_container {
-            border: 1px solid red;
             display: flex;
 
             // column-gap: $margin;
-            .default_item_slider_container {
-              width: 100%;
-              max-width: $max-width;
-              position: relative;
-              .slider_arrow {
-                top: 50%;
-                position: absolute;
-                color: $color-skeleton-100;
-                height: $default * 4;
-                width: $default * 4;
-                cursor: pointer;
-              }
-              .default_item_slider_wrapper {
-                // overflow-y: scroll;
-                // flex-grow: 1;
-                // max-width: 100%;
-                border: 1px solid blue;
-              }
-            }
           }
         }
       }

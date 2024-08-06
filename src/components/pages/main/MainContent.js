@@ -42,7 +42,7 @@ export default function MainContent() {
 
   const [activeBrand, setActiveBrand] = useState(0);
   const [brands, setBrands] = useState([...new Array(3)]);
-  const bestItems = Array.from({ length: 16 }, (v, i) => i + 1);
+  const bestItems = Array.from({ length: 10 }, (v, i) => i + 1);
 
   const hotKeywords = useMemo(() => [...new Array(3)], [isDeskTop]);
 
