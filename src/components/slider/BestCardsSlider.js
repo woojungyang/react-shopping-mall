@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -8,7 +8,7 @@ import styles from "styles/_main.module.scss";
 import { BasicSlider } from "./BasicSlider";
 
 const DefaultBanner = () => {
-  return <div style={{ width: 0 }}></div>;
+  return null;
 };
 
 export const BestCardsSlider = ({ items = [], banner, perItems = 5 }) => {
@@ -100,41 +100,65 @@ export const BestCardsSlider = ({ items = [], banner, perItems = 5 }) => {
 
   const testRef = useRef(null);
 
+  // const bannerWidth = useMemo(() => {
+  //   if (testRef.current && testRef.current.offsetWidth)
+  //     return testRef.current.offsetWidth;
+  //   else return 0;
+  // }, [testRef.current]);
+
+  // console.log(bannerWidth);
+
+  const [bannerWidth, setBannerWidth] = useState(0);
+
+  useEffect(() => {
+    if (testRef.current && testRef.current.offsetWidth)
+      setBannerWidth(testRef.current.offsetWidth + 20);
+  }, [testRef.current]);
+
+  console.log(bannerWidth);
+
   const RenderComponent = banner ?? DefaultBanner;
 
-  console.log(RenderComponent);
-
+  console.log(testRef?.current?.offsetWidth);
   return (
     <div className={styles.best_product_container}>
-      <div style={{ width: 200, backgroundColor: "pink" }}>
-        <RenderComponent />
+      <div ref={testRef}>
+        <RenderComponent r />
       </div>
       <div className={styles.default_item_slider_container}>
-        <ArrowBackIosIcon
+        {/* <ArrowBackIosIcon
           className={styles.slider_arrow}
           style={{ left: "-3%" }}
           onClick={handlePrevClick}
-        />
-        <div className={styles.default_item_slider_wrapper}>
+        /> */}
+        <div
+          className={styles.default_item_slider_wrapper}
+          style={{
+            width: bannerWidth > 0 ? `calc(100% - ${bannerWidth}px)` : "100%",
+            marginLeft: bannerWidth > 0 ? 20 : 0,
+          }}
+        >
           <BasicSlider
             settings={{
-              dots: true,
+              // dots: true,
               infinite: true,
               speed: 500,
-              slidesToShow: banner ? 3 : 5,
+              slidesToShow: !!bannerWidth ? 3 : 5,
               slidesToScroll: 1,
             }}
           >
             {items.map((item, index) => (
-              <div
-                key={index}
-                style={{
-                  minWidth: 264,
-                  marginRight: 10,
-                  display: "inline-block",
-                }}
-              >
-                <div>{item}</div>
+              <div key={index}>
+                <div
+                  style={{
+                    width: "100%",
+                    // marginRight: 10,
+                    height: 100,
+                    backgroundColor: "orange",
+                  }}
+                >
+                  {item}
+                </div>
               </div>
             ))}
           </BasicSlider>
@@ -157,11 +181,11 @@ export const BestCardsSlider = ({ items = [], banner, perItems = 5 }) => {
             </div>
           ))}
         </div> */}
-        <ArrowForwardIosIcon
+        {/* <ArrowForwardIosIcon
           className={styles.slider_arrow}
           style={{ right: "-3.70%" }}
           onClick={handleNextClick}
-        />
+        /> */}
       </div>
     </div>
   );

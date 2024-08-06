@@ -101,19 +101,19 @@ export default function MainContent() {
 
               <BestCardsSlider
                 items={bestItems}
-                banner={() => {
-                  return (
-                    <div
-                      style={{
-                        width: 500,
-                        border: "1px solid black",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <p>bbb</p>
-                    </div>
-                  );
-                }}
+                // banner={() => {
+                //   return (
+                //     <div
+                //       style={{
+                //         width: 500,
+                //         border: "1px solid black",
+                //         flexShrink: 0,
+                //       }}
+                //     >
+                //       <p>bbb</p>
+                //     </div>
+                //   );
+                // }}
               />
             </div>
           </div>
