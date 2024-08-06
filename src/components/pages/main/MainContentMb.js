@@ -6,7 +6,7 @@ import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import { ItemCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
 import {
-  BasicSlider,
+  CustomSliderContainer,
   ImageSlider,
   ScrollableSlider,
   SliderPagination,
@@ -82,7 +82,7 @@ export default function MainContentMb() {
           </button> */}
         </div>
         <div className={styles.scrollable_container}>
-          <BasicSlider
+          <CustomSliderContainer
             arrows={false}
             settings={{
               rows: 2,
@@ -105,7 +105,7 @@ export default function MainContentMb() {
                 />
               </div>
             ))}
-          </BasicSlider>
+          </CustomSliderContainer>
         </div>
         {/* </div> */}
 

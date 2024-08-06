@@ -15,7 +15,7 @@ import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard, PhotoCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
-import { BasicSlider, BestCardsSlider, ImageSlider } from "components/slider";
+import { DefaultCardSlider, ImageSlider } from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
 
@@ -57,11 +57,11 @@ export default function MainContent() {
   return (
     <div className={styles.main_image_container}>
       <div className="slider-container" style={{ position: "relative" }}>
-        {/*  <ImageSlider
+        <ImageSlider
           images={[...new Array(totalImages)]}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
-        /> */}
+        />
         <div className={styles.main_slider_wrapper}>
           <p className={styles.slider_index}>
             {addLeadingZero(currentIndex + 1)}
@@ -99,7 +99,7 @@ export default function MainContent() {
                 </div>
               </div>
 
-              <BestCardsSlider
+              <DefaultCardSlider
                 items={bestItems}
                 // banner={() => {
                 //   return (
@@ -133,6 +133,33 @@ export default function MainContent() {
               </div>
             ))}
           </div>
+        </div>
+        <div className={styles.event_banner_wrapper}>event banner</div>
+        <div className={styles.md_pick_wrapper}>
+          <div className={styles.slider_subtitle_wrapper}>
+            <h4 className={styles.section_title}>HOT PICK+</h4>
+            <div className={styles.default_flex}>
+              {/* <DominoPaginatio /> */}
+              {/* <p className={styles.view_all_button}>View All</p> */}
+            </div>
+          </div>
+
+          <DefaultCardSlider
+            items={bestItems}
+            // banner={() => {
+            //   return (
+            //     <div
+            //       style={{
+            //         width: 500,
+            //         border: "1px solid black",
+            //         flexShrink: 0,
+            //       }}
+            //     >
+            //       <p>bbb</p>
+            //     </div>
+            //   );
+            // }}
+          />
         </div>
         {/* <div className={styles.gallery_container}>
           <h4 className={styles.section_title}>HOT KEYWORD</h4>
@@ -208,7 +235,6 @@ export default function MainContent() {
         </div>
       </div>
 
-      <div className={styles.event_banner_wrapper}>event banner</div>
       <div className={styles.main_content_container}>
         <div className={styles.brand_container}>
           <h4 className={styles.section_title}>BRAND</h4>
