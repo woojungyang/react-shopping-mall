@@ -23,7 +23,7 @@ export const BasicSlider = ({
     <div className="slider-container">
       <Slider
         {...settings}
-        arrows={arrows}
+        arrows={true}
         afterChange={(newIndex) => {
           setCurrentIndex?.(newIndex);
         }}

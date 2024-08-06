@@ -31,7 +31,7 @@ export const ImageSlider = ({
       <Slider
         ref={slider}
         {...settings}
-        autoplay={autoplay}
+        autoplay={false}
         arrows={false}
         afterChange={(newIndex) => {
           setCurrentIndex?.(newIndex);

@@ -1,18 +1,21 @@
 import React, { useMemo, useRef, useState } from "react";
 
 import AppleIcon from "@mui/icons-material/Apple";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import ShopIcon from "@mui/icons-material/Shop";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { Link } from "react-router-dom";
+import Slider from "react-slick";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import { PhotoCard, SmallCard } from "components/card";
+import { ItemCard, PhotoCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
-import { BestCardsSlider, ImageSlider } from "components/slider";
+import { BasicSlider, BestCardsSlider, ImageSlider } from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
 
@@ -39,6 +42,7 @@ export default function MainContent() {
 
   const [activeBrand, setActiveBrand] = useState(0);
   const [brands, setBrands] = useState([...new Array(3)]);
+  const bestItems = Array.from({ length: 16 }, (v, i) => i + 1);
 
   const hotKeywords = useMemo(() => [...new Array(3)], [isDeskTop]);
 
@@ -53,11 +57,11 @@ export default function MainContent() {
   return (
     <div className={styles.main_image_container}>
       <div className="slider-container" style={{ position: "relative" }}>
-        <ImageSlider
+        {/*  <ImageSlider
           images={[...new Array(totalImages)]}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
-        />
+        /> */}
         <div className={styles.main_slider_wrapper}>
           <p className={styles.slider_index}>
             {addLeadingZero(currentIndex + 1)}
@@ -78,27 +82,59 @@ export default function MainContent() {
       <div className={styles.main_content_container}>
         <div className={styles.items_contents_container}>
           <div className={styles.items_contents_wrapper}>
-            <div className={styles.item_category_wrapper}>
+            {/* <div className={styles.item_category_wrapper}>
               {dummyMenu.map((e, i) => (
                 <div className={styles.item_category}>
                   <Link to={"#"}>{e.name} </Link>
                   <span>{i + 1 != dummyMenu?.length && "|"}</span>
                 </div>
               ))}
-            </div>
+            </div> */}
             <div className={styles.second_slider_container}>
               <div className={styles.slider_subtitle_wrapper}>
-                <h4 className={styles.section_title}>WHAT'S BEST</h4>
+                <h4 className={styles.section_title}>MARK IT</h4>
                 <div className={styles.default_flex}>
                   {/* <DominoPaginatio /> */}
                   {/* <p className={styles.view_all_button}>View All</p> */}
                 </div>
               </div>
-              <BestCardsSlider />
+
+              <BestCardsSlider
+                items={bestItems}
+                banner={() => {
+                  return (
+                    <div
+                      style={{
+                        width: 500,
+                        border: "1px solid black",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <p>bbb</p>
+                    </div>
+                  );
+                }}
+              />
             </div>
           </div>
         </div>
-        <div className={styles.gallery_container}>
+        <div className={styles.spotlight_container}>
+          <h4 className={styles.section_title}>SPOTLIGHT</h4>
+          <div className={styles.spotlight_wrapper}>
+            {hotKeywords.map((e) => (
+              <div className={styles.spotlight_wrap}>
+                <img src={require("assets/images/sub/sub24.jpg")} />
+                <p className={styles.spotlight_title}>
+                  여름휴가를 휴가이한 가방
+                </p>
+                <p className={styles.spotlight_subtitle}>
+                  여름휴가를 휴가이한 가방
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* <div className={styles.gallery_container}>
           <h4 className={styles.section_title}>HOT KEYWORD</h4>
 
           <div className={styles.gallery}>
@@ -129,7 +165,7 @@ export default function MainContent() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
         <div className={styles.collection_container}>
           <h4 className={styles.section_title}>STYLE STORY</h4>
           <div className={styles.collection_img_wrapper}>

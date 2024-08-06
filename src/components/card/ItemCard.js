@@ -12,8 +12,7 @@ export const ItemCard = ({
   showBrand = true,
   showStatus = false,
   showOriginalPrice = true,
-
-  product,
+  item,
   style = {
     // height: product ? 480 : 400,
     // maxWidth: product ? 330 : 250,
@@ -31,7 +30,7 @@ export const ItemCard = ({
     <div
       className={styles.default_item_card_container}
       style={style}
-      onClick={() => navigation(`/items/${product}`)}
+      onClick={() => navigation(`/items/${item}`)}
     >
       <LikeHeart />
       <img
@@ -43,11 +42,11 @@ export const ItemCard = ({
         {showBrand && <p className={styles.item_brand_name}>BrandName</p>}
         <p
           className={styles.item_product_name}
-          style={{ marginTop: showBrand ? "" : "0.5em" }}
+          style={{ marginTop: showBrand ? "10px" : "0.5em" }}
         >
-          ProductName{product}
+          ProductName{item}
         </p>
-        <div className={styles.default_flex_space} style={{ marginTop: 8 }}>
+        <div className={styles.default_flex_space} style={{ marginTop: 20 }}>
           <p className={styles.product_price}>
             {numberWithCommas(10000)}
             {showOriginalPrice && <span> {numberWithCommas(90000)}</span>}

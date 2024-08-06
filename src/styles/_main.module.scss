@@ -12,7 +12,7 @@
 
   .section_title {
     text-align: center;
-    font-weight: 200;
+    font-weight: 700;
     letter-spacing: 2px;
     font-size: $margin * 1.5;
     color: $color-dark-200;
@@ -112,9 +112,29 @@
         }
         .second_slider_container {
           .best_product_container {
-            @include flex($align-items: flex-start);
+            border: 1px solid red;
+            display: flex;
 
-            width: 100%;
+            column-gap: $margin;
+            .default_item_slider_container {
+              width: 100%;
+              max-width: $max-width;
+              position: relative;
+              .slider_arrow {
+                top: 50%;
+                position: absolute;
+                color: $color-skeleton-100;
+                height: $default * 4;
+                width: $default * 4;
+                cursor: pointer;
+              }
+              .default_item_slider_wrapper {
+                // overflow-y: scroll;
+                // flex-grow: 1;
+                // max-width: 100%;
+                border: 1px solid blue;
+              }
+            }
           }
         }
       }
@@ -189,6 +209,31 @@
     .magazine_container {
       @include display-grid($colum: repeat(4, 1fr));
       width: 100%;
+    }
+    .spotlight_container {
+      margin-bottom: $margin * 4;
+      width: 100%;
+      .spotlight_wrapper {
+        @include flex;
+        .spotlight_wrap {
+          width: 100%;
+          margin-right: $margin;
+          img {
+            @include default-image;
+            width: 100%;
+            height: 400px;
+            margin-bottom: $margin;
+          }
+          .spotlight_title {
+            font-weight: 500;
+            font-size: $margin;
+          }
+          .spotlight_subtitle {
+            margin-top: $padding;
+            color: $color-skeleton-200;
+          }
+        }
+      }
     }
 
     .gallery_container {

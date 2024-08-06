@@ -289,12 +289,13 @@ body {
 
     .item_brand_name {
       margin-top: 0.5em;
-      font-size: 0.9em;
-      opacity: 0.7;
+      font-size: 1em;
+      font-weight: 500;
       @include overflow-text;
     }
     .item_product_name {
-      font-size: 1em;
+      font-size: 0.8em;
+      color: $color-skeleton-200;
       @include overflow-text;
     }
     .product_price {
