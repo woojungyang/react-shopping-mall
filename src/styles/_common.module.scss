@@ -35,6 +35,16 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  .loading_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 100000;
+    @include flex;
+    background-color: rgba($color-background-100, 0.7);
+  }
 
   .common_layout_content_wrapper {
     flex-grow: 1;
@@ -153,33 +163,51 @@ body {
     margin-right: $margin;
     flex-shrink: 0;
   }
-  .brand_name {
-    font-size: 14px;
-  }
-  .brand_item_name {
-    margin-bottom: $padding;
+  .brand_item_info {
+    height: 100px;
+    flex-grow: 1;
+    @include flex(
+      $direction: column,
+      $justify-content: space-between,
+      $align-items: flex-start
+    );
 
-    width: 90%;
-    @include overflow-text($clamp: 2);
-  }
-  .price_info {
-    font-size: 13px;
-    color: $color-skeleton-200;
-    .original_price {
-      text-decoration: line-through;
+    .item_info {
+      height: 100%;
+      width: 100%;
+
+      .brand_name {
+        font-size: 14px;
+      }
+      .brand_item_name {
+        margin-bottom: $padding;
+
+        width: 90%;
+        @include overflow-text($clamp: 2);
+      }
     }
-    .current_price {
-      color: $color-dark-300;
-      font-size: 15px;
-      font-weight: 700;
-      text-decoration: none;
-      margin: 0px $padding/4;
-    }
-    .sale_percent {
-      color: $color-orange;
-      font-size: 15px;
-      font-weight: 700;
-      text-decoration: none;
+    .price_info {
+      font-size: 13px;
+      color: $color-skeleton-200;
+      width: 100%;
+      @include flex($justify-content: space-between);
+
+      .original_price {
+        text-decoration: line-through;
+      }
+      .current_price {
+        color: $color-dark-300;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        margin: 0px $padding/4;
+      }
+      .sale_percent {
+        color: $color-orange;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+      }
     }
   }
 }

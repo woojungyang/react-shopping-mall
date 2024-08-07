@@ -74,7 +74,7 @@
   .spotlight_container {
     @include default-section;
     .spotlight_wrapper {
-      @include flex;
+      @include flex($align-items: flex-start);
       .spotlight_wrap {
         width: 100%;
         margin-right: $margin;
@@ -223,9 +223,23 @@
         &:last-child {
           margin-right: 0px;
         }
-        .item_thumbnail {
-          @include default-image;
-          height: 400px;
+        .brand_thumbnail_wrap {
+          position: relative;
+
+          .item_thumbnail {
+            @include default-image;
+            height: 600px;
+            filter: grayscale(0.2);
+          }
+          .brand_copyright_wrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            text-align: center;
+            color: $color-background-100;
+          }
         }
       }
     }
@@ -254,6 +268,7 @@
           flex-shrink: 0;
         }
         .brand_info_wrap {
+          width: 100%;
           .brand_info {
             @include flex($justify-content: space-between);
             min-height: 48px;
@@ -270,6 +285,8 @@
           }
           .items_list_wrapper {
             display: flex;
+            height: 240px;
+            width: 100%;
           }
         }
       }

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 
+import { CircularProgress } from "@mui/material";
 import { Device } from "models/device";
 import { useLocation } from "react-router-dom";
 import { scrollTop } from "utilities";
@@ -14,7 +15,11 @@ import BottomNavigation from "./BottomNavigation";
 import Footer from "./Footer";
 import Header from "./Header";
 
-export const CommonLayout = ({ children, toastMessage = "" }) => {
+export const CommonLayout = ({
+  children,
+  toastMessage = "",
+  isLoading = false,
+}) => {
   const { innerWidth } = window;
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
@@ -31,6 +36,11 @@ export const CommonLayout = ({ children, toastMessage = "" }) => {
         maxWidth: innerWidth,
       }}
     >
+      {isLoading && (
+        <div className={styles.loading_wrapper}>
+          <CircularProgress size="5rem" style={{ color: "#f89b00" }} />
+        </div>
+      )}
       <Header />
       <div className={styles.common_layout_content_wrapper}>{children}</div>
       {!isDeskTop && <BottomNavigation />}

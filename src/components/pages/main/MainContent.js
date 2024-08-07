@@ -6,10 +6,6 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import ShopIcon from "@mui/icons-material/Shop";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import classNames from "classnames";
-import { Device } from "models/device";
-
-import useOverviewQuery from "hooks/query/useOverviewQuery";
-import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
@@ -21,15 +17,13 @@ import {
 } from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
+import { formatDateTime } from "utilities/dateTime";
 
 import styles from "styles/_main.module.scss";
 
-export default function MainContent() {
-  const userDevice = useUserDevice();
-  const isDeskTop = userDevice == Device.Desktop;
-
+export default function MainContent({ data }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const totalImages = 8;
+
   const progressBarWidth = useRef(null);
 
   function addLeadingZero(number) {
@@ -47,14 +41,7 @@ export default function MainContent() {
     forUCategories[0].id,
   );
 
-  const [activeBrand, setActiveBrand] = useState(0);
-  const [brands, setBrands] = useState([...new Array(4)]);
-  const bestItems = Array.from({ length: 10 }, (v, i) => i + 1);
-  const mdItems = Array.from({ length: 8 }, (v, i) => i + 1);
-  const forUItems = Array.from({ length: 20 }, (v, i) => i + 1);
   const mdPickRef = useRef(null);
-
-  const hotKeywords = useMemo(() => [...new Array(3)], [isDeskTop]);
 
   const styleMenu = [
     { id: 1, name: "ALL" },
@@ -65,17 +52,23 @@ export default function MainContent() {
   ];
   const [activeStyleCategory, setActiveStyleCategory] = useState(1);
 
-  const { data: main, isLoading } = useOverviewQuery({
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+  const mainSlide = useMemo(() => data?.mainSlide || [], [data]);
+  const bestItems = useMemo(() => data?.bestItems || [], [data]);
+
+  const mdChoice = useMemo(() => data?.mdChoice || {}, [data]);
+  const events = useMemo(() => data?.events || [], [data]);
+  const clearances = useMemo(() => data?.clearances || {}, [data]);
+  const recommendedItems = useMemo(() => data?.recommendedItems || [], [data]);
+  const brands = useMemo(() => data?.brands || [], [data]);
+  const brandEvents = useMemo(() => data?.brandEvents || [], [data]);
+  const notices = useMemo(() => data?.notices || [], [data]);
+  const userStyles = useMemo(() => data?.userStyles || [], [data]);
 
   return (
     <div className={styles.main_image_container}>
       <div className="slider-container" style={{ position: "relative" }}>
         <ImageSlider
-          images={main?.mainSlide}
+          images={data?.mainSlide}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
         />
@@ -90,12 +83,12 @@ export default function MainContent() {
               ref={progressBarWidth}
               style={{
                 width:
-                  calculatePercent(currentIndex, main?.mainSlide?.length) + "%",
+                  calculatePercent(currentIndex, mainSlide?.length || 0) + "%",
               }}
             ></div>
           </div>
           <p className={styles.slider_index}>
-            {addLeadingZero(main?.mainSlide?.length)}
+            {addLeadingZero(mainSlide?.length || 0)}
           </p>
         </div>
       </div>
@@ -139,7 +132,7 @@ export default function MainContent() {
                 slidesToScroll: 1,
               }}
             >
-              {mdItems.map((e, index) => (
+              {mdChoice?.banners?.map((banner, index) => (
                 <div className={styles.md_pick_banner} key={index}>
                   <div className={styles.banner_copyright_wrap}>
                     <h1>AD COPYRIGHT{index}</h1>
@@ -149,10 +142,7 @@ export default function MainContent() {
                       className={styles.button_transparent_color_background_100}
                     />
                   </div>
-                  <img
-                    src={require(`assets/images/sub/sub${index + 1}.jpg`)}
-                    className={styles.slider_image}
-                  />
+                  <img src={banner?.url} className={styles.slider_image} />
                 </div>
               ))}
             </CustomSliderContainer>
@@ -174,7 +164,7 @@ export default function MainContent() {
             />
           </div>
           <div className={styles.md_pick_item_wrap}>
-            {mdItems.map((item, index) => {
+            {mdChoice?.items?.map((item, index) => {
               return (
                 <div key={index}>
                   <ItemCard
@@ -194,13 +184,11 @@ export default function MainContent() {
       <div className={styles.spotlight_container}>
         <h4 className={styles.section_title}>SPOTLIGHT</h4>
         <div className={styles.spotlight_wrapper}>
-          {hotKeywords.map((e) => (
-            <div className={styles.spotlight_wrap}>
-              <img src={require("assets/images/sub/sub24.jpg")} />
-              <p className={styles.spotlight_title}>여름휴가를 휴가이한 가방</p>
-              <p className={styles.spotlight_subtitle}>
-                여름휴가를 휴가이한 가방
-              </p>
+          {events?.map((event, index) => (
+            <div className={styles.spotlight_wrap} key={index}>
+              <img src={event?.thumbnail} />
+              <p className={styles.spotlight_title}>{event?.title}</p>
+              <p className={styles.spotlight_subtitle}>{event?.subTitle}</p>
             </div>
           ))}
         </div>
@@ -211,7 +199,7 @@ export default function MainContent() {
         <h4 className={styles.section_title}>CLEARANCE</h4>
         <FlexBoxSlider
           arrows={false}
-          totalCount={bestItems.length}
+          totalCount={clearances?.items?.length || 0}
           settings={{
             infinite: true,
             speed: 500,
@@ -221,7 +209,7 @@ export default function MainContent() {
           banner={() => {
             return (
               <div className={styles.sale_banner_wrap}>
-                <img src={require("assets/images/common/summer.jpg")} />
+                <img src={clearances?.banner?.url} />
                 <div className={styles.sale_banner_copyright}>
                   <p>subTitle</p>
                   <h1 className={styles.copyright_title}>AD COPYRIGHT</h1>
@@ -230,7 +218,7 @@ export default function MainContent() {
             );
           }}
         >
-          {bestItems.map((item, index) => {
+          {clearances?.items?.map((item, index) => {
             return (
               <div key={index}>
                 <ItemCard
@@ -273,7 +261,7 @@ export default function MainContent() {
               slidesToScroll: 5,
             }}
           >
-            {forUItems.map((item, index) => {
+            {recommendedItems?.map((item, index) => {
               return (
                 <div key={index}>
                   <ItemCard
@@ -290,38 +278,38 @@ export default function MainContent() {
       </div>
       {/* brand */}
       <div className={styles.brand_container}>
-        <h4 className={styles.section_title}>BRAND LIVE</h4>
+        <h4 className={styles.section_title}>BRAND NEWS</h4>
         <div className={styles.brand_wrapper}>
-          {brands.map((item, index) => {
+          {brands.map((brand, index) => {
             return (
               <div
+                key={index}
                 className={classNames({
                   [styles.brand_wrap]: true,
                 })}
               >
                 <img
                   className={styles.brand_thumbnail}
-                  src={require(`assets/images/sub/sub2${index}.jpg`)}
+                  src={brand?.brandThumbnail}
                   className={styles.brand_thumbnail}
                 />
 
                 <div className={styles.brand_info_wrap}>
                   <div className={styles.brand_info}>
                     <div>
-                      <h3>brand</h3>
-                      <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit.
-                      </p>
+                      <h3>{brand?.brandName}</h3>
+                      <p>{brand?.copyright}</p>
                     </div>
                     <ChevronRight />
                   </div>
                   <div className={styles.items_list_wrapper}>
-                    {[...new Array(2)].map((e, i) => (
+                    {brand?.items.map((item, index) => (
                       <ItemCard
+                        key={index}
+                        item={item}
                         showBrand={false}
                         showOriginalPrice={false}
-                        style={{ height: 261 }}
+                        style={{ height: 240 }}
                       />
                     ))}
                   </div>
@@ -335,15 +323,21 @@ export default function MainContent() {
         <h4 className={styles.section_title}>DEEP IN FOCUS</h4>
 
         <div className={styles.selected_keyword_item_wrapper}>
-          {hotKeywords.map((e, i) => (
+          {brandEvents?.map((brandEvent, i) => (
             <div className={styles.selected_keyword_item_wrap}>
-              <img
-                src={require("assets/images/sub/sub24.jpg")}
-                className={styles.item_thumbnail}
-              />
+              <div className={styles.brand_thumbnail_wrap}>
+                <img
+                  src={brandEvent?.brandThumbnail}
+                  className={styles.item_thumbnail}
+                />
+                <div className={styles.brand_copyright_wrap}>
+                  <h2>{brandEvent?.brandName}</h2>
+                  <p>{brandEvent?.copyright}</p>
+                </div>
+              </div>
               <div style={{ padding: "16px" }}>
-                {[...new Array(3)].map((e2, i) => (
-                  <SmallCard />
+                {brandEvent?.items.map((item, index) => (
+                  <SmallCard key={index} item={item} />
                 ))}
               </div>
             </div>
@@ -370,13 +364,12 @@ export default function MainContent() {
         </div>
 
         <div className={styles.style_image_wrapper}>
-          {[...new Array(6)].map((e, i) => (
+          {userStyles?.map((userStyle, index) => (
             <div className={styles.image_wrap}>
-              <img
-                src={require("assets/images/sub/sub11.jpg")}
-                className={styles.style_image}
-              />
-              <p className={styles.user_name}>@user_name</p>
+              <img src={userStyle?.avatar} className={styles.style_image} />
+              <p className={styles.user_name}>
+                @{userStyle?.username?.split("@")[0]}
+              </p>
             </div>
           ))}
         </div>
@@ -422,16 +415,14 @@ export default function MainContent() {
           <div className={styles.notice_wrapper}>
             <p className={styles.notice_title}>NOTICE</p>
             <div>
-              {[...new Array(7)].map((e, i) => (
+              {notices?.map((notice, index) => (
                 <div className={styles.default_flex_space}>
-                  <p className={styles.notice_content_title}>
-                    [공지] 서비스 이용약관 개정 안내 (시행일: 2024년 7월 5일)
-                  </p>
+                  <p className={styles.notice_content_title}>{notice?.title}</p>
                   <p
                     className={styles.notice_content_title}
                     style={{ flexShrink: 0, marginLeft: 20 }}
                   >
-                    2024-07-11
+                    {formatDateTime(notice?.writtenAt)}
                   </p>
                 </div>
               ))}

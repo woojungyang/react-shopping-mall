@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 import GradingIcon from "@mui/icons-material/Grading";
 import { useNavigate } from "react-router-dom";
@@ -15,9 +15,10 @@ export const ItemCard = ({
   item,
   style = {},
 }) => {
-
   const navigation = useNavigate();
   const contentRef = useRef(null);
+
+  const [cardHeight, setCardHeight] = useState(0);
 
   const imageHeight = useMemo(() => {
     if (contentRef.current)
@@ -32,25 +33,35 @@ export const ItemCard = ({
     >
       <LikeHeart />
       <img
-        src={require(`assets/images/sub/sub${1}.jpg`)}
+        src={item?.thumbnail}
         className={styles.item_image}
         style={{ height: imageHeight }}
       />
       <div className={styles.item_card_information} ref={contentRef}>
-        {showBrand && <p className={styles.item_brand_name}>BrandName</p>}
+        {showBrand && (
+          <p className={styles.item_brand_name}>{item?.brandName}</p>
+        )}
         <p
           className={styles.item_product_name}
           style={{ marginTop: showBrand ? "10px" : "0.5em" }}
         >
-          ProductName{item}
+          {item?.itemName}
         </p>
         <div className={styles.default_flex_space} style={{ marginTop: 20 }}>
           <p className={styles.product_price}>
-            {numberWithCommas(10000)}
-            {showOriginalPrice && <span> {numberWithCommas(90000)}</span>}
+            {numberWithCommas(item?.price)}원
+            {showOriginalPrice && (
+              <span> {numberWithCommas(item?.originalPrice)}원</span>
+            )}
           </p>
           <p className={styles.discount_rate}>
-            <span>20</span>%
+            <span>
+              {(
+                ((item?.originalPrice - item?.price) / item?.originalPrice) *
+                100
+              ).toFixed(0)}
+            </span>
+            %
           </p>
         </div>
         {showStatus && (
@@ -59,12 +70,15 @@ export const ItemCard = ({
               <LikeHeart
                 position={{ position: "relative" }}
                 defaultColor="skeleton"
+                like={item?.like}
               />
-              <span style={{ marginRight: 10 }}>{numberWithCommas(1234)}</span>
+              <span style={{ marginRight: 10 }}>
+                {numberWithCommas(item?.reviewCount)}
+              </span>
               <GradingIcon
                 style={{ width: "0.65em", height: "0.65em", color: "#6b6b6b" }}
               />
-              <span>{numberWithCommas(1234)}</span>
+              <span>{numberWithCommas(item?.likeCount)}</span>
             </div>
           </div>
         )}
