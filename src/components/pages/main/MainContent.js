@@ -1,21 +1,26 @@
 import React, { useMemo, useRef, useState } from "react";
 
+import { PaddingTwoTone } from "@mui/icons-material";
+import { ChevronRight } from "@mui/icons-material";
 import AppleIcon from "@mui/icons-material/Apple";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import ShopIcon from "@mui/icons-material/Shop";
 import YouTubeIcon from "@mui/icons-material/YouTube";
+import { height } from "@mui/system";
 import classNames from "classnames";
 import { Device } from "models/device";
-import { Link } from "react-router-dom";
-import Slider from "react-slick";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard, PhotoCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
-import { DefaultCardSlider, ImageSlider } from "components/slider";
+import {
+  ChevronArrows,
+  CustomSliderContainer,
+  FlexBoxSlider,
+  ImageSlider,
+  SliderPagination,
+} from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
 
@@ -33,16 +38,23 @@ export default function MainContent() {
     return number.toString().padStart(2, "0");
   }
 
-  const dummyMenu = [
-    { id: 1, name: "BEST" },
-    { id: 2, name: "NEW" },
-    { id: 3, name: "ZOOM" },
-    { id: 4, name: "SALE" },
+  const forUCategories = [
+    { id: 1, name: "WOMAN" },
+    { id: 2, name: "MAN" },
+    { id: 3, name: "BAG&SHOES" },
+    { id: 4, name: "ACC" },
+    { id: 5, name: "LIFT" },
   ];
+  const [selectedForUCategory, setSelectedForUCategory] = useState(
+    forUCategories[0].id,
+  );
 
   const [activeBrand, setActiveBrand] = useState(0);
-  const [brands, setBrands] = useState([...new Array(3)]);
+  const [brands, setBrands] = useState([...new Array(4)]);
   const bestItems = Array.from({ length: 10 }, (v, i) => i + 1);
+  const mdItems = Array.from({ length: 8 }, (v, i) => i + 1);
+  const forUItems = Array.from({ length: 20 }, (v, i) => i + 1);
+  const mdPickRef = useRef(null);
 
   const hotKeywords = useMemo(() => [...new Array(3)], [isDeskTop]);
 
@@ -79,308 +91,362 @@ export default function MainContent() {
           <p className={styles.slider_index}>{addLeadingZero(totalImages)}</p>
         </div>
       </div>
-      <div className={styles.main_content_container}>
-        <div className={styles.items_contents_container}>
-          <div className={styles.items_contents_wrapper}>
-            {/* <div className={styles.item_category_wrapper}>
-              {dummyMenu.map((e, i) => (
-                <div className={styles.item_category}>
-                  <Link to={"#"}>{e.name} </Link>
-                  <span>{i + 1 != dummyMenu?.length && "|"}</span>
+      {/* mark it */}
+      <div className={styles.default_section}>
+        <h4 className={styles.section_title}>MARK IT</h4>
+        <FlexBoxSlider
+          settings={{
+            infinite: true,
+            speed: 500,
+            slidesToShow: 5,
+            slidesToScroll: 1,
+          }}
+        >
+          {bestItems.map((item, index) => {
+            return (
+              <div key={index}>
+                <ItemCard
+                  item={item}
+                  style={{
+                    height: "400px",
+                  }}
+                />
+              </div>
+            );
+          })}
+        </FlexBoxSlider>
+      </div>
+      {/* mdpick */}
+      <div className={styles.md_pick_wrapper}>
+        <h4 className={styles.section_title}>MD CHOICE+</h4>
+        <div className={styles.md_pick_wrap}>
+          <div className={styles.md_pick_slider}>
+            <CustomSliderContainer
+              autoPlay={true}
+              ref={mdPickRef}
+              settings={{
+                infinite: true,
+                speed: 1000,
+                slidesToShow: 1,
+                slidesToScroll: 1,
+              }}
+            >
+              {mdItems.map((e, index) => (
+                <div className={styles.md_pick_banner} key={index}>
+                  <div className={styles.banner_copyright_wrap}>
+                    <h1>AD COPYRIGHT{index}</h1>
+                    <p>ad description</p>
+                    <DefaultButton
+                      label="ad button"
+                      className={styles.button_transparent_color_background_100}
+                    />
+                  </div>
+                  <img
+                    src={require(`assets/images/sub/sub${index + 1}.jpg`)}
+                    className={styles.slider_image}
+                  />
                 </div>
               ))}
-            </div> */}
-            <div className={styles.second_slider_container}>
-              <div className={styles.slider_subtitle_wrapper}>
-                <h4 className={styles.section_title}>MARK IT</h4>
-                <div className={styles.default_flex}>
-                  {/* <DominoPaginatio /> */}
-                  {/* <p className={styles.view_all_button}>View All</p> */}
-                </div>
-              </div>
-
-              <DefaultCardSlider
-                items={bestItems}
-                // banner={() => {
-                //   return (
-                //     <div
-                //       style={{
-                //         width: 500,
-                //         border: "1px solid black",
-                //         flexShrink: 0,
-                //       }}
-                //     >
-                //       <p>bbb</p>
-                //     </div>
-                //   );
-                // }}
-              />
-            </div>
+            </CustomSliderContainer>
+            <ChevronArrows
+              style={{
+                width: "90%",
+                iconOptions: {
+                  width: 40,
+                  height: 60,
+                  color: "rgba(255,255,255,0.9)",
+                },
+              }}
+              onClickPrev={() => {
+                mdPickRef.current.slickPrev();
+              }}
+              onClickNext={() => {
+                mdPickRef.current.slickNext();
+              }}
+            />
           </div>
-        </div>
-        <div className={styles.spotlight_container}>
-          <h4 className={styles.section_title}>SPOTLIGHT</h4>
-          <div className={styles.spotlight_wrapper}>
-            {hotKeywords.map((e) => (
-              <div className={styles.spotlight_wrap}>
-                <img src={require("assets/images/sub/sub24.jpg")} />
-                <p className={styles.spotlight_title}>
-                  여름휴가를 휴가이한 가방
-                </p>
-                <p className={styles.spotlight_subtitle}>
-                  여름휴가를 휴가이한 가방
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className={styles.event_banner_wrapper}>event banner</div>
-        <div className={styles.md_pick_wrapper}>
-          <div className={styles.slider_subtitle_wrapper}>
-            <h4 className={styles.section_title}>HOT PICK+</h4>
-            <div className={styles.default_flex}>
-              {/* <DominoPaginatio /> */}
-              {/* <p className={styles.view_all_button}>View All</p> */}
-            </div>
-          </div>
-
-          <DefaultCardSlider
-            items={bestItems}
-            // banner={() => {
-            //   return (
-            //     <div
-            //       style={{
-            //         width: 500,
-            //         border: "1px solid black",
-            //         flexShrink: 0,
-            //       }}
-            //     >
-            //       <p>bbb</p>
-            //     </div>
-            //   );
-            // }}
-          />
-        </div>
-        {/* <div className={styles.gallery_container}>
-          <h4 className={styles.section_title}>HOT KEYWORD</h4>
-
-          <div className={styles.gallery}>
-            <div className={styles.large_img}>#버킷햇</div>
-            <div className={styles.small_img}>
-              <div>#나시</div>
-              <div>#원피스</div>
-            </div>
-            <div className={styles.large_img}>#샌들</div>
-            <div className={styles.small_img}>
-              <div>#플레따</div>
-              <div>#에코백</div>
-            </div>
-          </div>
-
-          <div className={styles.selected_keyword_item_wrapper}>
-            {hotKeywords.map((e, i) => (
-              <div className={styles.selected_keyword_item_wrap}>
-                <img
-                  src={require("assets/images/sub/sub24.jpg")}
-                  className={styles.item_thumbnail}
-                />
-                <div style={{ padding: "16px" }}>
-                  {[...new Array(3)].map((e2, i) => (
-                    <SmallCard />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div> */}
-        <div className={styles.collection_container}>
-          <h4 className={styles.section_title}>STYLE STORY</h4>
-          <div className={styles.collection_img_wrapper}>
-            <div className={styles.first_img}>사진1</div>
-          </div>
-          <div
-            className={classNames(
-              styles.default_flex,
-              styles.collection_description_wrapper,
-            )}
-          >
-            <div className={styles.collection_description}>
-              <h3 className={styles.collection_title}>
-                COLLABORATION ITEMS NEWS
-              </h3>
-
-              <div className={styles.collection_title_box}></div>
-              <p className={styles.collection_description}>
-                Voluptatibus molestias vitae repellendus doloribus dolore omnis
-                quibusdam, quidem, sunt veniam ratione exercitationem aliquid
-                architecto cupiditate! Odio fugiat minus natus molestiae
-                aliquid. Lorem ipsum dolor sit amet consectetur adipisicing
-                elit. Autem, placeat reprehenderit, facilis quasi ratione ea
-                repellat non enim repellendus inventore nemo illum ipsum, quo
-                praesentium odit fugiat quod. Temporibus, inventore.
-              </p>
-            </div>
-
-            <div className={styles.more_items}>
-              <img src={require("assets/images/sub/sub24.jpg")} />
-              <img src={require("assets/images/sub/sub24.jpg")} />
-              <img src={require("assets/images/sub/sub24.jpg")} />
-            </div>
-          </div>
-        </div>
-        <div className={styles.magazine_container}>
-          {[...new Array(4)].map((e, i) => (
-            <PhotoCard />
-          ))}
-        </div>
-      </div>
-
-      <div className={styles.main_content_container}>
-        <div className={styles.brand_container}>
-          <h4 className={styles.section_title}>BRAND</h4>
-          <div className={styles.brand_wrapper}>
-            {brands.map((item, index) => {
-              const active = activeBrand == index;
-              const isMiddle = index !== 0 && index !== brands.length;
+          <div className={styles.md_pick_item_wrap}>
+            {mdItems.map((item, index) => {
               return (
-                <div
-                  className={classNames({
-                    [styles.brand_wrap]: true,
-                    [styles.default_flex]: active,
-                    [styles.brand_disabled]: !active,
-                  })}
-                  style={{ marginLeft: isMiddle && active ? 16 : 0 }}
-                  onClick={() => setActiveBrand(index)}
-                  onMouseOver={() => setActiveBrand(index)}
-                >
-                  <img
-                    className={styles.brand_thumbnail}
-                    src={require(`assets/images/sub/sub2${index}.jpg`)}
+                <div key={index}>
+                  <ItemCard
+                    showStatus={true}
+                    item={item}
+                    style={{
+                      height: "350px",
+                    }}
                   />
-                  {!active && (
-                    <div className={styles.image_overlay}>BrandName</div>
-                  )}
-                  {active && (
-                    <div className={styles.items_list_wrapper}>
-                      {[...new Array(4)].map((e, i) => (
-                        <SmallCard />
-                      ))}
-                    </div>
-                  )}
                 </div>
               );
             })}
           </div>
         </div>
-        <div className={styles.event_container}>
-          {[...new Array(3)].map((e, i) => (
-            <PhotoCard />
+      </div>
+      {/* spotlight */}
+      <div className={styles.spotlight_container}>
+        <h4 className={styles.section_title}>SPOTLIGHT</h4>
+        <div className={styles.spotlight_wrapper}>
+          {hotKeywords.map((e) => (
+            <div className={styles.spotlight_wrap}>
+              <img src={require("assets/images/sub/sub24.jpg")} />
+              <p className={styles.spotlight_title}>여름휴가를 휴가이한 가방</p>
+              <p className={styles.spotlight_subtitle}>
+                여름휴가를 휴가이한 가방
+              </p>
+            </div>
           ))}
         </div>
-        <h4 className={styles.section_title}> STYLE</h4>
-        <div className={styles.style_container}>
-          <div className={styles.style_menu_wrapper}>
-            {styleMenu.map((e) => (
+      </div>
+      <div className={styles.default_section}>event banner</div>
+      {/* sale */}
+      <div className={styles.sale_items_wrapper}>
+        <h4 className={styles.section_title}>CLEARANCE</h4>
+        <FlexBoxSlider
+          arrows={false}
+          totalCount={bestItems.length}
+          settings={{
+            infinite: true,
+            speed: 500,
+            slidesToShow: 4,
+            slidesToScroll: 1,
+          }}
+          banner={() => {
+            return (
+              <div className={styles.sale_banner_wrap}>
+                <img src={require("assets/images/common/summer.jpg")} />
+                <div className={styles.sale_banner_copyright}>
+                  <p>subTitle</p>
+                  <h1 className={styles.copyright_title}>AD COPYRIGHT</h1>
+                </div>
+              </div>
+            );
+          }}
+        >
+          {bestItems.map((item, index) => {
+            return (
+              <div key={index}>
+                <ItemCard
+                  item={item}
+                  style={{
+                    marginTop: 50,
+                    height: "320px",
+                  }}
+                />
+              </div>
+            );
+          })}
+        </FlexBoxSlider>
+      </div>
+      {/* for u */}
+      <div className={styles.for_u_wrapper}>
+        <div className={styles.slider_subtitle_wrapper}>
+          <h4 className={styles.section_title}>FOR U</h4>
+        </div>
+        <div className={styles.for_u_items_wrap}>
+          <div className={styles.for_u_item_category_wrap}>
+            {forUCategories.map((category) => (
               <p
-                onClick={() => setActiveStyleCategory(e.id)}
+                onClick={() => setSelectedForUCategory(category.id)}
                 className={classNames({
-                  [styles.style_menu]: true,
-                  [styles.active_style_menu]: activeStyleCategory == e.id,
+                  [styles.item_category]: true,
+                  [styles.category_active]: selectedForUCategory == category.id,
                 })}
               >
-                {e.name}
+                {category.name}
               </p>
             ))}
           </div>
-
-          <div className={styles.style_image_wrapper}>
-            {[...new Array(6)].map((e, i) => (
-              <div className={styles.image_wrap}>
-                <img
-                  src={require("assets/images/sub/sub11.jpg")}
-                  className={styles.style_image}
-                />
-                <p className={styles.user_name}>@user_name</p>
-              </div>
-            ))}
-          </div>
+          <FlexBoxSlider
+            settings={{
+              infinite: true,
+              speed: 500,
+              rows: 2,
+              slidesToShow: 5,
+              slidesToScroll: 5,
+            }}
+          >
+            {forUItems.map((item, index) => {
+              return (
+                <div key={index}>
+                  <ItemCard
+                    item={item}
+                    style={{
+                      height: "390px",
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </FlexBoxSlider>
         </div>
-        <div className={styles.notice_container}>
-          <div className={styles.information_wrapper}>
-            <h4 className={styles.information_title}>
-              SERVICE CENTER 2015-0907
-            </h4>
-            <p className={styles.information_subtitle}>
-              MON - FRI 09 : 00 - 18:00 | 주말, 공휴일 휴무 | BREAK TIME : 12:30
-              - 13:30
-              <br />
-              cs_help@wootique.co.kr
-            </p>
-            <div className={styles.information_button_wrapper}>
-              <div>
-                <DefaultButton
-                  className={styles.information_button}
-                  label="FAQ"
+      </div>
+      {/* brand */}
+      <div className={styles.brand_container}>
+        <h4 className={styles.section_title}>BRAND LIVE</h4>
+        <div className={styles.brand_wrapper}>
+          {brands.map((item, index) => {
+            return (
+              <div
+                className={classNames({
+                  [styles.brand_wrap]: true,
+                })}
+              >
+                <img
+                  className={styles.brand_thumbnail}
+                  src={require(`assets/images/sub/sub2${index}.jpg`)}
+                  className={styles.brand_thumbnail}
                 />
-                <DefaultButton
-                  className={styles.information_button}
-                  label="1:1문의"
-                />
-              </div>
-              <div className={styles.default_flex}>
-                <SnsWrapper>
-                  <InstagramIcon className={styles.sns_icon} />
-                </SnsWrapper>
-                <SnsWrapper>
-                  <YouTubeIcon className={styles.sns_icon} />
-                </SnsWrapper>
-                <SnsWrapper>
-                  <AppleIcon className={styles.sns_icon} />
-                </SnsWrapper>
-                <SnsWrapper>
-                  <ShopIcon className={styles.sns_icon} />
-                </SnsWrapper>
-              </div>
-            </div>
-          </div>
-          <div className={styles.default_flex_space}>
-            <div className={styles.notice_wrapper}>
-              <p className={styles.notice_title}>NOTICE</p>
-              <div>
-                {[...new Array(7)].map((e, i) => (
-                  <div className={styles.default_flex_space}>
-                    <p className={styles.notice_content_title}>
-                      [공지] 서비스 이용약관 개정 안내 (시행일: 2024년 7월 5일)
-                    </p>
-                    <p
-                      className={styles.notice_content_title}
-                      style={{ flexShrink: 0, marginLeft: 20 }}
-                    >
-                      2024-07-11
-                    </p>
+
+                <div className={styles.brand_info_wrap}>
+                  <div className={styles.brand_info}>
+                    <div>
+                      <h3>brand</h3>
+                      <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing
+                        elit.
+                      </p>
+                    </div>
+                    <ChevronRight />
                   </div>
+                  <div className={styles.items_list_wrapper}>
+                    {[...new Array(2)].map((e, i) => (
+                      <ItemCard
+                        showBrand={false}
+                        showOriginalPrice={false}
+                        style={{ height: 261 }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className={styles.gallery_container}>
+        <h4 className={styles.section_title}>DEEP IN FOCUS</h4>
+
+        <div className={styles.selected_keyword_item_wrapper}>
+          {hotKeywords.map((e, i) => (
+            <div className={styles.selected_keyword_item_wrap}>
+              <img
+                src={require("assets/images/sub/sub24.jpg")}
+                className={styles.item_thumbnail}
+              />
+              <div style={{ padding: "16px" }}>
+                {[...new Array(3)].map((e2, i) => (
+                  <SmallCard />
                 ))}
               </div>
             </div>
-            <div className={styles.bottom_navigation_wrapper}>
-              <div className={styles.bottom_navigation_item}>
-                <p>ABOUT US</p>
-                <p>WOOTIQUE 소개</p>
-                <p>SITE MAP</p>
-              </div>
-              <div className={styles.bottom_navigation_item}>
-                <p>MY ORDER</p>
-                <p>주문 배송</p>
-                <p>상품 리뷰 내역</p>
-              </div>
-              <div className={styles.bottom_navigation_item}>
-                <p>NEED HELP</p>
-                <p>1:1문의 내역</p>
-                <p>주문 문의</p>
-                <p>FQA</p>
-                <p>공지사항</p>
-                <p>고객의 소리</p>
-              </div>
+          ))}
+        </div>
+      </div>
+
+      {/* style */}
+      <div className={styles.style_container}>
+        <h4 className={styles.section_title}> STYLE</h4>
+
+        <div className={styles.style_menu_wrap}>
+          {styleMenu.map((e) => (
+            <p
+              onClick={() => setActiveStyleCategory(e.id)}
+              className={classNames({
+                [styles.style_menu]: true,
+                [styles.active_style_menu]: activeStyleCategory == e.id,
+              })}
+            >
+              {e.name}
+            </p>
+          ))}
+        </div>
+
+        <div className={styles.style_image_wrapper}>
+          {[...new Array(6)].map((e, i) => (
+            <div className={styles.image_wrap}>
+              <img
+                src={require("assets/images/sub/sub11.jpg")}
+                className={styles.style_image}
+              />
+              <p className={styles.user_name}>@user_name</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* notice */}
+      <div className={styles.notice_container}>
+        <div className={styles.information_wrapper}>
+          <h4 className={styles.information_title}>SERVICE CENTER 2015-0907</h4>
+          <p className={styles.information_subtitle}>
+            MON - FRI 09 : 00 - 18:00 | 주말, 공휴일 휴무 | BREAK TIME : 12:30 -
+            13:30
+            <br />
+            cs_help@wootique.co.kr
+          </p>
+          <div className={styles.information_button_wrapper}>
+            <div>
+              <DefaultButton
+                className={styles.information_button}
+                label="FAQ"
+              />
+              <DefaultButton
+                className={styles.information_button}
+                label="1:1문의"
+              />
+            </div>
+            <div className={styles.default_flex}>
+              <SnsWrapper>
+                <InstagramIcon className={styles.sns_icon} />
+              </SnsWrapper>
+              <SnsWrapper>
+                <YouTubeIcon className={styles.sns_icon} />
+              </SnsWrapper>
+              <SnsWrapper>
+                <AppleIcon className={styles.sns_icon} />
+              </SnsWrapper>
+              <SnsWrapper>
+                <ShopIcon className={styles.sns_icon} />
+              </SnsWrapper>
+            </div>
+          </div>
+        </div>
+        <div className={styles.default_flex_space}>
+          <div className={styles.notice_wrapper}>
+            <p className={styles.notice_title}>NOTICE</p>
+            <div>
+              {[...new Array(7)].map((e, i) => (
+                <div className={styles.default_flex_space}>
+                  <p className={styles.notice_content_title}>
+                    [공지] 서비스 이용약관 개정 안내 (시행일: 2024년 7월 5일)
+                  </p>
+                  <p
+                    className={styles.notice_content_title}
+                    style={{ flexShrink: 0, marginLeft: 20 }}
+                  >
+                    2024-07-11
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className={styles.bottom_navigation_wrapper}>
+            <div className={styles.bottom_navigation_item}>
+              <p>ABOUT US</p>
+              <p>WOOTIQUE 소개</p>
+              <p>SITE MAP</p>
+            </div>
+            <div className={styles.bottom_navigation_item}>
+              <p>MY ORDER</p>
+              <p>주문 배송</p>
+              <p>상품 리뷰 내역</p>
+            </div>
+            <div className={styles.bottom_navigation_item}>
+              <p>NEED HELP</p>
+              <p>1:1문의 내역</p>
+              <p>주문 문의</p>
+              <p>FQA</p>
+              <p>공지사항</p>
+              <p>고객의 소리</p>
             </div>
           </div>
         </div>

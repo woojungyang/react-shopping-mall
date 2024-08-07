@@ -35,6 +35,12 @@
   background-color: $color-skeleton-100;
   color: $color-background-100;
 }
+.button_transparent_color_background_100 {
+  @include default-button_desktop;
+  background-color: transparent;
+  color: $color-background-100;
+  border: 1px solid $color-background-100;
+}
 .button_kakao {
   @include default-button_desktop;
   background-color: #fee500;

@@ -11,9 +11,9 @@ export const SmallCard = ({ item }) => {
     <div className={styles.brand_item_wrapper}>
       <img src={require(`assets/images/sub/sub11.jpg`)} alt="" />
       <div>
-        <p className={styles.brand_name}>brandName</p>
+        <p className={styles.brand_name}>[brandname]</p>
         <p className={styles.brand_item_name}>
-          [brandname] itemNameitemNameitemName itemName itemNameitemName
+          itemNameitemNameitemName itemName itemNameitemName
         </p>
         <p className={styles.price_info}>
           <span className={styles.original_price}>

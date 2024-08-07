@@ -1,20 +1,25 @@
 import React, { forwardRef } from "react";
 
-
-
 import Slider from "react-slick";
-
-
 
 import "styles/basic-react-slick.css";
 
-
 export const CustomSliderContainer = forwardRef(
-  ({ children, setCurrentIndex, arrows = false, settings = {} }, ref) => {
+  (
+    {
+      children,
+      setCurrentIndex,
+      arrows = false,
+      settings = {},
+      autoPlay = false,
+    },
+    ref,
+  ) => {
     return (
-      <div className="slider-container">
+      <div className="one-row-slider">
         <Slider
           ref={ref}
+          autoplay={autoPlay}
           {...settings}
           arrows={arrows}
           afterChange={(newIndex) => {
