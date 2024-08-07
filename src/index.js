@@ -1,22 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 
 import store from "app/store";
 
+import App from "App";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import { RouterProvider } from "react-router-dom";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 
 import reportWebVitals from "./reportWebVitals";
-import { router } from "./routes";
 import "./styles/_common.module.scss";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router}></RouterProvider>
+      <App />
     </Provider>
   </React.StrictMode>,
 );

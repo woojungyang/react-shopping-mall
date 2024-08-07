@@ -1,25 +1,23 @@
 import React, { useMemo, useRef, useState } from "react";
 
-import { PaddingTwoTone } from "@mui/icons-material";
 import { ChevronRight } from "@mui/icons-material";
 import AppleIcon from "@mui/icons-material/Apple";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import ShopIcon from "@mui/icons-material/Shop";
 import YouTubeIcon from "@mui/icons-material/YouTube";
-import { height } from "@mui/system";
 import classNames from "classnames";
 import { Device } from "models/device";
 
+import useOverviewQuery from "hooks/query/useOverviewQuery";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import { ItemCard, PhotoCard, SmallCard } from "components/card";
+import { ItemCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
 import {
   ChevronArrows,
   CustomSliderContainer,
   FlexBoxSlider,
   ImageSlider,
-  SliderPagination,
 } from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
@@ -66,11 +64,18 @@ export default function MainContent() {
     { id: 5, name: "BEAUTY" },
   ];
   const [activeStyleCategory, setActiveStyleCategory] = useState(1);
+
+  const { data: main, isLoading } = useOverviewQuery({
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   return (
     <div className={styles.main_image_container}>
       <div className="slider-container" style={{ position: "relative" }}>
         <ImageSlider
-          images={[...new Array(totalImages)]}
+          images={main?.mainSlide}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
         />
@@ -84,11 +89,14 @@ export default function MainContent() {
               className={styles.main_slider_percent}
               ref={progressBarWidth}
               style={{
-                width: calculatePercent(currentIndex, totalImages) + "%",
+                width:
+                  calculatePercent(currentIndex, main?.mainSlide?.length) + "%",
               }}
             ></div>
           </div>
-          <p className={styles.slider_index}>{addLeadingZero(totalImages)}</p>
+          <p className={styles.slider_index}>
+            {addLeadingZero(main?.mainSlide?.length)}
+          </p>
         </div>
       </div>
       {/* mark it */}

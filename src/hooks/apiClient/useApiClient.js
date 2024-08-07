@@ -1,32 +1,29 @@
-import axios from 'axios';
-import mocking from '../../mocks';
-import { Company } from '../../models/company';
+import axios from "axios";
+
+import mocking from "../../mocks";
 
 const ApiClient = axios.create({
   baseURL: process.env.REACT_APP_API_KEY_DEV,
 });
 
 export const ApiClientQuery = ({ ...options }) => {
-  ApiClient.defaults.headers.common.Accept = 'application/json';
-  ApiClient.defaults.headers.common.Authorization = `Bearer ${Company?.tokens}`;
-  ApiClient.defaults.headers.post['Content-Type'] = 'application/json';
+  ApiClient.defaults.headers.common.Accept = "application/json";
+  ApiClient.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem(
+    "tokens",
+  )}`;
+  ApiClient.defaults.headers.post["Content-Type"] = "application/json";
 
-  // mocking(ApiClient);
+  mocking(ApiClient);
 
-  const onSuccess = response => response.data;
-  const onError = error => {
+  const onSuccess = (response) => response.data;
+  const onError = (error) => {
     // eslint-disable-next-line no-throw-literal
     const { response } = error;
     switch (response?.status) {
       case 401:
-        localStorage.removeItem('company');
-        window.location.replace('/company/');
+        localStorage.removeItem("doctor");
+        window.location.replace("/doctor/");
       case 403:
-        error.message = '권한이 없습니다.';
-      // window.location.assign('/');
-      // localStorage.clear();
-      // window.location.assign('/login');
-      // window.location.assign('/');
       case 404:
         error.message = response.data?.message;
         break;
@@ -35,10 +32,10 @@ export const ApiClientQuery = ({ ...options }) => {
         error.message = data?.errors[Object.keys(data.errors)[0]][0];
         break;
       case 500:
-        error.message = '요청 처리 중에 오류가 발생했습니다.';
+        error.message = "요청 처리 중에 오류가 발생했습니다.";
         break;
       default:
-        error.message = '알 수 없는 오류가 발생했습니다.';
+        error.message = "알 수 없는 오류가 발생했습니다.";
         break;
     }
 

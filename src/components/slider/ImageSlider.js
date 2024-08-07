@@ -11,7 +11,7 @@ import { useUserDevice } from "hooks/size/useUserDevice";
 import styles from "styles/_main.module.scss";
 
 export const ImageSlider = ({
-  images,
+  images = [],
   currentIndex = 0,
   setCurrentIndex,
   autoplay = true,
@@ -26,12 +26,13 @@ export const ImageSlider = ({
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+
   return (
     <div style={{ position: "relative" }}>
       <Slider
         ref={slider}
         {...settings}
-        autoplay={false}
+        autoplay={autoplay}
         arrows={false}
         afterChange={(newIndex) => {
           setCurrentIndex?.(newIndex);
@@ -42,14 +43,11 @@ export const ImageSlider = ({
             return (
               <div key={index} className={styles.desktop_slider_image_wrapper}>
                 <img
-                  src={require(`assets/images/main/main${index + 1}.jpg`)}
+                  src={image?.url}
                   className={styles.background_slider_image}
                 />
 
-                <img
-                  src={require(`assets/images/main/main${index + 1}.jpg`)}
-                  className={styles.silder_image}
-                />
+                <img src={image?.url} className={styles.silder_image} />
               </div>
             );
           } else {
@@ -74,3 +72,6 @@ export const ImageSlider = ({
     </div>
   );
 };
+{
+  /* */
+}
