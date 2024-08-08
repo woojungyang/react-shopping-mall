@@ -6,19 +6,19 @@ export default function getDoctors(mock) {
 
     function fakerSubImage() {
       return require(
-        `assets/images/sub/sub${faker.datatype.number({ max: 37, min: 1 })}.jpg`,
+        `assets/images/sub/sub${faker.number.int({ max: 37, min: 1 })}.jpg`,
       );
     }
 
     function fakerMainImage() {
       return require(
-        `assets/images/main/main${faker.datatype.number({ max: 38, min: 1 })}.jpg`,
+        `assets/images/main/main${faker.number.int({ max: 38, min: 1 })}.jpg`,
       );
     }
 
     function fakerItem() {
       return {
-        id: faker.helpers.unique(faker.datatype.number),
+        id: faker.helpers.unique(faker.number.int),
         brandName: faker.company.name(),
         thumbnail: fakerSubImage(),
         itemName: faker.commerce.productName(),
@@ -35,73 +35,73 @@ export default function getDoctors(mock) {
         like: localStorage.getItem("tokens")
           ? faker.helpers.arrayElement([true, false])
           : false,
-        reviewCount: faker.datatype.number({ max: 1000, min: 5 }),
-        likeCount: faker.datatype.number({ max: 1000, min: 5 }),
+        reviewCount: faker.number.int({ max: 1000, min: 5 }),
+        likeCount: faker.number.int({ max: 1000, min: 5 }),
       };
     }
 
     let data = {
-      mainSlide: new Array(faker.datatype.number({ max: 10, min: 5 }))
+      mainSlide: new Array(faker.number.int({ max: 10, min: 5 }))
         .fill()
         .map((_, index) => ({
-          id: faker.helpers.unique(faker.datatype.number),
+          id: faker.helpers.unique(faker.number.int),
           url: fakerMainImage(),
           title: faker.lorem.sentence(),
           subTitle: faker.lorem.sentence(),
         })),
-      bestItems: new Array(faker.datatype.number({ max: 10, min: 5 }))
+      bestItems: new Array(faker.number.int({ max: 10, min: 5 }))
         .fill()
         .map((_, index) => fakerItem()),
       mdChoice: {
-        banners: new Array(faker.datatype.number({ max: 10, min: 5 }))
+        banners: new Array(faker.number.int({ max: 10, min: 5 }))
           .fill()
           .map((_, index) => ({
-            id: faker.helpers.unique(faker.datatype.number),
+            id: faker.helpers.unique(faker.number.int),
             url: fakerSubImage(),
           })),
         items: new Array(8).fill().map((_, index) => fakerItem()),
       },
       events: new Array(3).fill().map((_, index) => ({
-        id: faker.helpers.unique(faker.datatype.number),
+        id: faker.helpers.unique(faker.number.int),
         thumbnail: fakerSubImage(),
         title: faker.lorem.sentence(),
         subTitle: faker.lorem.sentence(),
       })),
       clearances: {
         banner: {
-          id: faker.helpers.unique(faker.datatype.number),
+          id: faker.helpers.unique(faker.number.int),
           url: fakerSubImage(),
         },
-        items: new Array(faker.datatype.number({ max: 10, min: 5 }))
+        items: new Array(faker.number.int({ max: 10, min: 5 }))
           .fill()
           .map((_, index) => fakerItem()),
       },
       recommendedItems: new Array(16).fill().map((_, index) => fakerItem()),
       brands: new Array(4).fill().map((_, index) => ({
-        id: faker.helpers.unique(faker.datatype.number),
+        id: faker.helpers.unique(faker.number.int),
         brandThumbnail: fakerSubImage(),
         brandName: faker.company.name(),
         copyright: faker.lorem.sentence(),
         items: new Array(2).fill().map((_, index) => fakerItem()),
       })),
       brands: new Array(4).fill().map((_, index) => ({
-        id: faker.helpers.unique(faker.datatype.number),
+        id: faker.helpers.unique(faker.number.int),
         brandThumbnail: fakerSubImage(),
         brandName: faker.company.name(),
         copyright: faker.lorem.sentence(),
         items: new Array(2).fill().map((_, index) => fakerItem()),
       })),
       brandEvents: new Array(3).fill().map((_, index) => ({
-        id: faker.helpers.unique(faker.datatype.number),
+        id: faker.helpers.unique(faker.number.int),
         brandThumbnail: fakerSubImage(),
         brandName: faker.company.name(),
         copyright: faker.lorem.sentence(),
         items: new Array(3).fill().map((_, index) => fakerItem()),
       })),
-      notices: new Array(faker.datatype.number({ max: 7, min: 5 }))
+      notices: new Array(faker.number.int({ max: 7, min: 5 }))
         .fill()
         .map((_, index) => ({
-          id: faker.helpers.unique(faker.datatype.number),
+          id: faker.helpers.unique(faker.number.int),
           title: faker.lorem.sentence(),
           writtenAt: faker.date.between(
             "2024-01-01T00:00:00.000Z",
@@ -109,21 +109,21 @@ export default function getDoctors(mock) {
           ),
         })),
       userStyles: new Array(6).fill().map((_, index) => ({
-        id: faker.helpers.unique(faker.datatype.number),
+        id: faker.helpers.unique(faker.number.int),
         username: faker.internet.email(),
         avatar: require(
-          `assets/images/user/user${faker.datatype.number({ max: 8, min: 1 })}.jpg`,
+          `assets/images/user/user${faker.number.int({ max: 8, min: 1 })}.jpg`,
         ),
       })),
 
       // mainSlider: [
       //   { id: 1, url: faker.image.urlLoremFlickr({ category: "fashion" }) },
       // ],
-      // id: faker.helpers.unique(faker.datatype.number),
+      // id: faker.helpers.unique(faker.number.int),
       // name: faker.name.fullName(),
       // phoneNumber: faker.phone.number(),
       // user: {
-      //   id: faker.helpers.unique(faker.datatype.number),
+      //   id: faker.helpers.unique(faker.number.int),
       //   username: faker.internet.email(),
       // },
     };

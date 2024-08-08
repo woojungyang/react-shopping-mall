@@ -9,7 +9,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import { Rating } from "@mui/material";
 import { getQuestionStateLabel } from "models/notice";
 import { userTokens } from "models/user";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getDiscountPercent,
   maskAccountName,
@@ -17,11 +17,16 @@ import {
   scrollTop,
 } from "utilities";
 
+import useItemQuery from "hooks/query/useItemQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 
 import { ItemCard, LikeHeart } from "components/card";
-import { DefaultPagination, ListContent } from "components/common";
+import {
+  DefaultPagination,
+  ListContent,
+  LoadingLayer,
+} from "components/common";
 import { CommonLayout, DefaultButton } from "components/common";
 import {
   ColorOptions,
@@ -41,22 +46,29 @@ import EmptyList from "./EmptyList";
 import ReviewRating from "./ReviewRating";
 import TabsWrapper from "./TabsWrapper";
 
-export default function ItemDetailContent({ item }) {
+export default function ItemDetailContent() {
+  const { id } = useParams();
   const navigation = useNavigate();
 
-  const colorOptions = [...new Array(3)];
-
-  const [toggleDelivery, setToggleDelivery] = useState(false);
-  const [deliveryModal, setDeliveryModal] = useState(false);
-
-  const today = useMemo(() => formatDateTime(now(), "MM월dd일-w"), []);
+  const [toastMessage, setToastMessage] = useState("");
 
   const [selectedItemOptions, setSelectedOptions] = useState({
-    color: 0,
+    color: "",
     quantity: 1,
   });
 
-  const sizeOptions = [...new Array(5)];
+  const { data: item, isLoading } = useItemQuery(id, {
+    onSuccess: (data) => {
+      console.log(data);
+      setSelectedOptions({ ...selectedItemOptions, color: data.colors[0]?.id });
+    },
+    onError: (error) => {
+      setToastMessage(error.message);
+    },
+  });
+
+  const [toggleDelivery, setToggleDelivery] = useState(false);
+  const [deliveryModal, setDeliveryModal] = useState(false);
 
   const toggleDrawer = (newOpen) => () => {
     setDeliveryModal(newOpen);
@@ -97,10 +109,28 @@ export default function ItemDetailContent({ item }) {
     }, 0);
   }, []);
 
-  if (!item) return null;
+  useEffect(() => {
+    if (selectedItemOptions?.size && !!selectedItemOptions?.quantity) {
+      const checkInventory = item.sizes.find(
+        (size) => size.id == selectedItemOptions.size,
+      );
+      if (selectedItemOptions?.quantity > checkInventory.inventory) {
+        setToastMessage(
+          `최대 구매 가능한 수량은${checkInventory?.inventory}개 입니다. `,
+        );
+        setSelectedOptions({
+          ...selectedItemOptions,
+          quantity: checkInventory.inventory,
+        });
+      }
+      console.log(checkInventory);
+    }
+  }, [selectedItemOptions]);
+
+  if (!item || isLoading) return <LoadingLayer />;
 
   return (
-    <CommonLayout>
+    <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
       <div className={styles.item_detail_container}>
         <div className={styles.item_bottom_navigation}>
           <div className={styles.navigation_button}>
@@ -218,12 +248,12 @@ export default function ItemDetailContent({ item }) {
             <ColorOptions
               selectedItemOptions={selectedItemOptions}
               setSelectedOptions={setSelectedOptions}
-              colorOptions={colorOptions}
+              colorOptions={item?.colors}
             />
             <SizeOptions
               selectedItemOptions={selectedItemOptions}
               setSelectedOptions={setSelectedOptions}
-              sizeOptions={sizeOptions}
+              sizeOptions={item?.sizes}
             />
             <QuantityOptions
               selectedItemOptions={selectedItemOptions}

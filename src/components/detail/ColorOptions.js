@@ -2,8 +2,6 @@ import React from "react";
 
 import classNames from "classnames";
 
-import { ScrollableSlider } from "components/slider";
-
 import styles from "styles/_detail.module.scss";
 
 import { DetailContentWrapper } from "./DetailContentWrapper";
@@ -17,18 +15,22 @@ export const ColorOptions = ({
     <DetailContentWrapper title="COLOR">
       <div className={styles.color_options_wrapper}>
         <p className={styles.selected_option_name}>
-          {selectedItemOptions?.color}
+          {
+            colorOptions?.find((color) => color.id == selectedItemOptions.color)
+              ?.name
+          }
         </p>
-        <ScrollableSlider>
+
+        <div className={styles.color_options_wrap}>
           {colorOptions.map((option, index) => {
-            const isSelected = selectedItemOptions?.color == index;
+            const isSelected = selectedItemOptions?.color == option.id;
             return (
               <div
                 key={index}
                 onClick={() => {
                   setSelectedOptions({
                     ...selectedItemOptions,
-                    color: isSelected ? null : index,
+                    color: isSelected ? null : option.id,
                   });
                 }}
                 className={classNames({
@@ -37,18 +39,17 @@ export const ColorOptions = ({
                 })}
               >
                 <img
-                  src={require("assets/images/sub/sub24.jpg")}
+                  src={option?.thumbnail}
                   className={styles.color_option_thumbnail}
                   style={{
                     height: 90,
-                    flex: "0 0 calc(6%)",
                     width: 70,
                   }}
                 />
               </div>
             );
           })}
-        </ScrollableSlider>
+        </div>
       </div>
     </DetailContentWrapper>
   );

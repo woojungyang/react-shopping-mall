@@ -11,28 +11,26 @@ export const SizeOptions = ({
   setSelectedOptions,
   selectedItemOptions,
 }) => {
-  const disabled_size = 4;
   return (
     <DetailContentWrapper title="SIZE">
-      <p className={styles.selected_option_name}>{selectedItemOptions?.size}</p>
       <div className={styles.size_options_wrapper}>
         {sizeOptions.map((size, index) => {
-          const isSelected = selectedItemOptions?.size == index;
+          const isSelected = selectedItemOptions?.size == size.id;
           return (
             <p
               onClick={() =>
                 setSelectedOptions({
                   ...selectedItemOptions,
-                  size: isSelected ? null : index,
+                  size: isSelected ? null : size?.id,
                 })
               }
               className={classNames({
                 [styles.size_option]: true,
                 [styles.selected_size_option]: isSelected,
-                [styles.size_option_disabled]: disabled_size == index,
+                [styles.size_option_disabled]: size?.inventory < 1,
               })}
             >
-              {index}
+              {size?.size}
             </p>
           );
         })}

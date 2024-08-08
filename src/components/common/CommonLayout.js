@@ -18,6 +18,7 @@ import { LoadingLayer } from "./LoadingLayer";
 export const CommonLayout = ({
   children,
   toastMessage = "",
+  setToastMessage,
   isLoading = false,
 }) => {
   const { innerWidth } = window;
@@ -41,7 +42,12 @@ export const CommonLayout = ({
       <div className={styles.common_layout_content_wrapper}>{children}</div>
       {!isDeskTop && <BottomNavigation />}
       <Footer />
-      {toastMessage && <ToastModal toastMessage={toastMessage} />}
+      {toastMessage && (
+        <ToastModal
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        />
+      )}
     </div>
   );
 };

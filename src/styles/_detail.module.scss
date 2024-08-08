@@ -215,6 +215,7 @@
   }
   .detail_content_wrap {
     width: 100%;
+
     font-size: 14px;
     .selected_option_name {
       padding-top: 5px;
@@ -568,8 +569,15 @@
 }
 
 .color_options_wrapper {
-  img {
-    margin-right: $default/2;
+  .color_options_wrap {
+    @include display-grid(
+      $colum: repeat(5, 1fr),
+      $colum-gap: $default/2,
+      $row-gap: 1px
+    );
+    img {
+      margin-right: $default/2;
+    }
   }
   .selected_color_option {
     img {
