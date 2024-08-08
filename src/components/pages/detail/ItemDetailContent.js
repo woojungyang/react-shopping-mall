@@ -8,8 +8,14 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ShareIcon from "@mui/icons-material/Share";
 import { Rating } from "@mui/material";
 import { getQuestionStateLabel } from "models/notice";
+import { userTokens } from "models/user";
 import { useNavigate } from "react-router-dom";
-import { maskAccountName, numberWithCommas, scrollTop } from "utilities";
+import {
+  getDiscountPercent,
+  maskAccountName,
+  numberWithCommas,
+  scrollTop,
+} from "utilities";
 
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import { useScrollToElement } from "hooks/scroll/useScrollToElement";
@@ -35,7 +41,7 @@ import EmptyList from "./EmptyList";
 import ReviewRating from "./ReviewRating";
 import TabsWrapper from "./TabsWrapper";
 
-export default function ItemDetailContent() {
+export default function ItemDetailContent({ item }) {
   const navigation = useNavigate();
 
   const colorOptions = [...new Array(3)];
@@ -91,6 +97,8 @@ export default function ItemDetailContent() {
     }, 0);
   }, []);
 
+  if (!item) return null;
+
   return (
     <CommonLayout>
       <div className={styles.item_detail_container}>
@@ -114,7 +122,7 @@ export default function ItemDetailContent() {
         </div>
         <div className={styles.item_detail_wrapper}>
           <div className={styles.item_content_scroll_wrapper}>
-            <ImageZoomSlider images={[...new Array(9)]} />
+            <ImageZoomSlider images={item?.thumbnail} />
           </div>
           <div className={styles.item_content_information_wrapper}>
             <div className={styles.item_header_icon_wrapper}>
@@ -127,27 +135,24 @@ export default function ItemDetailContent() {
 
             <div className={styles.item_header_wrapper}>
               <span className={styles.item_brand_name}>
-                brandName | WXWP30644-BKS{" "}
+                {item?.brandName} | {item?.itemCode}{" "}
               </span>
-              <h1 className={styles.item_name}>자가드 포켓 우븐 팬츠</h1>
+              <h1 className={styles.item_name}>{item?.itemName}</h1>
             </div>
             <div className={styles.price_information_wrapper}>
               <span className={styles.total_price}>
-                {numberWithCommas(149000)}원
+                {numberWithCommas(item?.price)}원
               </span>
               <p>
                 <span className={styles.original_price}>
-                  {numberWithCommas(149000)}원
+                  {numberWithCommas(item?.originalPrice)}원
                 </span>
-                <span className={styles.sale_percent}>20%</span>
+                <span className={styles.sale_percent}>
+                  {getDiscountPercent(item?.price, item?.originalPrice)}%
+                </span>
               </p>
             </div>
-            <p className={styles.item_description}>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ratione
-              facilis libero magni temporibus alias, sit nobis et eligendi,
-              sapiente voluptatum quasi, eos eaque natus laboriosam
-              perspiciatis? Ipsam cupiditate voluptas consequuntur.
-            </p>
+            <p className={styles.item_description}>{item?.description}</p>
             <DetailContentWrapper border={true}>
               <div className={styles.detail_delivery_wrapper}>
                 <div
@@ -157,7 +162,13 @@ export default function ItemDetailContent() {
                   <p>
                     무료 (도서산간 추가 {numberWithCommas(3000)}) <br />
                     <span className={styles.delivery_description}>
-                      <span className={styles.delivery_}>{today} 도착예정</span>{" "}
+                      <span className={styles.delivery_}>
+                        {formatDateTime(
+                          item?.scheduledToArriveDate,
+                          "yyyy년 MM월 dd일",
+                        )}{" "}
+                        도착예정
+                      </span>{" "}
                       (지금 결제 시)
                     </span>
                   </p>
@@ -195,17 +206,12 @@ export default function ItemDetailContent() {
             <DetailContentWrapper title="리뷰" border={true}>
               <div className={styles.detail_review_content}>
                 <div className={styles.detail_start_wrap}>
-                  <Rating
-                    name="half-rating-read"
-                    defaultValue={2.5}
-                    precision={0.5}
-                    readOnly
-                  />
+                  <Rating name="read-only" value={item?.reviewRate} readOnly />
 
-                  <p>4.0</p>
+                  <p>{item?.reviewRate}</p>
                 </div>
                 <p className={styles.review_flag_button}>
-                  {numberWithCommas(1)} 리뷰 보기
+                  {numberWithCommas(item?.reviews?.total)} 리뷰 보기
                 </p>
               </div>
             </DetailContentWrapper>
@@ -253,11 +259,11 @@ export default function ItemDetailContent() {
           <div className={styles.recommend_wrapper}>
             <h3>Recommended for you </h3>
             <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
-              {bestItems.map((item, index) => (
+              {item?.recommendedItems?.map((recommend, index) => (
                 <img
-                  onClick={() => navigation(`/items/${item}`)}
-                  src={require(`assets/images/sub/sub${index + 1}.jpg`)}
                   key={index}
+                  onClick={() => navigation(`/items/${recommend.id}`)}
+                  src={recommend?.thumbnail}
                   style={{
                     height: 200,
                     width: "100%",
@@ -406,10 +412,10 @@ export default function ItemDetailContent() {
             className={styles.questions_container}
           >
             <TabsWrapper scrollToElement={scrollToElement} activeTab="q&a" />
-            {questions.length ? (
+            {item?.questions?.total > 0 ? (
               <>
                 <div className={styles.questions_wrapper}>
-                  {questions.map((question, index) => (
+                  {item?.questions?.data?.map((question, index) => (
                     <div className={styles.question_detail_wrap}>
                       <div className={styles.question_detail_content}>
                         <span> {getQuestionStateLabel(question?.state)}</span>

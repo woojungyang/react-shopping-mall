@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 
-import { CircularProgress } from "@mui/material";
 import { Device } from "models/device";
 import { useLocation } from "react-router-dom";
 import { scrollTop } from "utilities";
@@ -14,6 +13,7 @@ import styles from "styles/_common.module.scss";
 import BottomNavigation from "./BottomNavigation";
 import Footer from "./Footer";
 import Header from "./Header";
+import { LoadingLayer } from "./LoadingLayer";
 
 export const CommonLayout = ({
   children,
@@ -36,11 +36,7 @@ export const CommonLayout = ({
         maxWidth: innerWidth,
       }}
     >
-      {isLoading && (
-        <div className={styles.loading_wrapper}>
-          <CircularProgress size="5rem" style={{ color: "#f89b00" }} />
-        </div>
-      )}
+      {isLoading && <LoadingLayer />}
       <Header />
       <div className={styles.common_layout_content_wrapper}>{children}</div>
       {!isDeskTop && <BottomNavigation />}

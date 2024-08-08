@@ -69,7 +69,7 @@ export const ImageZoomSlider = ({ images = [] }) => {
           {images.map((image, index) => (
             <div key={index} className={styles.slide}>
               <img
-                src={require(`assets/images/sub/sub${index + 1}.jpg`)}
+                src={image?.thumbnail}
                 alt={`slide ${index + 1}`}
                 onMouseEnter={(e) => {
                   const element = e.currentTarget;
@@ -101,7 +101,7 @@ export const ImageZoomSlider = ({ images = [] }) => {
                     left: `${axisXY[0] - magnifierWidth / 2}px`,
                     opacity: "1",
                     backgroundColor: "white",
-                    backgroundImage: `url(${require(`assets/images/sub/sub${index + 1}.jpg`)})`,
+                    backgroundImage: `url(${image?.thumbnail})`,
                     backgroundRepeat: "no-repeat",
                     backgroundSize: `${imageSize[0] * zoomLevel}px ${imageSize[1] * zoomLevel}px`,
                     backgroundPositionX: `${-axisXY[0] * zoomLevel + magnifierWidth / 2}px`,

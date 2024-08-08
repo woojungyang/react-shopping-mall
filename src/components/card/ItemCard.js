@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import GradingIcon from "@mui/icons-material/Grading";
 import { useNavigate } from "react-router-dom";
-import { numberWithCommas } from "utilities";
+import { getDiscountPercent, numberWithCommas } from "utilities";
 
 import styles from "styles/_common.module.scss";
 
@@ -35,7 +35,6 @@ export const ItemCard = ({
       <div
         style={{
           minHeight: cardHeight,
-          backgroundColor: "blue",
           height: "100%",
           display: "flex",
           flex: 1,
@@ -63,13 +62,7 @@ export const ItemCard = ({
             )}
           </p>
           <p className={styles.discount_rate}>
-            <span>
-              {(
-                ((item?.originalPrice - item?.price) / item?.originalPrice) *
-                100
-              ).toFixed(0)}
-            </span>
-            %
+            <span>{getDiscountPercent(item?.price, item?.originalPrice)}</span>%
           </p>
         </div>
         {showStatus && (
