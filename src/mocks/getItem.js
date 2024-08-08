@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { QuestionState } from "models/notice";
 
 export default function getItem(mock) {
   const url = /^\/api\/v1\/item\/(\d+)$/;
@@ -15,11 +14,17 @@ export default function getItem(mock) {
       `assets/images/sub/sub${faker.number.int({ max: 37, min: 1 })}.jpg`,
     );
   }
+  function fakerMainImage() {
+    return require(
+      `assets/images/main/main${faker.number.int({ max: 38, min: 1 })}.jpg`,
+    );
+  }
 
   let collection = {
     id: faker.helpers.unique(faker.number.int),
     brandName: faker.company.name(),
     itemCode: faker.string.uuid(),
+    itemName: faker.commerce.productName(),
     thumbnail: new Array(faker.number.int({ max: 5, min: 1 }))
       .fill()
       .map((_, index) => ({
@@ -30,7 +35,6 @@ export default function getItem(mock) {
       id: faker.helpers.unique(faker.number.int),
       thumbnail: fakerSubImage(),
     })),
-    itemName: faker.commerce.productName(),
     originalPrice: faker.commerce.price({
       min: 500000,
       max: 900000,
@@ -47,6 +51,12 @@ export default function getItem(mock) {
     likeCount: faker.number.int({ max: 1000, min: 5 }),
     description: faker.lorem.paragraph(),
     scheduledToArriveDate: faker.date.soon({ days: 10 }),
+    detailContent: new Array(faker.number.int({ max: 10, min: 1 }))
+      .fill()
+      .map((_, index) => ({
+        id: faker.helpers.unique(faker.number.int),
+        content: fakerMainImage(),
+      })),
     reviewRate: faker.number.int({ max: 5, min: 1 }),
     colors: new Array(faker.number.int({ max: 10, min: 5 }))
       .fill()
@@ -62,39 +72,34 @@ export default function getItem(mock) {
         inventory: faker.number.int({ max: 10, min: 0 }),
         size: faker.lorem.word(),
       })),
-    /*  reviews: {
-      data: new Array(faker.number.int({ max: 20, min: 0 }))
-        .fill()
-        .map((_, index) => ({
-          id: faker.helpers.unique(faker.number.int),
-          thumbnail: fakerSubImage(),
-          reviewRate: faker.number.int({ max: 5, min: 1 }),
-          user: {
-            username: faker.internet.email(),
-          },
-          writtenAt: faker.date.past(),
-          content: faker.lorem.paragraph(),
-          item: {
-            color: faker.lorem.word(),
-            size: faker.lorem.word(),
-          },
-        })),
+    brand: {
+      id: faker.helpers.unique(faker.number.int),
+      name: faker.company.name(),
+      position: {
+        lat: faker.location.latitude(),
+        lng: faker.location.longitude(),
+      },
+      responsiveEmail: faker.internet.email(),
+      zipCode: faker.location.zipCode(),
+      address: faker.location.streetAddress(),
+      copyright: faker.lorem.sentence(),
+      thumbnail: fakerMainImage(),
+      likeCount: faker.number.int({ max: 1000, min: 100 }),
+      items: new Array(5).fill().map((_, index) => ({
+        id: faker.helpers.unique(faker.number.int),
+        itemName: faker.commerce.productName(),
+        originalPrice: faker.commerce.price({
+          min: 500000,
+          max: 900000,
+          dec: 0,
+        }),
+        thumbnail: fakerSubImage(),
+        price: faker.commerce.price({
+          min: 1000,
+          max: 499999,
+          dec: 0,
+        }),
+      })),
     },
-    questions: {
-      data: new Array(faker.number.int({ max: 20, min: 0 }))
-        .fill()
-        .map((_, index) => ({
-          id: faker.helpers.unique(faker.number.int),
-          user: {
-            username: faker.internet.email(),
-          },
-          writtenAt: faker.date.past(),
-          content: faker.lorem.paragraph(),
-          state: faker.helpers.arrayElement([
-            QuestionState.Pending,
-            QuestionState.Complete,
-          ]),
-        })),
-    }, */
   };
 }

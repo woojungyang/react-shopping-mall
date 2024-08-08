@@ -13,11 +13,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getDiscountPercent,
   maskAccountName,
+  numberToKorean,
   numberWithCommas,
   scrollTop,
 } from "utilities";
 
 import useItemQuery from "hooks/query/useItemQuery";
+import useItemQuestionsQuery from "hooks/query/useItemQuestionsQuery";
+import useItemReviewsQuery from "hooks/query/useItemReviewsQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 
@@ -59,13 +62,43 @@ export default function ItemDetailContent() {
 
   const { data: item, isLoading } = useItemQuery(id, {
     onSuccess: (data) => {
-      console.log(data);
       setSelectedOptions({ ...selectedItemOptions, color: data.colors[0]?.id });
     },
     onError: (error) => {
       setToastMessage(error.message);
     },
   });
+
+  const [
+    { page: reviewPage, perPage: limit, offset: reviewOffset },
+    changePage,
+    getPageCount,
+  ] = usePageQueryString("reviewPage", 5);
+  const handleChangePage = (_event, page) => changePage(page);
+  const { data: reviews, isLoading: reviewLoading } = useItemReviewsQuery(
+    id,
+    { offset: reviewOffset, limit: limit },
+    {
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
+    },
+  );
+
+  const [
+    { page: questionPage, perPage: questionLimit, offset: questionOffset },
+    questionChangePage,
+  ] = usePageQueryString("questionPage", 5);
+  const handleQuestionChangePage = (_event, page) => questionChangePage(page);
+  const { data: questions, isLoading: questionLoading } = useItemQuestionsQuery(
+    id,
+    { offset: questionOffset, limit: questionLimit },
+    {
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
+    },
+  );
 
   const [toggleDelivery, setToggleDelivery] = useState(false);
   const [deliveryModal, setDeliveryModal] = useState(false);
@@ -77,23 +110,10 @@ export default function ItemDetailContent() {
   const detailRef = useRef(null);
 
   const [bestItems, setBestItems] = useState([...new Array(8)]);
-  const [brandItems, setBrandItems] = useState([...new Array(5)]);
+
   const [moreContents, setMoreContents] = useState(true);
 
-  const [reviews, setReviews] = useState([...new Array(5)]);
-  const [
-    { page: reviewPage, perPage: limit, offset: reviewOffset },
-    changePage,
-    getPageCount,
-  ] = usePageQueryString("reviewPage", 5);
-  const handleChangePage = (_event, page) => changePage(page);
-
-  const [questions, setQuestions] = useState([...new Array(5)]);
-  const [
-    { page: questionPage, perPage: questionLimit, offset: questionOffset },
-    questionChangePage,
-  ] = usePageQueryString("questionPage", 5);
-  const handleQuestionChangePage = (_event, page) => questionChangePage(page);
+  const [test, setQuestions] = useState([...new Array(5)]);
 
   const { scrollToElement, setElementRef } = useScrollToElement();
 
@@ -127,7 +147,8 @@ export default function ItemDetailContent() {
     }
   }, [selectedItemOptions]);
 
-  if (!item || isLoading) return <LoadingLayer />;
+  if (!item || isLoading || reviewLoading || questionLoading)
+    return <LoadingLayer />;
 
   return (
     <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
@@ -160,7 +181,7 @@ export default function ItemDetailContent() {
                 defaultColor="dark"
                 position={{ position: "relative" }}
               />
-              9.1만
+              {numberToKorean(item?.likeCount)}
             </div>
 
             <div className={styles.item_header_wrapper}>
@@ -240,8 +261,11 @@ export default function ItemDetailContent() {
 
                   <p>{item?.reviewRate}</p>
                 </div>
-                <p className={styles.review_flag_button}>
-                  {numberWithCommas(item?.reviews?.total)} 리뷰 보기
+                <p
+                  className={styles.review_flag_button}
+                  onClick={() => scrollToElement("review")}
+                >
+                  {numberWithCommas(reviews?.total)} 리뷰 보기
                 </p>
               </div>
             </DetailContentWrapper>
@@ -315,10 +339,10 @@ export default function ItemDetailContent() {
                 overflow: "hidden",
               }}
             >
-              {bestItems.map((item, index) => (
+              {item?.detailContent.map((detail, index) => (
                 <img
                   onClick={() => navigation(`/items/${item}`)}
-                  src={require(`assets/images/main/main${index + 1}.jpg`)}
+                  src={detail?.content}
                   key={index}
                   style={{
                     width: "100%",
@@ -346,29 +370,31 @@ export default function ItemDetailContent() {
           >
             <div className={styles.recommend_wrapper}>
               <div className={styles.brand_information_card_wrapper}>
-                <img src={require(`assets/images/main/main10.jpg`)} alt="" />
+                <img src={item?.brand?.thumbnail} alt="" />
                 <div className={styles.brand_information_content}>
                   <div className={styles.brand_texts}>
-                    <p>브랜드명</p>
-                    <h1>brandname</h1>
-                    <h4>트렌드에 따라 유연하게 변화하는 컨템포러리 브랜드</h4>
+                    <h1>{item?.brand?.name}</h1>
+                    <h4>{item?.brand?.copyright}</h4>
                     <div className={styles.preference_wrapper}>
                       <LikeHeart position={{ position: "relative" }} />
-                      <span>12345</span>
+                      <span>{item?.brand?.likeCount}</span>
                     </div>
                   </div>
-                  <DefaultButton className={styles.brand_home_button}>
+                  <DefaultButton
+                    className={styles.brand_home_button}
+                    onClick={() => setToastMessage("준비중입니다.")}
+                  >
                     Brand Home
                     <EastIcon />
                   </DefaultButton>
                 </div>
               </div>
               <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
-                {brandItems.map((item, index) => (
+                {item?.brand?.items.map((item, index) => (
                   <ItemCard
                     key={index}
                     showBrand={false}
-                    product={item}
+                    item={item}
                     style={{
                       height: 300,
                       minWidth: 100,
@@ -383,52 +409,48 @@ export default function ItemDetailContent() {
             className={styles.review_bottom_container}
           >
             <TabsWrapper scrollToElement={scrollToElement} activeTab="review" />
-            {reviews.length ? (
+            {reviews?.total > 0 ? (
               <>
                 <div className={styles.review_bottom_wrapper}>
                   <p className={styles.rating_title}>
-                    상품 평균 만족도<span>(481)</span>
+                    상품 평균 만족도<span>({reviews?.total})</span>
                   </p>
                   <div className={styles.rating_wrapper}>
-                    <ReviewRating size={"2.5em"} value={2} />
+                    <ReviewRating size={"2.5em"} value={reviews?.averageRate} />
                     <span className={styles.rating_value}>
-                      <span>5</span> / 5.0
+                      <span>{reviews?.averageRate}</span> / 5.0
                     </span>
                   </div>
                 </div>
                 <div className={styles.reviews_wrapper}>
-                  {reviews.map((review, index) => (
+                  {reviews?.data?.map((review, index) => (
                     <div className={styles.detail_review} key={index}>
                       <div className={styles.detail_first_content}>
-                        <ReviewRating value={2} />
-                        <img
-                          src={require(`assets/images/main/main10.jpg`)}
-                          alt=""
-                        />
+                        <ReviewRating value={review?.reviewRate} />
+                        <img src={review?.thumbnail} alt="" />
                       </div>
                       <div className={styles.detail_second_content}>
                         <div className={styles.detail_review_information}>
-                          <p>구매옵션 : skinny 05 mute brown</p>
+                          <p>
+                            구매옵션 : {review?.item?.color}{" "}
+                            {review?.item?.size}
+                          </p>
                           <div className={styles.detail_review_writer}>
                             <span style={{ marginRight: 10 }}>
-                              {maskAccountName("username")}
+                              {maskAccountName(review?.user?.username)}
                             </span>
-                            <span>{formatDateTime(now())}</span>
+                            <span>{formatDateTime(review?.writtenAt)}</span>
                           </div>
                         </div>
                         <p className={styles.written_review}>
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Ut dolore facilis odit assumenda id minima
-                          soluta libero aperiam dolorum. Aut a reiciendis
-                          officia id maxime illum doloremque dignissimos itaque
-                          ducimus!
+                          {review?.content}
                         </p>
                       </div>
                     </div>
                   ))}
                 </div>
                 <DefaultPagination
-                  count={getPageCount(reviews?.length)}
+                  count={getPageCount(reviews?.total)}
                   page={reviewPage}
                   onChange={handleChangePage}
                 />
@@ -442,30 +464,27 @@ export default function ItemDetailContent() {
             className={styles.questions_container}
           >
             <TabsWrapper scrollToElement={scrollToElement} activeTab="q&a" />
-            {item?.questions?.total > 0 ? (
+            {questions?.total > 0 ? (
               <>
-                <div className={styles.questions_wrapper}>
-                  {item?.questions?.data?.map((question, index) => (
-                    <div className={styles.question_detail_wrap}>
+                <div
+                  className={styles.questions_wrapper}
+                  onClick={() => setToastMessage("준비중입니다.")}
+                >
+                  {questions?.data?.map((question, index) => (
+                    <div className={styles.question_detail_wrap} key={index}>
                       <div className={styles.question_detail_content}>
                         <span> {getQuestionStateLabel(question?.state)}</span>
-                        <p>
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Nostrum consequuntur totam, vel perspiciatis
-                          consequatur, est aliquid unde quos eius praesentium
-                          ipsa voluptatum facilis, quasi quidem excepturi
-                          ducimus hic! Ipsam, ducimus.
-                        </p>
+                        <p>{question?.content}</p>
                       </div>
                       <div className={styles.question_detail_information}>
-                        <p>{maskAccountName("username")}</p>
-                        <span>{formatDateTime(now())}</span>
+                        <p>{maskAccountName(question?.user?.username)}</p>
+                        <span>{formatDateTime(question?.writtenAt)}</span>
                       </div>
                     </div>
                   ))}
                 </div>
                 <DefaultPagination
-                  count={getPageCount(questions?.length)}
+                  count={getPageCount(test?.length)}
                   page={questionPage}
                   onChange={handleQuestionChangePage}
                 />
@@ -475,7 +494,11 @@ export default function ItemDetailContent() {
             )}
           </div>
         </div>
-        <DeliveryDrawer visible={deliveryModal} setVisible={setDeliveryModal} />
+        <DeliveryDrawer
+          visible={deliveryModal}
+          setVisible={setDeliveryModal}
+          brand={item?.brand}
+        />
         {confirmModal && (
           <ConfirmModal
             visible={confirmModal}

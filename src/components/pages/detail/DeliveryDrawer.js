@@ -8,7 +8,7 @@ import { ListContent } from "components/common";
 
 import styles from "styles/_detail.module.scss";
 
-export default function DeliveryDrawer({ visible, setVisible }) {
+export default function DeliveryDrawer({ visible, setVisible, brand = {} }) {
   const toggleDrawer = (newOpen) => () => {
     setVisible(newOpen);
   };
@@ -79,10 +79,10 @@ export default function DeliveryDrawer({ visible, setVisible }) {
             </CustomOverlayMap>
           </Map>
           <p className={styles.brand_information}>
-            브랜드명
-            <br /> (04524) 서울특별시 중구 세종대로 110 (태평로1가, 서울시청)
+            {brand?.name}
+            <br /> ({brand?.zipCode}) {brand?.address}
             <br />
-            help@example.com
+            {brand?.responsiveEmail}
           </p>
         </DrawerContentWrapper>
       </div>

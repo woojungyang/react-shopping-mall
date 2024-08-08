@@ -438,6 +438,7 @@
           border-bottom: 2px solid $color-dark-100;
         }
         .detail_first_content {
+          @include flex($direction: column);
           img {
             @include default-image;
             width: 100px;
@@ -446,6 +447,8 @@
         }
         .detail_second_content {
           height: 100%;
+          width: 100%;
+          margin-left: $margin * 2;
 
           .detail_review_information {
             @include flex($justify-content: space-between);
@@ -467,6 +470,7 @@
   .questions_container {
     margin-top: $margin * 4;
     .questions_wrapper {
+      cursor: pointer;
       .question_detail_wrap {
         font-size: 16px;
         @include flex($justify-content: space-between);

@@ -10,11 +10,7 @@ import styles from "styles/_detail.module.scss";
 export default function TabsWrapper({ activeTab, scrollToElement }) {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
-  const tabMenus = [
-    { label: "detail" },
-    { label: "review", count: 0 },
-    { label: "q&a", count: 1 },
-  ];
+  const tabMenus = [{ label: "detail" }, { label: "review" }, { label: "q&a" }];
   return (
     <div className={styles.tab_menu_wrapper}>
       {tabMenus.map((tab, index) => (
@@ -33,10 +29,7 @@ export default function TabsWrapper({ activeTab, scrollToElement }) {
                 },
           )}
         >
-          <p>
-            {tab.label.toUpperCase()}
-            {!!tab.count ? `(${tab.count})` : ""}{" "}
-          </p>
+          <p>{tab.label.toUpperCase()}</p>
         </div>
       ))}
     </div>
