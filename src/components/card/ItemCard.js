@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import GradingIcon from "@mui/icons-material/Grading";
 import { useNavigate } from "react-router-dom";
@@ -18,25 +18,33 @@ export const ItemCard = ({
   const navigation = useNavigate();
   const contentRef = useRef(null);
 
-  const [cardHeight, setCardHeight] = useState(0);
+  const [cardHeight, setCardHeight] = useState(50);
 
-  const imageHeight = useMemo(() => {
-    if (contentRef.current)
-      return style.height - contentRef.current.clientHeight;
-  }, [contentRef.current]);
+  useEffect(() => {
+    setCardHeight(style.height - contentRef.current.clientHeight);
+  }, [contentRef?.current]);
 
   return (
     <div
       className={styles.default_item_card_container}
       style={style}
-      onClick={() => navigation(`/items/${item}`)}
+      onClick={() => navigation(`/items/${item?.id}`)}
     >
       <LikeHeart />
-      <img
-        src={item?.thumbnail}
-        className={styles.item_image}
-        style={{ height: imageHeight }}
-      />
+
+      <div
+        style={{
+          minHeight: cardHeight,
+          backgroundColor: "blue",
+          height: "100%",
+          display: "flex",
+          flex: 1,
+          flexGrow: 1,
+        }}
+      >
+        <img src={item?.thumbnail} className={styles.item_image} />
+      </div>
+
       <div className={styles.item_card_information} ref={contentRef}>
         {showBrand && (
           <p className={styles.item_brand_name}>{item?.brandName}</p>

@@ -6,13 +6,13 @@ export default function getDoctors(mock) {
 
     function fakerSubImage() {
       return require(
-        `assets/images/sub/sub${faker.datatype.number({ max: 24, min: 1 })}.jpg`,
+        `assets/images/sub/sub${faker.datatype.number({ max: 37, min: 1 })}.jpg`,
       );
     }
 
     function fakerMainImage() {
       return require(
-        `assets/images/main/main${faker.datatype.number({ max: 22, min: 1 })}.jpg`,
+        `assets/images/main/main${faker.datatype.number({ max: 38, min: 1 })}.jpg`,
       );
     }
 
@@ -46,6 +46,8 @@ export default function getDoctors(mock) {
         .map((_, index) => ({
           id: faker.helpers.unique(faker.datatype.number),
           url: fakerMainImage(),
+          title: faker.lorem.sentence(),
+          subTitle: faker.lorem.sentence(),
         })),
       bestItems: new Array(faker.datatype.number({ max: 10, min: 5 }))
         .fill()

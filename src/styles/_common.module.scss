@@ -300,7 +300,10 @@ body {
   }
   .item_image {
     @include default-image;
-    height: calc(100% - 100px);
+
+    object-fit: cover;
+    // display: flex;
+    // flex-grow: 1;
   }
   .item_card_information {
     font-size: $padding;

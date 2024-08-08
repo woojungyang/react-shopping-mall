@@ -66,16 +66,16 @@ export default function MainContent({ data }) {
 
   return (
     <div className={styles.main_image_container}>
-      <div className="slider-container" style={{ position: "relative" }}>
+      <div style={{ position: "relative" }}>
         <ImageSlider
           images={data?.mainSlide}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
         />
         <div className={styles.main_slider_wrapper}>
-          <p className={styles.slider_index}>
+          {/* <p className={styles.slider_index}>
             {addLeadingZero(currentIndex + 1)}
-          </p>
+          </p> */}
           <div style={{ position: "relative" }}>
             <div className={styles.main_slider_bottom}></div>
             <div
@@ -88,6 +88,7 @@ export default function MainContent({ data }) {
             ></div>
           </div>
           <p className={styles.slider_index}>
+            {addLeadingZero(currentIndex + 1)} /
             {addLeadingZero(mainSlide?.length || 0)}
           </p>
         </div>
@@ -262,12 +263,14 @@ export default function MainContent({ data }) {
             }}
           >
             {recommendedItems?.map((item, index) => {
+              console.log(index);
               return (
                 <div key={index}>
                   <ItemCard
                     item={item}
                     style={{
                       height: "390px",
+                      marginBottom: index % 1 == 0 ? "30px" : "",
                     }}
                   />
                 </div>
