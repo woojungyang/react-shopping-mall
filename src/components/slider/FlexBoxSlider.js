@@ -65,7 +65,7 @@ export const FlexBoxSlider = ({
                   width: `100%`,
                 }}
                 percent={calculatePercent(
-                  (currentIndex + 1) * settings.slidesToShow,
+                  currentIndex + (settings.slidesToShow - 1),
                   totalCount,
                 )}
               />

@@ -28,7 +28,7 @@ export const CommonLayout = ({
 
   useEffect(() => {
     scrollTop();
-  }, [location]);
+  }, []);
 
   return (
     <div

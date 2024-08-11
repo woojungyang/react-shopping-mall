@@ -65,7 +65,7 @@
     }
     .nav_wrapper {
       @include flex($justify-content: flex-start);
-      a {
+      p {
         @include flex;
         margin-right: $margin * 2;
         font-size: $padding;

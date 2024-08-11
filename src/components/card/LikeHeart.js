@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import { userTokens } from "models/user";
+import { useNavigate } from "react-router-dom";
 
 export const LikeHeart = ({
   readOnly = false,
@@ -10,10 +12,15 @@ export const LikeHeart = ({
   position = { top: "3%", right: "3%" },
   defaultColor = "white",
 }) => {
+  const navigation = useNavigate();
   const [status, setStatus] = useState(like);
-  function LikeItem() {
-    if (readOnly) onClick?.();
-    else setStatus(!status);
+  function LikeItem(event) {
+    event.stopPropagation();
+    if (!userTokens) navigation("/login");
+    else {
+      if (readOnly) onClick?.();
+      else setStatus(!status);
+    }
   }
 
   const colors = {

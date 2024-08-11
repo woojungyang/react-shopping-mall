@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 
+import { ChevronRight } from "@mui/icons-material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 
@@ -16,7 +17,7 @@ import { calculatePercent } from "utilities/calculatePercent";
 
 import styles from "styles/_main.module.scss";
 
-export default function MainContentMb() {
+export default function MainContentMb({ data }) {
   const [currentMainSliderIndex, setCurrentMainSliderIndex] = useState(0);
   const totalImages = 8;
 
@@ -36,12 +37,13 @@ export default function MainContentMb() {
     ...new Array(2),
   ]);
 
+  if (!data) return null;
+
   return (
     <div className={styles.main_container_mb}>
       <div className="slider-container" style={{ position: "relative" }}>
         <ImageSlider
-          autoplay={false}
-          images={[...new Array(totalImages)]}
+          images={data?.mainSlide}
           currentIndex={currentMainSliderIndex}
           setCurrentIndex={setCurrentMainSliderIndex}
         />
@@ -75,11 +77,7 @@ export default function MainContentMb() {
 
       <div className={styles.best_item_wrapper}>
         <div className={styles.default_flex_space}>
-          <h3>For You</h3>
-          {/* <button className={styles.refresh_button}>
-            <p>추천상품 새로고침</p>
-            <RotateLeftIcon />
-          </button> */}
+          <h3>ITEMS FOR YOU</h3>
         </div>
         <div className={styles.scrollable_container}>
           <CustomSliderContainer
@@ -91,16 +89,16 @@ export default function MainContentMb() {
               infinite: false,
             }}
           >
-            {bestItems.map((product, index) => (
+            {data?.recommendedItems.map((item, index) => (
               <div className={styles.default_item_card_container} key={index}>
                 <ItemCard
                   showStatus={false}
                   showBrand={false}
                   showOriginalPrice={false}
-                  product={index}
+                  item={item}
                   style={{
                     height: 300,
-                    minWidth: 100,
+                    marginBottom: index % 1 == 0 ? "30px" : "",
                   }}
                 />
               </div>
@@ -140,13 +138,13 @@ export default function MainContentMb() {
         </DefaultButton>
       </div>
       <div className={styles.best_item_wrapper}>
-        <h3>Best Item</h3>
+        <h3>MARK IT</h3>
         <ScrollableSlider>
-          {bestItems.map((item, index) => (
+          {data?.bestItems?.map((item, index) => (
             <ItemCard
               showStatus={true}
               key={index}
-              product={item}
+              item={item}
               style={{
                 height: 300,
                 flex: "0 0 calc(31% - 10px)",
@@ -160,6 +158,13 @@ export default function MainContentMb() {
           <p>상품 더보기</p>
           <KeyboardArrowRightIcon />
         </DefaultButton>
+      </div>
+      <div className={styles.best_item_wrapper}>
+        <h3>BRAND NEWS</h3>
+        <BrandNewsContainer brand={data?.brands[0]} />
+        <BrandNewsContainer brand={data?.brands[1]} />
+        {/* <BrandNewsContainer brand={data?.brands[2]} />
+        <BrandNewsContainer brand={data?.brands[3]} /> */}
       </div>
       <div className={styles.brand_news_wrapper}>
         <div className={styles.band_thumbnail_wrapper}>
@@ -212,9 +217,10 @@ export default function MainContentMb() {
       <div className={styles.best_item_wrapper}>
         <h3>STYLE PICK +</h3>
         <ScrollableSlider>
-          {bestItems.map((item, index) => (
+          {data?.userStyles.map((userStyle, index) => (
             <img
-              src={require("assets/images/sub/sub24.jpg")}
+              key={index}
+              src={userStyle?.avatar}
               alt=""
               style={{
                 height: 150,
@@ -231,6 +237,34 @@ export default function MainContentMb() {
           <KeyboardArrowRightIcon />
         </DefaultButton>
       </div>
+    </div>
+  );
+}
+
+function BrandNewsContainer({ brand }) {
+  return (
+    <div className={styles.brand_news_container}>
+      <img
+        src={brand?.brandThumbnail}
+        className={styles.brand_news_thumbnail}
+      />
+      <div className={styles.brand_info_wrap}>
+        <div>
+          <h3>{brand?.brandName}</h3>
+          <p>{brand?.copyright}</p>
+        </div>
+        <ChevronRight />
+      </div>
+      <ScrollableSlider>
+        {brand?.items.map((item, index) => (
+          <img
+            key={index}
+            src={item?.thumbnail}
+            alt=""
+            className={styles.brand_item}
+          />
+        ))}
+      </ScrollableSlider>
     </div>
   );
 }

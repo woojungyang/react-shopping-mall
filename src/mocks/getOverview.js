@@ -89,7 +89,7 @@ export default function getDoctors(mock) {
         brandThumbnail: fakerSubImage(),
         brandName: faker.company.name(),
         copyright: faker.lorem.sentence(),
-        items: new Array(2).fill().map((_, index) => fakerItem()),
+        items: new Array(10).fill().map((_, index) => fakerItem()),
       })),
       brandEvents: new Array(3).fill().map((_, index) => ({
         id: faker.helpers.unique(faker.number.int),
@@ -115,17 +115,6 @@ export default function getDoctors(mock) {
           `assets/images/user/user${faker.number.int({ max: 8, min: 1 })}.jpg`,
         ),
       })),
-
-      // mainSlider: [
-      //   { id: 1, url: faker.image.urlLoremFlickr({ category: "fashion" }) },
-      // ],
-      // id: faker.helpers.unique(faker.number.int),
-      // name: faker.name.fullName(),
-      // phoneNumber: faker.phone.number(),
-      // user: {
-      //   id: faker.helpers.unique(faker.number.int),
-      //   username: faker.internet.email(),
-      // },
     };
 
     return [status, data];

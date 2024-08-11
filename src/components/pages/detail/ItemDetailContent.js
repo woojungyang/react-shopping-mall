@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import EastIcon from "@mui/icons-material/East";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
@@ -8,7 +8,6 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ShareIcon from "@mui/icons-material/Share";
 import { Rating } from "@mui/material";
 import { getQuestionStateLabel } from "models/notice";
-import { userTokens } from "models/user";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getDiscountPercent,
@@ -40,7 +39,7 @@ import {
 import { ConfirmModal } from "components/modal";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
-import { formatDateTime, now } from "utilities/dateTime";
+import { formatDateTime } from "utilities/dateTime";
 
 import styles from "styles/_detail.module.scss";
 
@@ -108,13 +107,7 @@ export default function ItemDetailContent() {
   };
 
   const detailRef = useRef(null);
-
-  const [bestItems, setBestItems] = useState([...new Array(8)]);
-
   const [moreContents, setMoreContents] = useState(true);
-
-  const [test, setQuestions] = useState([...new Array(5)]);
-
   const { scrollToElement, setElementRef } = useScrollToElement();
 
   const [confirmModal, setConfirmModal] = useState(false);
@@ -154,7 +147,10 @@ export default function ItemDetailContent() {
     <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
       <div className={styles.item_detail_container}>
         <div className={styles.item_bottom_navigation}>
-          <div className={styles.navigation_button}>
+          <div
+            className={styles.navigation_button}
+            onClick={() => setToastMessage("준비중입니다.")}
+          >
             <ShareIcon style={{ width: "1em", height: "1em" }} />
           </div>
           <div className={styles.navigation_button} onClick={scrollTop}>
@@ -484,7 +480,7 @@ export default function ItemDetailContent() {
                   ))}
                 </div>
                 <DefaultPagination
-                  count={getPageCount(test?.length)}
+                  count={getPageCount(questions?.total)}
                   page={questionPage}
                   onChange={handleQuestionChangePage}
                 />

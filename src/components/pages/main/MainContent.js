@@ -14,6 +14,7 @@ import {
   CustomSliderContainer,
   FlexBoxSlider,
   ImageSlider,
+  ScrollableSlider,
 } from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
@@ -64,6 +65,8 @@ export default function MainContent({ data }) {
   const notices = useMemo(() => data?.notices || [], [data]);
   const userStyles = useMemo(() => data?.userStyles || [], [data]);
 
+  if (!data) return null;
+
   return (
     <div className={styles.main_image_container}>
       <div style={{ position: "relative" }}>
@@ -73,9 +76,6 @@ export default function MainContent({ data }) {
           setCurrentIndex={setCurrentIndex}
         />
         <div className={styles.main_slider_wrapper}>
-          {/* <p className={styles.slider_index}>
-            {addLeadingZero(currentIndex + 1)}
-          </p> */}
           <div style={{ position: "relative" }}>
             <div className={styles.main_slider_bottom}></div>
             <div
@@ -202,7 +202,7 @@ export default function MainContent({ data }) {
           arrows={false}
           totalCount={clearances?.items?.length || 0}
           settings={{
-            infinite: true,
+            infinite: false,
             speed: 500,
             slidesToShow: 4,
             slidesToScroll: 1,
@@ -241,8 +241,9 @@ export default function MainContent({ data }) {
         </div>
         <div className={styles.for_u_items_wrap}>
           <div className={styles.for_u_item_category_wrap}>
-            {forUCategories.map((category) => (
+            {forUCategories.map((category, index) => (
               <p
+                key={index}
                 onClick={() => setSelectedForUCategory(category.id)}
                 className={classNames({
                   [styles.item_category]: true,
@@ -262,20 +263,17 @@ export default function MainContent({ data }) {
               slidesToScroll: 5,
             }}
           >
-            {recommendedItems?.map((item, index) => {
-              console.log(index);
-              return (
-                <div key={index}>
-                  <ItemCard
-                    item={item}
-                    style={{
-                      height: "390px",
-                      marginBottom: index % 1 == 0 ? "30px" : "",
-                    }}
-                  />
-                </div>
-              );
-            })}
+            {recommendedItems?.map((item, index) => (
+              <div key={index}>
+                <ItemCard
+                  item={item}
+                  style={{
+                    height: "390px",
+                    marginBottom: index % 1 == 0 ? "30px" : "",
+                  }}
+                />
+              </div>
+            ))}
           </FlexBoxSlider>
         </div>
       </div>
@@ -306,15 +304,17 @@ export default function MainContent({ data }) {
                     <ChevronRight />
                   </div>
                   <div className={styles.items_list_wrapper}>
-                    {brand?.items.map((item, index) => (
-                      <ItemCard
-                        key={index}
-                        item={item}
-                        showBrand={false}
-                        showOriginalPrice={false}
-                        style={{ height: 240 }}
-                      />
-                    ))}
+                    <ScrollableSlider>
+                      {brand?.items.map((item, index) => (
+                        <ItemCard
+                          key={index}
+                          item={item}
+                          showBrand={false}
+                          showOriginalPrice={false}
+                          style={{ height: 240, flex: "0 0 calc(48% - 10px)" }}
+                        />
+                      ))}
+                    </ScrollableSlider>
                   </div>
                 </div>
               </div>
@@ -326,8 +326,8 @@ export default function MainContent({ data }) {
         <h4 className={styles.section_title}>DEEP IN FOCUS</h4>
 
         <div className={styles.selected_keyword_item_wrapper}>
-          {brandEvents?.map((brandEvent, i) => (
-            <div className={styles.selected_keyword_item_wrap}>
+          {brandEvents?.map((brandEvent, index) => (
+            <div key={index} className={styles.selected_keyword_item_wrap}>
               <div className={styles.brand_thumbnail_wrap}>
                 <img
                   src={brandEvent?.brandThumbnail}
@@ -353,22 +353,23 @@ export default function MainContent({ data }) {
         <h4 className={styles.section_title}> STYLE</h4>
 
         <div className={styles.style_menu_wrap}>
-          {styleMenu.map((e) => (
+          {styleMenu.map((menu, index) => (
             <p
-              onClick={() => setActiveStyleCategory(e.id)}
+              key={index}
+              onClick={() => setActiveStyleCategory(menu.id)}
               className={classNames({
                 [styles.style_menu]: true,
-                [styles.active_style_menu]: activeStyleCategory == e.id,
+                [styles.active_style_menu]: activeStyleCategory == menu.id,
               })}
             >
-              {e.name}
+              {menu.name}
             </p>
           ))}
         </div>
 
         <div className={styles.style_image_wrapper}>
           {userStyles?.map((userStyle, index) => (
-            <div className={styles.image_wrap}>
+            <div className={styles.image_wrap} key={index}>
               <img src={userStyle?.avatar} className={styles.style_image} />
               <p className={styles.user_name}>
                 @{userStyle?.username?.split("@")[0]}
@@ -419,7 +420,7 @@ export default function MainContent({ data }) {
             <p className={styles.notice_title}>NOTICE</p>
             <div>
               {notices?.map((notice, index) => (
-                <div className={styles.default_flex_space}>
+                <div key={index} className={styles.default_flex_space}>
                   <p className={styles.notice_content_title}>{notice?.title}</p>
                   <p
                     className={styles.notice_content_title}

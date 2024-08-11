@@ -18,6 +18,7 @@ export const SizeOptions = ({
           const isSelected = selectedItemOptions?.size == size.id;
           return (
             <p
+              key={index}
               onClick={() =>
                 setSelectedOptions({
                   ...selectedItemOptions,

@@ -34,7 +34,7 @@ export const ItemCard = ({
 
       <div
         style={{
-          minHeight: cardHeight,
+          minHeight: cardHeight || 0,
           height: "100%",
           display: "flex",
           flex: 1,

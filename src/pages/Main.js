@@ -24,7 +24,7 @@ export default function Main() {
 
   return (
     <CommonLayout toastMessage={toastMessage} isLoading={isLoading}>
-      {isDeskTop ? <MainContent data={data} /> : <MainContentMb />}
+      {isDeskTop ? <MainContent data={data} /> : <MainContentMb data={data} />}
     </CommonLayout>
   );
 }

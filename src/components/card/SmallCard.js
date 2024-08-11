@@ -1,6 +1,6 @@
 import React from "react";
 
-import { numberWithCommas } from "utilities";
+import { getDiscountPercent, numberWithCommas } from "utilities";
 
 import styles from "styles/_common.module.scss";
 
@@ -16,7 +16,7 @@ export const SmallCard = ({ item = {} }) => {
           <p className={styles.brand_item_name}>{item?.itemName}</p>
         </div>
         <div className={styles.price_info}>
-          <p className={styles.default_flex}>
+          <div className={styles.default_flex}>
             <p className={styles.original_price}>
               {numberWithCommas(item?.originalPrice)}
             </p>
@@ -24,13 +24,9 @@ export const SmallCard = ({ item = {} }) => {
             <p className={styles.current_price}>
               {numberWithCommas(item?.price)}원
             </p>
-          </p>
+          </div>
           <span className={styles.sale_percent}>
-            {(
-              ((item?.originalPrice - item?.price) / item?.originalPrice) *
-              100
-            ).toFixed(0)}
-            %
+            {getDiscountPercent(item?.price, item?.originalPrice)}%
           </span>
         </div>
         <LikeHeart

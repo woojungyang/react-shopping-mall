@@ -74,12 +74,13 @@ export default function Header() {
                 </div>
               </div>
             </div>
+
             <div className={styles.nav_wrapper}>
-              <Link to="/category/women">WOMEN</Link>
-              <Link to="/category/men">MEN</Link>
-              <Link to="/category/beauty">BEAUTY</Link>
-              <Link to="/category/life">LIFE</Link>
-              <Link to="/event">EVENT</Link>
+              <p onClick={() => navigation("/category/women")}>WOMEN</p>
+              <p onClick={() => navigation("/category/men")}>MEN</p>
+              <p onClick={() => navigation("/category/beauty")}>BEAUTY</p>
+              <p onClick={() => navigation("/category/life")}>LIFE</p>
+              <p onClick={() => navigation("/event")}>EVENT</p>
             </div>
           </div>
           {showSearch && (

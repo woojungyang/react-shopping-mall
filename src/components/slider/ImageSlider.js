@@ -20,7 +20,7 @@ export const ImageSlider = ({
   const settings = {
     dots: false,
     className: "center",
-    centerMode: true,
+    centerMode: isDeskTop ? true : false,
     infinite: true,
     speed: 1500,
     centerPadding: "60px",
@@ -43,34 +43,23 @@ export const ImageSlider = ({
         }}
       >
         {images.map((image, index) => {
-          if (isDeskTop) {
-            return (
-              <div key={index} className={styles.desktop_slider_image_wrapper}>
-                <img src={image?.url} className={styles.slider_image} />
-                <div
-                  className={classNames({
-                    [styles.slider_copyright]: animationActiveSlide == index,
-                    [styles.slider_copyright_active]: true,
-                  })}
-                >
-                  <div style={{ maxWidth: 500 }}>
-                    <h1>{image?.title}</h1>
-                    <p>{image?.subTitle}</p>
-                  </div>
+          return (
+            <div key={index} className={styles.desktop_slider_image_wrapper}>
+              <img src={image?.url} className={styles.slider_image} />
+              <div
+                className={classNames({
+                  [styles.slider_copyright]: animationActiveSlide == index,
+                  [styles.slider_copyright_mobile]: !isDeskTop,
+                  [styles.slider_copyright_active]: true,
+                })}
+              >
+                <div style={{ maxWidth: 500 }}>
+                  <h1>{image?.title}</h1>
+                  <p>{image?.subTitle}</p>
                 </div>
               </div>
-            );
-          } else {
-            return (
-              <img
-                key={index}
-                src={require(`assets/images/main/main${index + 1}.jpg`)}
-                className={classNames({
-                  [styles.main_image]: true,
-                })}
-              />
-            );
-          }
+            </div>
+          );
         })}
       </Slider>
       {/*  {isDeskTop && (
