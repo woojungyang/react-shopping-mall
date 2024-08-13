@@ -21,18 +21,18 @@ export default function getItem(mock) {
   }
 
   let collection = {
-    id: faker.helpers.unique(faker.number.int),
+    id: faker.number.int,
     brandName: faker.company.name(),
     itemCode: faker.string.uuid(),
     itemName: faker.commerce.productName(),
     thumbnail: new Array(faker.number.int({ max: 5, min: 1 }))
       .fill()
       .map((_, index) => ({
-        id: faker.helpers.unique(faker.number.int),
+        id: faker.number.int,
         thumbnail: fakerSubImage(),
       })),
     recommendedItems: new Array(8).fill().map((_, index) => ({
-      id: faker.helpers.unique(faker.number.int),
+      id: faker.number.int,
       thumbnail: fakerSubImage(),
     })),
     originalPrice: faker.commerce.price({
@@ -54,26 +54,26 @@ export default function getItem(mock) {
     detailContent: new Array(faker.number.int({ max: 10, min: 1 }))
       .fill()
       .map((_, index) => ({
-        id: faker.helpers.unique(faker.number.int),
+        id: faker.number.int,
         content: fakerMainImage(),
       })),
     reviewRate: faker.number.int({ max: 5, min: 1 }),
     colors: new Array(faker.number.int({ max: 10, min: 5 }))
       .fill()
       .map((_, index) => ({
-        id: faker.helpers.unique(faker.number.int),
+        id: faker.number.int,
         thumbnail: fakerSubImage(),
         name: faker.lorem.word(),
       })),
     sizes: new Array(faker.number.int({ max: 10, min: 0 }))
       .fill()
       .map((_, index) => ({
-        id: faker.helpers.unique(faker.number.int),
+        id: faker.number.int,
         inventory: faker.number.int({ max: 10, min: 0 }),
         size: faker.lorem.word(),
       })),
     brand: {
-      id: faker.helpers.unique(faker.number.int),
+      id: faker.number.int,
       name: faker.company.name(),
       position: {
         lat: faker.location.latitude(),
@@ -86,7 +86,7 @@ export default function getItem(mock) {
       thumbnail: fakerMainImage(),
       likeCount: faker.number.int({ max: 1000, min: 100 }),
       items: new Array(5).fill().map((_, index) => ({
-        id: faker.helpers.unique(faker.number.int),
+        id: faker.number.int,
         itemName: faker.commerce.productName(),
         originalPrice: faker.commerce.price({
           min: 500000,

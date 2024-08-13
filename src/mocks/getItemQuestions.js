@@ -19,7 +19,7 @@ export default function getItemQuestions(mock) {
 let collection = new Array(faker.number.int({ max: 20, min: 0 }))
   .fill()
   .map((_, index) => ({
-    id: faker.helpers.unique(faker.number.int),
+    id: faker.number.int,
     user: {
       username: faker.internet.email(),
     },

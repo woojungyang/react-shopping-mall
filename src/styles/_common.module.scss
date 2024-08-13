@@ -134,8 +134,8 @@ body {
   }
 }
 
-.brand_item_wrapper {
-  padding: $margin/2 0;
+.small_item_card_container {
+  padding: $default 0;
   height: 20%;
   flex: 1;
 
@@ -156,6 +156,7 @@ body {
   .brand_item_info {
     height: 100px;
     flex-grow: 1;
+
     @include flex(
       $direction: column,
       $justify-content: space-between,
@@ -164,7 +165,7 @@ body {
 
     .item_info {
       height: 100%;
-      width: 100%;
+      width: 85%;
 
       .brand_name {
         font-size: 14px;
@@ -183,7 +184,9 @@ body {
       @include flex($justify-content: space-between);
 
       .original_price {
-        text-decoration: line-through;
+        span {
+          text-decoration: line-through;
+        }
       }
       .current_price {
         color: $color-dark-300;
@@ -197,6 +200,39 @@ body {
         font-size: 15px;
         font-weight: 700;
         text-decoration: none;
+      }
+    }
+  }
+}
+.small_item_card_container_mb {
+  padding: $default;
+  img {
+    width: 64px;
+    height: 86px;
+    margin-right: $default;
+  }
+  .brand_item_info {
+    height: auto;
+    .item_info {
+      height: 100%;
+      width: 85%;
+
+      font-size: 13px !important;
+    }
+    .price_info {
+      font-size: 13px;
+      color: $color-skeleton-200;
+      width: 100%;
+      @include flex($justify-content: space-between);
+
+      .original_price {
+        display: none;
+      }
+      .current_price {
+        font-size: 14px;
+      }
+      .sale_percent {
+        font-size: 14px;
       }
     }
   }

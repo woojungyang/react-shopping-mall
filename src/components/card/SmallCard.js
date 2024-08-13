@@ -1,14 +1,25 @@
 import React from "react";
 
+import classNames from "classnames";
+import { Device } from "models/device";
 import { getDiscountPercent, numberWithCommas } from "utilities";
+
+import { useUserDevice } from "hooks/size/useUserDevice";
 
 import styles from "styles/_common.module.scss";
 
 import { LikeHeart } from "./LikeHeart";
 
 export const SmallCard = ({ item = {} }) => {
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
   return (
-    <div className={styles.brand_item_wrapper}>
+    <div
+      className={classNames({
+        [styles.small_item_card_container]: true,
+        [styles.small_item_card_container_mb]: !isDeskTop,
+      })}
+    >
       <img src={item?.thumbnail} alt="" />
       <div className={styles.brand_item_info}>
         <div className={styles.item_info}>
@@ -18,9 +29,8 @@ export const SmallCard = ({ item = {} }) => {
         <div className={styles.price_info}>
           <div className={styles.default_flex}>
             <p className={styles.original_price}>
-              {numberWithCommas(item?.originalPrice)}
+              <span> {numberWithCommas(item?.originalPrice)}</span>원
             </p>
-            원{" "}
             <p className={styles.current_price}>
               {numberWithCommas(item?.price)}원
             </p>
@@ -32,7 +42,7 @@ export const SmallCard = ({ item = {} }) => {
         <LikeHeart
           like={item?.like}
           defaultColor="skeleton"
-          position={{ top: "10%", right: "0%" }}
+          position={{ top: "10%", right: isDeskTop ? "0%" : "3%" }}
         />
       </div>
     </div>

@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 
 import { ChevronRight } from "@mui/icons-material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 
 import { ItemCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
@@ -37,6 +36,7 @@ export default function MainContentMb({ data }) {
     ...new Array(2),
   ]);
 
+  const [moreFocus, setMoreFocus] = useState(1);
   if (!data) return null;
 
   return (
@@ -60,7 +60,7 @@ export default function MainContentMb({ data }) {
         />
       </div>
 
-      <div className={styles.category_wrapper_mb}>
+      {/*   <div className={styles.category_wrapper_mb}>
         <ScrollableSlider showScroll={false}>
           {categoryMenu.map((menu) => (
             <div className={styles.category_wrap_mb}>
@@ -73,8 +73,9 @@ export default function MainContentMb({ data }) {
             </div>
           ))}
         </ScrollableSlider>
-      </div>
+      </div> */}
 
+      {/* for u */}
       <div className={styles.best_item_wrapper}>
         <div className={styles.default_flex_space}>
           <h3>ITEMS FOR YOU</h3>
@@ -105,37 +106,43 @@ export default function MainContentMb({ data }) {
             ))}
           </CustomSliderContainer>
         </div>
-        {/* </div> */}
 
-        <DefaultButton className={styles.button_background_100_outline}>
+        {/* <DefaultButton className={styles.button_background_100_outline}>
           <p>추천상품 전체보기</p>
           <KeyboardArrowRightIcon />
-        </DefaultButton>
+        </DefaultButton> */}
       </div>
-
+      {/* event */}
       <div className={styles.event_wrapper_mb}>
         <div className={styles.event_header}>
-          <p className={styles.event_title}>더운 여름, 시원하게 챙기기</p>
-          <p className={styles.event_more}>자세히 보기 ></p>
+          <div>
+            <p className={styles.event_subtitle}>CLEARANCE</p>
+            <p className={styles.event_title}>AD COPYRIGHT</p>
+            <hr className={styles.event_title_line} />
+          </div>
+          <ChevronRight />
         </div>
-        <ScrollableSlider scrollBgColor="white" scrollPercentColor="black">
-          {eventItems.map((item, index) => (
-            <ItemCard
-              key={index}
-              product={item}
-              style={{
-                height: 400,
-                flex: "0 0 calc(38% - 10px)",
-                minWidth: 230,
-              }}
-            />
-          ))}
-        </ScrollableSlider>
+        <div className={styles.event_items_body}>
+          <ScrollableSlider scrollBgColor="white" scrollPercentColor="black">
+            {data?.clearances?.items?.map((item, index) => (
+              <ItemCard
+                key={index}
+                item={item}
+                style={{
+                  height: 230,
+                  flex: "0 0 calc(33.3333% - 10px)",
+                  minWidth: 150,
+                  marginLeft: index == 0 ? 48 : 0,
+                }}
+              />
+            ))}
+          </ScrollableSlider>
+        </div>
 
-        <DefaultButton className={styles.button_dark_300}>
+        {/*  <DefaultButton className={styles.button_dark_300}>
           <p>다른 기획전 보기 1/1</p>
           <RotateLeftIcon />
-        </DefaultButton>
+        </DefaultButton> */}
       </div>
       <div className={styles.best_item_wrapper}>
         <h3>MARK IT</h3>
@@ -159,14 +166,76 @@ export default function MainContentMb({ data }) {
           <KeyboardArrowRightIcon />
         </DefaultButton>
       </div>
-      <div className={styles.best_item_wrapper}>
-        <h3>BRAND NEWS</h3>
-        <BrandNewsContainer brand={data?.brands[0]} />
-        <BrandNewsContainer brand={data?.brands[1]} />
+      {/* brand news */}
+      <div className={styles.brand_news_container}>
+        <h3 className={styles.section_title}>BRAND NEWS</h3>
+        <CustomSliderContainer
+          settings={{
+            infinite: true,
+            speed: 500,
+            centerMode: true,
+            centerPadding: "15px",
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          }}
+        >
+          {data?.brands.map((brand) => (
+            <div className={styles.brand_news_wrapper}>
+              <img
+                src={brand?.brandThumbnail}
+                className={styles.brand_news_thumbnail}
+              />
+              <div className={styles.brand_info_wrap}>
+                <h3 className={styles.brand_name}>{brand?.brandName}</h3>
+                <p>{brand?.copyright}</p>
+              </div>
+
+              <div className={styles.brands_items_wrapper}>
+                {brand?.items.map((item, index) => (
+                  <SmallCard item={item} showBrand={false} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </CustomSliderContainer>
+        {/* <BrandNewsContainer brand={data?.brands[0]} />
+        <BrandNewsContainer brand={data?.brands[1]} /> */}
+
         {/* <BrandNewsContainer brand={data?.brands[2]} />
         <BrandNewsContainer brand={data?.brands[3]} /> */}
       </div>
-      <div className={styles.brand_news_wrapper}>
+      {/* focus */}
+      <div className={styles.deep_in_focus_container}>
+        <h3 className={styles.section_title}>DEPP IN FOCUS</h3>
+        {data?.brandEvents?.slice(0, moreFocus)?.map((brandEvent, index) => (
+          <div key={index} className={styles.deep_in_focus_wrapper}>
+            <div className={styles.deep_in_focus_thumbnail_wrap}>
+              <img
+                src={brandEvent?.brandThumbnail}
+                className={styles.item_thumbnail}
+              />
+              <div className={styles.brand_copyright_wrap}>
+                <h2>{brandEvent?.brandName}</h2>
+                <p>{brandEvent?.copyright}</p>
+              </div>
+            </div>
+
+            <div className={styles.deep_in_focus_items_wrap}>
+              {brandEvent?.items.map((item, index) => (
+                <SmallCard key={index} item={item} />
+              ))}
+            </div>
+          </div>
+        ))}
+        {moreFocus < data?.brandEvents.length && (
+          <DefaultButton
+            onClick={() => setMoreFocus(moreFocus + 1)}
+            label="VIEW MORE +"
+          />
+        )}
+      </div>
+
+      {/* <div className={styles.brand_news_wrapper}>
         <div className={styles.band_thumbnail_wrapper}>
           <img src={require("assets/images/sub/sub24.jpg")} alt="" />
           <div className={styles.brand_copyright}>
@@ -184,8 +253,8 @@ export default function MainContentMb({ data }) {
             <SmallCard />
           </div>
         ))}
-      </div>
-      <div className={styles.event_wrapper_mb2}>
+      </div> */}
+      {/* <div className={styles.event_wrapper_mb2}>
         <h3>SHOPPING NEWS</h3>
 
         <p className={styles.title}>안타티카 단독 시즌 클리어런스</p>
@@ -212,9 +281,9 @@ export default function MainContentMb({ data }) {
             />
           ))}
         </ScrollableSlider>
-      </div>
+      </div> */}
 
-      <div className={styles.best_item_wrapper}>
+      {/* <div className={styles.best_item_wrapper}>
         <h3>STYLE PICK +</h3>
         <ScrollableSlider>
           {data?.userStyles.map((userStyle, index) => (
@@ -236,7 +305,7 @@ export default function MainContentMb({ data }) {
           <p>스타일 더보기</p>
           <KeyboardArrowRightIcon />
         </DefaultButton>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -28,7 +28,7 @@ function fakerSubImage() {
 let collection = new Array(faker.number.int({ max: 20, min: 0 }))
   .fill()
   .map((_, index) => ({
-    id: faker.helpers.unique(faker.number.int),
+    id: faker.number.int,
     thumbnail: fakerSubImage(),
     reviewRate: faker.number.int({ max: 5, min: 1 }),
     user: {

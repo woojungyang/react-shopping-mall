@@ -304,17 +304,15 @@ export default function MainContent({ data }) {
                     <ChevronRight />
                   </div>
                   <div className={styles.items_list_wrapper}>
-                    <ScrollableSlider>
-                      {brand?.items.map((item, index) => (
-                        <ItemCard
-                          key={index}
-                          item={item}
-                          showBrand={false}
-                          showOriginalPrice={false}
-                          style={{ height: 240, flex: "0 0 calc(48% - 10px)" }}
-                        />
-                      ))}
-                    </ScrollableSlider>
+                    {brand?.items.map((item, index) => (
+                      <ItemCard
+                        key={index}
+                        item={item}
+                        showBrand={false}
+                        showOriginalPrice={false}
+                        style={{ height: 240, flex: "0 0 calc(48% - 10px)" }}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
@@ -324,7 +322,6 @@ export default function MainContent({ data }) {
       </div>
       <div className={styles.gallery_container}>
         <h4 className={styles.section_title}>DEEP IN FOCUS</h4>
-
         <div className={styles.selected_keyword_item_wrapper}>
           {brandEvents?.map((brandEvent, index) => (
             <div key={index} className={styles.selected_keyword_item_wrap}>
