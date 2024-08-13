@@ -18,7 +18,7 @@ export default function getDoctors(mock) {
 
     function fakerItem() {
       return {
-        id: faker.number.int,
+        id: faker.number.int(),
         brandName: faker.company.name(),
         thumbnail: fakerSubImage(),
         itemName: faker.commerce.productName(),
@@ -42,13 +42,13 @@ export default function getDoctors(mock) {
 
     let data = {
       mobileCategory: new Array(8).fill().map((_, index) => ({
-        id: faker.number.int,
+        id: faker.number.int(),
         name: faker.lorem.word(),
       })),
       mainSlide: new Array(faker.number.int({ max: 10, min: 5 }))
         .fill()
         .map((_, index) => ({
-          id: faker.number.int,
+          id: faker.number.int(),
           url: fakerMainImage(),
           title: faker.lorem.sentence(),
           subTitle: faker.lorem.sentence(),
@@ -60,20 +60,20 @@ export default function getDoctors(mock) {
         banners: new Array(faker.number.int({ max: 10, min: 5 }))
           .fill()
           .map((_, index) => ({
-            id: faker.number.int,
+            id: faker.number.int(),
             url: fakerSubImage(),
           })),
         items: new Array(8).fill().map((_, index) => fakerItem()),
       },
       events: new Array(3).fill().map((_, index) => ({
-        id: faker.number.int,
+        id: faker.number.int(),
         thumbnail: fakerSubImage(),
         title: faker.lorem.sentence(),
         subTitle: faker.lorem.sentence(),
       })),
       clearances: {
         banner: {
-          id: faker.number.int,
+          id: faker.number.int(),
           url: fakerSubImage(),
         },
         items: new Array(faker.number.int({ max: 10, min: 5 }))
@@ -82,7 +82,7 @@ export default function getDoctors(mock) {
       },
       recommendedItems: new Array(16).fill().map((_, index) => fakerItem()),
       brands: new Array(4).fill().map((_, index) => ({
-        id: faker.number.int,
+        id: faker.number.int(),
         brandThumbnail: fakerSubImage(),
         brandName: faker.company.name(),
         copyright: faker.lorem.sentence(),
@@ -90,7 +90,7 @@ export default function getDoctors(mock) {
       })),
 
       brandEvents: new Array(3).fill().map((_, index) => ({
-        id: faker.number.int,
+        id: faker.number.int(),
         brandThumbnail: fakerSubImage(),
         brandName: faker.company.name(),
         copyright: faker.lorem.sentence(),
@@ -99,7 +99,7 @@ export default function getDoctors(mock) {
       notices: new Array(faker.number.int({ max: 7, min: 5 }))
         .fill()
         .map((_, index) => ({
-          id: faker.number.int,
+          id: faker.number.int(),
           title: faker.lorem.sentence(),
           writtenAt: faker.date.between({
             from: "2024-01-01T00:00:00.000Z",
@@ -107,7 +107,7 @@ export default function getDoctors(mock) {
           }),
         })),
       userStyles: new Array(6).fill().map((_, index) => ({
-        id: faker.number.int,
+        id: faker.number.int(),
         username: faker.internet.email(),
         avatar: require(
           `assets/images/user/user${faker.number.int({ max: 8, min: 1 })}.jpg`,

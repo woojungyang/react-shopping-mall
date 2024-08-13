@@ -14,6 +14,7 @@ import BottomNavigation from "./BottomNavigation";
 import Footer from "./Footer";
 import Header from "./Header";
 import { LoadingLayer } from "./LoadingLayer";
+import ScrollNavigation from "./ScrollNavigation";
 
 export const CommonLayout = ({
   children,
@@ -41,6 +42,7 @@ export const CommonLayout = ({
       {isLoading && <LoadingLayer />}
       <Header />
       <div className={styles.common_layout_content_wrapper}>{children}</div>
+      <ScrollNavigation />
       {!isDeskTop && <BottomNavigation currentTab={currentTab} />}
       <Footer />
       {toastMessage && (

@@ -11,6 +11,7 @@ import styles from "styles/_common.module.scss";
 
 import BottomNavigation from "./BottomNavigation";
 import Footer from "./Footer";
+import ScrollNavigation from "./ScrollNavigation";
 
 export const MobileLayout = ({
   headerTitle = "",
@@ -49,20 +50,7 @@ export const MobileLayout = ({
         )}
       </div>
       {children}
-      {switchPosition && (
-        <>
-          <div className={styles.mobile_scroll_top_button} onClick={scrollTop}>
-            <KeyboardArrowUpIcon />
-          </div>
-          <div
-            className={styles.mobile_scroll_top_button}
-            style={{ bottom: 35 }}
-            onClick={scrollBottom}
-          >
-            <KeyboardArrowDownIcon />
-          </div>
-        </>
-      )}
+      <ScrollNavigation />
       {isBottomNavigation && <BottomNavigation currentTab={currentTab} />}
       {isFooter && <Footer />}
     </div>

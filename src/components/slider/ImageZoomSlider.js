@@ -115,7 +115,7 @@ export const ImageZoomSlider = ({ images = [] }) => {
       ) : (
         <ImageSlider
           autoplay={false}
-          images={images}
+          images={images.map((image) => ({ ...image, url: image.thumbnail }))}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
         />

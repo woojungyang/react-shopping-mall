@@ -4,16 +4,28 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import { getQuestionStateLabel } from "models/notice";
-import { useNavigate } from "react-router-dom";
-import { maskAccountName, numberWithCommas } from "utilities";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  getDiscountPercent,
+  maskAccountName,
+  numberWithCommas,
+} from "utilities";
 
+import useItemQuery from "hooks/query/useItemQuery";
+import useItemQuestionsQuery from "hooks/query/useItemQuestionsQuery";
+import useItemReviewsQuery from "hooks/query/useItemReviewsQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 
 import { ItemCard, LikeHeart } from "components/card";
-import { DefaultPagination, MobileLayout } from "components/common";
+import {
+  DefaultPagination,
+  LoadingLayer,
+  MobileLayout,
+} from "components/common";
 import { DefaultButton } from "components/common";
 import { OptionsMobile } from "components/detail";
+import { ToastModal } from "components/modal";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
 import { formatDateTime, now } from "utilities/dateTime";
@@ -44,24 +56,7 @@ export default function ItemDetailContentMb() {
 
   const detailRef = useRef(null);
 
-  const [bestItems, setBestItems] = useState([...new Array(8)]);
-  const [brandItems, setBrandItems] = useState([...new Array(5)]);
   const [moreContents, setMoreContents] = useState(true);
-
-  const [reviews, setReviews] = useState([...new Array(5)]);
-  const [
-    { page: reviewPage, perPage: limit, offset: reviewOffset },
-    changePage,
-    getPageCount,
-  ] = usePageQueryString("reviewPage", 5);
-  const handleChangePage = (_event, page) => changePage(page);
-
-  const [questions, setQuestions] = useState([...new Array(5)]);
-  const [
-    { page: questionPage, perPage: questionLimit, offset: questionOffset },
-    questionChangePage,
-  ] = usePageQueryString("questionPage", 5);
-  const handleQuestionChangePage = (_event, page) => questionChangePage(page);
 
   const { scrollToElement, setElementRef } = useScrollToElement();
 
@@ -85,27 +80,76 @@ export default function ItemDetailContentMb() {
     };
   }, [showOptionModal]);
 
+  const [toastMessage, setToastMessage] = useState("");
+
+  const { id } = useParams();
+  const { data: item, isLoading } = useItemQuery(id, {
+    onSuccess: (data) => {
+      setSelectedOptions({ ...selectedItemOptions, color: data.colors[0]?.id });
+    },
+    onError: (error) => {
+      setToastMessage(error.message);
+    },
+  });
+
+  const [
+    { page: reviewPage, perPage: limit, offset: reviewOffset },
+    changePage,
+    getPageCount,
+  ] = usePageQueryString("reviewPage", 4);
+  const handleChangePage = (_event, page) => changePage(page);
+  const { data: reviews, isLoading: reviewLoading } = useItemReviewsQuery(
+    id,
+    { offset: reviewOffset, limit: limit },
+    {
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
+    },
+  );
+
+  const [
+    { page: questionPage, perPage: questionLimit, offset: questionOffset },
+    questionChangePage,
+  ] = usePageQueryString("questionPage", 4);
+  const handleQuestionChangePage = (_event, page) => questionChangePage(page);
+  const { data: questions, isLoading: questionLoading } = useItemQuestionsQuery(
+    id,
+    { offset: questionOffset, limit: questionLimit },
+    {
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
+    },
+  );
+
+  if (!item || isLoading || reviewLoading || questionLoading)
+    return <LoadingLayer />;
+
   return (
     <MobileLayout isFooter={true}>
       <div className={styles.mobile_item_detail_container}>
         <div className={styles.item_content_scroll_wrapper}>
-          <ImageZoomSlider images={[...new Array(9)]} />
+          <ImageZoomSlider images={item?.thumbnails} />
         </div>
         <div className={styles.item_content_information_wrapper}>
           <div className={styles.item_header_wrapper}>
-            <div className={styles.item_brand_name}>
-              <p>brandName</p>
+            <div
+              className={styles.item_brand_name}
+              onClick={() => setToastMessage("준비중입니다.")}
+            >
+              <p>{item?.brand?.name}</p>
               <KeyboardArrowRightIcon />
             </div>
             <div className={styles.review_wrap}>
               <div className={styles.rating_wrap}>
                 <ReviewRating
                   size={"1.2em"}
-                  value={1}
+                  value={item?.reviewRate}
                   color="#F27A46"
                   readOnly
                 />
-                <strong>4.0</strong>
+                <strong>{item?.reviewRate}</strong>
               </div>
               <p
                 className={styles.review_flag_button}
@@ -117,22 +161,24 @@ export default function ItemDetailContentMb() {
 
               <ShareOutlinedIcon className={styles.share_icon} />
             </div>{" "}
-            <h1 className={styles.item_name}>자가드 포켓 우븐 팬츠</h1>
+            <h1 className={styles.item_name}>{item?.itemName}</h1>
           </div>
           <div className={styles.price_information_wrapper}>
             <p className={styles.original_price}>
-              {numberWithCommas(149000)}원
+              {numberWithCommas(item?.originalPrice)}원
             </p>
             <p className={styles.total_price}>
-              <span className={styles.sale_percent}>20%</span>
-              <strong>{numberWithCommas(149000)}</strong>원
+              <span className={styles.sale_percent}>
+                {getDiscountPercent(item?.price, item?.originalPrice)}%
+              </span>
+              <strong>{numberWithCommas(item?.price)}</strong>원
             </p>
           </div>
 
           <div className={styles.delivery_wrap}>
             <div>
-              <p className={styles.title}>상품명</p>
-              <p className={styles.delivery_content}>상품코드</p>
+              <p className={styles.title}>상품정보</p>
+              <p className={styles.delivery_content}>{item?.itemCode}</p>
             </div>
             <div>
               <p className={styles.title}>배송정보</p>
@@ -152,10 +198,10 @@ export default function ItemDetailContentMb() {
           <div className={styles.recommend_wrapper}>
             <h3>Recommended for you </h3>
             <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
-              {bestItems.map((item, index) => (
+              {item?.recommendedItems?.map((item, index) => (
                 <img
-                  onClick={() => navigation(`/items/${item}`)}
-                  src={require(`assets/images/sub/sub${index + 1}.jpg`)}
+                  onClick={() => navigation(`/items/${item?.id}`)}
+                  src={item?.thumbnail}
                   key={index}
                   style={{
                     height: 150,
@@ -178,10 +224,9 @@ export default function ItemDetailContentMb() {
                 overflow: "hidden",
               }}
             >
-              {bestItems.map((item, index) => (
+              {item?.detailContents.map((detail, index) => (
                 <img
-                  onClick={() => navigation(`/items/${item}`)}
-                  src={require(`assets/images/main/main${index + 1}.jpg`)}
+                  src={detail?.content}
                   key={index}
                   style={{
                     width: "100%",
@@ -210,11 +255,11 @@ export default function ItemDetailContentMb() {
             <div className={styles.recommend_wrapper}>
               <h3>Related items </h3>
               <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
-                {brandItems.map((item, index) => (
+                {item?.brand?.items.map((item, index) => (
                   <ItemCard
                     key={index}
                     showBrand={false}
-                    product={item}
+                    item={item}
                     style={{
                       height: 300,
                       minWidth: 200,
@@ -229,51 +274,44 @@ export default function ItemDetailContentMb() {
             className={styles.review_bottom_container}
           >
             <TabsWrapper scrollToElement={scrollToElement} activeTab="review" />
-            {reviews.length ? (
+            {reviews.total > 0 ? (
               <>
                 <div className={styles.review_bottom_wrapper}>
                   <p className={styles.rating_title}>
-                    상품 평균 만족도<span>(481)</span>
+                    상품 평균 만족도<span>({reviews?.total})</span>
                   </p>
                   <div className={styles.rating_wrapper}>
-                    <ReviewRating size={"2em"} value={2} />
+                    <ReviewRating size={"2em"} value={reviews?.averageRate} />
                     <span className={styles.rating_value}>
                       <p>
-                        5 <span> / 5.0</span>
+                        {reviews?.averageRate} <span> / 5.0</span>
                       </p>
                     </span>
                   </div>
                 </div>
                 <div className={styles.reviews_wrapper}>
-                  {reviews.map((review, index) => (
+                  {reviews?.data?.map((review, index) => (
                     <div className={styles.detail_review} key={index}>
                       <div className={styles.default_flex_space}>
-                        <ReviewRating value={2} />
+                        <ReviewRating value={review?.reviewRate} />
                         <span className={styles.writer_info}>
-                          {maskAccountName("username")}
+                          {maskAccountName(review?.user?.username)}
                         </span>
                       </div>
                       <div className={styles.user_option_wrap}>
-                        skinny 05 mute brown
+                        {review?.size} {review?.color}
                       </div>
                       <div className={styles.review_content_wrap}>
-                        <img
-                          src={require(`assets/images/main/main10.jpg`)}
-                          alt=""
-                        />
+                        <img src={review?.thumbnail} alt="" />
                         <p className={styles.written_review}>
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Ut dolore facilis odit assumenda id minima
-                          soluta libero aperiam dolorum. Aut a reiciendis
-                          officia id maxime illum doloremque dignissimos itaque
-                          ducimus!
+                          {review?.content}
                         </p>
                       </div>
                     </div>
                   ))}
                 </div>
                 <DefaultPagination
-                  count={getPageCount(reviews?.length)}
+                  count={getPageCount(reviews?.total)}
                   page={reviewPage}
                   onChange={handleChangePage}
                 />
@@ -287,30 +325,24 @@ export default function ItemDetailContentMb() {
             className={styles.questions_container}
           >
             <TabsWrapper scrollToElement={scrollToElement} activeTab="q&a" />
-            {questions.length ? (
+            {questions?.total > 0 ? (
               <>
                 <div className={styles.questions_wrapper}>
-                  {questions.map((question, index) => (
-                    <div className={styles.question_detail_wrap}>
+                  {questions?.data?.map((question, index) => (
+                    <div className={styles.question_detail_wrap} key={index}>
                       <div className={styles.question_detail_content}>
                         <span> {getQuestionStateLabel(question?.state)}</span>
-                        <p>
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Nostrum consequuntur totam, vel perspiciatis
-                          consequatur, est aliquid unde quos eius praesentium
-                          ipsa voluptatum facilis, quasi quidem excepturi
-                          ducimus hic! Ipsam, ducimus.
-                        </p>
+                        <p>{question?.content}</p>
                       </div>
                       <div className={styles.question_detail_information}>
-                        <p>{maskAccountName("username")}</p>
-                        <span>{formatDateTime(now())}</span>
+                        <p>{maskAccountName(question?.user?.username)}</p>
+                        <span>{formatDateTime(question?.writtenAt)}</span>
                       </div>
                     </div>
                   ))}
                 </div>
                 <DefaultPagination
-                  count={getPageCount(questions?.length)}
+                  count={getPageCount(questions?.total)}
                   page={questionPage}
                   onChange={handleQuestionChangePage}
                 />
@@ -355,6 +387,12 @@ export default function ItemDetailContentMb() {
           />
         )}
       </div>
+      {toastMessage && (
+        <ToastModal
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        />
+      )}
     </MobileLayout>
   );
 }

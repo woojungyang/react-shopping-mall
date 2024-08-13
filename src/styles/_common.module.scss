@@ -473,17 +473,6 @@ input[type="number"] {
       cursor: pointer;
     }
   }
-  .mobile_scroll_top_button {
-    position: fixed;
-    bottom: 70px;
-    right: 16px;
-    background-color: $color-background-100;
-    border-radius: 50%;
-    width: $default * 3;
-    height: $default * 3;
-    @include flex;
-    border: 1px solid $color-skeleton-100;
-  }
 }
 .mobile_options_container {
   background-color: rgba($color: $color-dark-300, $alpha: 0.2);
@@ -776,4 +765,25 @@ input[type="number"] {
   z-index: 100000;
   @include flex;
   background-color: rgba($color-background-100, 0.7);
+}
+
+.scroll_top_button {
+  cursor: pointer;
+  position: fixed;
+  bottom: 10%;
+  right: 2%;
+  background-color: $color-background-100;
+  border-radius: 50%;
+  width: $default * 4.5;
+  height: $default * 4.5;
+  @include flex;
+  border: 1px solid $color-skeleton-100;
+  @include tablet {
+    width: $default * 3.6;
+    height: $default * 3.6;
+  }
+  @include mobile {
+    width: $default * 3;
+    height: $default * 3;
+  }
 }

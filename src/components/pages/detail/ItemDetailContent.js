@@ -146,30 +146,9 @@ export default function ItemDetailContent() {
   return (
     <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
       <div className={styles.item_detail_container}>
-        <div className={styles.item_bottom_navigation}>
-          <div
-            className={styles.navigation_button}
-            onClick={() => setToastMessage("준비중입니다.")}
-          >
-            <ShareIcon style={{ width: "1em", height: "1em" }} />
-          </div>
-          <div className={styles.navigation_button} onClick={scrollTop}>
-            <KeyboardArrowUpIcon />
-          </div>
-          <div className={styles.navigation_button}>
-            <KeyboardArrowDownIcon
-              onClick={() =>
-                window.scrollTo({
-                  top: document.documentElement.scrollHeight,
-                  behavior: "smooth",
-                })
-              }
-            />
-          </div>
-        </div>
         <div className={styles.item_detail_wrapper}>
           <div className={styles.item_content_scroll_wrapper}>
-            <ImageZoomSlider images={item?.thumbnail} />
+            <ImageZoomSlider images={item?.thumbnails} />
           </div>
           <div className={styles.item_content_information_wrapper}>
             <div className={styles.item_header_icon_wrapper}>
@@ -182,7 +161,7 @@ export default function ItemDetailContent() {
 
             <div className={styles.item_header_wrapper}>
               <span className={styles.item_brand_name}>
-                {item?.brandName} | {item?.itemCode}{" "}
+                {item?.brand?.name} | {item?.itemCode}{" "}
               </span>
               <h1 className={styles.item_name}>{item?.itemName}</h1>
             </div>
@@ -335,7 +314,7 @@ export default function ItemDetailContent() {
                 overflow: "hidden",
               }}
             >
-              {item?.detailContent.map((detail, index) => (
+              {item?.detailContents.map((detail, index) => (
                 <img
                   onClick={() => navigation(`/items/${item}`)}
                   src={detail?.content}
