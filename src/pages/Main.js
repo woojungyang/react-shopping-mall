@@ -25,10 +25,15 @@ export default function Main() {
   return (
     <CommonLayout
       toastMessage={toastMessage}
+      setToastMessage={setToastMessage}
       isLoading={isLoading}
       currentTab="/"
     >
-      {isDeskTop ? <MainContent data={data} /> : <MainContentMb data={data} />}
+      {isDeskTop ? (
+        <MainContent data={data} />
+      ) : (
+        <MainContentMb data={data} setToastMessage={setToastMessage} />
+      )}
     </CommonLayout>
   );
 }

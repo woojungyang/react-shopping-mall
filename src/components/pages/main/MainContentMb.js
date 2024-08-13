@@ -21,7 +21,7 @@ import { calculatePercent } from "utilities/calculatePercent";
 
 import styles from "styles/_main.module.scss";
 
-export default function MainContentMb({ data }) {
+export default function MainContentMb({ data, setToastMessage }) {
   const [currentMainSliderIndex, setCurrentMainSliderIndex] = useState(0);
 
   const categoryMenu = [
@@ -66,8 +66,23 @@ export default function MainContentMb({ data }) {
         />
       </div>
 
-      {/*   <div className={styles.category_wrapper_mb}>
-        <ScrollableSlider showScroll={false}>
+      <div className={styles.category_wrapper_mb}>
+        {data?.mobileCategory.map((category, index) => (
+          <div
+            className={styles.category_wrap}
+            key={index}
+            onClick={() => setToastMessage("준비중입니다.")}
+          >
+            {/* <img
+              src="http://via.placeholder.com/100x100"
+              alt=""
+              className={styles.category_icon}
+            /> */}
+            <p className={styles.category_icon}>{category.name}</p>
+            <p className={styles.category_name}>{category.name}</p>
+          </div>
+        ))}
+        {/* <ScrollableSlider showScroll={false}>
           {categoryMenu.map((menu) => (
             <div className={styles.category_wrap_mb}>
               <img
@@ -78,8 +93,8 @@ export default function MainContentMb({ data }) {
               <p className={styles.category_name}>{menu.name}</p>
             </div>
           ))}
-        </ScrollableSlider>
-      </div> */}
+        </ScrollableSlider> */}
+      </div>
 
       {/* for u */}
       <div className={styles.for_u_container}>
@@ -142,7 +157,7 @@ export default function MainContentMb({ data }) {
             infinite: true,
             speed: 500,
             centerMode: true,
-            centerPadding: isMobile ? "40px" : "100px",
+            centerPadding: isMobile ? "40px" : "150px",
             slidesToShow: 1,
             slidesToScroll: 1,
           }}
@@ -207,8 +222,8 @@ export default function MainContentMb({ data }) {
             slidesToScroll: 1,
           }}
         >
-          {data?.brands.map((brand) => (
-            <div className={styles.brand_news_wrapper}>
+          {data?.brands.map((brand, index) => (
+            <div className={styles.brand_news_wrapper} key={index}>
               <img
                 src={brand?.brandThumbnail}
                 className={styles.brand_news_thumbnail}
@@ -220,17 +235,12 @@ export default function MainContentMb({ data }) {
 
               <div className={styles.brands_items_wrapper}>
                 {brand?.items.map((item, index) => (
-                  <SmallCard item={item} showBrand={false} />
+                  <SmallCard item={item} key={index} showBrand={false} />
                 ))}
               </div>
             </div>
           ))}
         </CustomSliderContainer>
-        {/* <BrandNewsContainer brand={data?.brands[0]} />
-        <BrandNewsContainer brand={data?.brands[1]} /> */}
-
-        {/* <BrandNewsContainer brand={data?.brands[2]} />
-        <BrandNewsContainer brand={data?.brands[3]} /> */}
       </div>
       {/* beauty pick */}
       <div className={styles.default_selection_container}>
@@ -242,6 +252,7 @@ export default function MainContentMb({ data }) {
                 showStatus={false}
                 showOriginalPrice={false}
                 item={item}
+                key={index}
                 style={{
                   height: "270px",
                   flex: "0 0 calc(43% - 10px)",
@@ -300,34 +311,6 @@ export default function MainContentMb({ data }) {
           ))}
         </ScrollableSlider>
       </div>
-    </div>
-  );
-}
-
-function BrandNewsContainer({ brand }) {
-  return (
-    <div className={styles.brand_news_container}>
-      <img
-        src={brand?.brandThumbnail}
-        className={styles.brand_news_thumbnail}
-      />
-      <div className={styles.brand_info_wrap}>
-        <div>
-          <h3>{brand?.brandName}</h3>
-          <p>{brand?.copyright}</p>
-        </div>
-        <ChevronRight />
-      </div>
-      <ScrollableSlider>
-        {brand?.items.map((item, index) => (
-          <img
-            key={index}
-            src={item?.thumbnail}
-            alt=""
-            className={styles.brand_item}
-          />
-        ))}
-      </ScrollableSlider>
     </div>
   );
 }

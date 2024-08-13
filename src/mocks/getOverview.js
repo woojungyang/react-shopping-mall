@@ -41,6 +41,10 @@ export default function getDoctors(mock) {
     }
 
     let data = {
+      mobileCategory: new Array(8).fill().map((_, index) => ({
+        id: faker.number.int,
+        name: faker.lorem.word(),
+      })),
       mainSlide: new Array(faker.number.int({ max: 10, min: 5 }))
         .fill()
         .map((_, index) => ({

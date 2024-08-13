@@ -3,14 +3,12 @@
 @mixin default-section {
   margin: 120px auto;
   max-width: $max-width;
-  // border: 1px solid teal;
 }
 
 @mixin default-section_mb {
   margin: 60px auto;
   width: 100%;
   padding: 0 $padding;
-  border: 1px solid teal;
 
   button {
     width: $width_padding;
@@ -527,44 +525,32 @@
   }
 
   .category_wrapper_mb {
-    margin: auto;
-    margin-top: $margin * 1.5;
-    max-width: 710px;
-
-    @media (max-width: 600px) {
-      // padding-left: 30px;
-      margin-right: 0;
-      margin-left: 0;
-      // padding-right: $padding;
-    }
-    .category_wrap_mb {
+    @include default-section_mb;
+    padding: 0 $padding;
+    @include display-grid(
+      $colum: repeat(4, 1fr),
+      $colum-gap: $margin,
+      $row-gap: $default
+    );
+    .category_wrap {
       width: 100%;
-      min-width: 100px;
-      cursor: pointer;
-      margin-right: $default/2;
 
-      &:last-child {
-        margin-right: $padding;
-      }
-      &:first-child {
-        margin-left: $padding;
-      }
       .category_icon {
-        border-radius: 6px;
-        @include default-image;
-        height: 100px;
+        min-width: 57px;
+        min-height: 57px;
+        max-width: 70%;
+        aspect-ratio: auto 1;
+        @include flex;
+        border-radius: 50%;
+        margin: auto;
+        background-color: $color-skeleton-100;
+        font-size: 14px;
+        overflow: hidden;
       }
-
       .category_name {
-        margin-top: $default/4;
-
+        margin-top: $default/2;
         text-align: center;
         font-weight: 500;
-      }
-      @media (max-width: 600px) {
-        &:last-child {
-          margin-right: $padding;
-        }
       }
     }
   }
@@ -741,14 +727,14 @@
       }
 
       &.active {
-        transform: scale(1); // 현재 인덱스일 때는 원래 크기로
+        transform: scale(1);
         height: 400px;
       }
     }
 
     .clearance_item_disabled {
       opacity: 0.7;
-      transform: scale(0.9); // 비활성화된 슬라이드는 크기를 줄입니다.
+      transform: scale(0.9);
       height: 360px;
       padding: 20px 0;
 
@@ -759,37 +745,6 @@
       .clearance_percent {
         top: 10%;
       }
-    }
-
-    .event_header {
-      padding: $padding;
-      position: absolute;
-      // padding-right: $margin;
-      z-index: -1;
-      height: 220px;
-      width: 100%;
-      background-color: #f5f5f5;
-      top: $padding * 2.5;
-      left: 0; // margin: $margin * 2 auto;
-      // @include flex($justify-content: space-between, $align-items: flex-start);
-      // border: 1px solid red;
-      .event_title_line {
-        width: 20px;
-        margin-top: $padding;
-      }
-      .event_subtitle {
-        font-size: 14px;
-      }
-      .event_title {
-        margin-top: $default/2;
-        font-weight: 700;
-        font-size: 18px;
-        @include overflow-text;
-      }
-    }
-    .event_items_body {
-      margin-top: $margin * 7;
-      // padding-right: $default * 2;
     }
   }
   .default_selection_container {
