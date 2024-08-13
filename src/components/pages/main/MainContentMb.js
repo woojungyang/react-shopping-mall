@@ -2,6 +2,11 @@ import React, { useRef, useState } from "react";
 
 import { ChevronRight } from "@mui/icons-material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import classNames from "classnames";
+import { Device } from "models/device";
+import { getDiscountPercent, numberWithCommas } from "utilities";
+
+import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
@@ -18,7 +23,6 @@ import styles from "styles/_main.module.scss";
 
 export default function MainContentMb({ data }) {
   const [currentMainSliderIndex, setCurrentMainSliderIndex] = useState(0);
-  const totalImages = 8;
 
   const categoryMenu = [
     { id: 1, name: "OUTERS" },
@@ -29,14 +33,13 @@ export default function MainContentMb({ data }) {
     { id: 6, name: "BEAUTY" },
   ];
 
-  const [eventItems, setEventItems] = useState([...new Array(10)]);
-  const [bestItems, setBestItems] = useState([...new Array(8)]);
-
-  const [collaborationItems, setCollaborationItems] = useState([
-    ...new Array(2),
-  ]);
+  const [clearanceCurrentIndex, setClearanceCurrentIndex] = useState(0);
 
   const [moreFocus, setMoreFocus] = useState(1);
+
+  const userDevice = useUserDevice();
+  const isMobile = userDevice == Device.Mobile;
+
   if (!data) return null;
 
   return (
@@ -56,7 +59,10 @@ export default function MainContentMb({ data }) {
             marginTop: -5,
             width: `100%`,
           }}
-          percent={calculatePercent(currentMainSliderIndex, totalImages)}
+          percent={calculatePercent(
+            currentMainSliderIndex,
+            data?.mainSlide?.length,
+          )}
         />
       </div>
 
@@ -129,33 +135,47 @@ export default function MainContentMb({ data }) {
       </div>
       {/* sale */}
       <div className={styles.clearance_container}>
-        <div className={styles.event_header}>
-          <p className={styles.event_subtitle}>CLEARANCE</p>
-          <p className={styles.event_title}>AD COPYRIGHT</p>
-          <hr className={styles.event_title_line} />
-        </div>
-        <div className={styles.event_items_body}>
-          <ScrollableSlider scrollBgColor="white" scrollPercentColor="black">
-            {data?.clearances?.items?.map((item, index) => (
-              <ItemCard
+        <h3 className={styles.section_title}>CLEARANCE</h3>
+        <CustomSliderContainer
+          setCurrentIndex={setClearanceCurrentIndex}
+          settings={{
+            infinite: true,
+            speed: 500,
+            centerMode: true,
+            centerPadding: isMobile ? "40px" : "100px",
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          }}
+        >
+          {data?.clearances?.items?.map((item, index) => {
+            const checkIndex = clearanceCurrentIndex == index;
+            return (
+              <div
+                className={classNames({
+                  [styles.clearance_item]: true,
+                  [styles.clearance_item_disabled]: !checkIndex,
+                })}
                 key={index}
-                item={item}
-                style={{
-                  height: 230,
-                  flex: "0 0 calc(33.3333% - 10px)",
-                  minWidth: 150,
-                  marginLeft: index == 0 ? 48 : 0,
-                }}
-              />
-            ))}
-          </ScrollableSlider>
-        </div>
+              >
+                <img src={item.thumbnail} />
 
-        {/*  <DefaultButton className={styles.button_dark_300}>
-          <p>다른 기획전 보기 1/1</p>
-          <RotateLeftIcon />
-        </DefaultButton> */}
+                <span className={styles.clearance_percent}>
+                  {getDiscountPercent(item.price, item.originalPrice)}%
+                </span>
+
+                <div className={styles.clearance_item_info}>
+                  <p className={styles.brand}>{item?.brandName}</p>
+                  <p className={styles.item_name}>{item?.itemName}</p>
+                  <p className={styles.price}>
+                    {numberWithCommas(item?.price)}원
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </CustomSliderContainer>
       </div>
+
       {/* mark it */}
       <div className={styles.default_selection_container}>
         <h3 className={styles.section_title}>MARK IT</h3>
@@ -182,7 +202,7 @@ export default function MainContentMb({ data }) {
             infinite: true,
             speed: 500,
             centerMode: true,
-            centerPadding: "15px",
+            centerPadding: isMobile ? "15px" : "40px",
             slidesToShow: 1,
             slidesToScroll: 1,
           }}

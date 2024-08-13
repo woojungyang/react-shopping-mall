@@ -687,18 +687,92 @@
   }
 
   .clearance_container {
+    @include default-section_mb;
     position: relative;
-    @include default-section;
+    height: 450px;
+
+    .clearance_item {
+      height: 400px;
+      position: relative;
+      @include flex($direction: column);
+
+      img {
+        @include default-image;
+        height: 300px;
+      }
+
+      transition:
+        transform 0.5s ease-in-out,
+        height 0.5s ease-in-out;
+
+      .clearance_percent {
+        position: absolute;
+        top: 5%;
+        left: 5%;
+        z-index: 2;
+        width: $margin * 3;
+        height: $margin * 3;
+        background-color: $color-primary-200;
+        border-radius: 50%;
+        @include flex;
+        color: $color-background-100;
+        font-weight: 500;
+        font-size: $margin;
+      }
+
+      .clearance_item_info {
+        margin: $default 0;
+        font-size: 14px;
+
+        .brand {
+          font-weight: 600;
+          @include overflow-text($clamp: 1);
+        }
+
+        .item_name {
+          color: $color-skeleton-200;
+          @include overflow-text($clamp: 1);
+          margin: $default / 2 0;
+        }
+
+        .price {
+          font-weight: 700;
+        }
+      }
+
+      &.active {
+        transform: scale(1); // 현재 인덱스일 때는 원래 크기로
+        height: 400px;
+      }
+    }
+
+    .clearance_item_disabled {
+      opacity: 0.7;
+      transform: scale(0.9); // 비활성화된 슬라이드는 크기를 줄입니다.
+      height: 360px;
+      padding: 20px 0;
+
+      img {
+        height: 320px;
+      }
+
+      .clearance_percent {
+        top: 10%;
+      }
+    }
+
     .event_header {
+      padding: $padding;
       position: absolute;
-      padding-right: $margin;
+      // padding-right: $margin;
       z-index: -1;
       height: 220px;
       width: 100%;
       background-color: #f5f5f5;
+      top: $padding * 2.5;
       left: 0; // margin: $margin * 2 auto;
-      @include flex($justify-content: space-between, $align-items: flex-start);
-      border: 1px solid red;
+      // @include flex($justify-content: space-between, $align-items: flex-start);
+      // border: 1px solid red;
       .event_title_line {
         width: 20px;
         margin-top: $padding;

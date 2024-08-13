@@ -13,7 +13,7 @@
     justify-content: center !important;
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 1024px) {
     .slick-slide {
       padding: 0 3px !important;
     }
