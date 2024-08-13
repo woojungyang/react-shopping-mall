@@ -1,7 +1,6 @@
-import React, { forwardRef, useCallback, useState } from "react";
+import React, { forwardRef } from "react";
 
 import Slider from "react-slick";
-import { router } from "routes";
 
 import "styles/basic-react-slick.css";
 

@@ -20,6 +20,7 @@ export const CommonLayout = ({
   toastMessage = "",
   setToastMessage,
   isLoading = false,
+  currentTab = "",
 }) => {
   const { innerWidth } = window;
   const userDevice = useUserDevice();
@@ -40,7 +41,7 @@ export const CommonLayout = ({
       {isLoading && <LoadingLayer />}
       <Header />
       <div className={styles.common_layout_content_wrapper}>{children}</div>
-      {!isDeskTop && <BottomNavigation />}
+      {!isDeskTop && <BottomNavigation currentTab={currentTab} />}
       <Footer />
       {toastMessage && (
         <ToastModal

@@ -23,7 +23,11 @@ export default function Main() {
   });
 
   return (
-    <CommonLayout toastMessage={toastMessage} isLoading={isLoading}>
+    <CommonLayout
+      toastMessage={toastMessage}
+      isLoading={isLoading}
+      currentTab="/"
+    >
       {isDeskTop ? <MainContent data={data} /> : <MainContentMb data={data} />}
     </CommonLayout>
   );

@@ -76,10 +76,8 @@ export default function MainContentMb({ data }) {
       </div> */}
 
       {/* for u */}
-      <div className={styles.best_item_wrapper}>
-        <div className={styles.default_flex_space}>
-          <h3>ITEMS FOR YOU</h3>
-        </div>
+      <div className={styles.for_u_container}>
+        <h3 className={styles.section_title}>ITEMS FOR YOU</h3>
         <div className={styles.scrollable_container}>
           <CustomSliderContainer
             arrows={false}
@@ -106,21 +104,35 @@ export default function MainContentMb({ data }) {
             ))}
           </CustomSliderContainer>
         </div>
-
-        {/* <DefaultButton className={styles.button_background_100_outline}>
-          <p>추천상품 전체보기</p>
-          <KeyboardArrowRightIcon />
-        </DefaultButton> */}
       </div>
-      {/* event */}
-      <div className={styles.event_wrapper_mb}>
+      {/* spotlight */}
+      <div className={styles.spotlight_container}>
+        <h3 className={styles.section_title}>SPOTLIGHT</h3>
+        <div className={styles.spotlight_wrapper}>
+          {data?.events?.map((event, index) => (
+            <div
+              className={styles.spotlight_wrap}
+              key={index}
+              style={{
+                flex: index === 0 ? "1 1 100%" : "1 1 calc(50% - 10px)",
+              }}
+            >
+              <img src={event?.thumbnail} />
+              <p className={styles.spotlight_title}>{event?.title}</p>
+              <p className={styles.spotlight_subtitle}>{event?.subTitle}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className={styles.banner_container}>
+        <img src={require("assets/images/common/banner.jpg")} alt="" />
+      </div>
+      {/* sale */}
+      <div className={styles.clearance_container}>
         <div className={styles.event_header}>
-          <div>
-            <p className={styles.event_subtitle}>CLEARANCE</p>
-            <p className={styles.event_title}>AD COPYRIGHT</p>
-            <hr className={styles.event_title_line} />
-          </div>
-          <ChevronRight />
+          <p className={styles.event_subtitle}>CLEARANCE</p>
+          <p className={styles.event_title}>AD COPYRIGHT</p>
+          <hr className={styles.event_title_line} />
         </div>
         <div className={styles.event_items_body}>
           <ScrollableSlider scrollBgColor="white" scrollPercentColor="black">
@@ -144,8 +156,9 @@ export default function MainContentMb({ data }) {
           <RotateLeftIcon />
         </DefaultButton> */}
       </div>
-      <div className={styles.best_item_wrapper}>
-        <h3>MARK IT</h3>
+      {/* mark it */}
+      <div className={styles.default_selection_container}>
+        <h3 className={styles.section_title}>MARK IT</h3>
         <ScrollableSlider>
           {data?.bestItems?.map((item, index) => (
             <ItemCard
@@ -160,11 +173,6 @@ export default function MainContentMb({ data }) {
             />
           ))}
         </ScrollableSlider>
-
-        <DefaultButton className={styles.button_background_100_outline}>
-          <p>상품 더보기</p>
-          <KeyboardArrowRightIcon />
-        </DefaultButton>
       </div>
       {/* brand news */}
       <div className={styles.brand_news_container}>
@@ -204,6 +212,25 @@ export default function MainContentMb({ data }) {
         {/* <BrandNewsContainer brand={data?.brands[2]} />
         <BrandNewsContainer brand={data?.brands[3]} /> */}
       </div>
+      {/* beauty pick */}
+      <div className={styles.default_selection_container}>
+        <h3 className={styles.section_title}>BEAUTY CHOICE</h3>
+        <ScrollableSlider>
+          {data?.mdChoice?.items?.map((item, index) => {
+            return (
+              <ItemCard
+                showStatus={false}
+                showOriginalPrice={false}
+                item={item}
+                style={{
+                  height: "270px",
+                  flex: "0 0 calc(43% - 10px)",
+                }}
+              />
+            );
+          })}
+        </ScrollableSlider>
+      </div>
       {/* focus */}
       <div className={styles.deep_in_focus_container}>
         <h3 className={styles.section_title}>DEPP IN FOCUS</h3>
@@ -234,57 +261,9 @@ export default function MainContentMb({ data }) {
           />
         )}
       </div>
-
-      {/* <div className={styles.brand_news_wrapper}>
-        <div className={styles.band_thumbnail_wrapper}>
-          <img src={require("assets/images/sub/sub24.jpg")} alt="" />
-          <div className={styles.brand_copyright}>
-            <h2>Lorem ipsum dolor</h2>
-            <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore
-              nostrum ducimus repudiandae perspiciatis nisi, nihil aspernatur
-              corrupti maiores nobis earum, suscipit soluta rerum sit sapiente
-              doloremque, repellendus vel. Fugit, molestias!
-            </p>
-          </div>
-        </div>
-        {collaborationItems.map((e) => (
-          <div className={styles.brand_item_wrap}>
-            <SmallCard />
-          </div>
-        ))}
-      </div> */}
-      {/* <div className={styles.event_wrapper_mb2}>
-        <h3>SHOPPING NEWS</h3>
-
-        <p className={styles.title}>안타티카 단독 시즌 클리어런스</p>
-        <p className={styles.sub_title}>오직 우티크에서만, UP TO 70% OFF</p>
-
-        <img
-          src={require("assets/images/sub/sub24.jpg")}
-          alt=""
-          className={styles.event_banner_mb}
-        />
-        <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
-          {bestItems.map((item, index) => (
-            <ItemCard
-              showStatus={false}
-              showBrand={false}
-              showOriginalPrice={false}
-              key={index}
-              product={item}
-              style={{
-                height: 250,
-                flex: "0 0 calc(28% - 10px)",
-                minWidth: 150,
-              }}
-            />
-          ))}
-        </ScrollableSlider>
-      </div> */}
-
-      {/* <div className={styles.best_item_wrapper}>
-        <h3>STYLE PICK +</h3>
+      {/* style */}
+      <div className={styles.default_selection_container}>
+        <h3 className={styles.section_title}>STYLE PICK +</h3>
         <ScrollableSlider>
           {data?.userStyles.map((userStyle, index) => (
             <img
@@ -293,19 +272,14 @@ export default function MainContentMb({ data }) {
               alt=""
               style={{
                 height: 150,
-                flex: "0 0 calc(23% - 10px)",
+                flex: "0 0 calc(23% - 5px)",
                 minWidth: 120,
               }}
               className={styles.style_card}
             />
           ))}
         </ScrollableSlider>
-
-        <DefaultButton className={styles.button_background_100_outline}>
-          <p>스타일 더보기</p>
-          <KeyboardArrowRightIcon />
-        </DefaultButton>
-      </div> */}
+      </div>
     </div>
   );
 }

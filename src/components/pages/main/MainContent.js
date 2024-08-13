@@ -120,7 +120,7 @@ export default function MainContent({ data }) {
       </div>
       {/* mdpick */}
       <div className={styles.md_pick_wrapper}>
-        <h4 className={styles.section_title}>MD CHOICE+</h4>
+        <h4 className={styles.section_title}>BEAUTY CHOICE+</h4>
         <div className={styles.md_pick_wrap}>
           <div className={styles.md_pick_slider}>
             <CustomSliderContainer
