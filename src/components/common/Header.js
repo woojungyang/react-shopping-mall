@@ -6,6 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import classNames from "classnames";
 import { Device } from "models/device";
+import { userToken } from "models/user";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
@@ -56,14 +57,17 @@ export default function Header() {
                 onClick={() => navigation("/")}
               />
               <div className={styles.user_wrapper}>
-                <div onClick={() => navigation("/login")}>
-                  <ExitToAppIcon />
-                  <p>LOGIN</p>
-                </div>
-                <div onClick={() => navigation("/mypage")}>
-                  <Person2Icon />
-                  <p>MY</p>
-                </div>
+                {!userToken ? (
+                  <div onClick={() => navigation("/login")}>
+                    <ExitToAppIcon />
+                    <p>LOGIN</p>
+                  </div>
+                ) : (
+                  <div onClick={() => navigation("/mypage")}>
+                    <Person2Icon />
+                    <p>MY</p>
+                  </div>
+                )}
                 <div onClick={() => setShowSearch(!showSearch)}>
                   <SearchIcon />
                   <p>SEARCH</p>
@@ -117,6 +121,7 @@ export default function Header() {
           <div className={styles.mb_scroll_menu_wrapper}>
             {mobileMenu.map((e, index) => (
               <p
+                key={index}
                 className={classNames({
                   [styles.default_scroll_menu]: true,
                   [styles.active_scroll_menu]: activeMobilMenu == e.id,

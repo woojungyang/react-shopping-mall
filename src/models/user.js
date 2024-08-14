@@ -1,6 +1,6 @@
 import { enumerate } from "utilities/enumeration";
 
-export const userTokens = localStorage.getItem("tokens");
+export const userToken = localStorage.getItem("token");
 
 export const MembershipRank = enumerate({
   Basic: 1,

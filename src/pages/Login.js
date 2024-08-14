@@ -4,7 +4,9 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 
-import { CommonLayout, DefaultButton } from "components/common";
+import useAuthMutation from "hooks/mutation/useAuthMutation";
+
+import { CommonLayout, DefaultButton, LoadingLayer } from "components/common";
 import { DefaultInput } from "components/common/DefaultInput";
 
 import { checkEmail, checkPassword } from "utilities/checkExpression";
@@ -20,6 +22,7 @@ export default function Login() {
   }
   const [showPassword, setShowPassword] = useState(false);
 
+  const authMutation = useAuthMutation();
   async function requestLogin() {
     try {
       if (!inputValues.username || !checkEmail(inputValues.username))
@@ -28,7 +31,11 @@ export default function Login() {
         alert(
           "비밀번호를 입력해주세요. 비밀번호는 영문+숫자+특스문자 조합 8~16자리입니다",
         );
-      else alert("로그인 성공");
+      else {
+        const result = await authMutation.mutateAsync(inputValues);
+
+        if (result.token) localStorage.setItem("token", result.token);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -36,6 +43,7 @@ export default function Login() {
 
   return (
     <CommonLayout>
+      {authMutation.isLoading && <LoadingLayer />}
       <div className={styles.user_container}>
         <h1>로그인</h1>
         <DefaultInput

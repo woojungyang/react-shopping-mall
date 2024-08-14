@@ -6,6 +6,7 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import PersonIcon from "@mui/icons-material/Person";
 import StoreIcon from "@mui/icons-material/Store";
 import classNames from "classnames";
+import { userToken } from "models/user";
 import { useNavigate } from "react-router-dom";
 
 import { ToastModal } from "components/modal";
@@ -37,7 +38,7 @@ export default function BottomNavigation({ currentTab }) {
     {
       id: 5,
       name: "마이",
-      url: "/mypage",
+      url: userToken ? "/mypage" : "/login",
       icon: <PersonIcon />,
     },
   ];

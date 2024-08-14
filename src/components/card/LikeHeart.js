@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import { userTokens } from "models/user";
+import { userToken } from "models/user";
 import { useNavigate } from "react-router-dom";
 
 export const LikeHeart = ({
@@ -16,7 +16,7 @@ export const LikeHeart = ({
   const [status, setStatus] = useState(like);
   function LikeItem(event) {
     event.stopPropagation();
-    if (!userTokens) navigation("/login");
+    if (!userToken) navigation("/login");
     else {
       if (readOnly) onClick?.();
       else setStatus(!status);
