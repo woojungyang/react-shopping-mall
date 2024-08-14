@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import classNames from "classnames";
 
 import { DefaultButton } from "components/common";
 
@@ -12,18 +13,13 @@ export const OptionsMobile = ({
   leftButton = {},
   rightButton = {},
   setVisible,
-  setOptionChanges,
-  optionsChanges,
   isQuantity = true,
+  options = [],
+  selectedItemOptions,
+  setSelectedItemOptions,
+  setToastMessage,
 }) => {
   const [showOptions, setShowOptions] = useState(false);
-
-  const [itemOptions, setItemOptions] = useState(
-    Array.from({ length: 4 }, (v, index) => ({
-      id: index,
-      name: "item" + index,
-    })),
-  );
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -47,6 +43,20 @@ export const OptionsMobile = ({
     };
   }, [showOptions]);
 
+  useEffect(() => {
+    if (selectedItemOptions?.size && !!selectedItemOptions?.quantity) {
+      if (selectedItemOptions?.quantity > selectedItemOptions.inventory) {
+        setToastMessage(
+          `최대 구매 가능한 수량은${selectedItemOptions?.inventory}개 입니다. `,
+        );
+        setSelectedItemOptions({
+          ...selectedItemOptions,
+          quantity: selectedItemOptions.inventory,
+        });
+      }
+    }
+  }, [selectedItemOptions]);
+
   return (
     <div
       className={styles.mobile_options_container}
@@ -64,26 +74,25 @@ export const OptionsMobile = ({
           }}
         >
           <p>
-            {!optionsChanges?.option
-              ? "옵션 선택"
-              : itemOptions?.find((item) => item.id == optionsChanges?.option)
-                  .name}
+            {options?.find((item) => item.id == selectedItemOptions.id)?.name ||
+              "옵션선택"}
           </p>
           <KeyboardArrowDownIcon />
           {showOptions && (
             <div className={styles.select_box_options_wrapper}>
-              {itemOptions?.map((itemOption, index) => (
+              {options?.map((option, index) => (
                 <p
                   key={index}
-                  className={styles.select_box_option}
+                  className={classNames({
+                    [styles.select_box_option]: true,
+                    [styles.select_box_option_disabled]: option.inventory == 0,
+                  })}
                   onClick={() => {
-                    setOptionChanges({
-                      ...optionsChanges,
-                      option: itemOption.id,
-                    });
+                    if (option.inventory > 0) setSelectedItemOptions(option);
+                    else setShowOptions(true);
                   }}
                 >
-                  {itemOption.name}
+                  {option.name}
                 </p>
               ))}
             </div>
@@ -91,8 +100,8 @@ export const OptionsMobile = ({
         </div>
         {isQuantity && (
           <QuantityOptions
-            setSelectedOptions={setOptionChanges}
-            selectedItemOptions={optionsChanges}
+            setSelectedOptions={setSelectedItemOptions}
+            selectedItemOptions={selectedItemOptions}
           />
         )}
 

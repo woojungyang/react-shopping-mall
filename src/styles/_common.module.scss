@@ -522,6 +522,9 @@ input[type="number"] {
           width: 100%;
           padding: $default;
         }
+        .select_box_option_disabled {
+          color: $color-skeleton-100;
+        }
       }
     }
     .options_button_warp {
@@ -767,23 +770,34 @@ input[type="number"] {
   background-color: rgba($color-background-100, 0.7);
 }
 
-.scroll_top_button {
-  cursor: pointer;
+.scroll_top_button_wrapper {
   position: fixed;
   bottom: 10%;
   right: 2%;
-  background-color: $color-background-100;
-  border-radius: 50%;
-  width: $default * 4.5;
-  height: $default * 4.5;
+  @include flex($direction: column);
+
+  row-gap: 0.5em;
+  .scroll_top_button {
+    cursor: pointer;
+    background-color: $color-background-100;
+    border-radius: 50%;
+    width: $default * 4.5;
+    height: $default * 4.5;
+    @include flex;
+    border: 1px solid $color-skeleton-100;
+    @include tablet {
+      width: $default * 3.6;
+      height: $default * 3.6;
+    }
+    @include mobile {
+      width: $default * 3;
+      height: $default * 3;
+    }
+  }
+}
+
+.circular_process_wrapper {
+  width: 100%;
+  height: 500px;
   @include flex;
-  border: 1px solid $color-skeleton-100;
-  @include tablet {
-    width: $default * 3.6;
-    height: $default * 3.6;
-  }
-  @include mobile {
-    width: $default * 3;
-    height: $default * 3;
-  }
 }

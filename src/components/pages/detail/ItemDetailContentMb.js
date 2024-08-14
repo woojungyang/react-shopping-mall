@@ -28,7 +28,7 @@ import { OptionsMobile } from "components/detail";
 import { ToastModal } from "components/modal";
 import { ImageZoomSlider, ScrollableSlider } from "components/slider";
 
-import { formatDateTime, now } from "utilities/dateTime";
+import { formatDateTime } from "utilities/dateTime";
 
 import styles from "styles/_detail.module.scss";
 
@@ -38,54 +38,18 @@ import ReviewRating from "./ReviewRating";
 import TabsWrapper from "./TabsWrapper";
 
 export default function ItemDetailContentMb() {
+  const { id } = useParams();
   const navigation = useNavigate();
-
-  const [toggleDelivery, setToggleDelivery] = useState(false);
-  const [deliveryModal, setDeliveryModal] = useState(false);
-
-  const today = useMemo(() => formatDateTime(now(), "MM월dd일-w"), []);
-
-  const [selectedItemOptions, setSelectedOptions] = useState({
-    color: 0,
-    quantity: 1,
-  });
-
-  const toggleDrawer = (newOpen) => () => {
-    setDeliveryModal(newOpen);
-  };
-
-  const detailRef = useRef(null);
-
-  const [moreContents, setMoreContents] = useState(true);
-
-  const { scrollToElement, setElementRef } = useScrollToElement();
-
-  const [showOptionModal, setShowOptionModal] = useState(false);
-  const [optionsChanges, setOptionChanges] = useState({});
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (detailRef.current) {
-        const clientHeight = detailRef.current.clientHeight;
-        setMoreContents(clientHeight > 500);
-      }
-    }, 0);
-  }, []);
-
-  useEffect(() => {
-    if (showOptionModal) document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [showOptionModal]);
 
   const [toastMessage, setToastMessage] = useState("");
 
-  const { id } = useParams();
+  const [selectedItemOptions, setSelectedItemOptions] = useState({});
   const { data: item, isLoading } = useItemQuery(id, {
     onSuccess: (data) => {
-      setSelectedOptions({ ...selectedItemOptions, color: data.colors[0]?.id });
+      setSelectedItemOptions({
+        ...selectedItemOptions,
+        color: data.colors[0]?.id,
+      });
     },
     onError: (error) => {
       setToastMessage(error.message);
@@ -122,6 +86,38 @@ export default function ItemDetailContentMb() {
       },
     },
   );
+
+  const [deliveryModal, setDeliveryModal] = useState(false);
+  const toggleDrawer = (newOpen) => () => {
+    setDeliveryModal(newOpen);
+  };
+
+  const detailRef = useRef(null);
+  const [moreContents, setMoreContents] = useState(true);
+
+  const { scrollToElement, setElementRef } = useScrollToElement();
+
+  const [showOptionModal, setShowOptionModal] = useState(false);
+  const [optionsChanges, setOptionChanges] = useState({});
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (detailRef.current) {
+        const clientHeight = detailRef.current.clientHeight;
+        setMoreContents(clientHeight > 500);
+      }
+    }, 0);
+  }, []);
+
+  useEffect(() => {
+    if (showOptionModal) document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showOptionModal]);
+
+  console.log(item?.options);
 
   if (!item || isLoading || reviewLoading || questionLoading)
     return <LoadingLayer />;
@@ -371,9 +367,17 @@ export default function ItemDetailContentMb() {
         <DeliveryDrawer visible={deliveryModal} setVisible={setDeliveryModal} />
         {showOptionModal && (
           <OptionsMobile
+            options={item?.options
+              .sort((a, b) => a?.color?.localeCompare(b.color))
+              .map((option) => ({
+                id: option.id,
+                name: `${option.color} | ${option.size}`,
+                inventory: option.inventory,
+              }))}
             setVisible={setShowOptionModal}
-            optionsChanges={showOptionModal}
-            setOptionChanges={setOptionChanges}
+            visible={showOptionModal}
+            selectedItemOptions={selectedItemOptions}
+            setSelectedItemOptions={setSelectedItemOptions}
             leftButton={{
               label: "바로구매",
               onClick: () => {},
@@ -384,6 +388,7 @@ export default function ItemDetailContentMb() {
                 setShowOptionModal(false);
               },
             }}
+            setToastMessage={setToastMessage}
           />
         )}
       </div>

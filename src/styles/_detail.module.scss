@@ -5,7 +5,7 @@
 }
 
 .item_detail_container {
-  padding: $header-height * 1.5;
+  padding-top: $header-height * 1.5;
   @include mobile {
     padding-top: $header-height-mb2;
   }
@@ -30,6 +30,7 @@
 
       margin-right: $default * 3;
       height: 800px;
+
       max-width: 100%;
       min-width: 0;
 
@@ -394,6 +395,7 @@
       }
     }
     .reviews_wrapper {
+      position: relative;
       .detail_review {
         padding-top: $padding;
         padding-bottom: $padding;

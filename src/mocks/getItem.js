@@ -20,6 +20,9 @@ export default function getItem(mock) {
     );
   }
 
+  const sizes = new Array(4).fill().map((_, index) => faker.lorem.word());
+  const colors = new Array(4).fill().map((_, index) => faker.lorem.word());
+
   let collection = {
     id: faker.number.int(),
 
@@ -58,20 +61,17 @@ export default function getItem(mock) {
         content: fakerMainImage(),
       })),
     reviewRate: faker.number.int({ max: 5, min: 1 }),
-    colors: new Array(faker.number.int({ max: 10, min: 5 }))
-      .fill()
-      .map((_, index) => ({
+
+    options: sizes.flatMap((e) =>
+      colors.map((c) => ({
         id: faker.number.int(),
-        thumbnail: fakerSubImage(),
-        name: faker.lorem.word(),
-      })),
-    sizes: new Array(faker.number.int({ max: 10, min: 0 }))
-      .fill()
-      .map((_, index) => ({
-        id: faker.number.int(),
+        size: e,
+        color: c,
         inventory: faker.number.int({ max: 10, min: 0 }),
-        size: faker.lorem.word(),
+        thumbnail: fakerSubImage(),
       })),
+    ),
+
     brand: {
       id: faker.number.int(),
       name: faker.company.name(),

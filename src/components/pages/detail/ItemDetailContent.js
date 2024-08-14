@@ -4,8 +4,6 @@ import EastIcon from "@mui/icons-material/East";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import ShareIcon from "@mui/icons-material/Share";
 import { Rating } from "@mui/material";
 import { getQuestionStateLabel } from "models/notice";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,7 +12,6 @@ import {
   maskAccountName,
   numberToKorean,
   numberWithCommas,
-  scrollTop,
 } from "utilities";
 
 import useItemQuery from "hooks/query/useItemQuery";
@@ -27,6 +24,7 @@ import { ItemCard, LikeHeart } from "components/card";
 import {
   DefaultPagination,
   ListContent,
+  Loading,
   LoadingLayer,
 } from "components/common";
 import { CommonLayout, DefaultButton } from "components/common";
@@ -54,14 +52,11 @@ export default function ItemDetailContent() {
 
   const [toastMessage, setToastMessage] = useState("");
 
-  const [selectedItemOptions, setSelectedOptions] = useState({
-    color: "",
-    quantity: 1,
-  });
+  const [selectedItemOptions, setSelectedOptions] = useState({});
 
   const { data: item, isLoading } = useItemQuery(id, {
     onSuccess: (data) => {
-      setSelectedOptions({ ...selectedItemOptions, color: data.colors[0]?.id });
+      setSelectedOptions(data.options.find((option) => option.inventory > 0));
     },
     onError: (error) => {
       setToastMessage(error.message);
@@ -124,24 +119,19 @@ export default function ItemDetailContent() {
 
   useEffect(() => {
     if (selectedItemOptions?.size && !!selectedItemOptions?.quantity) {
-      const checkInventory = item.sizes.find(
-        (size) => size.id == selectedItemOptions.size,
-      );
-      if (selectedItemOptions?.quantity > checkInventory.inventory) {
+      if (selectedItemOptions?.quantity > selectedItemOptions.inventory) {
         setToastMessage(
-          `최대 구매 가능한 수량은${checkInventory?.inventory}개 입니다. `,
+          `최대 구매 가능한 수량은${selectedItemOptions?.inventory}개 입니다. `,
         );
         setSelectedOptions({
           ...selectedItemOptions,
-          quantity: checkInventory.inventory,
+          quantity: selectedItemOptions.inventory,
         });
       }
-      console.log(checkInventory);
     }
   }, [selectedItemOptions]);
 
-  if (!item || isLoading || reviewLoading || questionLoading)
-    return <LoadingLayer />;
+  if (!item || isLoading) return <LoadingLayer />;
 
   return (
     <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
@@ -247,12 +237,19 @@ export default function ItemDetailContent() {
             <ColorOptions
               selectedItemOptions={selectedItemOptions}
               setSelectedOptions={setSelectedOptions}
-              colorOptions={item?.colors}
+              colorOptions={item?.options?.reduce((acc, current) => {
+                if (!acc.some((item) => item.color === current.color)) {
+                  acc.push(current);
+                }
+                return acc;
+              }, [])}
             />
             <SizeOptions
               selectedItemOptions={selectedItemOptions}
               setSelectedOptions={setSelectedOptions}
-              sizeOptions={item?.sizes}
+              sizeOptions={item?.options?.filter(
+                (option) => option.color == selectedItemOptions.color,
+              )}
             />
             <QuantityOptions
               selectedItemOptions={selectedItemOptions}
@@ -384,7 +381,10 @@ export default function ItemDetailContent() {
             className={styles.review_bottom_container}
           >
             <TabsWrapper scrollToElement={scrollToElement} activeTab="review" />
-            {reviews?.total > 0 ? (
+
+            {reviewLoading ? (
+              <Loading />
+            ) : reviews?.total > 0 ? (
               <>
                 <div className={styles.review_bottom_wrapper}>
                   <p className={styles.rating_title}>
@@ -439,7 +439,9 @@ export default function ItemDetailContent() {
             className={styles.questions_container}
           >
             <TabsWrapper scrollToElement={scrollToElement} activeTab="q&a" />
-            {questions?.total > 0 ? (
+            {questionLoading ? (
+              <Loading />
+            ) : questions?.total > 0 ? (
               <>
                 <div
                   className={styles.questions_wrapper}

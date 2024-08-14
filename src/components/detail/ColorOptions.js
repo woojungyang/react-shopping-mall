@@ -16,21 +16,22 @@ export const ColorOptions = ({
       <div className={styles.color_options_wrapper}>
         <p className={styles.selected_option_name}>
           {
-            colorOptions?.find((color) => color.id == selectedItemOptions.color)
-              ?.name
+            colorOptions?.find(
+              (color) => color.color == selectedItemOptions.color,
+            )?.color
           }
         </p>
 
         <div className={styles.color_options_wrap}>
           {colorOptions.map((option, index) => {
-            const isSelected = selectedItemOptions?.color == option.id;
+            const isSelected = selectedItemOptions?.color == option.color;
             return (
               <div
                 key={index}
                 onClick={() => {
                   setSelectedOptions({
                     ...selectedItemOptions,
-                    color: isSelected ? null : option.id,
+                    color: isSelected ? null : option.color,
                   });
                 }}
                 className={classNames({
