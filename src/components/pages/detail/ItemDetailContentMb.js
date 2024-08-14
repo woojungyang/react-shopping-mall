@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -11,6 +11,7 @@ import {
   numberWithCommas,
 } from "utilities";
 
+import useCartItemMutation from "hooks/mutation/useCartItemMutation";
 import useItemQuery from "hooks/query/useItemQuery";
 import useItemQuestionsQuery from "hooks/query/useItemQuestionsQuery";
 import useItemReviewsQuery from "hooks/query/useItemReviewsQuery";
@@ -20,6 +21,7 @@ import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 import { ItemCard, LikeHeart } from "components/card";
 import {
   DefaultPagination,
+  Loading,
   LoadingLayer,
   MobileLayout,
 } from "components/common";
@@ -43,14 +45,10 @@ export default function ItemDetailContentMb() {
 
   const [toastMessage, setToastMessage] = useState("");
 
+  const [showOptionModal, setShowOptionModal] = useState(false);
   const [selectedItemOptions, setSelectedItemOptions] = useState({});
+
   const { data: item, isLoading } = useItemQuery(id, {
-    onSuccess: (data) => {
-      setSelectedItemOptions({
-        ...selectedItemOptions,
-        color: data.colors[0]?.id,
-      });
-    },
     onError: (error) => {
       setToastMessage(error.message);
     },
@@ -97,9 +95,6 @@ export default function ItemDetailContentMb() {
 
   const { scrollToElement, setElementRef } = useScrollToElement();
 
-  const [showOptionModal, setShowOptionModal] = useState(false);
-  const [optionsChanges, setOptionChanges] = useState({});
-
   useEffect(() => {
     setTimeout(() => {
       if (detailRef.current) {
@@ -117,10 +112,19 @@ export default function ItemDetailContentMb() {
     };
   }, [showOptionModal]);
 
-  console.log(item?.options);
+  const cartItemMutation = useCartItemMutation(id);
+  async function requestPatchCartItem() {
+    try {
+      await cartItemMutation.mutateAsync({
+        itemId: id,
+        option: selectedItemOptions.id,
+      });
+    } catch (err) {
+      setToastMessage(err.message);
+    }
+  }
 
-  if (!item || isLoading || reviewLoading || questionLoading)
-    return <LoadingLayer />;
+  if (!item || isLoading || cartItemMutation.isLoading) return <LoadingLayer />;
 
   return (
     <MobileLayout isFooter={true}>
@@ -270,7 +274,9 @@ export default function ItemDetailContentMb() {
             className={styles.review_bottom_container}
           >
             <TabsWrapper scrollToElement={scrollToElement} activeTab="review" />
-            {reviews.total > 0 ? (
+            {reviewLoading ? (
+              <Loading />
+            ) : reviews?.total > 0 ? (
               <>
                 <div className={styles.review_bottom_wrapper}>
                   <p className={styles.rating_title}>
@@ -321,7 +327,9 @@ export default function ItemDetailContentMb() {
             className={styles.questions_container}
           >
             <TabsWrapper scrollToElement={scrollToElement} activeTab="q&a" />
-            {questions?.total > 0 ? (
+            {questionLoading ? (
+              <Loading />
+            ) : questions?.total > 0 ? (
               <>
                 <div className={styles.questions_wrapper}>
                   {questions?.data?.map((question, index) => (
@@ -380,12 +388,21 @@ export default function ItemDetailContentMb() {
             setSelectedItemOptions={setSelectedItemOptions}
             leftButton={{
               label: "바로구매",
-              onClick: () => {},
+              onClick: () => {
+                if (!selectedItemOptions.id)
+                  setToastMessage("옵션을 선택해주세요.");
+                else {
+                  requestPatchCartItem();
+                  navigation("/cart");
+                }
+              },
             }}
             rightButton={{
               label: "쇼핑백에 담기",
               onClick: () => {
                 setShowOptionModal(false);
+                requestPatchCartItem();
+                setToastMessage("쇼핑백에 추가되었습니다.");
               },
             }}
             setToastMessage={setToastMessage}

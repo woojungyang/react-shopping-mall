@@ -34,7 +34,7 @@ export const ToastModal = ({ toastMessage = "", setToastMessage }) => {
           알림
         </p>
       )}
-      <p>{toastMessage}</p>
+      <p style={{ whiteSpace: "pre-line" }}>{toastMessage}</p>
     </div>
   );
 };

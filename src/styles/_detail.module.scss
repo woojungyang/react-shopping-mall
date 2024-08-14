@@ -919,6 +919,7 @@
       }
       .reviews_wrapper {
         padding: 0 $padding;
+        position: relative;
         .detail_review {
           padding-top: $padding;
           padding-bottom: $padding;
@@ -968,6 +969,7 @@
       margin-bottom: 0;
 
       .questions_wrapper {
+        position: relative;
         padding: $padding;
 
         .question_detail_wrap {

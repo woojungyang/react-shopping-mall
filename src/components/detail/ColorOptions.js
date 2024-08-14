@@ -8,7 +8,7 @@ import { DetailContentWrapper } from "./DetailContentWrapper";
 
 export const ColorOptions = ({
   colorOptions,
-  setSelectedOptions,
+  setSelectedItemOptions,
   selectedItemOptions,
 }) => {
   return (
@@ -29,7 +29,7 @@ export const ColorOptions = ({
               <div
                 key={index}
                 onClick={() => {
-                  setSelectedOptions({
+                  setSelectedItemOptions({
                     ...selectedItemOptions,
                     color: isSelected ? null : option.color,
                   });

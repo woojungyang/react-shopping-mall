@@ -8,7 +8,7 @@ import { DetailContentWrapper } from "./DetailContentWrapper";
 
 export const SizeOptions = ({
   sizeOptions,
-  setSelectedOptions,
+  setSelectedItemOptions,
   selectedItemOptions,
 }) => {
   return (
@@ -20,7 +20,7 @@ export const SizeOptions = ({
             <p
               key={index}
               onClick={() =>
-                setSelectedOptions(
+                setSelectedItemOptions(
                   isSelected ? { ...selectedItemOptions, size: null } : size,
                 )
               }

@@ -14,6 +14,7 @@ import {
   numberWithCommas,
 } from "utilities";
 
+import useCartItemMutation from "hooks/mutation/useCartItemMutation";
 import useItemQuery from "hooks/query/useItemQuery";
 import useItemQuestionsQuery from "hooks/query/useItemQuestionsQuery";
 import useItemReviewsQuery from "hooks/query/useItemReviewsQuery";
@@ -52,11 +53,13 @@ export default function ItemDetailContent() {
 
   const [toastMessage, setToastMessage] = useState("");
 
-  const [selectedItemOptions, setSelectedOptions] = useState({});
+  const [selectedItemOptions, setSelectedItemOptions] = useState({});
 
   const { data: item, isLoading } = useItemQuery(id, {
     onSuccess: (data) => {
-      setSelectedOptions(data.options.find((option) => option.inventory > 0));
+      setSelectedItemOptions(
+        data.options.find((option) => option.inventory > 0),
+      );
     },
     onError: (error) => {
       setToastMessage(error.message);
@@ -123,7 +126,7 @@ export default function ItemDetailContent() {
         setToastMessage(
           `최대 구매 가능한 수량은${selectedItemOptions?.inventory}개 입니다. `,
         );
-        setSelectedOptions({
+        setSelectedItemOptions({
           ...selectedItemOptions,
           quantity: selectedItemOptions.inventory,
         });
@@ -131,7 +134,19 @@ export default function ItemDetailContent() {
     }
   }, [selectedItemOptions]);
 
-  if (!item || isLoading) return <LoadingLayer />;
+  const cartItemMutation = useCartItemMutation(id);
+  async function requestPatchCartItem() {
+    try {
+      await cartItemMutation.mutateAsync({
+        itemId: id,
+        option: selectedItemOptions.id,
+      });
+    } catch (err) {
+      setToastMessage(err.message);
+    }
+  }
+
+  if (!item || isLoading || cartItemMutation.isLoading) return <LoadingLayer />;
 
   return (
     <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
@@ -236,7 +251,7 @@ export default function ItemDetailContent() {
             </DetailContentWrapper>
             <ColorOptions
               selectedItemOptions={selectedItemOptions}
-              setSelectedOptions={setSelectedOptions}
+              setSelectedItemOptions={setSelectedItemOptions}
               colorOptions={item?.options?.reduce((acc, current) => {
                 if (!acc.some((item) => item.color === current.color)) {
                   acc.push(current);
@@ -246,18 +261,22 @@ export default function ItemDetailContent() {
             />
             <SizeOptions
               selectedItemOptions={selectedItemOptions}
-              setSelectedOptions={setSelectedOptions}
+              setSelectedItemOptions={setSelectedItemOptions}
               sizeOptions={item?.options?.filter(
                 (option) => option.color == selectedItemOptions.color,
               )}
             />
             <QuantityOptions
               selectedItemOptions={selectedItemOptions}
-              setSelectedOptions={setSelectedOptions}
+              setSelectedItemOptions={setSelectedItemOptions}
             />
             <DefaultButton
               className={styles.button_dark_300_color_background_100}
               label="주문하기"
+              onClick={() => {
+                requestPatchCartItem();
+                navigation("/cart");
+              }}
             />
 
             <DefaultButton
@@ -265,6 +284,7 @@ export default function ItemDetailContent() {
               label="쇼핑백"
               onClick={() => {
                 setConfirmModal(true);
+                requestPatchCartItem();
                 setConfirmModalContents({
                   title: "선택하신 상품이\n 쇼핑백에 추가 되었습니다.",
                   leftButton: {

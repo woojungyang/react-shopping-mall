@@ -44,10 +44,10 @@ export const OptionsMobile = ({
   }, [showOptions]);
 
   useEffect(() => {
-    if (selectedItemOptions?.size && !!selectedItemOptions?.quantity) {
+    if (!!selectedItemOptions?.quantity) {
       if (selectedItemOptions?.quantity > selectedItemOptions.inventory) {
         setToastMessage(
-          `최대 구매 가능한 수량은${selectedItemOptions?.inventory}개 입니다. `,
+          `최대 구매 가능한 수량은 \n${selectedItemOptions?.inventory}개 입니다.`,
         );
         setSelectedItemOptions({
           ...selectedItemOptions,
@@ -100,7 +100,7 @@ export const OptionsMobile = ({
         </div>
         {isQuantity && (
           <QuantityOptions
-            setSelectedOptions={setSelectedItemOptions}
+            setSelectedItemOptions={setSelectedItemOptions}
             selectedItemOptions={selectedItemOptions}
           />
         )}

@@ -12,7 +12,7 @@ import styles from "styles/_detail.module.scss";
 import { DetailContentWrapper } from "./DetailContentWrapper";
 
 export const QuantityOptions = ({
-  setSelectedOptions,
+  setSelectedItemOptions,
   selectedItemOptions = {},
 }) => {
   const userDevice = useUserDevice();
@@ -20,7 +20,7 @@ export const QuantityOptions = ({
 
   const initValue = useMemo(() => {
     if (!selectedItemOptions?.quantity)
-      setSelectedOptions({ ...selectedItemOptions, quantity: 1 });
+      setSelectedItemOptions({ ...selectedItemOptions, quantity: 1 });
   }, [selectedItemOptions?.quantity]);
   return (
     <DetailContentWrapper>
@@ -34,7 +34,7 @@ export const QuantityOptions = ({
           className={styles.quantity_button}
           onClick={() => {
             if (selectedItemOptions.quantity > 1)
-              setSelectedOptions({
+              setSelectedItemOptions({
                 ...selectedItemOptions,
                 quantity: selectedItemOptions.quantity - 1,
               });
@@ -46,7 +46,7 @@ export const QuantityOptions = ({
         <div
           className={styles.quantity_button}
           onClick={() => {
-            setSelectedOptions({
+            setSelectedItemOptions({
               ...selectedItemOptions,
               quantity: selectedItemOptions.quantity + 1,
             });

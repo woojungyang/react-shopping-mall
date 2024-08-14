@@ -26,7 +26,7 @@ export const ChangeOptionModal = ({
         {!!sizes.length && <SizeOptions sizeOptions={sizes} />}
         {isQuantity && (
           <QuantityOptions
-            setSelectedOptions={setSelectedItem}
+            setSelectedItemOptions={setSelectedItem}
             selectedItemOptions={selectedItem}
           />
         )}
