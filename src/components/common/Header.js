@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import LogoutIcon from "@mui/icons-material/Logout";
 import Person2Icon from "@mui/icons-material/Person2";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { userToken } from "models/user";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
@@ -17,7 +18,8 @@ import { SearchContainer } from "./SearchContainer";
 
 export default function Header() {
   const navigation = useNavigate();
-  const location = useLocation();
+
+  const [token, setToken] = useState(!!userToken);
 
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
@@ -44,6 +46,10 @@ export default function Header() {
 
   const [activeMobilMenu, setActiveMobileMenu] = useState("");
 
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, [localStorage.getItem("token")]);
+
   return (
     <Link>
       {isDeskTop ? (
@@ -57,17 +63,6 @@ export default function Header() {
                 onClick={() => navigation("/")}
               />
               <div className={styles.user_wrapper}>
-                {!userToken ? (
-                  <div onClick={() => navigation("/login")}>
-                    <ExitToAppIcon />
-                    <p>LOGIN</p>
-                  </div>
-                ) : (
-                  <div onClick={() => navigation("/mypage")}>
-                    <Person2Icon />
-                    <p>MY</p>
-                  </div>
-                )}
                 <div onClick={() => setShowSearch(!showSearch)}>
                   <SearchIcon />
                   <p>SEARCH</p>
@@ -76,6 +71,28 @@ export default function Header() {
                   <ShoppingBagIcon />
                   <p>CART</p>
                 </div>
+                {!token ? (
+                  <div onClick={() => navigation("/login")}>
+                    <ExitToAppIcon />
+                    <p>LOGIN</p>
+                  </div>
+                ) : (
+                  <>
+                    <div onClick={() => navigation("/mypage")}>
+                      <Person2Icon />
+                      <p>MY</p>
+                    </div>
+                    <div
+                      onClick={() => {
+                        localStorage.clear();
+                        window.location.reload();
+                      }}
+                    >
+                      <LogoutIcon />
+                      <p>Logout</p>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 

@@ -30,7 +30,7 @@ export const ItemCard = ({
       style={style}
       onClick={() => navigation(`/items/${item?.id}`)}
     >
-      <LikeHeart />
+      <LikeHeart like={item?.like} />
 
       <div
         style={{
@@ -71,13 +71,12 @@ export const ItemCard = ({
               <LikeHeart
                 position={{ position: "relative" }}
                 defaultColor="skeleton"
-                like={item?.like}
               />
               <span style={{ marginRight: 10 }}>
                 {numberWithCommas(item?.reviewCount)}
               </span>
               <GradingIcon
-                style={{ width: "0.65em", height: "0.65em", color: "#6b6b6b" }}
+                style={{ width: "0.62em", height: "0.62em", color: "#6b6b6b" }}
               />
               <span>{numberWithCommas(item?.likeCount)}</span>
             </div>

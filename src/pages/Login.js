@@ -34,7 +34,10 @@ export default function Login() {
       else {
         const result = await authMutation.mutateAsync(inputValues);
 
-        if (result.token) localStorage.setItem("token", result.token);
+        if (result.token) {
+          localStorage.setItem("token", result.token);
+          navigation("/", { replace: true });
+        }
       }
     } catch (error) {
       console.log(error);

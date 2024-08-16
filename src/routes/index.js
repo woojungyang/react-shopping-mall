@@ -13,6 +13,9 @@ import OrderDetail from "pages/OrderDetail";
 import Payment from "pages/Payment";
 import Search from "pages/Search";
 
+import GuestRoute from "./GuestRoute";
+import ProtectedRoute from "./ProtectedRoute";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -23,18 +26,6 @@ export const router = createBrowserRouter([
     element: <ItemDetail />,
   },
   {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/join",
-    element: <Join />,
-  },
-  {
-    path: "/find",
-    element: <FindMember />,
-  },
-  {
     path: "/search",
     element: <Search />,
   },
@@ -43,20 +34,32 @@ export const router = createBrowserRouter([
     element: <Cart />,
   },
   {
+    path: "/login",
+    element: <GuestRoute element={<Login />} />,
+  },
+  {
+    path: "/join",
+    element: <GuestRoute element={<Join />} />,
+  },
+  {
+    path: "/find",
+    element: <GuestRoute element={<FindMember />} />,
+  },
+  {
     path: "/payment",
-    element: <Payment />,
+    element: <ProtectedRoute element={<Payment />} />,
   },
   {
     path: "/mypage",
-    element: <MyPage />,
+    element: <ProtectedRoute element={<MyPage />} />,
   },
   {
     path: "/my-order/my-order-list",
-    element: <MyOrder />,
+    element: <ProtectedRoute element={<MyOrder />} />,
   },
   {
     path: "/my-order/my-order-list/:id",
-    element: <OrderDetail />,
+    element: <ProtectedRoute element={<OrderDetail />} />,
   },
   {
     path: "*",

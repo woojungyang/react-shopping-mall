@@ -6,6 +6,7 @@ import { Device } from "models/device";
 import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "utilities";
 
+import useItemsQuery from "hooks/query/useItemsQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 import { useUserDevice } from "hooks/size/useUserDevice";
@@ -15,6 +16,8 @@ import {
   CommonLayout,
   DefaultCheckbox,
   DefaultPagination,
+  Loading,
+  LoadingLayer,
   SearchInput,
 } from "components/common";
 
@@ -26,10 +29,11 @@ export default function Search() {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
+  const [toastMessage, setToastMessage] = useState("");
+
   const [keyword] = useQueryString("keyword");
   const [searchValue, setSearchValue] = useState(keyword);
 
-  const searchedItems = [...new Array(21)];
   const [excludingSoldOut, setExcludingSoldOut] = useState(true);
 
   const filterList = [
@@ -44,8 +48,27 @@ export default function Search() {
     usePageQueryString("page", 20);
   const handleChangePage = (_event, page) => changePage(page);
 
+  const { data: items, isLoading } = useItemsQuery(
+    {
+      offset: offset,
+      limit: limit,
+      sort: sort,
+      keyword: keyword,
+      excludingSoldOut: excludingSoldOut,
+    },
+    {
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
+    },
+  );
+
+  console.log(items);
+
+  if (isLoading) return <LoadingLayer />;
+
   return (
-    <CommonLayout>
+    <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
       <div className={styles.search_result_container}>
         <div className={styles.search_input_wrapper}>
           <SearchInput
@@ -56,50 +79,60 @@ export default function Search() {
             }}
           />
           <p className={styles.search_result_text}>
-            총 <strong>{numberWithCommas(searchedItems?.length)}</strong>개의
-            상품이 검색되었습니다
+            총 <strong>{numberWithCommas(items?.total)}</strong>개의 상품이
+            검색되었습니다
           </p>
         </div>
-        <div className={styles.search_result_filter_wrapper}>
-          <div className={styles.checkbox_wrap}>
-            <DefaultCheckbox
-              checked={excludingSoldOut}
-              onChange={() => setExcludingSoldOut(!excludingSoldOut)}
-            />
-            <span>품절 제외</span>
-          </div>
-          {isDeskTop ? (
-            <div className={styles.filter_wrap}>
-              {filterList.map((filter) => (
-                <span
-                  onClick={() => changeSort(filter.sort)}
-                  className={classNames({
-                    [styles.active_filter]: sort == filter.sort,
-                  })}
-                >
-                  {filter.label}
-                </span>
+        {items?.total > 0 && (
+          <>
+            <div className={styles.search_result_filter_wrapper}>
+              <div className={styles.checkbox_wrap}>
+                <DefaultCheckbox
+                  checked={excludingSoldOut}
+                  onChange={() => setExcludingSoldOut(!excludingSoldOut)}
+                />
+                <span>품절 제외</span>
+              </div>
+              {isDeskTop ? (
+                <div className={styles.filter_wrap}>
+                  {filterList.map((filter, index) => (
+                    <span
+                      key={index}
+                      onClick={() => changeSort(filter.sort)}
+                      className={classNames({
+                        [styles.active_filter]: sort == filter.sort,
+                      })}
+                    >
+                      {filter.label}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <SelectBox
+                  options={filterList}
+                  selectedValue={sort || filterList[0]?.sort}
+                  onChange={changeSort}
+                />
+              )}
+            </div>
+
+            <div className={styles.search_result_item_wrapper}>
+              {items?.data?.map((item, index) => (
+                <ItemCard
+                  key={index}
+                  showStatus={true}
+                  style={{ height: 350 }}
+                  item={item}
+                />
               ))}
             </div>
-          ) : (
-            <SelectBox
-              options={filterList}
-              selectedValue={sort || filterList[0]?.sort}
-              onChange={changeSort}
+            <DefaultPagination
+              count={getPageCount(items?.total)}
+              page={page}
+              onChange={handleChangePage}
             />
-          )}
-        </div>
-
-        <div className={styles.search_result_item_wrapper}>
-          {searchedItems?.map((item, index) => (
-            <ItemCard key={index} showStatus={true} style={{ height: 350 }} />
-          ))}
-        </div>
-        <DefaultPagination
-          count={getPageCount(searchedItems?.length)}
-          page={page}
-          onChange={handleChangePage}
-        />
+          </>
+        )}
       </div>
     </CommonLayout>
   );
