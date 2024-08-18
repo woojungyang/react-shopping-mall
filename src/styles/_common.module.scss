@@ -379,6 +379,22 @@ body {
       }
     }
   }
+  .sold_out_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    background-color: rgba($color-skeleton-100, 0.4);
+
+    .sold_out_badge {
+      background-color: $color-dark-300;
+      color: $color-background-100;
+      padding: $default;
+
+      font-size: 14px;
+    }
+  }
 }
 
 .modal_container {

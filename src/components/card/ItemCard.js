@@ -83,6 +83,17 @@ export const ItemCard = ({
           </div>
         )}
       </div>
+      {item?.isSoldOut && (
+        <div
+          className={styles.sold_out_wrapper}
+          style={{
+            ...style,
+            paddingTop: cardHeight - 28 || 0,
+          }}
+        >
+          <span className={styles.sold_out_badge}>품절</span>
+        </div>
+      )}
     </div>
   );
 };

@@ -36,9 +36,9 @@ export const MobileLayout = ({
     };
   }, []);
 
-/*   useEffect(() => {
+  useEffect(() => {
     scrollTop();
-  }, [location]); */
+  }, [location]);
 
   return (
     <div className={styles.mobile_container}>

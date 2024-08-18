@@ -15,11 +15,11 @@ export default function getItems(mock) {
 
     let keyword = config.params.keyword || "";
     let sort = config.params.sort || "";
-    let excludingSoldOut = config.params.excludingSoldOut || true;
+    let excludingSoldOut = config?.params?.excludingSoldOut;
 
-    if (excludingSoldOut)
-      data.data = data.data.filter((e) => e.isSoldOut == !excludingSoldOut);
-    if (!excludingSoldOut) data.data = collection;
+    if (excludingSoldOut) data.data = data.data.filter((e) => !e.isSoldOut);
+    else data.data = collection;
+
     if (!!keyword)
       data.data = data.data.filter((e) =>
         e.itemName.toLowerCase().includes(keyword),

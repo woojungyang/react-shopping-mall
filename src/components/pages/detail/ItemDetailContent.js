@@ -4,13 +4,14 @@ import EastIcon from "@mui/icons-material/East";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import { Rating } from "@mui/material";
 import { getQuestionStateLabel } from "models/notice";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  calculateSum,
   getDiscountPercent,
   maskAccountName,
-  numberToKorean,
   numberWithCommas,
 } from "utilities";
 
@@ -54,17 +55,27 @@ export default function ItemDetailContent() {
   const [toastMessage, setToastMessage] = useState("");
 
   const [selectedItemOptions, setSelectedItemOptions] = useState({});
+  const [like, setLike] = useState(false);
+  const [isSoldOut, setIsSoldOut] = useState(false);
 
   const { data: item, isLoading } = useItemQuery(id, {
     onSuccess: (data) => {
-      setSelectedItemOptions(
-        data.options.find((option) => option.inventory > 0),
-      );
+      setLike(data.like);
+      const checkInventory =
+        calculateSum(data.options.map((e) => e.inventory)) < 1;
+
+      if (checkInventory) setIsSoldOut(true);
+      else
+        setSelectedItemOptions(
+          data.options.find((option) => option.inventory > 0),
+        );
     },
     onError: (error) => {
       setToastMessage(error.message);
     },
   });
+
+  console.log(like);
 
   const [
     { page: reviewPage, perPage: limit, offset: reviewOffset },
@@ -156,13 +167,13 @@ export default function ItemDetailContent() {
             <ImageZoomSlider images={item?.thumbnails} />
           </div>
           <div className={styles.item_content_information_wrapper}>
-            <div className={styles.item_header_icon_wrapper}>
+            {/*  <div className={styles.item_header_icon_wrapper}>
               <LikeHeart
                 defaultColor="dark"
                 position={{ position: "relative" }}
               />
               {numberToKorean(item?.likeCount)}
-            </div>
+            </div> */}
 
             <div className={styles.item_header_wrapper}>
               <span className={styles.item_brand_name}>
@@ -249,56 +260,96 @@ export default function ItemDetailContent() {
                 </p>
               </div>
             </DetailContentWrapper>
-            <ColorOptions
-              selectedItemOptions={selectedItemOptions}
-              setSelectedItemOptions={setSelectedItemOptions}
-              colorOptions={item?.options?.reduce((acc, current) => {
-                if (!acc.some((item) => item.color === current.color)) {
-                  acc.push(current);
-                }
-                return acc;
-              }, [])}
-            />
-            <SizeOptions
-              selectedItemOptions={selectedItemOptions}
-              setSelectedItemOptions={setSelectedItemOptions}
-              sizeOptions={item?.options?.filter(
-                (option) => option.color == selectedItemOptions.color,
-              )}
-            />
-            <QuantityOptions
-              selectedItemOptions={selectedItemOptions}
-              setSelectedItemOptions={setSelectedItemOptions}
-            />
-            <DefaultButton
-              className={styles.button_dark_300_color_background_100}
-              label="주문하기"
-              onClick={() => {
-                requestPatchCartItem();
-                navigation("/cart");
-              }}
-            />
-
-            <DefaultButton
-              className={styles.button_background_100_outline_color_dark_300}
-              label="쇼핑백"
-              onClick={() => {
-                setConfirmModal(true);
-                requestPatchCartItem();
-                setConfirmModalContents({
-                  title: "선택하신 상품이\n 쇼핑백에 추가 되었습니다.",
-                  leftButton: {
-                    label: "쇼핑 계속하기",
-                    color: "skeleton",
-                    onClick: () => setConfirmModal(false),
-                  },
-                  rightButton: {
-                    label: "쇼핑백 확인",
-                    onClick: () => navigation("/cart"),
-                  },
-                });
-              }}
-            />
+            {!isSoldOut && (
+              <>
+                <ColorOptions
+                  selectedItemOptions={selectedItemOptions}
+                  setSelectedItemOptions={setSelectedItemOptions}
+                  colorOptions={item?.options?.reduce((acc, current) => {
+                    if (!acc.some((item) => item.color === current.color)) {
+                      acc.push(current);
+                    }
+                    return acc;
+                  }, [])}
+                />
+                <SizeOptions
+                  selectedItemOptions={selectedItemOptions}
+                  setSelectedItemOptions={setSelectedItemOptions}
+                  sizeOptions={item?.options?.filter(
+                    (option) => option.color == selectedItemOptions.color,
+                  )}
+                />
+                <QuantityOptions
+                  selectedItemOptions={selectedItemOptions}
+                  setSelectedItemOptions={setSelectedItemOptions}
+                />
+              </>
+            )}
+            <div className={styles.preference_wrap}>
+              <div
+                onClick={() => {
+                  setLike(!like);
+                }}
+              >
+                <LikeHeart
+                  position={{ position: "relative" }}
+                  defaultColor="dark"
+                  like={like}
+                />
+                <p>좋아요 {numberWithCommas(item?.likeCount)}</p>
+              </div>
+              <div>
+                <ShareOutlinedIcon />
+                <p>공유하기</p>
+              </div>
+            </div>
+            {isSoldOut ? (
+              <div className={styles.sold_out_btn_wrap}>
+                <DefaultButton
+                  label="품절"
+                  onClick={() => {}}
+                  className={styles.button_skeleton_100_color_background_100}
+                />
+                <DefaultButton
+                  label="재입고 알림"
+                  className={styles.button_transparent_color_orange}
+                  onClick={() => {}}
+                />
+              </div>
+            ) : (
+              <>
+                <DefaultButton
+                  className={styles.button_dark_300_color_background_100}
+                  label="주문하기"
+                  onClick={() => {
+                    requestPatchCartItem();
+                    navigation("/cart");
+                  }}
+                />
+                <DefaultButton
+                  className={
+                    styles.button_background_100_outline_color_dark_300
+                  }
+                  label="쇼핑백"
+                  onClick={() => {
+                    setConfirmModal(true);
+                    requestPatchCartItem();
+                    setConfirmModalContents({
+                      title: "선택하신 상품이\n 쇼핑백에 추가 되었습니다.",
+                      leftButton: {
+                        label: "쇼핑 계속하기",
+                        color: "skeleton",
+                        onClick: () => setConfirmModal(false),
+                      },
+                      rightButton: {
+                        label: "쇼핑백 확인",
+                        onClick: () => navigation("/cart"),
+                      },
+                    });
+                  }}
+                />
+              </>
+            )}
           </div>
         </div>
         <div className={styles.recommend_container}>

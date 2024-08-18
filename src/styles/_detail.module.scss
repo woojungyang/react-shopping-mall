@@ -170,6 +170,29 @@
         @include default-image;
         margin: $default/2;
       }
+      .preference_wrap {
+        margin-top: $margin;
+        border: 1px solid $color-skeleton-100;
+        @include flex;
+        > div {
+          width: 100%;
+          @include flex;
+          height: 48px;
+          cursor: pointer;
+          color: $color-skeleton-200;
+          p {
+            margin-left: $default;
+          }
+          svg {
+            width: $margin;
+          }
+          &:first-child {
+            border-right: 1px solid $color-skeleton-100;
+          }
+        }
+      }
+      .sold_out_btn_wrap {
+      }
     }
   }
 }
@@ -1017,6 +1040,7 @@
   .order_bottom_container {
     position: fixed;
     z-index: 10;
+    padding: $default;
 
     background-color: $color-background-100;
     bottom: 0;
@@ -1036,21 +1060,37 @@
     }
     .like_btn_wrap {
       width: $default * 8;
+      margin-right: $default/2;
 
       @include flex($direction: column);
       color: $color-skeleton-200;
       svg {
         width: $default * 3;
-        color: $color-skeleton-200;
       }
       p {
         font-size: 0.8em;
       }
     }
     button {
+      width: 100%;
       margin: 0px !important;
-      height: $margin * 3 !important;
+      height: $margin * 2.3 !important;
       font-size: $padding !important;
+    }
+    .sold_out_wrap {
+      @include flex;
+
+      width: 100%;
+
+      .sold_out_alarm {
+        width: 70%;
+        @include flex;
+        background-color: $color-dark-300;
+        height: 100%;
+        margin-left: $default/2;
+        color: $color-background-100;
+        font-size: 14px;
+      }
     }
   }
 }

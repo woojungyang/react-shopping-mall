@@ -6,6 +6,7 @@
   border: none;
   background-color: rgba($color: $color-dark-300, $alpha: 0.2);
   color: $color-background-100;
+  white-space: pre-line;
 }
 
 .button_background_100_outline {
@@ -40,6 +41,12 @@
   background-color: transparent;
   color: $color-background-100;
   border: 1px solid $color-background-100;
+}
+.button_transparent_color_orange {
+  @include default-button_desktop;
+  background-color: transparent;
+  color: $color-orange;
+  border: 1px solid $color-orange;
 }
 .button_kakao {
   @include default-button_desktop;

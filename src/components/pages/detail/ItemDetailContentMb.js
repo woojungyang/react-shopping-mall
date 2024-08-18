@@ -6,6 +6,7 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import { getQuestionStateLabel } from "models/notice";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  calculateSum,
   getDiscountPercent,
   maskAccountName,
   numberWithCommas,
@@ -46,9 +47,17 @@ export default function ItemDetailContentMb() {
   const [toastMessage, setToastMessage] = useState("");
 
   const [showOptionModal, setShowOptionModal] = useState(false);
+
   const [selectedItemOptions, setSelectedItemOptions] = useState({});
+  const [like, setLike] = useState(false);
+  const [isSoldOut, setIsSoldOut] = useState(false);
 
   const { data: item, isLoading } = useItemQuery(id, {
+    onSuccess: (data) => {
+      setLike(data.like);
+      if (calculateSum(data.options.map((e) => e.inventory)) < 1)
+        setIsSoldOut(true);
+    },
     onError: (error) => {
       setToastMessage(error.message);
     },
@@ -362,14 +371,29 @@ export default function ItemDetailContentMb() {
             <div className={styles.like_btn_wrap}>
               <LikeHeart
                 position={{ position: "relative" }}
-                defaultColor="dark"
+                defaultColor="skeleton"
+                like={like}
+                onClick={() => setLike(!like)}
               />
-              <p>234</p>
+              <p>{numberWithCommas(item?.likeCount)}</p>
             </div>
-            <DefaultButton
-              label="구매하기"
-              onClick={() => setShowOptionModal(true)}
-            />
+            {isSoldOut ? (
+              <div className={styles.sold_out_wrap}>
+                <DefaultButton
+                  label="품절"
+                  className={styles.button_skeleton_100_color_background_100}
+                  onClick={() => {}}
+                />
+                <p className={styles.sold_out_alarm} onClick={() => {}}>
+                  재입고 알림
+                </p>
+              </div>
+            ) : (
+              <DefaultButton
+                label="구매하기"
+                onClick={() => setShowOptionModal(true)}
+              />
+            )}
           </div>
         </div>
         <DeliveryDrawer visible={deliveryModal} setVisible={setDeliveryModal} />
