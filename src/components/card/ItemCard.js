@@ -50,11 +50,11 @@ export const ItemCard = ({
         )}
         <p
           className={styles.item_product_name}
-          style={{ marginTop: showBrand ? "10px" : "0.5em" }}
+          style={{ marginTop: showBrand ? "0.3em" : "0.5em" }}
         >
           {item?.itemName}
         </p>
-        <div className={styles.default_flex_space} style={{ marginTop: 20 }}>
+        <div className={styles.default_flex_space} style={{ marginTop: 14 }}>
           <p className={styles.product_price}>
             {numberWithCommas(item?.price)}원
             {showOriginalPrice && (

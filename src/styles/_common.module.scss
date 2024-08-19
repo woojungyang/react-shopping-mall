@@ -332,7 +332,7 @@ body {
     // flex-grow: 1;
   }
   .item_card_information {
-    font-size: $padding;
+    font-size: 15px;
     @include mobile {
       font-size: $padding * 0.88;
     }

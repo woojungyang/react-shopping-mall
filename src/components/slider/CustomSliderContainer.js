@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useMemo } from "react";
 
 import Slider from "react-slick";
 
@@ -15,17 +15,20 @@ export const CustomSliderContainer = forwardRef(
     },
     ref,
   ) => {
+    const memoizedSettings = useMemo(
+      () => ({
+        ...settings,
+        arrows: arrows,
+        autoplay: autoPlay,
+        afterChange: (newIndex) => {
+          setCurrentIndex?.(newIndex);
+        },
+      }),
+      [settings, arrows, autoPlay, setCurrentIndex],
+    );
     return (
       <div className="one-row-slider">
-        <Slider
-          ref={ref}
-          autoplay={autoPlay}
-          {...settings}
-          arrows={arrows}
-          afterChange={(newIndex) => {
-            setCurrentIndex?.(newIndex);
-          }}
-        >
+        <Slider ref={ref} {...memoizedSettings}>
           {children}
         </Slider>
       </div>

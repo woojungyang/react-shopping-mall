@@ -62,12 +62,6 @@ export const ImageSlider = ({
           );
         })}
       </Slider>
-      {/*  {isDeskTop && (
-        <div className={styles.desktop_slider_button_wrap}>
-          <ArrowBackIosNewIcon onClick={() => slider.current.slickPrev()} />
-          <ArrowForwardIosIcon onClick={() => slider.current.slickNext()} />
-        </div>
-      )} */}
     </div>
   );
 };
