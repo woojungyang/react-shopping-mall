@@ -4,10 +4,12 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { Device } from "models/device";
 import { useNavigate } from "react-router-dom";
 
+import useKeywordsQuery from "hooks/query/useKeywordsQuery";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import styles from "styles/_search.module.scss";
 
+import { LoadingLayer } from "./LoadingLayer";
 import { SearchInput } from "./SearchInput";
 
 export const SearchContainer = ({ visible, setVisible }) => {
@@ -15,16 +17,16 @@ export const SearchContainer = ({ visible, setVisible }) => {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
-  const dummy = Array.from({ length: 5 }, (v, i) => "키워드" + i + 1);
-  const [recommendedKeywords, setRecommendedKeywords] = useState(dummy);
-  const [hotKeywords, setHotKeywords] = useState(dummy);
-
   const [searchValue, setSearchValue] = useState("");
 
   function searchItems(query) {
     navigation(`/search?keyword=${query}`);
     setVisible(false);
   }
+
+  const { data: keywords, isLoading } = useKeywordsQuery();
+
+  if (isLoading) return <LoadingLayer />;
 
   return (
     <>
@@ -42,25 +44,28 @@ export const SearchContainer = ({ visible, setVisible }) => {
               <div className={styles.keyword_wrap1}>
                 <p className={styles.keyword_title}>추천 검색어</p>
                 <div className={styles.default_flex}>
-                  {recommendedKeywords?.map((recommendedKeyword) => (
-                    <p
-                      className={styles.keyword1}
-                      onClick={() => searchItems(recommendedKeyword)}
-                    >
-                      {recommendedKeyword}
-                    </p>
-                  ))}
+                  {keywords?.recommendKeywords?.map(
+                    (recommendedKeyword, index) => (
+                      <p
+                        key={index}
+                        className={styles.keyword1}
+                        onClick={() => searchItems(recommendedKeyword?.keyword)}
+                      >
+                        {recommendedKeyword?.keyword}
+                      </p>
+                    ),
+                  )}
                 </div>
               </div>
               <div className={styles.keyword_wrap2}>
                 <p className={styles.keyword_title}>인기 검색어</p>
-                {hotKeywords?.map((hotKeyword, index) => (
+                {keywords?.hotKeywords?.map((hotKeyword, index) => (
                   <p
                     className={styles.keyword2}
-                    onClick={() => searchItems(hotKeyword)}
+                    onClick={() => searchItems(hotKeyword?.keyword)}
                   >
                     <span>{index + 1}</span>
-                    {hotKeyword}
+                    {hotKeyword?.keyword}
                   </p>
                 ))}
               </div>
@@ -89,13 +94,13 @@ export const SearchContainer = ({ visible, setVisible }) => {
                 TODAY HOT KEYWORDS <br />-
               </p>
 
-              {hotKeywords?.map((hotKeyword, index) => (
+              {keywords?.hotKeywords?.map((hotKeyword, index) => (
                 <p
                   className={styles.keyword_mb}
                   key={index}
-                  onClick={() => searchItems(hotKeyword)}
+                  onClick={() => searchItems(hotKeyword?.keyword)}
                 >
-                  {hotKeyword}
+                  {hotKeyword?.keyword}
                 </p>
               ))}
             </div>

@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-export default function getDoctors(mock) {
+export default function getOverview(mock) {
   mock.onGet(/^\/api\/v1\/overview$/).reply((config) => {
     const status = 200;
 
@@ -113,6 +113,20 @@ export default function getDoctors(mock) {
           `assets/images/user/user${faker.number.int({ max: 8, min: 1 })}.jpg`,
         ),
       })),
+      search: {
+        hotKeywords: new Array(faker.number.int({ max: 7, min: 5 }))
+          .fill()
+          .map((_, index) => ({
+            id: faker.number.int(),
+            keywords: faker.lorem.word(),
+          })),
+        recommendKeywords: new Array(faker.number.int({ max: 7, min: 5 }))
+          .fill()
+          .map((_, index) => ({
+            id: faker.number.int(),
+            keywords: faker.lorem.word(),
+          })),
+      },
     };
 
     return [status, data];

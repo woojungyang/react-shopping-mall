@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import classNames from "classnames";
@@ -34,6 +34,8 @@ export default function Search() {
   const [keyword] = useQueryString("keyword");
   const [searchValue, setSearchValue] = useState(keyword);
 
+  const getKeyword = useMemo(() => setSearchValue(keyword), [keyword]);
+
   const [excludingSoldOut, setExcludingSoldOut] = useState(true);
 
   const filterList = [
@@ -62,8 +64,6 @@ export default function Search() {
       },
     },
   );
-
-  console.log(items);
 
   if (isLoading) return <LoadingLayer />;
 
