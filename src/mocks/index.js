@@ -9,8 +9,12 @@ export default function mocking(axios) {
     require("./getItemReviews").default,
     require("./getItems").default,
     require("./getOverview").default,
+    require("./patchPassword").default,
     require("./postAuth").default,
     require("./postCartItem").default,
+    require("./postFindEmail").default,
+    require("./postUser").default,
+    require("./postUserEmailExists").default,
   ].forEach((mocking) => mocking(mock));
   mock.onAny().reply(Axios.request);
   return mock;

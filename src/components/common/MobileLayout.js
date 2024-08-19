@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import OtherHousesOutlinedIcon from "@mui/icons-material/OtherHousesOutlined";
 import { useLocation, useNavigate } from "react-router-dom";
-import { scrollBottom, scrollTop } from "utilities";
+import { scrollTop } from "utilities";
 
 import styles from "styles/_common.module.scss";
 
@@ -23,18 +21,6 @@ export const MobileLayout = ({
 }) => {
   const navigation = useNavigate();
   const location = useLocation();
-
-  const [position, setPosition] = useState(0);
-  const switchPosition = position > 50;
-  function onScroll() {
-    setPosition(window.scrollY);
-  }
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
 
   useEffect(() => {
     scrollTop();

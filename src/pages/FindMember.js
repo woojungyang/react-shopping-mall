@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from "react";
 
-import CheckIcon from "@mui/icons-material/Check";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 
+import useFindEmailMutation from "hooks/mutation/useFindEmailMutation";
+import usePatchPasswordMutation from "hooks/mutation/usePatchPasswordMutation";
 import useQueryString from "hooks/queryString/useQueryString";
 
 import { CommonLayout, DefaultButton } from "components/common";
@@ -21,6 +22,9 @@ import styles from "styles/_user.module.scss";
 
 export default function FindMember() {
   const navigation = useNavigate();
+
+  const [toastMessage, setToastMessage] = useState("");
+
   const [stage, setStage] = useState(1);
 
   const [inputValues, setInputValues] = useState({});
@@ -29,60 +33,12 @@ export default function FindMember() {
   }
   const [showPassword, setShowPassword] = useState(false);
 
-  async function checkUserName() {
-    try {
-      if (!inputValues.username || !checkEmail(inputValues.username))
-        alert("이메일 아이디를 확인해주세요");
-      else setStage(stage + 1);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   const matchedPassword = useMemo(
     () =>
       inputValues?.password &&
       inputValues?.password == inputValues?.passwordConfirmed,
     [inputValues?.password, inputValues?.passwordConfirmed],
   );
-
-  async function requestChangePassword() {
-    try {
-      if (
-        !inputValues.password ||
-        !checkPassword(inputValues.password) ||
-        !matchedPassword
-      )
-        alert("비밀번호를 확인해주세요.");
-      else {
-        alert("비밀번호 변경이 완료되었습니다.");
-        navigation("/login");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function requestFindUsername() {
-    try {
-      if (!inputValues.name) alert("이름을 입력해주세요.");
-      else if (
-        !inputValues.phoneNumber ||
-        !checkPhoneNumber(inputValues?.phoneNumber)
-      )
-        alert("휴대폰번호를 확인해주세요.");
-      else if (
-        !isFindTypeId &&
-        (!inputValues.username || !checkEmail(inputValues.username))
-      )
-        alert("이메일 아이디를 확인해주세요");
-      else {
-        setStage(stage + 1);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   const [findType] = useQueryString("findType");
   const isFindTypeId = findType == "id";
@@ -93,8 +49,62 @@ export default function FindMember() {
     setInputValues({});
   }
 
+  const findEmailMutation = useFindEmailMutation();
+  async function requestFindUsername() {
+    try {
+      if (!inputValues.name) setToastMessage("이름을 입력해주세요.");
+      else if (
+        !inputValues.phoneNumber ||
+        !checkPhoneNumber(inputValues?.phoneNumber)
+      )
+        setToastMessage("휴대폰번호를 확인해주세요.");
+      else if (
+        !isFindTypeId &&
+        (!inputValues.username || !checkEmail(inputValues.username))
+      )
+        setToastMessage("이메일 아이디를 확인해주세요");
+      else {
+        const { result } = await findEmailMutation.mutateAsync(inputValues);
+
+        if (!isFindTypeId && !result.email)
+          setToastMessage("가입된 정보가 없습니다.");
+        else {
+          setInputValues({ ...inputValues, username: result?.email });
+          setStage(stage + 1);
+        }
+      }
+    } catch (error) {
+      setToastMessage(error.message);
+    }
+  }
+
+  const patchPasswordMutation = usePatchPasswordMutation();
+  async function requestChangePassword() {
+    try {
+      if (
+        !inputValues.password ||
+        !checkPassword(inputValues.password) ||
+        !matchedPassword
+      )
+        setToastMessage("비밀번호를 확인해주세요.");
+      else {
+        await patchPasswordMutation.mutateAsync(inputValues);
+        setToastMessage("비밀번호 변경이 완료되었습니다.");
+        setTimeout(() => {
+          navigation("/login");
+        }, 2000);
+      }
+    } catch (error) {
+      setToastMessage(error.message);
+    }
+  }
+
   return (
-    <CommonLayout>
+    <CommonLayout
+      isLoading={findEmailMutation.isLoading}
+      setToastMessage={setToastMessage}
+      toastMessage={toastMessage}
+    >
       <div className={styles.user_container}>
         <h1>계정찾기</h1>
         <div className={styles.tab_menu_wrapper}>
@@ -141,8 +151,9 @@ export default function FindMember() {
         )}
         {isFindTypeId && stage == 2 && (
           <>
-            <p className={styles.username}>username@email.com</p>
-            <p className={styles.username}>가입된 정보가 없습니다.</p>
+            <p className={styles.username}>
+              {inputValues?.username ?? "가입된 정보가 없습니다."}
+            </p>
           </>
         )}
         {!isFindTypeId && stage == 2 && (
@@ -190,7 +201,6 @@ export default function FindMember() {
               if (isFindTypeId) navigation("/login");
               else requestChangePassword();
             }
-            // else if (stage == 3) requestJoinMember();
           }}
         />
       </div>

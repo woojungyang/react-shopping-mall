@@ -6,6 +6,9 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 
+import useCreateUserMutation from "hooks/mutation/useCreateUserMutation";
+import useEmailExistsMutation from "hooks/mutation/useEmailExistsMutation";
+
 import { CommonLayout, DefaultButton } from "components/common";
 import { DefaultInput } from "components/common/DefaultInput";
 
@@ -19,6 +22,8 @@ import styles from "styles/_user.module.scss";
 
 export default function Join() {
   const navigation = useNavigate();
+  const [toastMessage, setToastMessage] = useState("");
+
   const [stage, setStage] = useState(1);
 
   const [inputValues, setInputValues] = useState({});
@@ -27,13 +32,18 @@ export default function Join() {
   }
   const [showPassword, setShowPassword] = useState(false);
 
+  const emailExistsMutation = useEmailExistsMutation();
+
   async function checkUsername() {
     try {
       if (!inputValues.username || !checkEmail(inputValues.username))
-        alert("이메일 아이디를 확인해주세요");
-      else setStage(stage + 1);
+        setToastMessage("이메일 아이디를 확인해주세요");
+      else {
+        const result = await emailExistsMutation.mutateAsync(inputValues);
+        if (result) setStage(stage + 1);
+      }
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.message);
     }
   }
 
@@ -70,33 +80,41 @@ export default function Join() {
         !checkPassword(inputValues.password) ||
         !matchedPassword
       )
-        alert("비밀번호를 확인해주세요.");
+        setToastMessage("비밀번호를 확인해주세요.");
       else setStage(stage + 1);
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.message);
     }
   }
 
+  const createUserMutation = useCreateUserMutation();
   async function requestJoinMember() {
     try {
-      if (!inputValues.name) alert("이름을 입력해주세요.");
-      else if (!inputValues.birthDate) alert("생년월일을 입력해주세요.");
+      if (!inputValues.name) setToastMessage("이름을 입력해주세요.");
+      else if (!inputValues.birthDate) setToastMessage("생년월일을 입력해주세요.");
       else if (
         !inputValues.phoneNumber ||
         !checkPhoneNumber(inputValues?.phoneNumber)
       )
-        alert("휴대폰번호를 입력해주세요.");
+        setToastMessage("휴대폰번호를 입력해주세요.");
       else {
-        alert("회원가입완료");
-        navigation("/login");
+        await createUserMutation.mutateAsync(inputValues);
+        setToastMessage("회원가입완료");
+        setTimeout(() => {
+          navigation("/login");
+        }, 3000);
       }
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.message);
     }
   }
 
   return (
-    <CommonLayout>
+    <CommonLayout
+      isLoading={emailExistsMutation.isLoading || createUserMutation.isLoading}
+      setToastMessage={setToastMessage}
+      toastMessage={toastMessage}
+    >
       <div className={styles.user_container}>
         <h1>간편가입</h1>
         <div className={styles.process_wrapper}>

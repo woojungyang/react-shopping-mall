@@ -85,7 +85,7 @@ export default function Header() {
                     <div
                       onClick={() => {
                         localStorage.clear();
-                        window.location.reload();
+                        navigation("/", { replace: true });
                       }}
                     >
                       <LogoutIcon />

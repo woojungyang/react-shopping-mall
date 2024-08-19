@@ -34,8 +34,6 @@ export default function Footer() {
     { id: 3, label: "공지사항" },
   ];
 
-  console.log(user);
-
   return (
     <>
       {!isDeskTop && (

@@ -22,6 +22,8 @@ export default function Login() {
   }
   const [showPassword, setShowPassword] = useState(false);
 
+  const [toastMessage, setToastMessage] = useState("");
+
   const authMutation = useAuthMutation();
   async function requestLogin() {
     try {
@@ -40,12 +42,16 @@ export default function Login() {
         }
       }
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.message);
     }
   }
 
   return (
-    <CommonLayout>
+    <CommonLayout
+      isLoading={authMutation.isLoading}
+      setToastMessage={setToastMessage}
+      toastMessage={toastMessage}
+    >
       {authMutation.isLoading && <LoadingLayer />}
       <div className={styles.user_container}>
         <h1>로그인</h1>
@@ -69,13 +75,13 @@ export default function Login() {
           label="로그인"
           onClick={requestLogin}
         />
-        <DefaultButton className={styles.button_kakao}>
+        {/*  <DefaultButton className={styles.button_kakao}>
           <img
             src={require("assets/icon/kakao.png")}
             style={{ width: 18, height: 18, marginTop: -2, marginRight: 10 }}
           />
           <p>카카오 로그인</p>
-        </DefaultButton>
+        </DefaultButton> */}
         <DefaultButton
           className={styles.button_background_100_outline_color_dark_300}
           onClick={() => navigation("/join")}
