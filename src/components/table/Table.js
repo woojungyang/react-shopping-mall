@@ -17,6 +17,7 @@ export const Table = ({
   filterOptions = [],
   selectedOption = "",
   onChangeOption,
+  handleChangePage,
 }) => {
   return (
     <div>
@@ -48,7 +49,13 @@ export const Table = ({
         </thead>
         <tbody>{children}</tbody>
       </table>
-      {pagination && <DefaultPagination count={count} page={page} />}
+      {pagination && (
+        <DefaultPagination
+          count={count}
+          page={page}
+          onChange={handleChangePage}
+        />
+      )}
     </div>
   );
 };
