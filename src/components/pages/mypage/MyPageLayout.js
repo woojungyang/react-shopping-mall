@@ -4,7 +4,10 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import classNames from "classnames";
 import { mypageMenuList } from "models/mypage";
+import { getMembershipLabel } from "models/user";
 import { useNavigate, useParams } from "react-router-dom";
+
+import useUserQuery from "hooks/query/useUserQuery";
 
 import { CommonLayout } from "components/common";
 import { ToastModal } from "components/modal";
@@ -20,8 +23,10 @@ export const MyPageLayout = ({ children }) => {
 
   const [toastMessage, setToastMessage] = useState("");
 
+  const { data: user, isLoading } = useUserQuery();
+
   return (
-    <CommonLayout>
+    <CommonLayout isLoading={isLoading}>
       <div className={styles.mypage_container}>
         <p className={styles.mypage_title}>마이페이지</p>
 
@@ -35,7 +40,11 @@ export const MyPageLayout = ({ children }) => {
               <p className={styles.membership_title}>
                 {membership.label} <ChevronRightIcon />
               </p>
-              <p className={styles.membership_count}>{membership.content}</p>
+              <p className={styles.membership_count}>
+                {membership.key == "rank"
+                  ? getMembershipLabel(user?.rank)
+                  : user?.[membership.key]}
+              </p>
             </div>
           ))}
         </div>
@@ -96,7 +105,11 @@ export const MyPageLayout = ({ children }) => {
 };
 
 const membershipInformation = [
-  { label: "회원등급", content: "Green", className: styles.membership_wrap1 },
-  { label: "쿠폰", content: 2 },
-  { label: "마일리지", content: "0" },
+  {
+    label: "회원등급",
+    className: styles.membership_wrap1,
+    key: "rank",
+  },
+  { label: "쿠폰", key: "couponCount" },
+  { label: "마일리지", key: "mileage" },
 ];

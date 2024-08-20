@@ -9,13 +9,16 @@ const ApiClient = axios.create({
 export const ApiClientQuery = ({ ...options }) => {
   ApiClient.defaults.headers.common.Accept = "application/json";
   ApiClient.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem(
-    "tokens",
+    "token",
   )}`;
   ApiClient.defaults.headers.post["Content-Type"] = "application/json";
 
   mocking(ApiClient);
 
-  const onSuccess = (response) => response.data;
+  const onSuccess = (response) => {
+    console.log(response.config.url, response);
+    return response.data;
+  };
   const onError = (error) => {
     // eslint-disable-next-line no-throw-literal
     const { response } = error;

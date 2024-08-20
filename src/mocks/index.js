@@ -10,6 +10,7 @@ export default function mocking(axios) {
     require("./getItems").default,
     require("./getKeywords").default,
     require("./getOverview").default,
+    require("./getUser").default,
     require("./patchPassword").default,
     require("./postAuth").default,
     require("./postCartItem").default,

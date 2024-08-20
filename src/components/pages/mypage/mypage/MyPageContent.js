@@ -6,6 +6,7 @@ import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "utilities";
 
+import useUserQuery from "hooks/query/useUserQuery";
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
