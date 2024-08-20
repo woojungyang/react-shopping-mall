@@ -194,7 +194,9 @@ export default function MainContent({ data }) {
           ))}
         </div>
       </div>
-      <div className={styles.default_section}>event banner</div>
+      <div className={styles.event_banner_container}>
+        <img src={require("assets/images/common/banner.jpg")} />
+      </div>
       {/* sale */}
       <div className={styles.sale_items_wrapper}>
         <h4 className={styles.section_title}>CLEARANCE</h4>

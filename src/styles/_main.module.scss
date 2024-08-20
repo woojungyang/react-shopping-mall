@@ -110,6 +110,12 @@
       }
     }
   }
+  .event_banner_container {
+    img {
+      @include default-image;
+      height: 180px;
+    }
+  }
   .md_pick_wrapper {
     @include default-section;
     .md_pick_wrap {

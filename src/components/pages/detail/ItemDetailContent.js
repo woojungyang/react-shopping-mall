@@ -75,8 +75,6 @@ export default function ItemDetailContent() {
     },
   });
 
-  console.log(like);
-
   const [
     { page: reviewPage, perPage: limit, offset: reviewOffset },
     changePage,

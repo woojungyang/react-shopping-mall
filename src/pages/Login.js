@@ -38,7 +38,7 @@ export default function Login() {
 
         if (result.token) {
           localStorage.setItem("token", result.token);
-          navigation("/", { replace: true });
+          navigation(-1, { replace: true });
         }
       }
     } catch (error) {

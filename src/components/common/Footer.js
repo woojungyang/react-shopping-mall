@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 
 import classNames from "classnames";
 import { Device } from "models/device";
-import { userToken } from "models/user";
 import { useNavigate } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
@@ -16,23 +15,24 @@ export default function Footer() {
   const mobileSpacing = isDeskTop ? "" : <br />;
   const navigation = useNavigate();
 
-  const user = useMemo(() => !!userToken, [userToken]);
-
-  const menuList = [
-    {
-      id: 1,
-      label: user ? "로그아웃" : "로그인",
-      onClick: () => {
-        if (!user) navigation("/login");
-        else {
-          localStorage.clear();
-          window.location.reload();
-        }
+  const menuList = useMemo(() => {
+    const token = localStorage.getItem("token");
+    return [
+      {
+        id: 1,
+        label: token ? "로그아웃" : "로그인",
+        onClick: () => {
+          if (!token) navigation("/login");
+          else {
+            localStorage.clear();
+            window.location.reload();
+          }
+        },
       },
-    },
-    { id: 2, label: "고객센터" },
-    { id: 3, label: "공지사항" },
-  ];
+      { id: 2, label: "고객센터" },
+      { id: 3, label: "공지사항" },
+    ];
+  }, [localStorage.getItem("token")]);
 
   return (
     <>

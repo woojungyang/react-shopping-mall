@@ -19,7 +19,7 @@ import { SearchContainer } from "./SearchContainer";
 export default function Header() {
   const navigation = useNavigate();
 
-  const [token, setToken] = useState(!!userToken);
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
@@ -44,11 +44,19 @@ export default function Header() {
     };
   }, [searchRef]);
 
-  const [activeMobilMenu, setActiveMobileMenu] = useState("");
+  // const [activeMobilMenu, setActiveMobileMenu] = useState("");
 
   useEffect(() => {
-    setToken(localStorage.getItem("token"));
-  }, [localStorage.getItem("token")]);
+    const handleStorageChange = () => {
+      setToken(localStorage.getItem("token"));
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   return (
     <Link>
@@ -85,6 +93,7 @@ export default function Header() {
                     <div
                       onClick={() => {
                         localStorage.clear();
+                        setToken(null);
                         navigation("/", { replace: true });
                       }}
                     >
@@ -141,7 +150,7 @@ export default function Header() {
                 key={index}
                 className={classNames({
                   [styles.default_scroll_menu]: true,
-                  [styles.active_scroll_menu]: activeMobilMenu == e.id,
+                  // [styles.active_scroll_menu]: activeMobilMenu == e.id,
                 })}
               >
                 {e.name}
