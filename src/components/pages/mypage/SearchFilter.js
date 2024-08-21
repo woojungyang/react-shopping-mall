@@ -13,11 +13,17 @@ import {
   endOfMonth,
   formatDateTime,
   isBeforeDateTime,
+  isEqualDateTime,
   now,
   startOfMonth,
 } from "utilities/dateTime";
 
 import styles from "styles/_mypage.module.scss";
+
+const getMonth = (month) => addMonths(now(), month);
+const oneMonthAgo = formatDateTime(getMonth(-1));
+const twoMonthAgo = formatDateTime(getMonth(-2));
+const today = formatDateTime(now());
 
 export default function SearchFilter({ startDate, endDate, updateDates }) {
   const userDevice = useUserDevice();
@@ -36,12 +42,32 @@ export default function SearchFilter({ startDate, endDate, updateDates }) {
   }, [endDate]);
 
   const handleSearch = () => {
-    if (isBeforeDateTime(end, start)) {
+    if (isBeforeDateTime(end, start))
       alert("종료일이 시작일보다 이전일 수 없습니다.");
-    } else {
-      updateDates(start, end);
-    }
+    else updateDates(start, end);
   };
+
+  useEffect(() => {
+    const startDay = formatDateTime(start);
+    const endDay = formatDateTime(end);
+
+    const ranges = Array.from({ length: 3 }, (v, index) => ({
+      id: buttons[index].id,
+      start:
+        index == 0
+          ? oneMonthAgo
+          : formatDateTime(startOfMonth(getMonth(index * -1))),
+      end:
+        index == 0 ? today : formatDateTime(endOfMonth(getMonth(index * -1))),
+    }));
+
+    const activeButton = ranges.find(
+      ({ start, end, id }) =>
+        isEqualDateTime(startDay, start) && isEqualDateTime(endDay, end),
+    );
+
+    setCurrentActive(activeButton ? activeButton.id : "");
+  }, [start, end]);
 
   const [showDateFilter, setShowDateFilter] = useState(false);
 
@@ -49,15 +75,11 @@ export default function SearchFilter({ startDate, endDate, updateDates }) {
     setCurrentActive(buttonId);
     if (buttonId !== 4) setShowDateFilter(false);
     if (buttonId === 1) {
-      setStart(formatDateTime(addMonths(now(), -1)));
-      setEnd(formatDateTime(now()));
-    } else if (buttonId === 4) {
-      setShowDateFilter(true);
-    } else {
-      const startDay = formatDateTime(
-        addMonths(now(), buttonId === 2 ? -1 : -2),
-      );
-
+      setStart(oneMonthAgo);
+      setEnd(today);
+    } else if (buttonId === 4) setShowDateFilter(true);
+    else {
+      const startDay = buttonId === 2 ? oneMonthAgo : twoMonthAgo;
       const endDay = formatDateTime(endOfMonth(startDay));
       setStart(formatDateTime(startOfMonth(startDay)));
       setEnd(endDay);
@@ -181,8 +203,6 @@ function CustomPicker({ value, onChange, isDeskTop = true }) {
   );
 }
 
-const oneMonthAgo = addMonths(now(), -1);
-const twoMonthAgo = addMonths(now(), -2);
 const buttons = [
   { id: 1, label: "최근1개월" },
   { id: 2, label: `${formatDateTime(oneMonthAgo, "MM")}월` },

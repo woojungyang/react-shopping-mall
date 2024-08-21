@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import CameraswitchIcon from "@mui/icons-material/Cameraswitch";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { mypageMenuList } from "models/mypage";
 import { OrderState } from "models/order";
 import { MembershipRank, getMembershipLabel } from "models/user";
 import { useNavigate } from "react-router-dom";
-import { maskName, numberWithCommas } from "utilities";
+import { numberWithCommas } from "utilities";
 
 import { LikeHeart } from "components/card";
 import { MobileLayout } from "components/common";
