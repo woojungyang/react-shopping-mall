@@ -12,6 +12,7 @@ export const Table = ({
   children,
   headers = [],
   count = 1,
+  total = 1,
   page = 1,
   pagination = true,
   filterOptions = [],
@@ -22,7 +23,7 @@ export const Table = ({
   return (
     <div>
       <div className={styles.table_filter_wrap}>
-        {pagination && <p>전체 {numberWithCommas(count)}건</p>}
+        {pagination && <p>전체 {numberWithCommas(total)}건</p>}
         {!!filterOptions.length && (
           <TableFilter
             filterOptions={filterOptions}
@@ -49,7 +50,7 @@ export const Table = ({
         </thead>
         <tbody>{children}</tbody>
       </table>
-      {pagination && (
+      {pagination && total > 0 && (
         <DefaultPagination
           count={count}
           page={page}

@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { OrderState, getOrderState } from "models/order";
-import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
+import { numberWithCommas } from "utilities";
 
+import useOrdersQuery from "hooks/query/useOrdersQuery";
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
+import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
+import { LoadingLayer } from "components/common";
 import { Table, TableRow } from "components/table";
 
 import { addMonths, formatDateTime, now } from "utilities/dateTime";
@@ -30,11 +33,23 @@ export default function MyOrderContent() {
   const [selectedOrderState, changeSelectedOrderState] =
     useQueryString("selectedOrderState");
 
-  function onClickStage(stageId) {
-    changeSelectedOrderState(stageId);
-    changeStartDate(formatDateTime(addMonths(now(), -12)));
-    changeEndDate(formatDateTime(now()));
-  }
+  const [{ page, perPage: limit, offset }, changePage, getPageCount] =
+    usePageQueryString("page", 5);
+  const handleChangePage = (_event, page) => changePage(page);
+
+  const { data: orders, isLoading } = useOrdersQuery({
+    startDate: startDate,
+    endDate: endDate,
+    offset: offset,
+    limit: limit,
+    state: selectedOrderState,
+  });
+
+  useEffect(() => {
+    changePage(1);
+  }, [startDate, endDate, selectedOrderState]);
+
+  if (isLoading) return <LoadingLayer />;
 
   return (
     <MyPageLayout>
@@ -58,6 +73,10 @@ export default function MyOrderContent() {
 
         <div className={styles.order_list_table}>
           <Table
+            page={page}
+            total={orders?.total}
+            count={getPageCount(orders?.total)}
+            handleChangePage={handleChangePage}
             headers={[
               { label: "주문일" },
               { label: "주문번호", width: "18%" },
@@ -73,14 +92,16 @@ export default function MyOrderContent() {
             selectedOption={selectedOrderState}
             onChangeOption={changeSelectedOrderState}
           >
-            {orderList.map((order) =>
-              order.products.map((product, index) => (
-                <TableRow cursor={false} key={`${order.id}-${product.id}`}>
+            {orders?.data.map((order) =>
+              order?.items?.map((item, index) => (
+                <TableRow cursor={false} key={`${order.id}-${item.id}`}>
                   {index === 0 && (
                     <>
-                      <td rowSpan={order.products.length}>{order.orderDate}</td>
+                      <td rowSpan={order?.items?.length}>
+                        {formatDateTime(order.createdAt)}
+                      </td>
                       <td
-                        rowSpan={order.products.length}
+                        rowSpan={order?.items?.length}
                         onClick={() =>
                           navigation(`/my-order/my-order-list/${order.id}`)
                         }
@@ -92,22 +113,22 @@ export default function MyOrderContent() {
                   )}
                   <td
                     className={styles.order_product_wrap}
-                    onClick={() => navigation(`/items/${product.id}`)}
+                    onClick={() => navigation(`/items/${item.id}`)}
                   >
                     <div className={styles.order_info}>
-                      <img src={require(`assets/images/sub/sub12.jpg`)} />
+                      <img src={item.thumbnail} />
                       <div className={styles.order_item}>
-                        <p className={styles.item_name}>{product.itemName}</p>
-                        <p>옵션: {product.option}</p>
+                        <p className={styles.item_name}>{item.itemName}</p>
+                        <p>옵션: {item.option}</p>
                       </div>
                     </div>
                   </td>
-                  <td>{product.quantity}</td>
-                  <td>{product.price.toLocaleString()}</td>
+                  <td>{item.quantity}</td>
+                  <td>{numberWithCommas(item.price)}원</td>
                   <td className="order-status">
-                    {getOrderState(product.state)}
+                    {getOrderState(item.state)}
                     <br />
-                    {product.state === OrderState.ConfirmedOrder && (
+                    {item.state === OrderState.ConfirmedOrder && (
                       <button className={styles.cancel_button}>취소신청</button>
                     )}
                   </td>
@@ -120,20 +141,3 @@ export default function MyOrderContent() {
     </MyPageLayout>
   );
 }
-
-const orderList = Array.from({ length: 5 }, (v, index) => ({
-  id: index,
-  orderDate: formatDateTime(now()),
-  orderNumber: nanoid(),
-  products: Array.from({ length: index + 1 }, (v, index) => ({
-    id: index,
-    itemName: "item" + nanoid(),
-    option: "skyblue",
-    quantity: index + 1,
-    price: 12344 + index,
-    state:
-      Object.values(OrderState)[
-        Math.floor(Math.random() * Object.values(OrderState).length)
-      ],
-  })),
-}));

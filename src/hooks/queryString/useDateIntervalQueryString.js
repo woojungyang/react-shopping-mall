@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { DateTime } from "luxon";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -14,51 +14,27 @@ export default function useDateIntervalQueryString(
 
   const formatDateTime = (date) =>
     DateTime.fromISO(date).toFormat("yyyy-MM-dd'T'HH:mm:ss");
-  const parseDate = (date) => DateTime.fromFormat(date, "yyyy-MM-dd").toISO();
 
-  const [startDate, setStartDate] = useState(() =>
-    getInitialDate(searchParams, startKey, defaultStartDate),
+  const [startDate, setStartDate] = useState(
+    () => searchParams.get(startKey) || formatDateTime(defaultStartDate),
   );
-  const [endDate, setEndDate] = useState(() =>
-    getInitialDate(searchParams, endKey, defaultEndDate),
+  const [endDate, setEndDate] = useState(
+    () => searchParams.get(endKey) || formatDateTime(defaultEndDate),
   );
 
-  function getInitialDate(params, key, defaultDate) {
-    const queriedDate = params.get(key);
-    return queriedDate || formatDateTime(parseDate(defaultDate));
-  }
+  const updateDates = (newStartDate, newEndDate) => {
+    const formattedStartDate = formatDateTime(newStartDate);
+    const formattedEndDate = formatDateTime(newEndDate);
 
-  function updateDate(key, newDate) {
-    if (key === startKey) {
-      setStartDate(formatDateTime(newDate));
-    } else if (key === endKey) {
-      setEndDate(formatDateTime(newDate));
-    }
-  }
-
-  useEffect(() => {
     const updatedParams = new URLSearchParams(searchParams);
-    let hasChanges = false;
+    updatedParams.set(startKey, formattedStartDate);
+    updatedParams.set(endKey, formattedEndDate);
 
-    if (startDate !== searchParams.get(startKey)) {
-      updatedParams.set(startKey, startDate);
-      hasChanges = true;
-    }
+    navigate("?" + updatedParams.toString(), { replace: true });
 
-    if (endDate !== searchParams.get(endKey)) {
-      updatedParams.set(endKey, endDate);
-      hasChanges = true;
-    }
+    setStartDate(formattedStartDate);
+    setEndDate(formattedEndDate);
+  };
 
-    if (hasChanges) {
-      navigate("?" + updatedParams.toString(), { replace: true });
-    }
-  }, [startDate, endDate, searchParams, navigate, startKey, endKey]);
-
-  return [
-    startDate,
-    endDate,
-    (newStartDate) => updateDate(startKey, newStartDate),
-    (newEndDate) => updateDate(endKey, newEndDate),
-  ];
+  return [startDate, endDate, updateDates];
 }

@@ -11,7 +11,7 @@ export const ApiClientQuery = ({ ...options }) => {
   ApiClient.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem(
     "token",
   )}`;
-  ApiClient.defaults.headers.post["Content-Type"] = "application/json";
+  ApiClient.defaults.headers["Content-Type"] = "application/json";
 
   mocking(ApiClient);
 

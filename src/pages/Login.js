@@ -28,9 +28,9 @@ export default function Login() {
   async function requestLogin() {
     try {
       if (!inputValues.username || !checkEmail(inputValues.username))
-        alert("이메일 아이디를 확인해주세요");
+        setToastMessage("이메일 아이디를 확인해주세요");
       else if (!inputValues.password || !checkPassword(inputValues.password))
-        alert(
+        setToastMessage(
           "비밀번호를 입력해주세요. 비밀번호는 영문+숫자+특스문자 조합 8~16자리입니다",
         );
       else {

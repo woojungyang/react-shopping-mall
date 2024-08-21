@@ -1,13 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { OrderState, getOrderState } from "models/order";
-import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "utilities";
 
 import useOrdersQuery from "hooks/query/useOrdersQuery";
-import useUserQuery from "hooks/query/useUserQuery";
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
@@ -25,21 +23,19 @@ import SearchFilter from "../SearchFilter";
 export default function MyPageContent() {
   const navigation = useNavigate();
 
-  const [startDate, endDate, changeStartDate, changeEndDate] =
-    useDateIntervalQueryString(
-      "startDate",
-      "endDate",
-      formatDateTime(addMonths(now(), -1)),
-      formatDateTime(now()),
-    );
+  const [startDate, endDate, updateDates] = useDateIntervalQueryString(
+    "startDate",
+    "endDate",
+    formatDateTime(addMonths(now(), -1)),
+    formatDateTime(now()),
+  );
 
   const [selectedOrderState, changeSelectedOrderState] =
     useQueryString("selectedOrderState");
 
   function onClickStage(stageId) {
     changeSelectedOrderState(stageId);
-    changeStartDate(formatDateTime(addMonths(now(), -3)));
-    changeEndDate(formatDateTime(now()));
+    updateDates(formatDateTime(addMonths(now(), -3)), formatDateTime(now()));
   }
   const [{ page, perPage: limit, offset }, changePage, getPageCount] =
     usePageQueryString("page", 5);
@@ -52,6 +48,10 @@ export default function MyPageContent() {
     limit: limit,
     state: selectedOrderState,
   });
+
+  useEffect(() => {
+    changePage(1);
+  }, [startDate, endDate, selectedOrderState]);
 
   if (isLoading) return <LoadingLayer />;
 
@@ -92,9 +92,8 @@ export default function MyPageContent() {
 
         <SearchFilter
           startDate={startDate}
-          changeStartDate={changeStartDate}
           endDate={endDate}
-          changeEndDate={changeEndDate}
+          updateDates={updateDates}
         />
         <div className={styles.filter_description}>
           <p>
@@ -110,6 +109,7 @@ export default function MyPageContent() {
         <div className={styles.order_list_table}>
           <Table
             page={page}
+            total={orders?.total}
             count={getPageCount(orders?.total)}
             handleChangePage={handleChangePage}
             headers={[
@@ -199,20 +199,3 @@ const canceledStage = [
   { id: OrderState.PendingRefund, label: "반품", key: "PendingRefund" },
   { id: OrderState.PendingExchange, label: "교환", key: "PendingExchange" },
 ];
-
-const orderList = Array.from({ length: 5 }, (v, index) => ({
-  id: index,
-  orderDate: formatDateTime(now()),
-  orderNumber: nanoid(),
-  products: Array.from({ length: index + 1 }, (v, index) => ({
-    id: index,
-    itemName: "item" + nanoid(),
-    option: "skyblue",
-    quantity: index + 1,
-    price: 12344 + index,
-    state:
-      Object.values(OrderState)[
-        Math.floor(Math.random() * Object.values(OrderState).length)
-      ],
-  })),
-}));

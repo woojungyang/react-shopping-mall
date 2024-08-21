@@ -86,6 +86,18 @@ export default function getOrders(mock) {
         return date >= new Date(startDate) && date <= new Date(endDate);
       });
 
+    if (state) {
+      data.data = data.data
+        .map((item) => {
+          const filteredItems = item.items.filter((e) => e.state == state);
+
+          if (filteredItems.length > 0) {
+            return { ...item, items: filteredItems };
+          }
+        })
+        .filter(Boolean);
+    }
+
     data.total = data.data.length;
     data.data = data.data.slice(offset, offset + limit);
 
@@ -96,7 +108,7 @@ export default function getOrders(mock) {
 let collection = new Array(faker.number.int({ max: 200, min: 10 }))
   .fill()
   .map((_, index) => ({
-    id: faker.number.int,
+    id: (index + 1) * faker.number.int(),
     createdAt: faker.date.between({
       from: "2024-01-01T00:00:00.000Z",
       to: "2024-12-31T00:00:00.000Z",
@@ -109,7 +121,7 @@ let collection = new Array(faker.number.int({ max: 200, min: 10 }))
         const price = faker.number.int({ max: 100000, min: 1000 });
         const quantity = faker.number.int({ max: 10, min: 1 });
         return {
-          id: faker.number.int,
+          id: (index + 1) * faker.number.int(),
           itemName: faker.commerce.product(),
           quantity: quantity,
           price: price * quantity,

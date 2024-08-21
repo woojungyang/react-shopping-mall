@@ -14,20 +14,16 @@ import {
   formatDateTime,
   isBeforeDateTime,
   now,
+  startOfMonth,
 } from "utilities/dateTime";
 
 import styles from "styles/_mypage.module.scss";
 
-export default function SearchFilter({
-  startDate,
-  changeStartDate,
-  endDate,
-  changeEndDate,
-}) {
+export default function SearchFilter({ startDate, endDate, updateDates }) {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
-  const [currentActive, setCurrentActive] = useState(buttons[0].id);
+  const [currentActive, setCurrentActive] = useState("");
   const [start, setStart] = useState(startDate);
   const [end, setEnd] = useState(endDate);
 
@@ -43,8 +39,7 @@ export default function SearchFilter({
     if (isBeforeDateTime(end, start)) {
       alert("종료일이 시작일보다 이전일 수 없습니다.");
     } else {
-      changeStartDate(start);
-      changeEndDate(end);
+      updateDates(start, end);
     }
   };
 
@@ -62,8 +57,9 @@ export default function SearchFilter({
       const startDay = formatDateTime(
         addMonths(now(), buttonId === 2 ? -1 : -2),
       );
+
       const endDay = formatDateTime(endOfMonth(startDay));
-      setStart(startDay);
+      setStart(formatDateTime(startOfMonth(startDay)));
       setEnd(endDay);
     }
   }
@@ -116,7 +112,7 @@ export default function SearchFilter({
                 value={start}
                 onChange={(newValue) => {
                   setStart(newValue);
-                  changeStartDate(newValue);
+                  updateDates(newValue, endDate);
                 }}
                 isDeskTop={false}
               />
@@ -125,7 +121,7 @@ export default function SearchFilter({
                 value={end}
                 onChange={(newValue) => {
                   setEnd(newValue);
-                  changeEndDate(newValue);
+                  updateDates(startDate, newValue);
                 }}
                 isDeskTop={false}
               />
@@ -185,8 +181,10 @@ function CustomPicker({ value, onChange, isDeskTop = true }) {
   );
 }
 
+const oneMonthAgo = addMonths(now(), -1);
+const twoMonthAgo = addMonths(now(), -2);
 const buttons = [
   { id: 1, label: "최근1개월" },
-  { id: 2, label: `${formatDateTime(addMonths(now(), -1), "MM")}월` },
-  { id: 3, label: `${formatDateTime(addMonths(now(), -2), "MM")}월` },
+  { id: 2, label: `${formatDateTime(oneMonthAgo, "MM")}월` },
+  { id: 3, label: `${formatDateTime(twoMonthAgo, "MM")}월` },
 ];
