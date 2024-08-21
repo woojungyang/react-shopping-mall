@@ -22,13 +22,12 @@ import SearchFilter from "../SearchFilter";
 export default function MyOrderContent() {
   const navigation = useNavigate();
 
-  const [startDate, endDate, changeStartDate, changeEndDate] =
-    useDateIntervalQueryString(
-      "startDate",
-      "endDate",
-      formatDateTime(addMonths(now(), -1)),
-      formatDateTime(now()),
-    );
+  const [startDate, endDate, updateDates] = useDateIntervalQueryString(
+    "startDate",
+    "endDate",
+    formatDateTime(addMonths(now(), -1)),
+    formatDateTime(now()),
+  );
 
   const [selectedOrderState, changeSelectedOrderState] =
     useQueryString("selectedOrderState");
@@ -56,9 +55,8 @@ export default function MyOrderContent() {
       <div className={styles.order_wrapper}>
         <SearchFilter
           startDate={startDate}
-          changeStartDate={changeStartDate}
           endDate={endDate}
-          changeEndDate={changeEndDate}
+          updateDates={updateDates}
         />
         <div className={styles.filter_description}>
           <p>

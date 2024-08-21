@@ -4,12 +4,15 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { mypageMenuList } from "models/mypage";
 import { OrderState } from "models/order";
-import { MembershipRank, getMembershipLabel } from "models/user";
+import { getMembershipLabel } from "models/user";
 import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "utilities";
 
+import useOrdersQuery from "hooks/query/useOrdersQuery";
+import useUserQuery from "hooks/query/useUserQuery";
+
 import { LikeHeart } from "components/card";
-import { MobileLayout } from "components/common";
+import { LoadingLayer, MobileLayout } from "components/common";
 import { ToastModal } from "components/modal";
 
 import { addMonths, formatDateTime, now } from "utilities/dateTime";
@@ -21,7 +24,11 @@ export default function MyPageContentMb() {
 
   const [toastMessage, setToastMessage] = useState("");
 
-  const count = 777;
+  const { data: user, isLoading } = useUserQuery();
+
+  const { data: process, isLoading: processLoading } = useOrdersQuery();
+
+  if (isLoading || processLoading) <LoadingLayer />;
 
   return (
     <MobileLayout
@@ -32,7 +39,7 @@ export default function MyPageContentMb() {
     >
       <div className={styles.mobile_mypage_container}>
         <div className={styles.profile_wrapper}>
-          <p className={styles.profile_name}>홍길동</p>
+          <p className={styles.profile_name}>{user?.name}</p>
           <div className={styles.like_wrap}>
             <LikeHeart
               readOnly={true}
@@ -40,24 +47,27 @@ export default function MyPageContentMb() {
               onClick={() => setToastMessage("준비중입니다.")}
             />
 
-            <p>{count > 998 ? "+999" : count}</p>
+            <p>{user?.likeCount > 998 ? "+999" : user?.likeCount}</p>
           </div>
         </div>
 
         <Membership
           content={{
             title: "멤버십 등급",
-            content: getMembershipLabel(MembershipRank.Basic),
+            content: getMembershipLabel(user?.rank),
           }}
           setToastMessage={setToastMessage}
         />
         <div className={styles.double_membership_wrap}>
           <Membership
-            content={{ title: "쿠폰", content: 1 }}
+            content={{ title: "쿠폰", content: user?.couponCount }}
             setToastMessage={setToastMessage}
           />
           <Membership
-            content={{ title: "마일리지", content: 3 }}
+            content={{
+              title: "마일리지",
+              content: numberWithCommas(user?.mileage),
+            }}
             setToastMessage={setToastMessage}
           />
         </div>
@@ -94,7 +104,9 @@ export default function MyPageContentMb() {
                                   );
                                 }}
                               >
-                                {numberWithCommas(stage.count)}
+                                {numberWithCommas(
+                                  process?.orderProgress[stage.key],
+                                )}
                               </p>
                               <p className={styles.order_label}>
                                 {stage.label}
@@ -138,9 +150,13 @@ function Membership({ content, setToastMessage }) {
 }
 
 const orderStages = [
-  { id: OrderState.PendingPayment, label: "결제대기", count: 1 },
-  { id: OrderState.ConfirmedOrder, label: "주문접수", count: 1 },
-  { id: OrderState.Preparing, label: "상품준비중", count: 2 },
-  { id: OrderState.Delivery, label: "배송중", count: 3 },
-  { id: OrderState.CompletedDelivery, label: "배송완료", count: 4 },
+  { id: OrderState.PendingPayment, label: "결제대기", key: "PendingPayment" },
+  { id: OrderState.ConfirmedOrder, label: "주문접수", key: "ConfirmedOrder" },
+  { id: OrderState.Preparing, label: "상품준비중", key: "Preparing" },
+  { id: OrderState.Delivery, label: "배송중", key: "Delivery" },
+  {
+    id: OrderState.CompletedDelivery,
+    label: "배송완료",
+    key: "CompletedDelivery",
+  },
 ];

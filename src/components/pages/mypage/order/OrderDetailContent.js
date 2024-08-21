@@ -27,7 +27,6 @@ export default function OrderDetailContent() {
   const [selectedItem, setSelectedItem] = useState({});
 
   const { id } = useParams();
-
   const { data: order, isLoading } = useOrderQuery(id);
 
   if (isLoading) return <LoadingLayer />;
@@ -78,12 +77,15 @@ export default function OrderDetailContent() {
                 <td>{numberWithCommas(item.price)}</td>
                 <td>{getOrderState(item.state)}</td>
                 <td>
-                  <button
-                    className={styles.delivery_info_wrap}
-                    onClick={() => setToastMessage("준비중입니다.")}
-                  >
-                    배송 조회
-                  </button>
+                  {item.state >= OrderState.Delivery &&
+                    item.state < OrderState.PendingExchange && (
+                      <button
+                        className={styles.delivery_info_wrap}
+                        onClick={() => setToastMessage("준비중입니다.")}
+                      >
+                        배송 조회
+                      </button>
+                    )}
                 </td>
               </TableRow>
             ))}
@@ -124,7 +126,7 @@ export default function OrderDetailContent() {
           <GrayContent
             content={{
               title: "주소",
-              content: `[${order?.deliveryInformation?.zipCode}] ${order?.deliveryInformation?.address} `,
+              content: `[${order?.deliveryInformation?.zipCode}] ${order?.deliveryInformation?.address}`,
             }}
           />
         </div>

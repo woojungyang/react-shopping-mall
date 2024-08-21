@@ -478,7 +478,7 @@
   .profile_wrapper {
     background-color: $color-dark-200;
     @include flex($justify-content: space-between);
-    height: 160px;
+    min-height: 160px;
 
     padding: $margin $padding;
 
@@ -492,6 +492,7 @@
       width: 70px;
       height: 70px;
       border-radius: 80%;
+      flex-shrink: 0;
       background-color: rgba($color-background-100, 0.2);
       p {
         margin-top: -2px;

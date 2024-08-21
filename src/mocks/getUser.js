@@ -10,6 +10,7 @@ export default function getUser(mock) {
       name: faker.person.fullName(),
       rank: faker.helpers.arrayElement(Object.values(MembershipRank)),
       couponCount: faker.number.int({ max: 10, min: 0 }),
+      likeCount: faker.number.int({ max: 1000, min: 0 }),
       mileage: faker.number.int({ max: 1000, min: 100 }),
     };
 

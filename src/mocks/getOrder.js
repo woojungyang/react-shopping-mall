@@ -9,7 +9,11 @@ export default function getOrder(mock) {
       ...collection,
       paymentInformation: {
         ...collection.paymentInformation,
-        totalPrice: calculateSum(collection.items.map((e) => e.price)),
+        totalPrice: calculateSum(
+          collection.items
+            .filter((e1) => e1.state <= OrderState.CompletedExchange)
+            .map((e) => e.price),
+        ),
       },
     };
 

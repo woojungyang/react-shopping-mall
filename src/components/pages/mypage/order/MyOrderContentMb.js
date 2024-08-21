@@ -6,13 +6,19 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import TuneIcon from "@mui/icons-material/Tune";
 import { Drawer } from "@mui/material";
 import { OrderState, getOrderState } from "models/order";
-import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 
+import useOrdersQuery from "hooks/query/useOrdersQuery";
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
+import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
-import { DefaultButton, MobileLayout } from "components/common";
+import {
+  DefaultButton,
+  DefaultPagination,
+  LoadingLayer,
+  MobileLayout,
+} from "components/common";
 import { Table, TableFilter, TableRow } from "components/table";
 
 import { addMonths, formatDateTime, now } from "utilities/dateTime";
@@ -25,19 +31,28 @@ import Order from "./Order";
 export default function MyOrderContentMb() {
   const navigation = useNavigate();
 
-  const [startDate, endDate, changeStartDate, changeEndDate] =
-    useDateIntervalQueryString(
-      "startDate",
-      "endDate",
-      formatDateTime(addMonths(now(), -1)),
-      formatDateTime(now()),
-    );
+  const [{ page, perPage: limit, offset }, changePage, getPageCount] =
+    usePageQueryString("page", 5);
+  const handleChangePage = (_event, page) => changePage(page);
 
+  const [startDate, endDate, updateDates] = useDateIntervalQueryString(
+    "startDate",
+    "endDate",
+    formatDateTime(addMonths(now(), -1)),
+    formatDateTime(now()),
+  );
   const [selectedOrderState, changeSelectedOrderState] =
     useQueryString("selectedOrderState");
 
-  const [showFilter, setShowFilter] = useState(false);
+  const { data: orders, isLoading } = useOrdersQuery({
+    startDate: startDate,
+    endDate: endDate,
+    offset: offset,
+    limit: limit,
+    state: selectedOrderState,
+  });
 
+  const [showFilter, setShowFilter] = useState(false);
   const toggleDrawer = (newOpen) => () => {
     setShowFilter(newOpen);
   };
@@ -46,9 +61,10 @@ export default function MyOrderContentMb() {
 
   return (
     <MobileLayout headerTitle="주문관리" isFooter={true}>
+      {isLoading && <LoadingLayer />}
       <div className={styles.mobile_mypage_container} style={{ padding: 0 }}>
         <div className={styles.sort_wrap}>
-          <p>전체 1건</p>
+          <p>전체 {orders?.total}건</p>
           <button className={styles.sort_button} onClick={toggleDrawer(true)}>
             <TuneIcon />
             필터
@@ -56,7 +72,7 @@ export default function MyOrderContentMb() {
         </div>
         <div className={styles.order_table_wrap}>
           <Table pagination={false}>
-            {orderList?.map((order, index) => (
+            {orders?.data?.map((order, index) => (
               <TableRow
                 key={index}
                 onClick={() =>
@@ -66,18 +82,19 @@ export default function MyOrderContentMb() {
                 <td
                   className={styles.order_content}
                   style={{
-                    borderBottom: orderList.length == index + 1 ? 0 : "",
+                    borderBottom: orders?.data.length == index + 1 ? 0 : "",
                   }}
                 >
                   <div className={styles.order_header}>
                     <p className={styles.order_number}>
-                      {order.orderDate} |<span> {order.orderNumber}</span>
+                      {formatDateTime(order.createdAt)} |
+                      <span> {order.orderNumber}</span>
                     </p>
                     <ChevronRightIcon />
                   </div>
                   <div className={styles.order_body}>
-                    {order.products.map((product, index) => (
-                      <Order key={index} product={product} />
+                    {order?.items?.map((item, index) => (
+                      <Order key={index} item={item} />
                     ))}
                   </div>
                   <DefaultButton
@@ -93,13 +110,13 @@ export default function MyOrderContentMb() {
               </TableRow>
             ))}
           </Table>
+
           <div className={styles.button_wrap}>
             <DefaultButton
               label="이전 주문 내역 더보기"
               className={styles.button_skeleton_100_color_background_100}
             />
           </div>
-          {/* <div>ddd</div> */}
         </div>
       </div>
       <Drawer
@@ -131,9 +148,8 @@ export default function MyOrderContentMb() {
               <p className={styles.title}>기간 설정</p>
               <SearchFilter
                 startDate={startDate}
-                changeStartDate={changeStartDate}
                 endDate={endDate}
-                changeEndDate={changeEndDate}
+                updateDates={updateDates}
               />
             </div>
             <div className={styles.drawer_content_wrap}>
@@ -164,20 +180,3 @@ export default function MyOrderContentMb() {
     </MobileLayout>
   );
 }
-
-const orderList = Array.from({ length: 8 }, (v, index) => ({
-  id: index,
-  orderDate: formatDateTime(now()),
-  orderNumber: nanoid(),
-  products: Array.from({ length: index + 1 }, (v, index) => ({
-    id: index,
-    itemName: "item" + nanoid(),
-    option: "skyblue",
-    quantity: index,
-    price: 12344 + index,
-    state:
-      Object.values(OrderState)[
-        Math.floor(Math.random() * Object.values(OrderState).length)
-      ],
-  })),
-}));
