@@ -5,26 +5,61 @@ import { OrderState, getOrderState } from "models/order";
 import { useParams } from "react-router-dom";
 import { maskPhoneNumber, numberWithCommas } from "utilities";
 
+import usePatchOrderOptionMutation from "hooks/mutation/usePatchOrderOptionMutation";
+import useItemQuery from "hooks/query/useItemQuery";
 import useOrderQuery from "hooks/query/useOrderQuery";
 
 import { DefaultButton, LoadingLayer, MobileLayout } from "components/common";
 import { OptionsMobile } from "components/detail";
 import { ToastModal } from "components/modal";
 
-import { formatDateTime, now } from "utilities/dateTime";
+import { formatDateTime } from "utilities/dateTime";
 
 import styles from "styles/_mypage.module.scss";
 
 export default function OrderDetailContentMb() {
   const [toastMessage, setToastMessage] = useState("");
 
-  const [optionsChanges, setOptionChanges] = useState({});
-  const [changeOptionModal, setChangeOptionModal] = useState(false);
-
   const { id } = useParams();
   const { data: order, isLoading } = useOrderQuery(id);
 
-  if (isLoading) return <LoadingLayer />;
+  const [optionsChanges, setOptionChanges] = useState({});
+  const [changeOptionModal, setChangeOptionModal] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState("");
+
+  const {
+    data: item,
+    isLoading: itemLoading,
+    refetch,
+  } = useItemQuery(selectedItemId, {
+    enabled: !!selectedItemId,
+    onSuccess: (res) => {
+      setChangeOptionModal(true);
+    },
+  });
+
+  const patchOrderItemOptionMutation = usePatchOrderOptionMutation(
+    id,
+    selectedItemId,
+  );
+
+  async function requestPatchOrderItemOptions() {
+    try {
+      await patchOrderItemOptionMutation.mutateAsync({
+        color: optionsChanges.name?.split(" | ")[0],
+        size: optionsChanges.name?.split(" | ")[1],
+      });
+      setToastMessage("옵션변경 요청완료");
+      setOptionChanges({});
+      setSelectedItemId("");
+      refetch();
+    } catch (error) {
+      setToastMessage(error.message);
+    }
+  }
+
+  if (isLoading || itemLoading || patchOrderItemOptionMutation.isLoading)
+    return <LoadingLayer />;
 
   return (
     <MobileLayout headerTitle="주문 상세내역" isFooter={false}>
@@ -39,7 +74,7 @@ export default function OrderDetailContentMb() {
               <OrderItem
                 key={index}
                 item={item}
-                onChangeOption={() => setChangeOptionModal(true)}
+                onChangeOption={() => setSelectedItemId(item.id)}
                 onClickDelivery={() => setToastMessage("준비중입니다.")}
               />
             ))}
@@ -94,10 +129,17 @@ export default function OrderDetailContentMb() {
       />
       {changeOptionModal && (
         <OptionsMobile
+          options={item?.options
+            .sort((a, b) => a?.color?.localeCompare(b.color))
+            .map((option) => ({
+              id: option.id,
+              name: `${option.color} | ${option.size}`,
+              inventory: option.inventory,
+            }))}
           isQuantity={false}
           setVisible={setChangeOptionModal}
-          optionsChanges={optionsChanges}
-          setOptionChanges={setOptionChanges}
+          selectedItemOptions={optionsChanges}
+          setSelectedItemOptions={setOptionChanges}
           leftButton={{
             label: "취소",
             onClick: () => setChangeOptionModal(false),
@@ -106,7 +148,7 @@ export default function OrderDetailContentMb() {
             label: "변경 저장",
             onClick: () => {
               setChangeOptionModal(false);
-              setToastMessage("변경사항 저장");
+              requestPatchOrderItemOptions();
             },
           }}
         />

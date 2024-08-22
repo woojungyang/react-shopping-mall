@@ -10,20 +10,42 @@ import styles from "styles/_common.module.scss";
 import { ModalContainer } from "./ModalContainer";
 
 export const ChangeOptionModal = ({
+  item = {},
   visible,
   setVisible,
   onSubmit,
-  colors = [],
-  sizes = [],
   isQuantity = true,
   setSelectedItem,
   selectedItem,
 }) => {
+  const colorOptions = item?.options?.reduce((acc, current) => {
+    if (!acc.some((item) => item.color === current.color)) {
+      acc.push(current);
+    }
+    return acc;
+  }, []);
+
+  const sizeOptions = item?.options?.filter(
+    (option) => option.color == selectedItem.color,
+  );
+
   return (
     <ModalContainer visible={visible} setVisible={setVisible} title="옵션 변경">
       <div className={styles.change_item_options_modal}>
-        {!!colors.length && <ColorOptions colorOptions={colors} />}
-        {!!sizes.length && <SizeOptions sizeOptions={sizes} />}
+        {!!colorOptions.length && (
+          <ColorOptions
+            colorOptions={colorOptions}
+            selectedItem={selectedItem}
+            setSelectedItem={setSelectedItem}
+          />
+        )}
+        {!!sizeOptions.length && (
+          <SizeOptions
+            sizeOptions={sizeOptions}
+            selectedItem={selectedItem}
+            setSelectedItem={setSelectedItem}
+          />
+        )}
         {isQuantity && (
           <QuantityOptions
             setSelectedItemOptions={setSelectedItem}
@@ -41,7 +63,10 @@ export const ChangeOptionModal = ({
         <DefaultButton
           label="취소"
           className={styles.button_skeleton_100_color_background_100}
-          onClick={() => setVisible(false)}
+          onClick={() => {
+            setVisible(false);
+            setSelectedItem({});
+          }}
         />
         <DefaultButton
           label="변경"

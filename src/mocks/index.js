@@ -13,6 +13,7 @@ export default function mocking(axios) {
     require("./getOrders").default,
     require("./getOverview").default,
     require("./getUser").default,
+    require("./patchOrderItemOption").default,
     require("./patchPassword").default,
     require("./postAuth").default,
     require("./postCartItem").default,

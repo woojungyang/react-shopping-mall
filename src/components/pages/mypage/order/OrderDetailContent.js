@@ -5,6 +5,8 @@ import { OrderState, getOrderState } from "models/order";
 import { useParams } from "react-router-dom";
 import { maskAccountName, maskPhoneNumber, numberWithCommas } from "utilities";
 
+import usePatchOrderOptionMutation from "hooks/mutation/usePatchOrderOptionMutation";
+import useItemQuery from "hooks/query/useItemQuery";
 import useOrderQuery from "hooks/query/useOrderQuery";
 
 import { LoadingLayer } from "components/common";
@@ -21,15 +23,43 @@ export default function OrderDetailContent() {
   const [toastMessage, setToastMessage] = useState("");
   const [changeOptionModal, setChangeOptionModal] = useState(false);
 
-  const colorOptions = [...new Array(3)];
-  const sizeOptions = [...new Array(3)];
-
   const [selectedItem, setSelectedItem] = useState({});
 
   const { id } = useParams();
   const { data: order, isLoading } = useOrderQuery(id);
 
-  if (isLoading) return <LoadingLayer />;
+  const {
+    data: item,
+    isLoading: itemLoading,
+    refetch,
+  } = useItemQuery(selectedItem?.id, {
+    enabled: !!selectedItem?.id,
+    onSuccess: (res) => {
+      setChangeOptionModal(!changeOptionModal);
+    },
+  });
+
+  const patchOrderItemOptionMutation = usePatchOrderOptionMutation(
+    id,
+    selectedItem?.id,
+  );
+
+  async function requestPatchOrderItemOptions() {
+    try {
+      await patchOrderItemOptionMutation.mutateAsync({
+        color: selectedItem.color,
+        size: selectedItem?.size,
+      });
+      setToastMessage("옵션변경 요청완료");
+      setSelectedItem({});
+      refetch();
+    } catch (error) {
+      setToastMessage(error.message);
+    }
+  }
+
+  if (isLoading || itemLoading || patchOrderItemOptionMutation.isLoading)
+    return <LoadingLayer />;
   return (
     <MyPageLayout>
       <div className={styles.order_detail_wrapper}>
@@ -62,7 +92,7 @@ export default function OrderDetailContent() {
                         <button
                           className={styles.option_button}
                           onClick={() => {
-                            setChangeOptionModal(!changeOptionModal);
+                            //
                             setSelectedItem(item);
                           }}
                         >
@@ -154,13 +184,13 @@ export default function OrderDetailContent() {
       )}
       {changeOptionModal && (
         <ChangeOptionModal
+          item={item}
           isQuantity={false}
           visible={changeOptionModal}
           setVisible={setChangeOptionModal}
-          colors={colorOptions}
-          sizes={sizeOptions}
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
+          onSubmit={requestPatchOrderItemOptions}
         />
       )}
     </MyPageLayout>

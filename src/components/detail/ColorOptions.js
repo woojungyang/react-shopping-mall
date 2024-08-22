@@ -8,29 +8,28 @@ import { DetailContentWrapper } from "./DetailContentWrapper";
 
 export const ColorOptions = ({
   colorOptions,
-  setSelectedItemOptions,
-  selectedItemOptions,
+  selectedItem,
+  setSelectedItem,
 }) => {
   return (
     <DetailContentWrapper title="COLOR">
       <div className={styles.color_options_wrapper}>
         <p className={styles.selected_option_name}>
           {
-            colorOptions?.find(
-              (color) => color.color == selectedItemOptions.color,
-            )?.color
+            colorOptions?.find((color) => color.color == selectedItem?.color)
+              ?.color
           }
         </p>
 
         <div className={styles.color_options_wrap}>
           {colorOptions.map((option, index) => {
-            const isSelected = selectedItemOptions?.color == option.color;
+            const isSelected = selectedItem?.color == option.color;
             return (
               <div
                 key={index}
                 onClick={() => {
-                  setSelectedItemOptions({
-                    ...selectedItemOptions,
+                  setSelectedItem({
+                    ...selectedItem,
                     color: isSelected ? null : option.color,
                   });
                 }}

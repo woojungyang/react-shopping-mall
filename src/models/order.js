@@ -12,7 +12,7 @@ export const OrderState = enumerate({
   PendingRefund: 9,
   CompletedRefund: 10,
   CanceledOrder: 11,
-  IssuedPayment: 12,
+  // IssuedPayment: 12,
 });
 
 export function getOrderState(state) {
@@ -37,8 +37,8 @@ export function getOrderState(state) {
       return "환불완료";
     case OrderState.CanceledOrder:
       return "주문취소";
-    case OrderState.IssuedPayment:
-      return "결제오류";
+  /*   case OrderState.IssuedPayment:
+      return "결제오류"; */
     default:
       return "결제대기";
   }

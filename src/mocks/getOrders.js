@@ -9,8 +9,8 @@ export default function getOrders(mock) {
     const status = 200;
     let data = { total: collection.length, data: collection };
 
-    let startedAt = new Date(formatDateTime(addMonths(now(), -3)));
-    let endedAt = new Date(formatDateTime(now()));
+    let startedAt = new Date(formatDateTime(addMonths(now(), -3))) || "";
+    let endedAt = new Date(formatDateTime(now())) || "";
 
     let orderProgress = collection.reduce(
       (acc, order) => {
@@ -74,14 +74,17 @@ export default function getOrders(mock) {
     let offset = config.params?.offset || 0;
     let limit = config.params?.limit || 15;
 
-    let startDate = config?.params?.startDate;
-    let endDate = config?.params?.endDate;
+    let startDate = config?.params?.startDate || "";
+    let endDate = config?.params?.endDate || "";
 
     let state = config?.params?.state || "";
 
-    data.data = collection
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      .filter((dateStr) => {
+    data.data = collection.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+    );
+
+    if (startDate || endDate)
+      data.data = data.data.filter((dateStr) => {
         const date = new Date(dateStr.createdAt);
         return date >= new Date(startDate) && date <= new Date(endDate);
       });

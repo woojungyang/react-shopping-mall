@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CloseIcon from "@mui/icons-material/Close";
@@ -6,16 +6,17 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import TuneIcon from "@mui/icons-material/Tune";
 import { Drawer } from "@mui/material";
 import { OrderState, getOrderState } from "models/order";
+import { useInfiniteQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 
-import useOrdersQuery from "hooks/query/useOrdersQuery";
+import { ApiClientQuery } from "hooks/apiClient/useApiClient";
 import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
 import {
   DefaultButton,
-  DefaultPagination,
+  Loading,
   LoadingLayer,
   MobileLayout,
 } from "components/common";
@@ -33,7 +34,6 @@ export default function MyOrderContentMb() {
 
   const [{ page, perPage: limit, offset }, changePage, getPageCount] =
     usePageQueryString("page", 5);
-  const handleChangePage = (_event, page) => changePage(page);
 
   const [startDate, endDate, updateDates] = useDateIntervalQueryString(
     "startDate",
@@ -44,27 +44,46 @@ export default function MyOrderContentMb() {
   const [selectedOrderState, changeSelectedOrderState] =
     useQueryString("selectedOrderState");
 
-  const { data: orders, isLoading } = useOrdersQuery({
-    startDate: startDate,
-    endDate: endDate,
-    offset: offset,
-    limit: limit,
-    state: selectedOrderState,
-  });
-
   const [showFilter, setShowFilter] = useState(false);
   const toggleDrawer = (newOpen) => () => {
     setShowFilter(newOpen);
   };
+  const fetchOrders = async ({ pageParam = 0 }) => {
+    const response = await ApiClientQuery({
+      url: "/api/v1/orders",
+      params: {
+        offset: pageParam * limit,
+        limit: limit,
+      },
+      method: "get",
+    });
+    return response;
+  };
+
+  const {
+    data: orders,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isLoading,
+  } = useInfiniteQuery("orders", fetchOrders, {
+    getNextPageParam: (lastPage, pages) => {
+      const total = getPageCount(pages[0].total);
+      if (pages.length < total) return pages.length + 1;
+      else return undefined;
+    },
+  });
+  const ordersTotal = useMemo(() => orders?.pages[0]?.total || 0, [orders]);
 
   const [option, setOption] = useState(selectedOrderState);
 
+  if (isLoading) return <LoadingLayer />;
+
   return (
     <MobileLayout headerTitle="주문관리" isFooter={true}>
-      {isLoading && <LoadingLayer />}
       <div className={styles.mobile_mypage_container} style={{ padding: 0 }}>
         <div className={styles.sort_wrap}>
-          <p>전체 {orders?.total}건</p>
+          <p>전체 {ordersTotal}건</p>
           <button className={styles.sort_button} onClick={toggleDrawer(true)}>
             <TuneIcon />
             필터
@@ -72,51 +91,57 @@ export default function MyOrderContentMb() {
         </div>
         <div className={styles.order_table_wrap}>
           <Table pagination={false}>
-            {orders?.data?.map((order, index) => (
-              <TableRow
-                key={index}
-                onClick={() =>
-                  navigation(`/my-order/my-order-list/${order.id}`)
-                }
-              >
-                <td
-                  className={styles.order_content}
-                  style={{
-                    borderBottom: orders?.data.length == index + 1 ? 0 : "",
-                  }}
+            {orders?.pages?.flatMap((page) =>
+              page.data.map((order, index) => (
+                <TableRow
+                  key={index}
+                  onClick={() =>
+                    navigation(`/my-order/my-order-list/${order.id}`)
+                  }
                 >
-                  <div className={styles.order_header}>
-                    <p className={styles.order_number}>
-                      {formatDateTime(order.createdAt)} |
-                      <span> {order.orderNumber}</span>
-                    </p>
-                    <ChevronRightIcon />
-                  </div>
-                  <div className={styles.order_body}>
-                    {order?.items?.map((item, index) => (
-                      <Order key={index} item={item} />
-                    ))}
-                  </div>
-                  <DefaultButton
-                    label="주문상세"
-                    className={
-                      styles.button_background_100_outline_color_dark_300
-                    }
-                    onClick={() =>
-                      navigation(`/my-order/my-order-list/${order.id}`)
-                    }
-                  />
-                </td>
-              </TableRow>
-            ))}
+                  <td
+                    className={styles.order_content}
+                    style={{
+                      borderBottom: ordersTotal === page.data.length ? 0 : "",
+                    }}
+                  >
+                    <div className={styles.order_header}>
+                      <p className={styles.order_number}>
+                        {formatDateTime(order.createdAt)} |
+                        <span> {order.orderNumber}</span>
+                      </p>
+                      <ChevronRightIcon />
+                    </div>
+                    <div className={styles.order_body}>
+                      {order.items?.map((item) => (
+                        <Order key={item.id} item={item} />
+                      ))}
+                    </div>
+                    <DefaultButton
+                      label="주문상세"
+                      className={
+                        styles.button_background_100_outline_color_dark_300
+                      }
+                      onClick={() =>
+                        navigation(`/my-order/my-order-list/${order.id}`)
+                      }
+                    />
+                  </td>
+                </TableRow>
+              )),
+            )}
           </Table>
-
-          <div className={styles.button_wrap}>
-            <DefaultButton
-              label="이전 주문 내역 더보기"
-              className={styles.button_skeleton_100_color_background_100}
-            />
-          </div>
+          {isFetching ? (
+            <Loading />
+          ) : hasNextPage ? (
+            <div className={styles.button_wrap}>
+              <DefaultButton
+                label="이전 주문 내역 더보기"
+                className={styles.button_skeleton_100_color_background_100}
+                onClick={() => fetchNextPage()}
+              />
+            </div>
+          ) : null}
         </div>
       </div>
       <Drawer
