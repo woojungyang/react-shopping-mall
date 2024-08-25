@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import { addItem } from "app/counterSlice";
+
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import { getQuestionStateLabel } from "models/notice";
+import { userToken } from "models/user";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   calculateSum,
@@ -44,6 +48,8 @@ export default function ItemDetailContentMb() {
   const { id } = useParams();
   const navigation = useNavigate();
 
+  const dispatch = useDispatch();
+
   const [toastMessage, setToastMessage] = useState("");
 
   const [showOptionModal, setShowOptionModal] = useState(false);
@@ -52,16 +58,20 @@ export default function ItemDetailContentMb() {
   const [like, setLike] = useState(false);
   const [isSoldOut, setIsSoldOut] = useState(false);
 
-  const { data: item, isLoading } = useItemQuery(id, {
-    onSuccess: (data) => {
-      setLike(data.like);
-      if (calculateSum(data.options.map((e) => e.inventory)) < 1)
-        setIsSoldOut(true);
+  const { data: item, isLoading } = useItemQuery(
+    id,
+    {},
+    {
+      onSuccess: (data) => {
+        setLike(data.like);
+        if (calculateSum(data.options.map((e) => e.inventory)) < 1)
+          setIsSoldOut(true);
+      },
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
     },
-    onError: (error) => {
-      setToastMessage(error.message);
-    },
-  });
+  );
 
   const [
     { page: reviewPage, perPage: limit, offset: reviewOffset },
@@ -425,7 +435,15 @@ export default function ItemDetailContentMb() {
               label: "쇼핑백에 담기",
               onClick: () => {
                 setShowOptionModal(false);
-                requestPatchCartItem();
+                if (userToken) requestPatchCartItem();
+                else
+                  dispatch(
+                    addItem({
+                      id: id,
+                      optionsId: selectedItemOptions?.id,
+                      quantity: selectedItemOptions?.quantity,
+                    }),
+                  );
                 setToastMessage("쇼핑백에 추가되었습니다.");
               },
             }}

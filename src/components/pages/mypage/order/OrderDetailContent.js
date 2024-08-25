@@ -32,12 +32,16 @@ export default function OrderDetailContent() {
     data: item,
     isLoading: itemLoading,
     refetch,
-  } = useItemQuery(selectedItem?.id, {
-    enabled: !!selectedItem?.id,
-    onSuccess: (res) => {
-      setChangeOptionModal(!changeOptionModal);
+  } = useItemQuery(
+    selectedItem?.id,
+    {},
+    {
+      enabled: !!selectedItem?.id,
+      onSuccess: (res) => {
+        setChangeOptionModal(!changeOptionModal);
+      },
     },
-  });
+  );
 
   const patchOrderItemOptionMutation = usePatchOrderOptionMutation(
     id,

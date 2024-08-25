@@ -15,8 +15,8 @@ export const ChangeOptionModal = ({
   setVisible,
   onSubmit,
   isQuantity = true,
-  setSelectedItem,
-  selectedItem,
+  setSelectedItem: setSelectedItemOptions,
+  selectedItem: selectedItemOptions,
 }) => {
   const colorOptions = item?.options?.reduce((acc, current) => {
     if (!acc.some((item) => item.color === current.color)) {
@@ -26,7 +26,7 @@ export const ChangeOptionModal = ({
   }, []);
 
   const sizeOptions = item?.options?.filter(
-    (option) => option.color == selectedItem.color,
+    (option) => option.color == selectedItemOptions.color,
   );
 
   return (
@@ -35,28 +35,28 @@ export const ChangeOptionModal = ({
         {!!colorOptions.length && (
           <ColorOptions
             colorOptions={colorOptions}
-            selectedItem={selectedItem}
-            setSelectedItem={setSelectedItem}
+            selectedItemOptions={selectedItemOptions}
+            setSelectedItemOptions={setSelectedItemOptions}
           />
         )}
         {!!sizeOptions.length && (
           <SizeOptions
             sizeOptions={sizeOptions}
-            selectedItem={selectedItem}
-            setSelectedItem={setSelectedItem}
+            selectedItemOptions={selectedItemOptions}
+            setSelectedItemOptions={setSelectedItemOptions}
           />
         )}
         {isQuantity && (
           <QuantityOptions
-            setSelectedItemOptions={setSelectedItem}
-            selectedItemOptions={selectedItem}
+            setSelectedItemOptions={setSelectedItemOptions}
+            selectedItemOptions={selectedItemOptions}
           />
         )}
       </div>
       <div className={styles.change_item_price_wrap}>
         <p>결제 예정 금액</p>
         <p>
-          <strong>{numberWithCommas(selectedItem.price)}</strong>원
+          <strong>{numberWithCommas(selectedItemOptions.price)}</strong>원
         </p>
       </div>
       <div className={styles.default_flex_space}>
@@ -65,7 +65,7 @@ export const ChangeOptionModal = ({
           className={styles.button_skeleton_100_color_background_100}
           onClick={() => {
             setVisible(false);
-            setSelectedItem({});
+            setSelectedItemOptions({});
           }}
         />
         <DefaultButton

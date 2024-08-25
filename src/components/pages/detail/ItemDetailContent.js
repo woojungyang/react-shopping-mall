@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import { addItem } from "app/counterSlice";
+
 import EastIcon from "@mui/icons-material/East";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
@@ -7,6 +9,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import { Rating } from "@mui/material";
 import { getQuestionStateLabel } from "models/notice";
+import { userToken } from "models/user";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   calculateSum,
@@ -52,28 +56,36 @@ export default function ItemDetailContent() {
   const { id } = useParams();
   const navigation = useNavigate();
 
+  const dispatch = useDispatch();
+  const items = useSelector((state) => state.counter.items);
+  console.log(items);
+
   const [toastMessage, setToastMessage] = useState("");
 
   const [selectedItemOptions, setSelectedItemOptions] = useState({});
   const [like, setLike] = useState(false);
   const [isSoldOut, setIsSoldOut] = useState(false);
 
-  const { data: item, isLoading } = useItemQuery(id, {
-    onSuccess: (data) => {
-      setLike(data.like);
-      const checkInventory =
-        calculateSum(data.options.map((e) => e.inventory)) < 1;
+  const { data: item, isLoading } = useItemQuery(
+    id,
+    {},
+    {
+      onSuccess: (data) => {
+        setLike(data.like);
+        const checkInventory =
+          calculateSum(data.options.map((e) => e.inventory)) < 1;
 
-      if (checkInventory) setIsSoldOut(true);
-      else
-        setSelectedItemOptions(
-          data.options.find((option) => option.inventory > 0),
-        );
+        if (checkInventory) setIsSoldOut(true);
+        else
+          setSelectedItemOptions(
+            data.options.find((option) => option.inventory > 0),
+          );
+      },
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
     },
-    onError: (error) => {
-      setToastMessage(error.message);
-    },
-  });
+  );
 
   const [
     { page: reviewPage, perPage: limit, offset: reviewOffset },
@@ -320,8 +332,15 @@ export default function ItemDetailContent() {
                   className={styles.button_dark_300_color_background_100}
                   label="주문하기"
                   onClick={() => {
-                    requestPatchCartItem();
-                    navigation("/cart");
+                    if (!userToken) {
+                      setToastMessage("로그인이 필요합니다.");
+                      setTimeout(() => {
+                        navigation("/login");
+                      }, 2000);
+                    } else {
+                      requestPatchCartItem();
+                      navigation("/cart");
+                    }
                   }}
                 />
                 <DefaultButton
@@ -331,7 +350,16 @@ export default function ItemDetailContent() {
                   label="쇼핑백"
                   onClick={() => {
                     setConfirmModal(true);
-                    requestPatchCartItem();
+                    if (userToken) requestPatchCartItem();
+                    else
+                      dispatch(
+                        addItem({
+                          id: id,
+                          optionsId: selectedItemOptions?.id,
+                          quantity: selectedItemOptions?.quantity,
+                        }),
+                      );
+
                     setConfirmModalContents({
                       title: "선택하신 상품이\n 쇼핑백에 추가 되었습니다.",
                       leftButton: {

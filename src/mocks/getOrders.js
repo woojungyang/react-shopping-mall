@@ -108,7 +108,7 @@ export default function getOrders(mock) {
   });
 }
 
-let collection = new Array(faker.number.int({ max: 200, min: 10 }))
+let collection = new Array(faker.number.int({ max: 100, min: 10 }))
   .fill()
   .map((_, index) => ({
     id: (index + 1) * faker.number.int(),

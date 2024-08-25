@@ -9,11 +9,18 @@ import { loadTossPayments } from "@tosspayments/payment-sdk";
 import classNames from "classnames";
 import { customAlphabet } from "nanoid";
 import DaumPostcode from "react-daum-postcode";
+import { useQueryClient } from "react-query";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas, scrollTop } from "utilities";
 
-import { DefaultButton, DefaultCheckbox } from "components/common";
-import { ColorOptions, QuantityOptions, SizeOptions } from "components/detail";
+import useItemQuery from "hooks/query/useItemQuery";
+
+import {
+  DefaultButton,
+  DefaultCheckbox,
+  LoadingLayer,
+} from "components/common";
 import { ChangeOptionModal, ModalContainer } from "components/modal";
 
 import { checkPhoneNumber } from "utilities/checkExpression";
@@ -31,38 +38,56 @@ export default function CartContent() {
   ];
   const [currentStage, setCurrentStage] = useState(1);
 
-  const [items, setItems] = useState(
-    Array.from({ length: 4 }, (v, index) => ({
-      id: index,
-      checked: true,
-      quantity: index,
-      name: "item" + index,
-      price: 12344 + index,
-      originalPrice: 21233 - index,
-    })),
+  const [toastMessage, setToastMessage] = useState("");
+
+  const [items, setItems] = useState([
+    ...useSelector((state) => state.counter.items),
+  ]);
+
+  const [carItems, setCartItems] = useState([]);
+
+  const itemQuery = useItemQuery(
+    items[0]?.id,
+    {},
+    {
+      enabled: !!items.length,
+      onSuccess: (data) => {
+        if (items.length) {
+          const newArray = items.slice(1);
+          setItems(newArray);
+          setCartItems([...carItems, data]);
+        }
+      },
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
+    },
   );
 
   const [checkedAll, setCheckedAll] = useState(true);
 
   function toggleAllItemsChecked() {
     setCheckedAll(!checkedAll);
-    setItems(
-      items.map((e) => {
+    setCartItems(
+      carItems.map((e) => {
         return { ...e, checked: !checkedAll };
       }),
     );
   }
 
-  const checkedItems = useMemo(() => items.filter((e) => e.checked), [items]);
+  const checkedItems = useMemo(
+    () => carItems.filter((e) => e.checked),
+    [carItems],
+  );
   const totalCount = useMemo(
     () => calculateSum(checkedItems.map((e) => e.quantity)),
     [checkedItems],
   );
   const updateAllItemsCheckedStatus = useMemo(() => {
-    if (items.length > 0 && checkedItems.length == items.length)
+    if (carItems.length > 0 && checkedItems.length == carItems.length)
       setCheckedAll(true);
     else setCheckedAll(false);
-  }, [items]);
+  }, [carItems]);
 
   const receipt = useMemo(() => {
     const originalPrice = calculateSum(
@@ -83,7 +108,7 @@ export default function CartContent() {
       totalPrice: totalPrice,
       originalTotalPrice: originalTotalPrice,
     };
-  }, [items]);
+  }, [carItems]);
 
   const [changeOptionsModal, setChangeOptionsModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
@@ -156,6 +181,8 @@ export default function CartContent() {
     }
   }
 
+  if (itemQuery.isLoading) return <LoadingLayer />;
+
   return (
     <>
       <div className={styles.cart_container}>
@@ -197,7 +224,7 @@ export default function CartContent() {
                   <div
                     className={styles.header_icon_wrap}
                     onClick={() => {
-                      setItems(items.filter((e) => !e.checked));
+                      setCartItems(carItems.filter((e) => !e.checked));
                     }}
                   >
                     <DeleteForeverIcon />
@@ -205,11 +232,11 @@ export default function CartContent() {
                   </div>
                 </div>
 
-                {items.length > 0 ? (
+                {carItems.length > 0 ? (
                   <ItemsList
                     currentStage={currentStage}
-                    items={items}
-                    setItems={setItems}
+                    items={carItems}
+                    setItems={setCartItems}
                     setChangeOptionsModal={setChangeOptionsModal}
                     setSelectedItem={setSelectedItem}
                     directPayment={() => {

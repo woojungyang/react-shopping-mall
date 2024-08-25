@@ -31,12 +31,16 @@ export default function OrderDetailContentMb() {
     data: item,
     isLoading: itemLoading,
     refetch,
-  } = useItemQuery(selectedItemId, {
-    enabled: !!selectedItemId,
-    onSuccess: (res) => {
-      setChangeOptionModal(true);
+  } = useItemQuery(
+    selectedItemId,
+    {},
+    {
+      enabled: !!selectedItemId,
+      onSuccess: (res) => {
+        setChangeOptionModal(true);
+      },
     },
-  });
+  );
 
   const patchOrderItemOptionMutation = usePatchOrderOptionMutation(
     id,
