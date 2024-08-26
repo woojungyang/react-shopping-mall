@@ -10,8 +10,12 @@ export const ModalContainer = ({
   setVisible,
   children,
   title = "",
+  onClose,
 }) => {
-  const handleClose = () => setVisible(false);
+  const handleClose = () => {
+    onClose?.();
+    setVisible(false);
+  };
 
   return (
     <React.Fragment>

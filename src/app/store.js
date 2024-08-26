@@ -2,16 +2,16 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import counterReducer from "./counterSlice";
 
-const saveStateToLocalStorage = (state) => {
+export function saveStateToLocalStorage(state) {
   try {
     const serializedState = JSON.stringify(state);
     localStorage.setItem("reduxState", serializedState);
   } catch (e) {
     console.log(e);
   }
-};
+}
 
-const loadStateFromLocalStorage = () => {
+export function loadStateFromLocalStorage() {
   try {
     const serializedState = localStorage.getItem("reduxState");
     if (serializedState === null) return undefined;
@@ -20,7 +20,7 @@ const loadStateFromLocalStorage = () => {
     console.log(e);
     return undefined;
   }
-};
+}
 
 const store = configureStore({
   reducer: {
@@ -30,7 +30,9 @@ const store = configureStore({
 });
 
 store.subscribe(() => {
-  saveStateToLocalStorage(store.getState());
+  const state = store.getState();
+  console.log(state);
+  saveStateToLocalStorage(state);
 });
 
 export default store;

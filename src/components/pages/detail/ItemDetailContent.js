@@ -57,8 +57,6 @@ export default function ItemDetailContent() {
   const navigation = useNavigate();
 
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.counter.items);
-  console.log(items);
 
   const [toastMessage, setToastMessage] = useState("");
 
@@ -177,14 +175,6 @@ export default function ItemDetailContent() {
             <ImageZoomSlider images={item?.thumbnails} />
           </div>
           <div className={styles.item_content_information_wrapper}>
-            {/*  <div className={styles.item_header_icon_wrapper}>
-              <LikeHeart
-                defaultColor="dark"
-                position={{ position: "relative" }}
-              />
-              {numberToKorean(item?.likeCount)}
-            </div> */}
-
             <div className={styles.item_header_wrapper}>
               <span className={styles.item_brand_name}>
                 {item?.brand?.name} | {item?.itemCode}{" "}
@@ -289,6 +279,7 @@ export default function ItemDetailContent() {
                     (option) => option.color == selectedItemOptions.color,
                   )}
                 />
+
                 <QuantityOptions
                   selectedItemOptions={selectedItemOptions}
                   setSelectedItemOptions={setSelectedItemOptions}
@@ -408,7 +399,7 @@ export default function ItemDetailContent() {
                 overflow: "hidden",
               }}
             >
-              {item?.detailContents.map((detail, index) => (
+              {item?.detailContents?.map((detail, index) => (
                 <img
                   onClick={() => navigation(`/items/${item}`)}
                   src={detail?.content}
@@ -459,7 +450,7 @@ export default function ItemDetailContent() {
                 </div>
               </div>
               <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
-                {item?.brand?.items.map((item, index) => (
+                {item?.brand?.items?.map((item, index) => (
                   <ItemCard
                     key={index}
                     showBrand={false}

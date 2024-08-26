@@ -7,7 +7,7 @@ import styles from "styles/_detail.module.scss";
 import { DetailContentWrapper } from "./DetailContentWrapper";
 
 export const ColorOptions = ({
-  colorOptions,
+  colorOptions = [],
   selectedItemOptions,
   setSelectedItemOptions,
 }) => {

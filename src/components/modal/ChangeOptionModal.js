@@ -15,8 +15,8 @@ export const ChangeOptionModal = ({
   setVisible,
   onSubmit,
   isQuantity = true,
-  setSelectedItem: setSelectedItemOptions,
-  selectedItem: selectedItemOptions,
+  setSelectedItemOptions,
+  selectedItemOptions,
 }) => {
   const colorOptions = item?.options?.reduce((acc, current) => {
     if (!acc.some((item) => item.color === current.color)) {
@@ -29,8 +29,18 @@ export const ChangeOptionModal = ({
     (option) => option.color == selectedItemOptions.color,
   );
 
+  function onClose() {
+    setVisible(false);
+    setSelectedItemOptions({});
+  }
+
   return (
-    <ModalContainer visible={visible} setVisible={setVisible} title="옵션 변경">
+    <ModalContainer
+      visible={visible}
+      setVisible={setVisible}
+      title="옵션 변경"
+      onClose={onClose}
+    >
       <div className={styles.change_item_options_modal}>
         {!!colorOptions.length && (
           <ColorOptions
@@ -56,17 +66,14 @@ export const ChangeOptionModal = ({
       <div className={styles.change_item_price_wrap}>
         <p>결제 예정 금액</p>
         <p>
-          <strong>{numberWithCommas(selectedItemOptions.price)}</strong>원
+          <strong>{numberWithCommas(item.price)}</strong>원
         </p>
       </div>
       <div className={styles.default_flex_space}>
         <DefaultButton
           label="취소"
           className={styles.button_skeleton_100_color_background_100}
-          onClick={() => {
-            setVisible(false);
-            setSelectedItemOptions({});
-          }}
+          onClick={onClose}
         />
         <DefaultButton
           label="변경"

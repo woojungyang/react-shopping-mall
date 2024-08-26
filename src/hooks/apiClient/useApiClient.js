@@ -12,6 +12,7 @@ export const ApiClientQuery = ({ ...options }) => {
     "token",
   )}`;
   ApiClient.defaults.headers["Content-Type"] = "application/json";
+  ApiClient.defaults.headers["Cache-Control"] = "no-cache";
 
   mocking(ApiClient);
 

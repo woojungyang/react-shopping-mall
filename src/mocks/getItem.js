@@ -3,8 +3,32 @@ import { faker } from "@faker-js/faker";
 export default function getItem(mock) {
   const url = /^\/api\/v1\/item\/(\d+)$/;
   mock.onGet(url).reply((config) => {
+    const urlSegments = config.url.split("/");
+    const itemId = urlSegments[urlSegments.length - 1];
+
+    const optionId = config?.params?.optionId;
+
     let status = 200;
-    let data = collection;
+    let data = { ...collection, id: itemId };
+
+    if (config?.params && !!optionId) {
+      // optionId가 존재하고 빈 문자열이 아닌 경우
+      const selectedOption =
+        collection.options.find((e) => e.id == optionId) ||
+        collection.options[0];
+      data = {
+        id: itemId,
+        itemName: collection?.itemName,
+        originalPrice: parseInt(collection?.originalPrice),
+        price: parseInt(collection?.price),
+        thumbnail: collection.thumbnails[0]?.thumbnail,
+        brand: {
+          id: collection.brand.id,
+          name: collection?.brand.name,
+        },
+        option: selectedOption,
+      };
+    }
 
     return [status, data];
   });
@@ -67,7 +91,7 @@ export default function getItem(mock) {
         id: faker.number.int(),
         size: e,
         color: c,
-        inventory: faker.number.int({ max: 10, min: 0 }),
+        inventory: faker.number.int({ max: 5, min: 0 }),
         thumbnail: fakerSubImage(),
       })),
     ),

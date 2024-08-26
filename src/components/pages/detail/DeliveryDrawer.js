@@ -27,11 +27,7 @@ export default function DeliveryDrawer({ visible, setVisible, brand = {} }) {
           </div>
         </div>
         <DrawerContentWrapper title="주문 및 배송">
-          <ListContent
-            content="제주 및 도서산간 지역은 출고, 반품, 교환시 추가 배송비(항공,
-                도선료)가 부과 될 수 있습니다 ( 제주 : 3,000원 / 도서산간 :
-                3,000원)"
-          />
+          <ListContent content="제주 및 도서산간 지역은 출고, 반품, 교환시 추가 배송비(항공, 도선료)가 부과 될 수 있습니다 ( 제주 : 3,000원 / 도서산간 : 3,000원)" />
           <ListContent
             content="장기간 장바구니에 보관하신 상품은 시간이 지남에 따라 가격과 혜택이
                 변동 될 수 있으며, 최대 30일 동안 보관됩니다."

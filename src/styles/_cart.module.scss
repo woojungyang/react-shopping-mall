@@ -143,11 +143,13 @@
     border: 1px solid $color-skeleton-100;
     border-radius: 4px;
     margin-bottom: $default;
+    position: relative;
     &:last-child {
       margin-bottom: 0px;
     }
     .cart_item_header {
       background-color: rgba($color-skeleton-100, 0.13);
+
       @include flex($justify-content: flex-start);
       padding: $default $margin;
       font-size: 14px;
@@ -218,13 +220,22 @@
           }
         }
         .buy_button_wrap {
+          @mixin default_buy_button {
+            padding: $default $margin * 1.5;
+            margin-bottom: $default;
+            min-width: 113px;
+          }
           .buy_button {
+            @include default_buy_button;
             cursor: pointer;
             background-color: $color-dark-300;
             color: $color-background-100;
-            padding: $default $margin * 1.5;
-
-            margin-bottom: $default;
+          }
+          .sold_out_button {
+            text-align: center;
+            background-color: $color-skeleton-100;
+            color: $color-background-100;
+            @include default_buy_button;
           }
           font-size: 0.9em;
           .delete_button {
@@ -238,6 +249,9 @@
           }
         }
       }
+    }
+    .sold_out_img {
+      filter: grayscale(100%);
     }
   }
   .success_order_container {
