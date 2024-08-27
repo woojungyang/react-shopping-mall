@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 
+import { clearCart } from "app/counterSlice";
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import useAuthMutation from "hooks/mutation/useAuthMutation";
+import useCartItemsMutation from "hooks/mutation/useCartItemsMutation";
 
 import { CommonLayout, DefaultButton, LoadingLayer } from "components/common";
 import { DefaultInput } from "components/common/DefaultInput";
@@ -15,6 +20,7 @@ import styles from "styles/_user.module.scss";
 
 export default function Login() {
   const navigation = useNavigate();
+  const dispatch = useDispatch();
 
   const [inputValues, setInputValues] = useState({});
   function onChange(e) {
@@ -23,6 +29,16 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [toastMessage, setToastMessage] = useState("");
+
+  const cartItems = [...useSelector((state) => state.counter.items)];
+  const cartItemMutation = useCartItemsMutation();
+  async function requestPatchCartItem() {
+    try {
+      await cartItemMutation.mutateAsync(cartItems);
+    } catch (err) {
+      setToastMessage(err.message);
+    }
+  }
 
   const authMutation = useAuthMutation();
   async function requestLogin() {
@@ -38,6 +54,10 @@ export default function Login() {
 
         if (result.token) {
           localStorage.setItem("token", result.token);
+          if (cartItems.length) {
+            requestPatchCartItem();
+            dispatch(clearCart);
+          }
           navigation(-1, { replace: true });
         }
       }
@@ -48,7 +68,7 @@ export default function Login() {
 
   return (
     <CommonLayout
-      isLoading={authMutation.isLoading}
+      isLoading={authMutation.isLoading || cartItemMutation.isLoading}
       setToastMessage={setToastMessage}
       toastMessage={toastMessage}
     >

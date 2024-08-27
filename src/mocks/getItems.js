@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { userToken } from "models/user";
 
+
 export default function getItems(mock) {
   const url = /^\/api\/v1\/items$/;
   mock.onGet(url).reply((config) => {
@@ -53,13 +54,13 @@ export default function getItems(mock) {
       itemName: faker.commerce.productName(),
       thumbnail: fakerSubImage(),
       originalPrice: faker.commerce.price({
-        min: 500000,
-        max: 900000,
+        min: 100,
+        max: 10000,
         dec: 0,
       }),
       price: faker.commerce.price({
-        min: 1000,
-        max: 499999,
+        min: 100,
+        max: 9000,
         dec: 0,
       }),
       like: userToken ? faker.helpers.arrayElement([true, false]) : false,

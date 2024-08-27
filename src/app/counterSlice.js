@@ -14,9 +14,7 @@ export const counterSlice = createSlice({
       state.items.push(action.payload);
     },
     removeItem: (state, action) => {
-      console.log(action);
       state.items = state.items.filter((item) => item.id !== action.payload);
-      console.log("여기", state.items);
       saveStateToLocalStorage({ ...state });
     },
     clearCart: (state) => {

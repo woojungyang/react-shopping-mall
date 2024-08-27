@@ -16,15 +16,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas, scrollTop } from "utilities";
 
+import useCartItemMutation from "hooks/mutation/useCartItemMutation";
 import useItemQuery from "hooks/query/useItemQuery";
-import useQueryString from "hooks/queryString/useQueryString";
 
 import {
   DefaultButton,
   DefaultCheckbox,
   LoadingLayer,
 } from "components/common";
-import { ChangeOptionModal, ModalContainer } from "components/modal";
+import {
+  ChangeOptionModal,
+  ModalContainer,
+  ToastModal,
+} from "components/modal";
 
 import { checkPhoneNumber } from "utilities/checkExpression";
 import { formatDateTime, now } from "utilities/dateTime";
@@ -35,12 +39,14 @@ import DeliveryInput from "./DeliveryInput";
 
 export default function CartContent() {
   const dispatch = useDispatch();
+  const navigation = useNavigate();
+
   const stages = [
     { id: 1, label: "쇼핑백" },
     { id: 2, label: "주문서" },
     { id: 3, label: "주문완료" },
   ];
-  const [stage, changeStage] = useQueryString("stage", stages[0].id);
+  const [paymentStage, setPaymentStage] = useState(1);
 
   const [toastMessage, setToastMessage] = useState("");
 
@@ -82,6 +88,43 @@ export default function CartContent() {
     },
   );
 
+  const [checkedAll, setCheckedAll] = useState(true);
+
+  function toggleAllItemsChecked() {
+    setCheckedAll(!checkedAll);
+    setCartItems(
+      carItems.map((e) => {
+        return { ...e, checked: e.option.inventory > 0 ? !checkedAll : false };
+      }),
+    );
+  }
+
+  const checkedItems = useMemo(
+    () => carItems.filter((e) => e.checked),
+    [carItems],
+  );
+
+  const [cartUpdateMethod, setCartUpdateMethod] = useState("patch");
+  const cartItemMutation = useCartItemMutation(
+    cartUpdateMethod == "patch"
+      ? (itemInfo?.id, cartUpdateMethod)
+      : (checkedItems[0]?.id, cartUpdateMethod),
+    
+  );
+
+  async function requestDeleteCartItems() {
+    try {
+      if (!!selectedItem.color) {
+        if (!userToken) {
+          checkedItems.map((e) => dispatch(removeItem(e.id)));
+        } else await cartItemMutation.mutateAsync();
+        setCartItems(carItems.filter((e) => !e.checked));
+      }
+    } catch (error) {
+      setToastMessage(error.message);
+    }
+  }
+
   async function requestUpdateItemOptions() {
     try {
       if (!!selectedItem.color) {
@@ -96,20 +139,18 @@ export default function CartContent() {
         if (!userToken) {
           dispatch(removeItem(itemInfo.id));
           dispatch(addItem(newOptions));
-
-          setCartItems(
-            carItems.map((e) => {
-              if (e.id == itemInfo.id) {
-                return {
-                  ...e,
-                  option: findOption,
-                  quantity: newOptions.quantity,
-                };
-              } else return e;
-            }),
-          );
-        } else {
-        }
+        } else await cartItemMutation.mutateAsync(newOptions);
+        setCartItems(
+          carItems.map((e) => {
+            if (e.id == itemInfo.id) {
+              return {
+                ...e,
+                option: findOption,
+                quantity: newOptions.quantity,
+              };
+            } else return e;
+          }),
+        );
       }
       setSelectedItem({});
     } catch (error) {
@@ -117,21 +158,6 @@ export default function CartContent() {
     }
   }
 
-  const [checkedAll, setCheckedAll] = useState(true);
-
-  function toggleAllItemsChecked() {
-    setCheckedAll(!checkedAll);
-    setCartItems(
-      carItems.map((e) => {
-        return { ...e, checked: !checkedAll };
-      }),
-    );
-  }
-
-  const checkedItems = useMemo(
-    () => carItems.filter((e) => e.checked),
-    [carItems],
-  );
   const totalCount = useMemo(
     () => calculateSum(checkedItems.map((e) => e.quantity)),
     [checkedItems],
@@ -215,14 +241,16 @@ export default function CartContent() {
         .catch(function (error) {
           // 결제 요청 실패 처리
           if (error.code === "USER_CANCEL") {
-            alert("사용자가 결제를 취소하였습니다.");
+            setToastMessage("사용자가 결제를 취소하였습니다.");
           } else if (
             error.code === "INVALID_ORDER_NAME" ||
             error.code === "INVALID_ORDER_ID"
           ) {
-            alert("유효하지 않은 결제 정보입니다.");
+            setToastMessage("유효하지 않은 결제 정보입니다.");
           } else {
-            alert("결제 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            setToastMessage(
+              "결제 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+            );
           }
         });
     } catch (error) {
@@ -230,7 +258,8 @@ export default function CartContent() {
     }
   }
 
-  if (itemQuery.isLoading || itemQuery.isFetching) return <LoadingLayer />;
+  if (itemQuery.isLoading || itemQuery.isFetching || cartItemMutation.isLoading)
+    return <LoadingLayer />;
 
   return (
     <>
@@ -239,8 +268,9 @@ export default function CartContent() {
         <div className={styles.stage_wrap}>
           {stages.map((stage, index) => (
             <p
+              key={index}
               className={classNames({
-                [styles.current_stage]: stage == stage.id,
+                [styles.current_stage]: paymentStage == stage.id,
                 [styles.stage]: true,
               })}
             >
@@ -252,9 +282,9 @@ export default function CartContent() {
         <div className={styles.cart_content_wrapper} ref={container}>
           <div
             className={styles.cart_items_list}
-            style={stage == 3 ? { width: "100%", margin: "auto" } : {}}
+            style={paymentStage == 3 ? { width: "100%", margin: "auto" } : {}}
           >
-            {stage == 1 && (
+            {paymentStage == 1 && (
               <div style={{ width: "100%" }}>
                 <p className={styles.cart_subtitle}>상품정보</p>
                 <div className={styles.cart_header_wrap}>
@@ -273,8 +303,8 @@ export default function CartContent() {
                   <div
                     className={styles.header_icon_wrap}
                     onClick={() => {
-                      checkedItems.map((e) => dispatch(removeItem(e.id)));
-                      setCartItems(carItems.filter((e) => !e.checked));
+                      setCartUpdateMethod("delete");
+                      requestDeleteCartItems();
                     }}
                   >
                     <DeleteForeverIcon />
@@ -284,14 +314,14 @@ export default function CartContent() {
 
                 {carItems.length > 0 ? (
                   <ItemsList
-                    currentStage={stage}
+                    currentStage={paymentStage}
                     items={carItems}
                     setItems={setCartItems}
                     setChangeOptionsModal={setChangeOptionsModal}
                     setSelectedItem={setSelectedItem}
                     directPayment={() => {
                       scrollTop();
-                      changeStage(Number(stage) + 1);
+                      setPaymentStage(Number(paymentStage) + 1);
                     }}
                   />
                 ) : (
@@ -301,7 +331,7 @@ export default function CartContent() {
                 )}
               </div>
             )}
-            {stage == 2 && (
+            {paymentStage == 2 && (
               <>
                 <DeliveryFormWrapper title="주문고객">
                   <DeliveryForm title="이름">
@@ -330,7 +360,9 @@ export default function CartContent() {
                             !orderSheet?.ordererName ||
                             !orderSheet?.ordererPhoneNumber
                           )
-                            alert("주문 고객 정보를 먼저 기입해주세요.");
+                            setToastMessage(
+                              "주문 고객 정보를 먼저 기입해주세요.",
+                            );
                           else setSamAsOrder(!sameAsOrderer);
                         }}
                       />
@@ -407,7 +439,10 @@ export default function CartContent() {
                   </div>
                   {showItemList && (
                     <div style={{ padding: "20px 0px" }}>
-                      <ItemsList items={checkedItems} currentStage={stage} />
+                      <ItemsList
+                        items={checkedItems}
+                        currentStage={paymentStage}
+                      />
                     </div>
                   )}
                 </DeliveryFormWrapper>
@@ -452,8 +487,14 @@ export default function CartContent() {
                 onClick={() => {
                   scrollTop();
                   if (!checkedItems.length)
-                    alert("구매하실 상품을 먼저 선택해주세요.");
-                  else if (stage == 1) changeStage(Number(stage) + 1);
+                    setToastMessage("구매하실 상품을 먼저 선택해주세요.");
+                  else if (!userToken) {
+                    setToastMessage("로그인이 필요한 기능입니다.");
+                    setTimeout(() => {
+                      navigation("/login");
+                    }, [3000]);
+                  } else if (paymentStage == 1)
+                    setPaymentStage(paymentStage + 1);
                   // else
                   else {
                     if (
@@ -465,7 +506,7 @@ export default function CartContent() {
                       !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
                       !orderSheet?.zipCode
                     )
-                      alert("주문서를 확인해주세요");
+                      setToastMessage("주문서를 확인해주세요");
                     else requestPayment();
                   }
                 }}
@@ -501,6 +542,12 @@ export default function CartContent() {
           />
         </ModalContainer>
       )}
+      {toastMessage && (
+        <ToastModal
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        />
+      )}
     </>
   );
 }
@@ -510,13 +557,11 @@ function ItemsList({
   items,
   setItems,
   setSelectedItem,
-  setChangeOptionsModal,
   directPayment,
 }) {
   const navigation = useNavigate();
   const isFirstStage = currentStage == 1;
   const dispatch = useDispatch();
-  // const isSoldOut = items?.inventory < 1;
   return (
     <>
       {items.map((item, index) => {

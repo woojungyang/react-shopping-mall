@@ -1,5 +1,5 @@
-export default function postCartItem(mock) {
-  const url = /^\/api\/v1\/cart\/item\/(\d+)$/;
+export default function postCartItems(mock) {
+  const url = /^\/api\/v1\/cart\/items$/;
   mock.onPost(url).reply((config) => {
     let status = 200;
     let data = {

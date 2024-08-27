@@ -63,13 +63,13 @@ export default function getItem(mock) {
       thumbnail: fakerSubImage(),
     })),
     originalPrice: faker.commerce.price({
-      min: 500000,
-      max: 900000,
+      min: 100,
+      max: 10000,
       dec: 0,
     }),
     price: faker.commerce.price({
-      min: 1000,
-      max: 499999,
+      min: 100,
+      max: 9000,
       dec: 0,
     }),
     like: localStorage.getItem("tokens")

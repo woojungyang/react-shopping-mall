@@ -4,6 +4,7 @@ import MockAdapter from "axios-mock-adapter";
 export default function mocking(axios) {
   const mock = new MockAdapter(axios, { delayResponse: 1000 });
   [
+    require("./deleteCartItem").default,
     require("./getItem").default,
     require("./getItemQuestions").default,
     require("./getItemReviews").default,
@@ -13,10 +14,11 @@ export default function mocking(axios) {
     require("./getOrders").default,
     require("./getOverview").default,
     require("./getUser").default,
+    require("./patchCartItem").default,
     require("./patchOrderItemOption").default,
     require("./patchPassword").default,
     require("./postAuth").default,
-    require("./postCartItem").default,
+    require("./postCartItems").default,
     require("./postFindEmail").default,
     require("./postUser").default,
     require("./postUserEmailExists").default,

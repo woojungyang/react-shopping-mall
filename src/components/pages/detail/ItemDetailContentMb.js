@@ -16,7 +16,7 @@ import {
   numberWithCommas,
 } from "utilities";
 
-import useCartItemMutation from "hooks/mutation/useCartItemMutation";
+import useCartItemsMutation from "hooks/mutation/useCartItemsMutation";
 import useItemQuery from "hooks/query/useItemQuery";
 import useItemQuestionsQuery from "hooks/query/useItemQuestionsQuery";
 import useItemReviewsQuery from "hooks/query/useItemReviewsQuery";
@@ -131,13 +131,16 @@ export default function ItemDetailContentMb() {
     };
   }, [showOptionModal]);
 
-  const cartItemMutation = useCartItemMutation(id);
+  const cartItemMutation = useCartItemsMutation();
   async function requestPatchCartItem() {
     try {
-      await cartItemMutation.mutateAsync({
-        itemId: id,
-        option: selectedItemOptions.id,
-      });
+      await cartItemMutation.mutateAsync([
+        {
+          itemId: id,
+          optionsId: selectedItemOptions.id,
+          quantity: selectedItemOptions?.quantity,
+        },
+      ]);
     } catch (err) {
       setToastMessage(err.message);
     }
