@@ -21,8 +21,9 @@ export const counterSlice = createSlice({
       else state.items.push(action.payload);
     },
     removeItem: (state, action) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
-      saveStateToLocalStorage({ ...state });
+      console.log(typeof action.payload);
+      /* state.items = state.items.filter((item) => item.id !== action.payload);
+      saveStateToLocalStorage({ ...state }); */
     },
     clearCart: (state) => {
       state.items = [];

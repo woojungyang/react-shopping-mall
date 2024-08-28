@@ -12,6 +12,7 @@ import classNames from "classnames";
 import { userToken } from "models/user";
 import { customAlphabet } from "nanoid";
 import DaumPostcode from "react-daum-postcode";
+import { useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas, scrollTop } from "utilities";
@@ -41,6 +42,7 @@ import DeliveryInput from "./DeliveryInput";
 export default function CartContent() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
+  const queryClient = useQueryClient();
 
   const stages = [
     { id: 1, label: "쇼핑백" },
@@ -77,6 +79,8 @@ export default function CartContent() {
           ]);
           const newArray = items.slice(1);
           setItems(newArray);
+          if (!!newArray.length)
+            queryClient.invalidateQueries(`/api/v1/item/${items[0]?.id}`);
         }
         if (!!selectedItem?.id) {
           setItemInfo(data);
@@ -147,9 +151,9 @@ export default function CartContent() {
   }
 
   const deleteCartItemsMutation = useCartItemsMutation("delete");
-  async function requestDeleteCartItems(itemId) {
+  async function requestDeleteCartItems(itemId = "") {
     try {
-      if (!!itemId) {
+      if (!isNaN(itemId)) {
         dispatch(removeItem(itemId));
         setCartItems(carItems.filter((e) => e.id !== itemId));
       } else {
@@ -158,7 +162,7 @@ export default function CartContent() {
       }
       if (userToken)
         await deleteCartItemsMutation.mutateAsync({
-          ids: !!itemId ? [itemId] : checkedItems.map((e) => e.id),
+          ids: !isNaN(itemId) ? [itemId] : checkedItems.map((e) => e.id),
         });
     } catch (error) {
       setToastMessage(error.message);
@@ -234,6 +238,11 @@ export default function CartContent() {
 
       const tossPayments = await loadTossPayments(clientKey);
 
+      const itemIds = checkedItems
+        .map((e) => `${e.id}-${e.option.id}`)
+        .join(",");
+      console.log(itemIds);
+
       const result = tossPayments
         .requestPayment("카드", {
           amount: receipt?.totalPrice,
@@ -242,7 +251,7 @@ export default function CartContent() {
             totalCount > 1 ? `상품결제 외 ${totalCount - 1}건` : "상품결제 1건",
           customerName: "홍길동",
           customerEmail: "customer@example.com",
-          successUrl: `${window.location.origin}/payment`, // 결제 성공 시 리디렉션할 URL
+          successUrl: `${window.location.origin}/payment?optionsId=${itemIds}`, // 결제 성공 시 리디렉션할 URL
           failUrl: `${window.location.origin}/payment`, // 결제 실패 시 리디렉션할 URL
         })
         .catch(function (error) {
@@ -496,28 +505,31 @@ export default function CartContent() {
                 label="결제하기"
                 onClick={() => {
                   scrollTop();
-                  if (!checkedItems.length)
-                    setToastMessage("구매하실 상품을 먼저 선택해주세요.");
-                  else if (!userToken) {
+
+                  if (userToken) {
+                    if (!checkedItems.length)
+                      setToastMessage("구매하실 상품을 먼저 선택해주세요.");
+                    else if (paymentStage == 1)
+                      setPaymentStage(paymentStage + 1);
+                    // else
+                    else {
+                      if (
+                        !orderSheet?.ordererName ||
+                        !orderSheet?.ordererPhoneNumber ||
+                        !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
+                        !orderSheet?.receiverName ||
+                        !orderSheet?.receiverPhoneNumber ||
+                        !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
+                        !orderSheet?.zipCode
+                      )
+                        setToastMessage("주문서를 확인해주세요");
+                      else requestPayment();
+                    }
+                  } else {
                     setToastMessage("로그인이 필요한 기능입니다.");
                     setTimeout(() => {
                       navigation("/login");
                     }, [3000]);
-                  } else if (paymentStage == 1)
-                    setPaymentStage(paymentStage + 1);
-                  // else
-                  else {
-                    if (
-                      !orderSheet?.ordererName ||
-                      !orderSheet?.ordererPhoneNumber ||
-                      !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
-                      !orderSheet?.receiverName ||
-                      !orderSheet?.receiverPhoneNumber ||
-                      !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
-                      !orderSheet?.zipCode
-                    )
-                      setToastMessage("주문서를 확인해주세요");
-                    else requestPayment();
                   }
                 }}
               />
@@ -572,7 +584,7 @@ function ItemsList({
 }) {
   const navigation = useNavigate();
   const isFirstStage = currentStage == 1;
-  const dispatch = useDispatch();
+
   return (
     <>
       {items.map((item, index) => {
@@ -655,11 +667,7 @@ function ItemsList({
                     )}
                     <div
                       className={styles.delete_button}
-                      onClick={() => {
-                        // dispatch(removeItem(item.id));
-                        // setItems(items.filter((e) => e.id !== item.id));
-                        deleteItem(item.id);
-                      }}
+                      onClick={() => deleteItem(item.id)}
                     >
                       <DeleteForeverIcon />
                       <p>삭제</p>

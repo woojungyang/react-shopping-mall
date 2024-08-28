@@ -1,11 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
+import { removeItem } from "app/counterSlice";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { CircularProgress } from "@mui/material";
 import classNames from "classnames";
 import { Device } from "models/device";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+import useCartItemsMutation from "hooks/mutation/useCartItemsMutation";
 import useQueryString from "hooks/queryString/useQueryString";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
@@ -20,14 +24,35 @@ export default function Payment() {
   const isDeskTop = userDevice == Device.Desktop;
 
   const navigation = useNavigate();
+  const dispatch = useDispatch();
+
+  const [toastMessage, setToastMessage] = useState("");
 
   const [orderId] = useQueryString("orderId");
   const [message] = useQueryString("message");
+  const [itemIds] = useQueryString("itemIds");
+  console.log(itemIds);
+
+  const deleteCartItemsMutation = useCartItemsMutation("delete");
+  async function requestDeleteCartItems(itemId = "") {
+    try {
+      const itemArray = itemIds.split(",");
+      console.log(itemArray);
+      itemArray.map((e) => dispatch(removeItem(e)));
+
+      await deleteCartItemsMutation.mutateAsync({
+        ids: itemArray,
+      });
+    } catch (error) {
+      setToastMessage(error.message);
+    }
+  }
 
   useEffect(() => {
     if (message) {
       alert(message);
     } else {
+      requestDeleteCartItems();
     }
   }, []);
 
@@ -43,7 +68,11 @@ export default function Payment() {
   return (
     <>
       {isDeskTop ? (
-        <CommonLayout>
+        <CommonLayout
+          isLoading={deleteCartItemsMutation.isLoading}
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        >
           <div className={styles.cart_container}>
             <h1 className={styles.cart_title}>주문/결제</h1>
             <div className={styles.stage_wrap}>

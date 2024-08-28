@@ -343,11 +343,17 @@ export default function ItemDetailContent() {
                   }
                   label="쇼핑백"
                   onClick={() => {
+                    const findOptions = item.options.find(
+                      (e) =>
+                        e.color == selectedItemOptions.color &&
+                        e.size == selectedItemOptions.size,
+                    );
+
                     setConfirmModal(true);
                     dispatch(
                       addItem({
                         id: id,
-                        optionsId: selectedItemOptions?.id,
+                        optionsId: findOptions?.id,
                         quantity: selectedItemOptions?.quantity,
                       }),
                     );
