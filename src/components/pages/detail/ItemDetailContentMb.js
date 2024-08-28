@@ -438,15 +438,14 @@ export default function ItemDetailContentMb() {
               label: "쇼핑백에 담기",
               onClick: () => {
                 setShowOptionModal(false);
+                dispatch(
+                  addItem({
+                    id: id,
+                    optionsId: selectedItemOptions?.id,
+                    quantity: selectedItemOptions?.quantity,
+                  }),
+                );
                 if (userToken) requestPatchCartItem();
-                else
-                  dispatch(
-                    addItem({
-                      id: id,
-                      optionsId: selectedItemOptions?.id,
-                      quantity: selectedItemOptions?.quantity,
-                    }),
-                  );
                 setToastMessage("쇼핑백에 추가되었습니다.");
               },
             }}

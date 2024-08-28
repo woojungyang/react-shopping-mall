@@ -344,15 +344,14 @@ export default function ItemDetailContent() {
                   label="쇼핑백"
                   onClick={() => {
                     setConfirmModal(true);
+                    dispatch(
+                      addItem({
+                        id: id,
+                        optionsId: selectedItemOptions?.id,
+                        quantity: selectedItemOptions?.quantity,
+                      }),
+                    );
                     if (userToken) requestPatchCartItem();
-                    else
-                      dispatch(
-                        addItem({
-                          id: id,
-                          optionsId: selectedItemOptions?.id,
-                          quantity: selectedItemOptions?.quantity,
-                        }),
-                      );
 
                     setConfirmModalContents({
                       title: "선택하신 상품이\n 쇼핑백에 추가 되었습니다.",

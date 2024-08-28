@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas, scrollTop } from "utilities";
 
 import useCartItemMutation from "hooks/mutation/useCartItemMutation";
+import useCartItemsMutation from "hooks/mutation/useCartItemsMutation";
 import useItemQuery from "hooks/query/useItemQuery";
 
 import {
@@ -104,55 +105,61 @@ export default function CartContent() {
     [carItems],
   );
 
-  const [cartUpdateMethod, setCartUpdateMethod] = useState("patch");
-  const cartItemMutation = useCartItemMutation(
-    cartUpdateMethod == "patch"
-      ? (itemInfo?.id, cartUpdateMethod)
-      : (checkedItems[0]?.id, cartUpdateMethod),
-    
+  const updateCartItemOptionsMutation = useCartItemMutation(
+    itemInfo?.id,
+    "patch",
   );
 
-  async function requestDeleteCartItems() {
+  async function requestUpdateItemOptions() {
     try {
-      if (!!selectedItem.color) {
-        if (!userToken) {
-          checkedItems.map((e) => dispatch(removeItem(e.id)));
-        } else await cartItemMutation.mutateAsync();
-        setCartItems(carItems.filter((e) => !e.checked));
-      }
+      const selectedItemForChangeOptions = carItems.find(
+        (e) => e.id == selectedItem.id,
+      );
+      const findOption = itemInfo?.options?.find(
+        (e) => e.color == selectedItem.color && e.size == selectedItem.size,
+      );
+      console.log("findOption", findOption);
+      const newOptions = {
+        id: itemInfo.id.toString(),
+        optionsId: findOption?.id ?? selectedItemForChangeOptions?.option.id,
+        quantity:
+          selectedItem?.quantity ?? selectedItemForChangeOptions?.quantity,
+      };
+      dispatch(removeItem(itemInfo.id));
+      dispatch(addItem(newOptions));
+      if (!!userToken)
+        await updateCartItemOptionsMutation.mutateAsync(newOptions);
+      setCartItems(
+        carItems.map((e) =>
+          e.id == itemInfo.id
+            ? {
+                ...e,
+                option: findOption ?? selectedItemForChangeOptions.option,
+                quantity: newOptions.quantity,
+              }
+            : e,
+        ),
+      );
+      setSelectedItem({});
     } catch (error) {
       setToastMessage(error.message);
     }
   }
 
-  async function requestUpdateItemOptions() {
+  const deleteCartItemsMutation = useCartItemsMutation("delete");
+  async function requestDeleteCartItems(itemId) {
     try {
-      if (!!selectedItem.color) {
-        const findOption = itemInfo?.options?.find(
-          (e) => e.color == selectedItem.color && e.size == selectedItem.size,
-        );
-        const newOptions = {
-          id: itemInfo.id.toString(),
-          optionsId: findOption?.id,
-          quantity: selectedItem.quantity,
-        };
-        if (!userToken) {
-          dispatch(removeItem(itemInfo.id));
-          dispatch(addItem(newOptions));
-        } else await cartItemMutation.mutateAsync(newOptions);
-        setCartItems(
-          carItems.map((e) => {
-            if (e.id == itemInfo.id) {
-              return {
-                ...e,
-                option: findOption,
-                quantity: newOptions.quantity,
-              };
-            } else return e;
-          }),
-        );
+      if (!!itemId) {
+        dispatch(removeItem(itemId));
+        setCartItems(carItems.filter((e) => e.id !== itemId));
+      } else {
+        checkedItems.map((e) => dispatch(removeItem(e.id)));
+        setCartItems(carItems.filter((e) => !e.checked));
       }
-      setSelectedItem({});
+      if (userToken)
+        await deleteCartItemsMutation.mutateAsync({
+          ids: !!itemId ? [itemId] : checkedItems.map((e) => e.id),
+        });
     } catch (error) {
       setToastMessage(error.message);
     }
@@ -258,7 +265,12 @@ export default function CartContent() {
     }
   }
 
-  if (itemQuery.isLoading || itemQuery.isFetching || cartItemMutation.isLoading)
+  if (
+    itemQuery.isLoading ||
+    itemQuery.isFetching ||
+    updateCartItemOptionsMutation.isLoading ||
+    deleteCartItemsMutation.isLoading
+  )
     return <LoadingLayer />;
 
   return (
@@ -302,10 +314,7 @@ export default function CartContent() {
                   </div>
                   <div
                     className={styles.header_icon_wrap}
-                    onClick={() => {
-                      setCartUpdateMethod("delete");
-                      requestDeleteCartItems();
-                    }}
+                    onClick={requestDeleteCartItems}
                   >
                     <DeleteForeverIcon />
                     <p>선택 삭제</p>
@@ -323,6 +332,7 @@ export default function CartContent() {
                       scrollTop();
                       setPaymentStage(Number(paymentStage) + 1);
                     }}
+                    deleteItem={requestDeleteCartItems}
                   />
                 ) : (
                   <p className={styles.empty_cart}>
@@ -558,6 +568,7 @@ function ItemsList({
   setItems,
   setSelectedItem,
   directPayment,
+  deleteItem,
 }) {
   const navigation = useNavigate();
   const isFirstStage = currentStage == 1;
@@ -645,8 +656,9 @@ function ItemsList({
                     <div
                       className={styles.delete_button}
                       onClick={() => {
-                        dispatch(removeItem(item.id));
-                        setItems(items.filter((e) => e.id !== item.id));
+                        // dispatch(removeItem(item.id));
+                        // setItems(items.filter((e) => e.id !== item.id));
+                        deleteItem(item.id);
                       }}
                     >
                       <DeleteForeverIcon />

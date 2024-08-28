@@ -11,7 +11,14 @@ export const counterSlice = createSlice({
   initialState,
   reducers: {
     addItem: (state, action) => {
-      state.items.push(action.payload);
+      const existingItem = state.items.find(
+        (item) =>
+          item.id === action.payload.id &&
+          item.optionsId === action.payload.optionsId,
+      );
+
+      if (existingItem) existingItem.quantity += action.payload.quantity;
+      else state.items.push(action.payload);
     },
     removeItem: (state, action) => {
       state.items = state.items.filter((item) => item.id !== action.payload);

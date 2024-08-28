@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import { clearCart } from "app/counterSlice";
+
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Person2Icon from "@mui/icons-material/Person2";
@@ -7,7 +9,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import classNames from "classnames";
 import { Device } from "models/device";
-import { userToken } from "models/user";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
@@ -18,6 +20,7 @@ import { SearchContainer } from "./SearchContainer";
 
 export default function Header() {
   const navigation = useNavigate();
+  const dispatch = useDispatch();
 
   const [token, setToken] = useState(localStorage.getItem("token"));
 
@@ -43,8 +46,6 @@ export default function Header() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [searchRef]);
-
-  // const [activeMobilMenu, setActiveMobileMenu] = useState("");
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -94,6 +95,7 @@ export default function Header() {
                       onClick={() => {
                         localStorage.clear();
                         setToken(null);
+                        dispatch(clearCart);
                         navigation("/", { replace: true });
                       }}
                     >

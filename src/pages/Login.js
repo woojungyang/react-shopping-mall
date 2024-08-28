@@ -56,7 +56,7 @@ export default function Login() {
           localStorage.setItem("token", result.token);
           if (cartItems.length) {
             requestPatchCartItem();
-            dispatch(clearCart);
+            // dispatch(clearCart);
           }
           navigation(-1, { replace: true });
         }
