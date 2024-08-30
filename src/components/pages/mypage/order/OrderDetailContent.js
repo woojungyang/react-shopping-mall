@@ -92,7 +92,7 @@ export default function OrderDetailContent() {
                     <div className={styles.item_info_text}>
                       <p>{item.itemName}</p>
                       <p>옵션 : {item.option}</p>
-                      {item.state < OrderState.Preparing && (
+                      {/* {item.state < OrderState.Preparing && (
                         <button
                           className={styles.option_button}
                           onClick={() => {
@@ -103,7 +103,7 @@ export default function OrderDetailContent() {
                           옵션 변경
                           <ExpandMoreIcon />
                         </button>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </td>

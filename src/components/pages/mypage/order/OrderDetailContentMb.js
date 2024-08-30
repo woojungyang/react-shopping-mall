@@ -173,11 +173,11 @@ function OrderItem({ item, setItem, onChangeOption, onClickDelivery }) {
             <p>
               {item?.option} | {item?.quantity}개
             </p>
-            {item.state < OrderState.Preparing && (
+           {/*  {item.state < OrderState.Preparing && (
               <p className={styles.option_button} onClick={onChangeOption}>
                 옵션변경
               </p>
-            )}
+            )} */}
           </div>
 
           <PriceWrap

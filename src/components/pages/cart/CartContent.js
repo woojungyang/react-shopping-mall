@@ -44,6 +44,8 @@ export default function CartContent() {
   const navigation = useNavigate();
   const queryClient = useQueryClient();
 
+  const token = localStorage.getItem("token");
+
   const stages = [
     { id: 1, label: "쇼핑백" },
     { id: 2, label: "주문서" },
@@ -79,8 +81,12 @@ export default function CartContent() {
           ]);
           const newArray = items.slice(1);
           setItems(newArray);
+
           if (!!newArray.length)
-            queryClient.invalidateQueries(`/api/v1/item/${items[0]?.id}`);
+            queryClient.invalidateQueries([
+              `/api/v1/item/${items[0]?.id}`,
+              { optionId: items[0]?.optionsId },
+            ]);
         }
         if (!!selectedItem?.id) {
           setItemInfo(data);
@@ -151,18 +157,23 @@ export default function CartContent() {
   }
 
   const deleteCartItemsMutation = useCartItemsMutation("delete");
-  async function requestDeleteCartItems(itemId = "") {
+  async function requestDeleteCartItems(items = []) {
     try {
-      if (!isNaN(itemId)) {
-        dispatch(removeItem(itemId));
-        setCartItems(carItems.filter((e) => e.id !== itemId));
-      } else {
-        checkedItems.map((e) => dispatch(removeItem(e.id)));
-        setCartItems(carItems.filter((e) => !e.checked));
-      }
+      items.forEach((item) =>
+        dispatch(removeItem({ id: item.id, optionsId: item.option.id })),
+      );
+      setCartItems(
+        carItems.filter(
+          (item) =>
+            !items.some(
+              (i) => i.id === item.id && i.option.id === item.option.id,
+            ),
+        ),
+      );
+
       if (userToken)
         await deleteCartItemsMutation.mutateAsync({
-          ids: !isNaN(itemId) ? [itemId] : checkedItems.map((e) => e.id),
+          ids: items.map((e) => e.id),
         });
     } catch (error) {
       setToastMessage(error.message);
@@ -251,7 +262,7 @@ export default function CartContent() {
             totalCount > 1 ? `상품결제 외 ${totalCount - 1}건` : "상품결제 1건",
           customerName: "홍길동",
           customerEmail: "customer@example.com",
-          successUrl: `${window.location.origin}/payment?optionsId=${itemIds}`, // 결제 성공 시 리디렉션할 URL
+          successUrl: `${window.location.origin}/payment?itemIds=${itemIds}`, // 결제 성공 시 리디렉션할 URL
           failUrl: `${window.location.origin}/payment`, // 결제 실패 시 리디렉션할 URL
         })
         .catch(function (error) {
@@ -323,7 +334,7 @@ export default function CartContent() {
                   </div>
                   <div
                     className={styles.header_icon_wrap}
-                    onClick={requestDeleteCartItems}
+                    onClick={() => requestDeleteCartItems(checkedItems)}
                   >
                     <DeleteForeverIcon />
                     <p>선택 삭제</p>
@@ -338,8 +349,15 @@ export default function CartContent() {
                     setChangeOptionsModal={setChangeOptionsModal}
                     setSelectedItem={setSelectedItem}
                     directPayment={() => {
-                      scrollTop();
-                      setPaymentStage(Number(paymentStage) + 1);
+                      if (token) {
+                        scrollTop();
+                        setPaymentStage(Number(paymentStage) + 1);
+                      } else {
+                        setToastMessage("로그인이 필요한 기능입니다.");
+                        setTimeout(() => {
+                          navigation("/login");
+                        }, [3000]);
+                      }
                     }}
                     deleteItem={requestDeleteCartItems}
                   />
@@ -506,7 +524,7 @@ export default function CartContent() {
                 onClick={() => {
                   scrollTop();
 
-                  if (userToken) {
+                  if (token) {
                     if (!checkedItems.length)
                       setToastMessage("구매하실 상품을 먼저 선택해주세요.");
                     else if (paymentStage == 1)
@@ -603,11 +621,11 @@ function ItemsList({
                     disabled={isSoldOut}
                     onChange={() => {
                       setItems(
-                        items.map((e) => {
-                          if (e.id == item.id)
-                            return { ...e, checked: !item.checked };
-                          else return e;
-                        }),
+                        items.map((e) =>
+                          e.id == item.id && e.option.id == item.option.id
+                            ? { ...e, checked: !item.checked }
+                            : e,
+                        ),
                       );
                     }}
                   />
@@ -658,8 +676,10 @@ function ItemsList({
                       <p
                         className={styles.buy_button}
                         onClick={() => {
-                          setItems([{ ...item, checked: true }]);
                           directPayment();
+                          setTimeout(() => {
+                            setItems([{ ...item, checked: true }]);
+                          }, [3000]);
                         }}
                       >
                         바로 구매
@@ -667,7 +687,7 @@ function ItemsList({
                     )}
                     <div
                       className={styles.delete_button}
-                      onClick={() => deleteItem(item.id)}
+                      onClick={() => deleteItem([item])}
                     >
                       <DeleteForeverIcon />
                       <p>삭제</p>

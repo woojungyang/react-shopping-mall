@@ -7,7 +7,7 @@ export default function useItemQuery(id = "", params = {}, options = {}) {
   const url = `/api/v1/item/${id}`;
 
   return useQuery(
-    [url],
+    [url, params],
     () =>
       ApiClientQuery({
         url: url,

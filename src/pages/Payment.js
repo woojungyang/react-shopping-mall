@@ -31,17 +31,20 @@ export default function Payment() {
   const [orderId] = useQueryString("orderId");
   const [message] = useQueryString("message");
   const [itemIds] = useQueryString("itemIds");
-  console.log(itemIds);
 
   const deleteCartItemsMutation = useCartItemsMutation("delete");
-  async function requestDeleteCartItems(itemId = "") {
+  async function requestDeleteCartItems() {
     try {
       const itemArray = itemIds.split(",");
-      console.log(itemArray);
-      itemArray.map((e) => dispatch(removeItem(e)));
-
+      const items = itemArray.map((e) => {
+        const itemInfo = e.split("-");
+        return { id: itemInfo[0], optionsId: parseInt(itemInfo[1]) };
+      });
+      items.forEach((element) => {
+        dispatch(removeItem(element));
+      });
       await deleteCartItemsMutation.mutateAsync({
-        ids: itemArray,
+        ids: items.map((item) => item.id),
       });
     } catch (error) {
       setToastMessage(error.message);

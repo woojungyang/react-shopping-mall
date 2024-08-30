@@ -348,29 +348,32 @@ export default function ItemDetailContent() {
                         e.color == selectedItemOptions.color &&
                         e.size == selectedItemOptions.size,
                     );
+                    if (!findOptions) {
+                      setToastMessage("옵션을 선택해주세요.");
+                    } else {
+                      setConfirmModal(true);
+                      dispatch(
+                        addItem({
+                          id: id,
+                          optionsId: findOptions?.id,
+                          quantity: selectedItemOptions?.quantity || 1,
+                        }),
+                      );
+                      if (userToken) requestPatchCartItem();
 
-                    setConfirmModal(true);
-                    dispatch(
-                      addItem({
-                        id: id,
-                        optionsId: findOptions?.id,
-                        quantity: selectedItemOptions?.quantity,
-                      }),
-                    );
-                    if (userToken) requestPatchCartItem();
-
-                    setConfirmModalContents({
-                      title: "선택하신 상품이\n 쇼핑백에 추가 되었습니다.",
-                      leftButton: {
-                        label: "쇼핑 계속하기",
-                        color: "skeleton",
-                        onClick: () => setConfirmModal(false),
-                      },
-                      rightButton: {
-                        label: "쇼핑백 확인",
-                        onClick: () => navigation("/cart"),
-                      },
-                    });
+                      setConfirmModalContents({
+                        title: "선택하신 상품이\n 쇼핑백에 추가 되었습니다.",
+                        leftButton: {
+                          label: "쇼핑 계속하기",
+                          color: "skeleton",
+                          onClick: () => setConfirmModal(false),
+                        },
+                        rightButton: {
+                          label: "쇼핑백 확인",
+                          onClick: () => navigation("/cart"),
+                        },
+                      });
+                    }
                   }}
                 />
               </>

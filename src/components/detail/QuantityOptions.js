@@ -21,7 +21,7 @@ export const QuantityOptions = ({
   const initValue = useMemo(() => {
     if (!selectedItemOptions?.quantity)
       setSelectedItemOptions({ ...selectedItemOptions, quantity: 1 });
-  }, [selectedItemOptions?.quantity]);
+  }, []);
   return (
     <DetailContentWrapper>
       <div

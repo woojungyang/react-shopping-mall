@@ -12,10 +12,7 @@ export default function getItem(mock) {
     let data = { ...collection, id: itemId };
 
     if (config?.params && !!optionId) {
-      // optionId가 존재하고 빈 문자열이 아닌 경우
-      const selectedOption =
-        collection.options.find((e) => e.id == optionId) ||
-        collection.options[0];
+      const selectedOption = collection.options.find((e) => e.id == optionId);
       data = {
         id: itemId,
         itemName: collection?.itemName,
@@ -86,11 +83,11 @@ export default function getItem(mock) {
       })),
     reviewRate: faker.number.int({ max: 5, min: 1 }),
 
-    options: sizes.flatMap((e) =>
-      colors.map((c) => ({
-        id: faker.number.int(),
-        size: e,
-        color: c,
+    options: sizes.flatMap((e, index1) =>
+      colors.map((c, index2) => ({
+        id: index1 * colors.length + index2 + 1,
+        size: "size" + Number(index1 + 1),
+        color: "color" + Number(index2 + 1),
         inventory: faker.number.int({ max: 5, min: 0 }),
         thumbnail: fakerSubImage(),
       })),
