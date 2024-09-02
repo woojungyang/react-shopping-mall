@@ -250,9 +250,6 @@
         }
       }
     }
-    .sold_out_img {
-      filter: grayscale(100%);
-    }
   }
   .success_order_container {
     @include flex($direction: column);
@@ -277,6 +274,9 @@
     padding: $padding;
     margin-top: $header-height * 2;
   }
+}
+.sold_out_img {
+  filter: grayscale(100%);
 }
 
 .delivery_form_container {
@@ -366,6 +366,10 @@
   background-color: rgba($color-skeleton-100, 0.1);
   .mobile_cart_wrapper {
     padding: 0px $padding;
+    .empty_cart {
+      @include flex;
+      height: 60vh;
+    }
 
     .cart_header_wrap {
       margin-top: $padding;

@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
+import { addItem, removeItem } from "app/counterSlice";
+
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -7,12 +9,20 @@ import { loadTossPayments } from "@tosspayments/payment-sdk";
 import classNames from "classnames";
 import { customAlphabet } from "nanoid";
 import DaumPostcode from "react-daum-postcode";
+import { useQueryClient } from "react-query";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { calculateSum, numberWithCommas, scrollTop } from "utilities";
+
+import useCartItemMutation from "hooks/mutation/useCartItemMutation";
+import useCartItemsMutation from "hooks/mutation/useCartItemsMutation";
+import useItemQuery from "hooks/query/useItemQuery";
 
 import {
   DefaultButton,
   DefaultCheckbox,
+  LoadingLayer,
   MobileLayout,
 } from "components/common";
 import { OptionsMobile } from "components/detail";
@@ -25,17 +35,57 @@ import styles from "styles/_cart.module.scss";
 import DeliveryInput from "./DeliveryInput";
 
 export default function CartContentMb() {
-  const [currentStage, setCurrentStage] = useState(1);
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
+  const queryClient = useQueryClient();
 
-  const [items, setItems] = useState(
-    Array.from({ length: 4 }, (v, index) => ({
-      id: index,
-      checked: true,
-      quantity: index,
-      name: "item" + index,
-      price: 12344 + index,
-      originalPrice: 21233 - index,
-    })),
+  const token = localStorage.getItem("token");
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [paymentStage, setPaymentStage] = useState(1);
+
+  const [items, setItems] = useState([
+    ...useSelector((state) => state.counter.items),
+  ]);
+  const [carItems, setCartItems] = useState([]);
+
+  const [changeOptionsModal, setChangeOptionsModal] = useState(false);
+  const [itemInfo, setItemInfo] = useState({});
+  const [selectedItem, setSelectedItem] = useState({});
+
+  const itemQuery = useItemQuery(
+    items[0]?.id || selectedItem?.id,
+    { optionId: items[0]?.optionsId },
+    {
+      enabled: !!items.length || !!selectedItem?.id,
+      onSuccess: (data) => {
+        if (items.length) {
+          setCartItems([
+            ...carItems,
+            {
+              ...data,
+              quantity: items[0].quantity,
+              checked: data.option.inventory > 0,
+            },
+          ]);
+          const newArray = items.slice(1);
+          setItems(newArray);
+
+          if (!!newArray.length)
+            queryClient.invalidateQueries([
+              `/api/v1/item/${items[0]?.id}`,
+              { optionId: items[0]?.optionsId },
+            ]);
+        }
+        if (!!selectedItem?.id) {
+          setItemInfo(data);
+          setChangeOptionsModal(true);
+        }
+      },
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
+    },
   );
 
   const [checkedAll, setCheckedAll] = useState(true);
@@ -49,16 +99,82 @@ export default function CartContentMb() {
     );
   }
 
-  const checkedItems = useMemo(() => items.filter((e) => e.checked), [items]);
+  const checkedItems = useMemo(
+    () => carItems.filter((e) => e.checked),
+    [carItems],
+  );
   const totalCount = useMemo(
     () => calculateSum(checkedItems.map((e) => e.quantity)),
     [checkedItems],
   );
   const updateAllItemsCheckedStatus = useMemo(() => {
-    if (items.length > 0 && checkedItems.length == items.length)
+    if (carItems.length > 0 && checkedItems.length == carItems.length)
       setCheckedAll(true);
     else setCheckedAll(false);
-  }, [items]);
+  }, [carItems]);
+
+  const updateCartItemOptionsMutation = useCartItemMutation(
+    itemInfo?.id,
+    "patch",
+  );
+  async function requestUpdateItemOptions() {
+    try {
+      const selectedItemForChangeOptions = carItems.find(
+        (e) => e.id == selectedItem.id,
+      );
+      const findOption = itemInfo?.options?.find(
+        (e) => e.color == selectedItem.color && e.size == selectedItem.size,
+      );
+
+      const newOptions = {
+        id: itemInfo.id.toString(),
+        optionsId: findOption?.id ?? selectedItemForChangeOptions?.option.id,
+        quantity:
+          selectedItem?.quantity ?? selectedItemForChangeOptions?.quantity,
+      };
+      dispatch(removeItem(itemInfo.id));
+      dispatch(addItem(newOptions));
+      if (!!token) await updateCartItemOptionsMutation.mutateAsync(newOptions);
+      setCartItems(
+        carItems.map((e) =>
+          e.id == itemInfo.id
+            ? {
+                ...e,
+                option: findOption ?? selectedItemForChangeOptions.option,
+                quantity: newOptions.quantity,
+              }
+            : e,
+        ),
+      );
+      setSelectedItem({});
+    } catch (error) {
+      setToastMessage(error.message);
+    }
+  }
+
+  const deleteCartItemsMutation = useCartItemsMutation("delete");
+  async function requestDeleteCartItems(items = []) {
+    try {
+      items.forEach((item) =>
+        dispatch(removeItem({ id: item.id, optionsId: item.option.id })),
+      );
+      setCartItems(
+        carItems.filter(
+          (item) =>
+            !items.some(
+              (i) => i.id === item.id && i.option.id === item.option.id,
+            ),
+        ),
+      );
+
+      if (token)
+        await deleteCartItemsMutation.mutateAsync({
+          ids: items.map((e) => e.id),
+        });
+    } catch (error) {
+      setToastMessage(error.message);
+    }
+  }
 
   const receipt = useMemo(() => {
     const originalPrice = calculateSum(
@@ -80,9 +196,6 @@ export default function CartContentMb() {
       originalTotalPrice: originalTotalPrice,
     };
   }, [items]);
-
-  const [changeOptionsModal, setChangeOptionsModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState({});
 
   const [orderSheet, setOrderSheet] = useState({});
   function onChange(e) {
@@ -158,54 +271,76 @@ export default function CartContentMb() {
     };
   }, [changeOptionsModal, findAddressModal]);
 
+  if (
+    itemQuery.isLoading ||
+    itemQuery.isFetching ||
+    updateCartItemOptionsMutation.isLoading ||
+    deleteCartItemsMutation.isLoading
+  )
+    return <LoadingLayer />;
+
   return (
     <MobileLayout headerTitle={"쇼핑백"}>
       <div
         className={styles.mobile_cart_container}
         style={
-          currentStage == 3
+          paymentStage == 3
             ? { backgroundColor: "white", paddingBottom: 0 }
             : {}
         }
       >
-        {currentStage == 1 && (
+        {paymentStage == 1 && (
           <div className={styles.mobile_cart_wrapper}>
-            <div className={styles.cart_header_wrap}>
-              <div className={styles.header_icon_wrap}>
-                <DefaultCheckbox
-                  checked={checkedAll}
-                  onChange={toggleAllItemsChecked}
+            {carItems.length > 0 ? (
+              <>
+                <div className={styles.cart_header_wrap}>
+                  <div className={styles.header_icon_wrap}>
+                    <DefaultCheckbox
+                      checked={checkedAll}
+                      onChange={toggleAllItemsChecked}
+                    />
+                    <p>
+                      선택 상품
+                      <span className={styles.item_total}>
+                        ({checkedItems.length})
+                      </span>
+                    </p>
+                  </div>
+                  <div
+                    className={styles.header_icon_wrap}
+                    onClick={() => requestDeleteCartItems(checkedItems)}
+                  >
+                    <p>선택 삭제</p>
+                  </div>
+                </div>
+                <ItemsList
+                  currentStage={paymentStage}
+                  items={carItems}
+                  setItems={setCartItems}
+                  setChangeOptionsModal={setChangeOptionsModal}
+                  setSelectedItem={setSelectedItem}
+                  directPayment={() => {
+                    if (token) {
+                      scrollTop();
+                      setPaymentStage(Number(paymentStage) + 1);
+                    } else {
+                      setToastMessage("로그인이 필요한 기능입니다.");
+                      setTimeout(() => {
+                        navigation("/login");
+                      }, [3000]);
+                    }
+                  }}
+                  deleteItem={requestDeleteCartItems}
                 />
-                <p>
-                  선택 상품
-                  <span className={styles.item_total}>
-                    ({checkedItems.length})
-                  </span>
-                </p>
-              </div>
-              <div
-                className={styles.header_icon_wrap}
-                onClick={() => {
-                  setItems(items.filter((e) => !e.checked));
-                }}
-              >
-                <p>선택 삭제</p>
-              </div>
-            </div>
-            <ItemsList
-              currentStage={currentStage}
-              items={items}
-              setItems={setItems}
-              setChangeOptionsModal={setChangeOptionsModal}
-              setSelectedItem={setSelectedItem}
-              directPayment={() => {
-                scrollTop();
-                setCurrentStage(currentStage + 1);
-              }}
-            />
+              </>
+            ) : (
+              <p className={styles.empty_cart}>
+                쇼핑백에 담긴 상품이 없습니다.
+              </p>
+            )}
           </div>
         )}
-        {currentStage == 2 && (
+        {paymentStage == 2 && (
           <div>
             <DeliveryFormWrapper title="주문고객">
               <DeliveryInput
@@ -288,7 +423,7 @@ export default function CartContentMb() {
             </DeliveryFormWrapper>
             <DeliveryFormWrapper title="주문상품">
               <ItemsList
-                currentStage={currentStage}
+                currentStage={paymentStage}
                 items={items}
                 setItems={setItems}
                 setChangeOptionsModal={setChangeOptionsModal}
@@ -299,13 +434,13 @@ export default function CartContentMb() {
         )}
         <div
           className={classNames({
-            [styles.delivery_form_container_mb]: currentStage == 2,
+            [styles.delivery_form_container_mb]: paymentStage == 2,
           })}
         >
-          {currentStage == 2 && (
+          {paymentStage == 2 && (
             <p className={styles.form_title}>최종 결제 정보</p>
           )}
-          {currentStage < 3 && (
+          {carItems.length > 0 && paymentStage < 3 && (
             <>
               <div className={styles.receipt_detail_wrap}>
                 <div className={styles.default_flex_space}>
@@ -335,7 +470,7 @@ export default function CartContentMb() {
             </>
           )}
         </div>
-        {currentStage == 2 && (
+        {paymentStage == 2 && (
           <DeliveryFormWrapper>
             <p className={styles.payment_guid}>
               <div>
@@ -357,39 +492,41 @@ export default function CartContentMb() {
           </DeliveryFormWrapper>
         )}
 
-        <div className={styles.order_bottom_container}>
-          <div className={styles.order_info_wrap}>
-            <p>
-              총 <strong>{totalCount}</strong>개
-            </p>
-            <p>
-              <strong>{numberWithCommas(receipt?.totalPrice)}</strong> 원
-            </p>
+        {carItems.length > 0 && (
+          <div className={styles.order_bottom_container}>
+            <div className={styles.order_info_wrap}>
+              <p>
+                총 <strong>{totalCount}</strong>개
+              </p>
+              <p>
+                <strong>{numberWithCommas(receipt?.totalPrice)}</strong> 원
+              </p>
+            </div>
+            <DefaultButton
+              label={paymentStage == 1 ? "주문하기" : "결제하기"}
+              onClick={() => {
+                scrollTop();
+                if (!checkedItems.length)
+                  alert("구매하실 상품을 먼저 선택해주세요.");
+                else if (paymentStage == 1) setPaymentStage(paymentStage + 1);
+                else {
+                  if (
+                    !orderSheet?.ordererName ||
+                    !orderSheet?.ordererPhoneNumber ||
+                    !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
+                    !orderSheet?.receiverName ||
+                    !orderSheet?.receiverPhoneNumber ||
+                    !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
+                    !orderSheet?.zipCode ||
+                    !orderSheet?.checkOrder
+                  )
+                    alert("주문서를 확인해주세요");
+                  else requestPayment();
+                }
+              }}
+            />
           </div>
-          <DefaultButton
-            label={currentStage == 1 ? "주문하기" : "결제하기"}
-            onClick={() => {
-              scrollTop();
-              if (!checkedItems.length)
-                alert("구매하실 상품을 먼저 선택해주세요.");
-              else if (currentStage == 1) setCurrentStage(currentStage + 1);
-              else {
-                if (
-                  !orderSheet?.ordererName ||
-                  !orderSheet?.ordererPhoneNumber ||
-                  !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
-                  !orderSheet?.receiverName ||
-                  !orderSheet?.receiverPhoneNumber ||
-                  !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
-                  !orderSheet?.zipCode ||
-                  !orderSheet?.checkOrder
-                )
-                  alert("주문서를 확인해주세요");
-                else requestPayment();
-              }
-            }}
-          />
-        </div>
+        )}
       </div>
 
       {changeOptionsModal && (
@@ -450,83 +587,112 @@ function ItemsList({
   setSelectedItem,
   setChangeOptionsModal,
   directPayment,
+  deleteItem,
 }) {
   const navigation = useNavigate();
   const isFirstStage = currentStage == 1;
   return (
     <>
-      {items.map((item, index) => (
-        <div key={index} className={styles.cart_item_wrapper_mb}>
-          <div className={styles.item_content_wrap}>
-            {isFirstStage && (
-              <DefaultCheckbox
-                checked={item.checked}
-                onChange={() => {
-                  setItems(
-                    items.map((e) => {
-                      if (e.id == item.id)
-                        return { ...e, checked: !item.checked };
-                      else return e;
-                    }),
-                  );
-                }}
+      {items.map((item, index) => {
+        const isSoldOut = item?.option?.inventory < 1;
+        return (
+          <div key={index} className={styles.cart_item_wrapper_mb}>
+            <div className={styles.item_content_wrap}>
+              {isFirstStage && (
+                <DefaultCheckbox
+                  checked={item.checked}
+                  onChange={() => {
+                    setItems(
+                      items.map((e) =>
+                        e.id == item.id &&
+                        e.option.id == item.option.id &&
+                        !isSoldOut
+                          ? { ...e, checked: !item.checked }
+                          : e,
+                      ),
+                    );
+                  }}
+                />
+              )}
+              <img
+                className={classNames({
+                  [styles.item_thumbnail]: true,
+                  [styles.sold_out_img]: isSoldOut,
+                })}
+                src={item?.thumbnail}
+                alt=""
+                onClick={() => navigation(`/items/${item.id}`)}
               />
-            )}
-            <img
-              className={styles.item_thumbnail}
-              src={require("assets/images/sub/sub17.jpg")}
-              alt=""
-              onClick={() => navigation(`/items/${item.id}`)}
-            />
-            <div className={styles.cart_item_information}>
-              <div>
-                <p className={styles.brand_name}>브랜드명</p>
-                <p>상품명</p>
-                <p>옵션명</p>
-                <p>수량 : {item?.quantity}</p>
-              </div>
-              <div className={styles.price_info}>
-                {isFirstStage ? (
-                  <DeleteForeverIcon
-                    onClick={() => {
-                      setItems(items.filter((e) => e.id !== item.id));
-                    }}
-                  />
-                ) : (
-                  <div></div>
-                )}
+              <div className={styles.cart_item_information}>
                 <div>
-                  <p className={styles.original_price}>
-                    {numberWithCommas(item.originalPrice)}원
+                  <p className={styles.brand_name}>{item?.brand?.name}</p>
+                  <p>{item?.itemName}</p>
+                  <p>
+                    {item?.option?.color} | {item?.option?.size}
                   </p>
-                  <p className={styles.price}>
-                    {numberWithCommas(item.price)}원
-                  </p>
+                  <p>수량 : {item?.quantity}</p>
+                </div>
+                <div className={styles.price_info}>
+                  {isFirstStage && !isSoldOut ? (
+                    <DeleteForeverIcon onClick={() => deleteItem([item])} />
+                  ) : (
+                    <div></div>
+                  )}
+                  <div>
+                    <p className={styles.original_price}>
+                      {numberWithCommas(item.originalPrice)}원
+                    </p>
+                    <p className={styles.price}>
+                      {numberWithCommas(item.price)}원
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
+            {isFirstStage && (
+              <div className={styles.item_button_wrap}>
+                {isSoldOut ? (
+                  <>
+                    <DefaultButton
+                      label="삭제"
+                      className={
+                        styles.button_background_100_outline_color_dark_300
+                      }
+                      onClick={() => deleteItem([item])}
+                    />
+                    <DefaultButton
+                      label="품절"
+                      className={
+                        styles.button_skeleton_100_color_background_100
+                      }
+                    />
+                  </>
+                ) : (
+                  <>
+                    <DefaultButton
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setChangeOptionsModal(true);
+                      }}
+                      label="옵션/수량 변경"
+                      className={
+                        styles.button_background_100_outline_color_dark_300
+                      }
+                    />
+                    <DefaultButton
+                      label="바로구매"
+                      onClick={() => {
+                        setItems([{ ...item, checked: true }]);
+                        directPayment();
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+            )}
           </div>
-          {isFirstStage && (
-            <div className={styles.item_button_wrap}>
-              <DefaultButton
-                onClick={() => {
-                  setSelectedItem(item);
-                  setChangeOptionsModal(true);
-                }}
-                label="옵션/수량 변경"
-                className={styles.button_background_100_outline_color_dark_300}
-              />
-              <DefaultButton
-                label="바로구매"
-                onClick={() => {
-                  setItems([{ ...item, checked: true }]);
-                  directPayment();
-                }}
-              />
-            </div>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </>
   );
 }

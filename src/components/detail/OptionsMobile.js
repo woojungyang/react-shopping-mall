@@ -80,21 +80,29 @@ export const OptionsMobile = ({
           <KeyboardArrowDownIcon />
           {showOptions && (
             <div className={styles.select_box_options_wrapper}>
-              {options?.map((option, index) => (
-                <p
-                  key={index}
-                  className={classNames({
-                    [styles.select_box_option]: true,
-                    [styles.select_box_option_disabled]: option.inventory == 0,
-                  })}
-                  onClick={() => {
-                    if (option.inventory > 0) setSelectedItemOptions(option);
-                    else setShowOptions(true);
-                  }}
-                >
-                  {option.name}
-                </p>
-              ))}
+              {options?.map((option, index) => {
+                const isSoldOut = option.inventory == 0;
+                return (
+                  <p
+                    key={index}
+                    className={classNames({
+                      [styles.select_box_option]: true,
+                      [styles.select_box_option_disabled]: isSoldOut,
+                    })}
+                    onClick={() => {
+                      if (option.inventory > 0)
+                        setSelectedItemOptions({
+                          quantity: selectedItemOptions?.quantity,
+                          ...option,
+                        });
+                      else setShowOptions(true);
+                    }}
+                  >
+                    {option.name}
+                    {isSoldOut && " [품절]"}
+                  </p>
+                );
+              })}
             </div>
           )}
         </div>

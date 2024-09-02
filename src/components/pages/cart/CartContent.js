@@ -128,7 +128,7 @@ export default function CartContent() {
       const findOption = itemInfo?.options?.find(
         (e) => e.color == selectedItem.color && e.size == selectedItem.size,
       );
-      console.log("findOption", findOption);
+
       const newOptions = {
         id: itemInfo.id.toString(),
         optionsId: findOption?.id ?? selectedItemForChangeOptions?.option.id,

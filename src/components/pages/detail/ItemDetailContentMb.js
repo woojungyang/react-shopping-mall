@@ -45,9 +45,11 @@ import ReviewRating from "./ReviewRating";
 import TabsWrapper from "./TabsWrapper";
 
 export default function ItemDetailContentMb() {
-  const { id } = useParams();
-  const navigation = useNavigate();
+  const token = localStorage.getItem("token");
 
+  const { id } = useParams();
+
+  const navigation = useNavigate();
   const dispatch = useDispatch();
 
   const [toastMessage, setToastMessage] = useState("");
@@ -131,12 +133,26 @@ export default function ItemDetailContentMb() {
     };
   }, [showOptionModal]);
 
+  useEffect(() => {
+    if (selectedItemOptions?.size && !!selectedItemOptions?.quantity) {
+      if (selectedItemOptions?.quantity > selectedItemOptions.inventory) {
+        setToastMessage(
+          `최대 구매 가능한 수량은${selectedItemOptions?.inventory}개 입니다. `,
+        );
+        setSelectedItemOptions({
+          ...selectedItemOptions,
+          quantity: selectedItemOptions.inventory,
+        });
+      }
+    }
+  }, [selectedItemOptions]);
+
   const cartItemMutation = useCartItemsMutation();
   async function requestPatchCartItem() {
     try {
       await cartItemMutation.mutateAsync([
         {
-          itemId: id,
+          id: id,
           optionsId: selectedItemOptions.id,
           quantity: selectedItemOptions?.quantity,
         },
@@ -426,9 +442,12 @@ export default function ItemDetailContentMb() {
             leftButton={{
               label: "바로구매",
               onClick: () => {
-                if (!selectedItemOptions.id)
-                  setToastMessage("옵션을 선택해주세요.");
-                else {
+                if (!token) {
+                  setToastMessage("로그인이 필요합니다.");
+                  setTimeout(() => {
+                    navigation("/login");
+                  }, 2000);
+                } else {
                   requestPatchCartItem();
                   navigation("/cart");
                 }
@@ -437,16 +456,19 @@ export default function ItemDetailContentMb() {
             rightButton={{
               label: "쇼핑백에 담기",
               onClick: () => {
-                setShowOptionModal(false);
-                dispatch(
-                  addItem({
-                    id: id,
-                    optionsId: selectedItemOptions?.id,
-                    quantity: selectedItemOptions?.quantity,
-                  }),
-                );
-                if (userToken) requestPatchCartItem();
-                setToastMessage("쇼핑백에 추가되었습니다.");
+                if (!selectedItemOptions?.id) {
+                  setToastMessage("옵션을 선택해주세요.");
+                } else {
+                  setToastMessage("쇼핑백에 추가되었습니다.");
+                  dispatch(
+                    addItem({
+                      id: id,
+                      optionsId: selectedItemOptions?.id,
+                      quantity: selectedItemOptions?.quantity || 1,
+                    }),
+                  );
+                  if (token) requestPatchCartItem();
+                }
               },
             }}
             setToastMessage={setToastMessage}
