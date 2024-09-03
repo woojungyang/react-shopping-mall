@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -18,10 +18,12 @@ export const QuantityOptions = ({
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
-  const initValue = useMemo(() => {
-    if (!selectedItemOptions?.quantity)
+  useEffect(() => {
+    if (!selectedItemOptions?.quantity) {
       setSelectedItemOptions({ ...selectedItemOptions, quantity: 1 });
-  }, []);
+    }
+  }, [selectedItemOptions, setSelectedItemOptions]);
+
   return (
     <DetailContentWrapper>
       <div

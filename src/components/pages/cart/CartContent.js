@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { addItem, removeItem } from "app/counterSlice";
 
@@ -45,6 +45,7 @@ export default function CartContent() {
   const queryClient = useQueryClient();
 
   const token = localStorage.getItem("token");
+  const directPayment = JSON.parse(localStorage.getItem("direct")) ?? null;
 
   const stages = [
     { id: 1, label: "쇼핑백" },
@@ -63,6 +64,16 @@ export default function CartContent() {
   const [changeOptionsModal, setChangeOptionsModal] = useState(false);
   const [itemInfo, setItemInfo] = useState({});
   const [selectedItem, setSelectedItem] = useState({});
+
+  useEffect(() => {
+    if (directPayment?.id) {
+      setItems([{ ...directPayment }]);
+      setPaymentStage(2);
+    }
+    return () => {
+      localStorage.removeItem("direct");
+    };
+  }, []);
 
   const itemQuery = useItemQuery(
     items[0]?.id || selectedItem?.id,

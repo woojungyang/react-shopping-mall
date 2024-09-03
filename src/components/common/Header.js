@@ -133,7 +133,11 @@ export default function Header() {
                 [styles.default_flex]: true,
               })}
             >
-              <img src={require("assets/images/common/logo.png")} alt="logo" />
+              <img
+                src={require("assets/images/common/logo.png")}
+                alt="logo"
+                onClick={() => navigation("/")}
+              />
             </div>
             <div className={styles.header_icon_wrapper}>
               <SearchIcon

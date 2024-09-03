@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { addItem } from "app/counterSlice";
 
@@ -9,8 +9,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import { Rating } from "@mui/material";
 import { getQuestionStateLabel } from "models/notice";
-import { userToken } from "models/user";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   calculateSum,
@@ -55,8 +54,9 @@ import TabsWrapper from "./TabsWrapper";
 export default function ItemDetailContent() {
   const { id } = useParams();
   const navigation = useNavigate();
-
   const dispatch = useDispatch();
+
+  const token = localStorage.getItem("token");
 
   const [toastMessage, setToastMessage] = useState("");
 
@@ -129,6 +129,16 @@ export default function ItemDetailContent() {
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [confirmModalContents, setConfirmModalContents] = useState({});
+
+  const findSelectedOptions = useMemo(
+    () =>
+      item?.options?.find(
+        (e) =>
+          e.color == selectedItemOptions.color &&
+          e.size == selectedItemOptions.size,
+      ) || {},
+    [selectedItemOptions],
+  );
 
   useEffect(() => {
     setTimeout(() => {
@@ -326,13 +336,21 @@ export default function ItemDetailContent() {
                   className={styles.button_dark_300_color_background_100}
                   label="주문하기"
                   onClick={() => {
-                    if (!userToken) {
+                    if (!token) {
                       setToastMessage("로그인이 필요합니다.");
                       setTimeout(() => {
                         navigation("/login");
                       }, 2000);
                     } else {
-                      requestPatchCartItem();
+                      localStorage.setItem(
+                        "direct",
+                        JSON.stringify({
+                          id: id,
+                          optionsId: findSelectedOptions?.id,
+                          quantity: selectedItemOptions?.quantity || 1,
+                        }),
+                      );
+
                       navigation("/cart");
                     }
                   }}
@@ -343,23 +361,18 @@ export default function ItemDetailContent() {
                   }
                   label="쇼핑백"
                   onClick={() => {
-                    const findOptions = item.options.find(
-                      (e) =>
-                        e.color == selectedItemOptions.color &&
-                        e.size == selectedItemOptions.size,
-                    );
-                    if (!findOptions) {
+                    if (!findSelectedOptions) {
                       setToastMessage("옵션을 선택해주세요.");
                     } else {
                       setConfirmModal(true);
                       dispatch(
                         addItem({
                           id: id,
-                          optionsId: findOptions?.id,
+                          optionsId: findSelectedOptions?.id,
                           quantity: selectedItemOptions?.quantity || 1,
                         }),
                       );
-                      if (userToken) requestPatchCartItem();
+                      if (token) requestPatchCartItem();
 
                       setConfirmModalContents({
                         title: "선택하신 상품이\n 쇼핑백에 추가 되었습니다.",

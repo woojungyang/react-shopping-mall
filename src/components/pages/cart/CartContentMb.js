@@ -39,7 +39,9 @@ export default function CartContentMb() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const queryClient = useQueryClient();
+
   const token = localStorage.getItem("token");
+  const directPayment = JSON.parse(localStorage.getItem("direct")) ?? null;
 
   const [toastMessage, setToastMessage] = useState("");
   const [paymentStage, setPaymentStage] = useState(1);
@@ -53,6 +55,16 @@ export default function CartContentMb() {
   const [optionsChanges, setOptionChanges] = useState({});
   const [itemInfo, setItemInfo] = useState({});
   const [selectedItem, setSelectedItem] = useState({});
+
+  useEffect(() => {
+    if (directPayment?.id) {
+      setItems([{ ...directPayment }]);
+      setPaymentStage(2);
+    }
+    return () => {
+      localStorage.removeItem("direct");
+    };
+  }, []);
 
   const itemQuery = useItemQuery(
     items[0]?.id || selectedItem?.id,

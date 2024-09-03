@@ -442,7 +442,15 @@ export default function ItemDetailContentMb() {
                     navigation("/login");
                   }, 2000);
                 } else {
-                  requestPatchCartItem();
+                  localStorage.setItem(
+                    "direct",
+                    JSON.stringify({
+                      id: id,
+                      optionsId: selectedItemOptions?.id,
+                      quantity: selectedItemOptions?.quantity || 1,
+                    }),
+                  );
+
                   navigation("/cart");
                 }
               },
