@@ -26,6 +26,7 @@ import {
   MobileLayout,
 } from "components/common";
 import { OptionsMobile } from "components/detail";
+import { ToastModal } from "components/modal";
 
 import { checkPhoneNumber } from "utilities/checkExpression";
 import { formatDateTime, now } from "utilities/dateTime";
@@ -38,7 +39,6 @@ export default function CartContentMb() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const queryClient = useQueryClient();
-
   const token = localStorage.getItem("token");
 
   const [toastMessage, setToastMessage] = useState("");
@@ -50,6 +50,7 @@ export default function CartContentMb() {
   const [carItems, setCartItems] = useState([]);
 
   const [changeOptionsModal, setChangeOptionsModal] = useState(false);
+  const [optionsChanges, setOptionChanges] = useState({});
   const [itemInfo, setItemInfo] = useState({});
   const [selectedItem, setSelectedItem] = useState({});
 
@@ -92,13 +93,12 @@ export default function CartContentMb() {
 
   function toggleAllItemsChecked() {
     setCheckedAll(!checkedAll);
-    setItems(
-      items.map((e) => {
-        return { ...e, checked: !checkedAll };
+    setCartItems(
+      carItems.map((e) => {
+        return { ...e, checked: e.option.inventory > 0 ? !checkedAll : false };
       }),
     );
   }
-
   const checkedItems = useMemo(
     () => carItems.filter((e) => e.checked),
     [carItems],
@@ -113,26 +113,22 @@ export default function CartContentMb() {
     else setCheckedAll(false);
   }, [carItems]);
 
-  const updateCartItemOptionsMutation = useCartItemMutation(
-    itemInfo?.id,
-    "patch",
-  );
+  const updateCartItemOptionsMutation = useCartItemMutation(itemInfo?.id);
   async function requestUpdateItemOptions() {
     try {
       const selectedItemForChangeOptions = carItems.find(
         (e) => e.id == selectedItem.id,
       );
-      const findOption = itemInfo?.options?.find(
-        (e) => e.color == selectedItem.color && e.size == selectedItem.size,
-      );
-
       const newOptions = {
         id: itemInfo.id.toString(),
-        optionsId: findOption?.id ?? selectedItemForChangeOptions?.option.id,
+        optionsId: optionsChanges.id ?? selectedItemForChangeOptions?.option.id,
         quantity:
-          selectedItem?.quantity ?? selectedItemForChangeOptions?.quantity,
+          optionsChanges?.quantity ?? selectedItemForChangeOptions?.quantity,
       };
-      dispatch(removeItem(itemInfo.id));
+      const findOption = carItems?.find((e) => e.id == itemInfo?.id);
+      dispatch(
+        removeItem({ id: findOption.id, optionsId: findOption.option.id }),
+      );
       dispatch(addItem(newOptions));
       if (!!token) await updateCartItemOptionsMutation.mutateAsync(newOptions);
       setCartItems(
@@ -140,7 +136,9 @@ export default function CartContentMb() {
           e.id == itemInfo.id
             ? {
                 ...e,
-                option: findOption ?? selectedItemForChangeOptions.option,
+                option:
+                  itemInfo.options.find((e) => e.id == optionsChanges.id) ??
+                  selectedItemForChangeOptions.option,
                 quantity: newOptions.quantity,
               }
             : e,
@@ -195,7 +193,7 @@ export default function CartContentMb() {
       totalPrice: totalPrice,
       originalTotalPrice: originalTotalPrice,
     };
-  }, [items]);
+  }, [carItems]);
 
   const [orderSheet, setOrderSheet] = useState({});
   function onChange(e) {
@@ -230,6 +228,10 @@ export default function CartContentMb() {
 
       const tossPayments = await loadTossPayments(clientKey);
 
+      const itemIds = checkedItems
+        .map((e) => `${e.id}-${e.option.id}`)
+        .join(",");
+
       const result = tossPayments
         .requestPayment("카드", {
           amount: receipt?.totalPrice,
@@ -238,7 +240,7 @@ export default function CartContentMb() {
             totalCount > 1 ? `상품결제 외 ${totalCount - 1}건` : "상품결제 1건",
           customerName: "홍길동",
           customerEmail: "customer@example.com",
-          successUrl: `${window.location.origin}/payment`, // 결제 성공 시 리디렉션할 URL
+          successUrl: `${window.location.origin}/payment?itemIds=${itemIds}`, // 결제 성공 시 리디렉션할 URL
           failUrl: `${window.location.origin}/payment`, // 결제 실패 시 리디렉션할 URL
         })
 
@@ -259,8 +261,6 @@ export default function CartContentMb() {
       console.error(error);
     }
   }
-
-  const [optionsChanges, setOptionChanges] = useState({});
 
   useEffect(() => {
     if (changeOptionsModal || findAddressModal)
@@ -319,9 +319,10 @@ export default function CartContentMb() {
                   setItems={setCartItems}
                   setChangeOptionsModal={setChangeOptionsModal}
                   setSelectedItem={setSelectedItem}
-                  directPayment={() => {
+                  directPayment={(item) => {
                     if (token) {
                       scrollTop();
+                      setCartItems([{ ...item, checked: true }]);
                       setPaymentStage(Number(paymentStage) + 1);
                     } else {
                       setToastMessage("로그인이 필요한 기능입니다.");
@@ -424,8 +425,8 @@ export default function CartContentMb() {
             <DeliveryFormWrapper title="주문상품">
               <ItemsList
                 currentStage={paymentStage}
-                items={items}
-                setItems={setItems}
+                items={carItems}
+                setItems={setCartItems}
                 setChangeOptionsModal={setChangeOptionsModal}
                 setSelectedItem={setSelectedItem}
               />
@@ -506,22 +507,30 @@ export default function CartContentMb() {
               label={paymentStage == 1 ? "주문하기" : "결제하기"}
               onClick={() => {
                 scrollTop();
-                if (!checkedItems.length)
-                  alert("구매하실 상품을 먼저 선택해주세요.");
-                else if (paymentStage == 1) setPaymentStage(paymentStage + 1);
-                else {
-                  if (
-                    !orderSheet?.ordererName ||
-                    !orderSheet?.ordererPhoneNumber ||
-                    !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
-                    !orderSheet?.receiverName ||
-                    !orderSheet?.receiverPhoneNumber ||
-                    !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
-                    !orderSheet?.zipCode ||
-                    !orderSheet?.checkOrder
-                  )
-                    alert("주문서를 확인해주세요");
-                  else requestPayment();
+
+                if (token) {
+                  if (!checkedItems.length)
+                    setToastMessage("구매하실 상품을 먼저 선택해주세요.");
+                  else if (paymentStage == 1) setPaymentStage(paymentStage + 1);
+                  // else
+                  else {
+                    if (
+                      !orderSheet?.ordererName ||
+                      !orderSheet?.ordererPhoneNumber ||
+                      !checkPhoneNumber(orderSheet?.ordererPhoneNumber) ||
+                      !orderSheet?.receiverName ||
+                      !orderSheet?.receiverPhoneNumber ||
+                      !checkPhoneNumber(orderSheet?.receiverPhoneNumber) ||
+                      !orderSheet?.zipCode
+                    )
+                      setToastMessage("주문서를 확인해주세요");
+                    else requestPayment();
+                  }
+                } else {
+                  setToastMessage("로그인이 필요한 기능입니다.");
+                  setTimeout(() => {
+                    navigation("/login");
+                  }, [3000]);
                 }
               }}
             />
@@ -531,9 +540,10 @@ export default function CartContentMb() {
 
       {changeOptionsModal && (
         <OptionsMobile
+          options={itemInfo?.options}
           setVisible={setChangeOptionsModal}
-          optionsChanges={optionsChanges}
-          setOptionChanges={setOptionChanges}
+          selectedItemOptions={optionsChanges}
+          setSelectedItemOptions={setOptionChanges}
           leftButton={{
             label: "취소",
             onClick: () => setChangeOptionsModal(false),
@@ -542,21 +552,23 @@ export default function CartContentMb() {
             label: "변경 저장",
             onClick: () => {
               setChangeOptionsModal(false);
-              setItems(
-                items.map((item) => {
-                  if (item.id == selectedItem.id) {
-                    return {
-                      ...item,
-                      quantity: optionsChanges.quantity,
-                      option: optionsChanges?.option,
-                    };
-                  } else {
-                    return item;
-                  }
-                }),
-              );
+              requestUpdateItemOptions();
+              // setItems(
+              //   items.map((item) => {
+              //     if (item.id == selectedItem.id) {
+              //       return {
+              //         ...item,
+              //         quantity: optionsChanges.quantity,
+              //         option: optionsChanges?.option,
+              //       };
+              //     } else {
+              //       return item;
+              //     }
+              //   }),
+              // );
             },
           }}
+          setToastMessage={setToastMessage}
         />
       )}
       {findAddressModal && (
@@ -575,6 +587,12 @@ export default function CartContentMb() {
             onComplete={completeAddressHandler}
           />
         </div>
+      )}
+      {toastMessage && (
+        <ToastModal
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        />
       )}
     </MobileLayout>
   );
@@ -643,7 +661,7 @@ function ItemsList({
                       {numberWithCommas(item.originalPrice)}원
                     </p>
                     <p className={styles.price}>
-                      {numberWithCommas(item.price)}원
+                      {numberWithCommas(item?.price * item?.quantity)}원
                     </p>
                   </div>
                 </div>
@@ -681,10 +699,7 @@ function ItemsList({
                     />
                     <DefaultButton
                       label="바로구매"
-                      onClick={() => {
-                        setItems([{ ...item, checked: true }]);
-                        directPayment();
-                      }}
+                      onClick={() => directPayment(item)}
                     />
                   </>
                 )}

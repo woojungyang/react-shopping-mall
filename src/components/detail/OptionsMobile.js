@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import classNames from "classnames";
@@ -20,6 +20,16 @@ export const OptionsMobile = ({
   setToastMessage,
 }) => {
   const [showOptions, setShowOptions] = useState(false);
+
+  const processedOptions = useMemo(() => {
+    return options
+      .sort((a, b) => a?.color?.localeCompare(b.color))
+      .map((option) => ({
+        id: option.id,
+        name: `${option.color} | ${option.size}`,
+        inventory: option.inventory,
+      }));
+  }, [options]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -44,10 +54,10 @@ export const OptionsMobile = ({
   }, [showOptions]);
 
   useEffect(() => {
-    if (!!selectedItemOptions?.quantity) {
+    if (!!selectedItemOptions.id) {
       if (selectedItemOptions?.quantity > selectedItemOptions.inventory) {
         setToastMessage(
-          `최대 구매 가능한 수량은 \n${selectedItemOptions?.inventory}개 입니다.`,
+          `최대 구매 가능한 수량은 \n${selectedItemOptions?.inventory}개 입니다. `,
         );
         setSelectedItemOptions({
           ...selectedItemOptions,
@@ -74,13 +84,13 @@ export const OptionsMobile = ({
           }}
         >
           <p>
-            {options?.find((item) => item.id == selectedItemOptions.id)?.name ||
-              "옵션선택"}
+            {processedOptions?.find((item) => item.id == selectedItemOptions.id)
+              ?.name || "옵션선택"}
           </p>
           <KeyboardArrowDownIcon />
           {showOptions && (
             <div className={styles.select_box_options_wrapper}>
-              {options?.map((option, index) => {
+              {processedOptions?.map((option, index) => {
                 const isSoldOut = option.inventory == 0;
                 return (
                   <p
@@ -95,7 +105,6 @@ export const OptionsMobile = ({
                           quantity: selectedItemOptions?.quantity,
                           ...option,
                         });
-                      else setShowOptions(true);
                     }}
                   >
                     {option.name}

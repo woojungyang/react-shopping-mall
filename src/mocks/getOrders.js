@@ -121,7 +121,7 @@ let collection = new Array(faker.number.int({ max: 100, min: 10 }))
     items: new Array(faker.number.int({ max: 10, min: 1 }))
       .fill()
       .map((_, index) => {
-        const price = faker.number.int({ max: 100000, min: 1000 });
+        const price = faker.number.int({ max: 10000, min: 1000 });
         const quantity = faker.number.int({ max: 10, min: 1 });
         return {
           id: (index + 1) * faker.number.int(),

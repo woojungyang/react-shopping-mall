@@ -60,7 +60,7 @@ export default function getItem(mock) {
       thumbnail: fakerSubImage(),
     })),
     originalPrice: faker.commerce.price({
-      min: 100,
+      min: 9100,
       max: 10000,
       dec: 0,
     }),
@@ -110,16 +110,16 @@ export default function getItem(mock) {
         id: faker.number.int(),
         itemName: faker.commerce.productName(),
         originalPrice: faker.commerce.price({
-          min: 500000,
-          max: 900000,
+          min: 9100,
+          max: 10000,
+          dec: 0,
+        }),
+        price: faker.commerce.price({
+          min: 100,
+          max: 9000,
           dec: 0,
         }),
         thumbnail: fakerSubImage(),
-        price: faker.commerce.price({
-          min: 1000,
-          max: 499999,
-          dec: 0,
-        }),
       })),
     },
   };

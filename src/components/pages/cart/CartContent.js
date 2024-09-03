@@ -115,10 +115,7 @@ export default function CartContent() {
     [carItems],
   );
 
-  const updateCartItemOptionsMutation = useCartItemMutation(
-    itemInfo?.id,
-    "patch",
-  );
+  const updateCartItemOptionsMutation = useCartItemMutation(itemInfo?.id);
 
   async function requestUpdateItemOptions() {
     try {
@@ -252,7 +249,6 @@ export default function CartContent() {
       const itemIds = checkedItems
         .map((e) => `${e.id}-${e.option.id}`)
         .join(",");
-      console.log(itemIds);
 
       const result = tossPayments
         .requestPayment("카드", {
@@ -348,9 +344,10 @@ export default function CartContent() {
                     setItems={setCartItems}
                     setChangeOptionsModal={setChangeOptionsModal}
                     setSelectedItem={setSelectedItem}
-                    directPayment={() => {
+                    directPayment={(item) => {
                       if (token) {
                         scrollTop();
+                        setCartItems([{ ...item, checked: true }]);
                         setPaymentStage(Number(paymentStage) + 1);
                       } else {
                         setToastMessage("로그인이 필요한 기능입니다.");
@@ -675,12 +672,7 @@ function ItemsList({
                     ) : (
                       <p
                         className={styles.buy_button}
-                        onClick={() => {
-                          directPayment();
-                          setTimeout(() => {
-                            setItems([{ ...item, checked: true }]);
-                          }, [3000]);
-                        }}
+                        onClick={() => directPayment(item)}
                       >
                         바로 구매
                       </p>

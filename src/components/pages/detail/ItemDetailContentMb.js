@@ -428,13 +428,7 @@ export default function ItemDetailContentMb() {
         <DeliveryDrawer visible={deliveryModal} setVisible={setDeliveryModal} />
         {showOptionModal && (
           <OptionsMobile
-            options={item?.options
-              .sort((a, b) => a?.color?.localeCompare(b.color))
-              .map((option) => ({
-                id: option.id,
-                name: `${option.color} | ${option.size}`,
-                inventory: option.inventory,
-              }))}
+            options={item?.options}
             setVisible={setShowOptionModal}
             visible={showOptionModal}
             selectedItemOptions={selectedItemOptions}

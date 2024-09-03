@@ -23,7 +23,7 @@ export default function getOverview(mock) {
         thumbnail: fakerSubImage(),
         itemName: faker.commerce.productName(),
         originalPrice: faker.commerce.price({
-          min: 100,
+          min: 9100,
           max: 10000,
           dec: 0,
         }),
