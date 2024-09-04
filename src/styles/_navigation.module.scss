@@ -68,8 +68,8 @@
       p {
         @include flex;
         margin-right: $margin * 2;
-        font-size: $padding;
-        font-weight: 700;
+        font-size: $margin;
+        font-weight: 800;
         letter-spacing: 1px;
         cursor: pointer;
         height: 45px;

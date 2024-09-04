@@ -172,7 +172,7 @@ export default function MainContent({ data }) {
                     showStatus={true}
                     item={item}
                     style={{
-                      height: "350px",
+                      height: "369px",
                     }}
                   />
                 </div>
