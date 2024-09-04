@@ -65,6 +65,3 @@ export const ImageSlider = ({
     </div>
   );
 };
-{
-  /* */
-}

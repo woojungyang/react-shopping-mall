@@ -108,11 +108,11 @@ export default function Header() {
             </div>
 
             <div className={styles.nav_wrapper}>
-              <p onClick={() => navigation("/category/women")}>WOMEN</p>
-              <p onClick={() => navigation("/category/men")}>MEN</p>
-              <p onClick={() => navigation("/category/beauty")}>BEAUTY</p>
-              <p onClick={() => navigation("/category/life")}>LIFE</p>
-              <p onClick={() => navigation("/event")}>EVENT</p>
+              {menuList?.map((menu, index) => (
+                <p key={index} onClick={() => navigation(menu.link)}>
+                  {menu.name}
+                </p>
+              ))}
             </div>
           </div>
           {showSearch && (
@@ -151,17 +151,19 @@ export default function Header() {
             </div>
           </div>
           <div className={styles.mb_scroll_menu_wrapper}>
-            {mobileMenu.map((e, index) => (
-              <p
-                key={index}
-                className={classNames({
-                  [styles.default_scroll_menu]: true,
-                  // [styles.active_scroll_menu]: activeMobilMenu == e.id,
-                })}
-              >
-                {e.name}
-              </p>
-            ))}
+            {[{ id: 0, name: "HOME", link: "/" }, ...menuList].map(
+              (e, index) => (
+                <p
+                  key={index}
+                  className={classNames({
+                    [styles.default_scroll_menu]: true,
+                    // [styles.active_scroll_menu]: activeMobilMenu == e.id,
+                  })}
+                >
+                  {e.name}
+                </p>
+              ),
+            )}
           </div>
           {showSearch && (
             <SearchContainer visible={showSearch} setVisible={setShowSearch} />
@@ -172,13 +174,10 @@ export default function Header() {
   );
 }
 
-const mobileMenu = [
-  { id: 1, name: "썸머위크" },
-  { id: 2, name: "아울렛" },
-  { id: 3, name: "세일" },
-  { id: 4, name: "브랜드" },
-  { id: 5, name: "여성" },
-  { id: 5, name: "남성" },
-  { id: 5, name: "#SNAP" },
-  { id: 5, name: "#PICK" },
+const menuList = [
+  { id: 1, name: "WOMEN", link: "/category/woman" },
+  { id: 2, name: "MEN", link: "/category/man" },
+  { id: 3, name: "BEAUTY", link: "/category/beauty" },
+  { id: 4, name: "LIFE", link: "/category/life" },
+  { id: 5, name: "EVENT", link: "/event" },
 ];

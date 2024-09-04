@@ -17,24 +17,52 @@ export const ItemCard = ({
 }) => {
   const navigation = useNavigate();
   const contentRef = useRef(null);
-
   const [cardHeight, setCardHeight] = useState(50);
+  const [isDragging, setIsDragging] = useState(false);
+  const startX = useRef(0);
 
   useEffect(() => {
-    setCardHeight(style.height - contentRef.current.clientHeight);
-  }, [contentRef?.current]);
+    setCardHeight(style.height - contentRef.current?.clientHeight || 0);
+  }, [style.height]);
+
+  function handleMouseDown(e) {
+    startX.current = e.clientX;
+    setIsDragging(false);
+  }
+
+  function handleMouseMove(e) {
+    if (Math.abs(e.clientX - startX.current) > 10) {
+      setIsDragging(true);
+    }
+  }
+
+  function handleMouseUp() {
+    if (!isDragging) {
+      setTimeout(() => setIsDragging(false), 100);
+    }
+    startX.current = 0;
+  }
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging]);
 
   return (
     <div
       className={styles.default_item_card_container}
       style={style}
-      onClick={() => navigation(`/items/${item?.id}`)}
+      onMouseDown={handleMouseDown}
+      onClick={() => !isDragging && navigation(`/items/${item?.id}`)}
     >
       <LikeHeart like={item?.like} />
-
       <div
         style={{
-          minHeight: cardHeight || 0,
+          minHeight: cardHeight,
           height: "100%",
           display: "flex",
           flex: 1,
@@ -43,7 +71,6 @@ export const ItemCard = ({
       >
         <img src={item?.thumbnail} className={styles.item_image} />
       </div>
-
       <div className={styles.item_card_information} ref={contentRef}>
         {showBrand && (
           <p className={styles.item_brand_name}>{item?.brandName}</p>

@@ -20,6 +20,9 @@ export const CustomSliderContainer = forwardRef(
         ...settings,
         arrows: arrows,
         autoplay: autoPlay,
+        draggable: true,
+        swipeToSlide: true,
+        speed: 500,
         afterChange: (newIndex) => {
           setCurrentIndex?.(newIndex);
         },
