@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import Cart from "pages/Cart";
+import Category from "pages/Category";
 import FindMember from "pages/FindMember";
 import ItemDetail from "pages/ItemDetail";
 import Join from "pages/Join";
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
   {
     path: "/my-order/my-order-list/:id",
     element: <ProtectedRoute element={<OrderDetail />} />,
+  },
+  {
+    path: "/category/:id",
+    element: <Category />,
   },
   {
     path: "*",

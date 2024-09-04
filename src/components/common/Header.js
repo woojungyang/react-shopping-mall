@@ -10,7 +10,7 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
@@ -21,6 +21,8 @@ import { SearchContainer } from "./SearchContainer";
 export default function Header() {
   const navigation = useNavigate();
   const dispatch = useDispatch();
+
+  const { id } = useParams();
 
   const [token, setToken] = useState(localStorage.getItem("token"));
 
@@ -58,6 +60,8 @@ export default function Header() {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
+  console.log(id == "WOMAN".toLowerCase());
 
   return (
     <Link>
@@ -109,7 +113,14 @@ export default function Header() {
 
             <div className={styles.nav_wrapper}>
               {menuList?.map((menu, index) => (
-                <p key={index} onClick={() => navigation(menu.link)}>
+                <p
+                  style={{
+                    color:
+                      id == menu.name.toLowerCase() ? "rgb(254, 99, 32)" : "",
+                  }}
+                  key={index}
+                  onClick={() => navigation(menu.link)}
+                >
                   {menu.name}
                 </p>
               ))}
@@ -175,8 +186,8 @@ export default function Header() {
 }
 
 const menuList = [
-  { id: 1, name: "WOMEN", link: "/category/woman" },
-  { id: 2, name: "MEN", link: "/category/man" },
+  { id: 1, name: "WOMEN", link: "/category/women" },
+  { id: 2, name: "MEN", link: "/category/men" },
   { id: 3, name: "BEAUTY", link: "/category/beauty" },
   { id: 4, name: "LIFE", link: "/category/life" },
   { id: 5, name: "EVENT", link: "/event" },

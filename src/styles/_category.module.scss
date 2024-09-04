@@ -1,0 +1,80 @@
+@import "./common.module";
+
+@mixin default-section {
+  max-width: $max-width;
+  border: 1px solid red;
+  margin: $margin * 4 auto;
+}
+
+.category_container {
+  padding-top: $header-height * 1.2;
+  @include mobile {
+    padding-top: $header-height-mb2;
+  }
+
+  width: 100%;
+  position: relative;
+
+  @include mobile {
+    margin-top: 0;
+  }
+  .category_main_wrapper {
+    height: 50vh;
+    width: 100%;
+    @include flex;
+    background-color: $color-skeleton-100;
+  }
+  .section_title {
+    font-size: $margin * 1.4;
+    font-weight: 500;
+    letter-spacing: -1.5px;
+  }
+  .exhibition_wrapper {
+    @include default-section;
+    .exhibition_wrap {
+      margin-top: $margin * 3;
+      // hr {
+      //   width: 40%;
+      //   border: none;
+      //   border: 3px solid black;
+      // }
+      .exhibition {
+        border-right: 1px solid $color-skeleton-200;
+        &:last-child {
+          border: none;
+        }
+        padding: $margin * 1.5;
+        .exhibition_thumbnail {
+          @include default-image;
+          aspect-ratio: 1;
+          margin: auto;
+        }
+        .title {
+          margin-top: $padding;
+          font-size: $margin * 1.1;
+          font-weight: 600;
+        }
+        .subtitle {
+          margin-top: $default;
+          line-height: 24px;
+        }
+        .exhibition_item_wrap {
+          margin-top: $margin;
+          .exhibition_item {
+            border-top: 1px solid $color-skeleton-100;
+            padding: $default 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+.mobile_category_container {
+  margin-top: $header-height-mb2;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
