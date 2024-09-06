@@ -5,6 +5,7 @@ export default function mocking(axios) {
   const mock = new MockAdapter(axios, { delayResponse: 1000 });
   [
     require("./deleteCartItem").default,
+    require("./getCategoryOverview").default,
     require("./getItem").default,
     require("./getItemQuestions").default,
     require("./getItemReviews").default,

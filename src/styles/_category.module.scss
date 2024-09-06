@@ -7,6 +7,7 @@
 }
 
 .category_container {
+  overflow-x: hidden;
   padding-top: $header-height * 1.2;
   @include mobile {
     padding-top: $header-height-mb2;
@@ -19,16 +20,60 @@
     margin-top: 0;
   }
   .category_main_wrapper {
-    height: 50vh;
     width: 100%;
-    @include flex;
-    background-color: $color-skeleton-100;
+    position: relative;
+
+    .category_main_wrap {
+      position: relative;
+      height: 60vh;
+
+      .category_main_img {
+        @include default-image;
+      }
+      .copyright_wrap {
+        position: absolute;
+        z-index: 10;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: $color-background-100;
+        text-align: center;
+
+        .copyright_title {
+          font-size: $margin * 2.1;
+          font-weight: 500;
+          margin-bottom: $default;
+        }
+
+        .copyright_sub {
+          font-size: $margin;
+        }
+      }
+    }
+    .arrow_wrap {
+      width: 59%;
+      z-index: 100;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      @include flex($justify-content: space-between);
+      svg {
+        cursor: pointer;
+        width: $margin * 2;
+        height: $margin * 3;
+        color: $color-background-100;
+      }
+    }
   }
+
   .section_title {
     font-size: $margin * 1.4;
     font-weight: 500;
     letter-spacing: -1.5px;
   }
+
   .exhibition_wrapper {
     @include default-section;
     .exhibition_wrap {

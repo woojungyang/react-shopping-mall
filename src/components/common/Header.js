@@ -61,8 +61,6 @@ export default function Header() {
     };
   }, []);
 
-  console.log(id == "WOMAN".toLowerCase());
-
   return (
     <Link>
       {isDeskTop ? (
