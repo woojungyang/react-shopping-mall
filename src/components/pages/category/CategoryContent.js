@@ -26,7 +26,7 @@ import useQueryString from "hooks/queryString/useQueryString";
 
 import { ItemCard, SmallCard } from "components/card";
 import { CommonLayout, DefaultPagination } from "components/common";
-import { CustomSliderContainer } from "components/slider";
+import { CustomSliderContainer, ImageSlider } from "components/slider";
 
 import styles from "styles/_category.module.scss";
 
@@ -90,6 +90,23 @@ export default function CategoryContent() {
     subCategories[0].id,
   );
 
+  const bestItems = useMemo(() => {
+    if (!overview?.bestItems) return [];
+    const items = [...overview?.bestItems];
+    items.shift();
+    return items;
+  }, [overview?.bestItems]);
+
+  const exhibitionRef = useRef(null);
+  const exhibitionPrevious = useCallback(
+    () => exhibitionRef.current.slickPrev(),
+    [],
+  );
+  const exhibitionNext = useCallback(
+    () => exhibitionRef.current.slickNext(),
+    [],
+  );
+
   return (
     <CommonLayout
       isLoading={overviewLoading || isLoading}
@@ -97,33 +114,158 @@ export default function CategoryContent() {
       toastMessage={toastMessage}
     >
       <div className={styles.category_container}>
-        <div className={styles.category_sidebar}>
-          <h3 className={styles.category_name}>
-            {categoryName.toUpperCase()}
-            <br />
-            CATEGORY
-          </h3>
-          {subCategories.map((subCategory) => {
-            const active = currentSubCategory == subCategory.id;
-            return (
-              <div
-                onClick={() => setToastMessage("준비중입니다.")}
-                className={classNames({
-                  [styles.sub_category]: true,
-                  [styles.active_category]: active,
-                })}
-              >
-                <div className={styles.default_flex}>
-                  <p>{subCategory.label}</p>
-                  <span>{subCategory.sub}</span>
+        {/*   <div className={styles.category_main_wrapper}>
+          <Slider ref={sliderRef} {...settings}>
+            {overview?.mainSlide.map((slider, index) => (
+              <div className={styles.category_main_wrap} key={index}>
+                <img src={slider.url} className={styles.category_main_img} />
+                <div className={styles.copyright_wrap}>
+                  <p className={styles.copyright_title}>{slider?.title}</p>
+                  <p className={styles.copyright_sub}>{slider?.subTitle}</p>
                 </div>
-                {active && <TrendingFlatIcon />}
               </div>
-            );
-          })}
+            ))}
+          </Slider>
+          <div
+            className={styles.arrow_wrap}
+            style={{ width: currentSlideWidth + 100 }}
+          >
+            <ArrowBackIosIcon onClick={previous} />
+            <ArrowForwardIosIcon onClick={next} />
+          </div>
         </div>
-        <div className={styles.category_contents_container}>
-          <div className={styles.all_items_container}>
+        <div className={styles.exhibition_container}>
+          <p className={styles.section_title}>MEMBERS-ONLY SPECIAL</p>
+
+          <div className={styles.exhibition_wrap}>
+            {overview?.events?.map((event, index) => (
+              <div className={styles.exhibition}>
+                <hr />
+                <img
+                  className={styles.exhibition_thumbnail}
+                  src={event?.thumbnail}
+                  alt=""
+                />
+                <p className={styles.title}>
+                  [{event?.keyword}]
+                  <br />
+                  {event?.title}
+                </p>
+                <p className={styles.subtitle}>{event?.subTitle}</p>
+                <div className={styles.exhibition_item_wrap}>
+                  {event?.items?.map((item) => (
+                    <div className={styles.exhibition_item}>
+                      <SmallCard item={item} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div> */}
+        {/* pop-up */}
+        <div className={styles.exhibition_container}>
+          <p className={styles.section_title}>POP-UP</p>
+          <div className={styles.exhibition_arrow_button_wrap}>
+            <div onClick={exhibitionPrevious}>
+              <ArrowBackIosIcon />
+            </div>
+            <div onClick={exhibitionNext}>
+              <ArrowForwardIosIcon />
+            </div>
+          </div>
+
+          <CustomSliderContainer
+            ref={exhibitionRef}
+            settings={{
+              dots: false,
+              infinite: false,
+              speed: 500,
+              slidesToShow: 3,
+              slidesToScroll: 1,
+            }}
+          >
+            {overview?.events?.map((event, index) => (
+              <div className={styles.exhibition}>
+                <hr />
+                <img
+                  className={styles.exhibition_thumbnail}
+                  src={event?.thumbnail}
+                  alt=""
+                />
+                <p className={styles.title}>
+                  [{event?.keyword}]
+                  <br />
+                  {event?.title}
+                </p>
+                <p className={styles.subtitle}>{event?.subTitle}</p>
+                <div className={styles.exhibition_item_wrap}>
+                  {event?.items?.map((item) => (
+                    <div className={styles.exhibition_item}>
+                      <SmallCard item={item} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </CustomSliderContainer>
+        </div>
+        <div className={styles.category_best_item_container}>
+          <p className={styles.section_title}>WEEKLY BEST </p>
+          <div className={styles.category_best_item_wrap}>
+            <div className={styles.first_ranking}>
+              <div className={styles.rank}>
+                <div className={styles.rank_badge}>1</div>
+                <ItemCard
+                  item={overview?.bestItems[0]}
+                  showRank={true}
+                  style={{ height: 778 }}
+                />
+              </div>
+            </div>
+            <div className={styles.ranking_wrap}>
+              {bestItems.map((item, index) => (
+                <div className={styles.rank}>
+                  <div className={styles.rank_badge}>{index + 2}</div>
+                  <ItemCard
+                    item={item}
+                    key={index}
+                    style={{ height: 384 }}
+                    showRank={true}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className={styles.category_all_items_container}>
+          <div className={styles.category_sidebar}>
+            <h3 className={styles.category_name}>
+              {categoryName.toUpperCase()}
+              <br />
+              CATEGORY
+            </h3>
+            {subCategories.map((subCategory) => {
+              const active = currentSubCategory == subCategory.id;
+              return (
+                <div
+                  onClick={() => setToastMessage("준비중입니다.")}
+                  className={classNames({
+                    [styles.sub_category]: true,
+                    [styles.active_category]: active,
+                  })}
+                >
+                  <div className={styles.default_flex}>
+                    <p>{subCategory.label}</p>
+                    <span>{subCategory.sub}</span>
+                  </div>
+                  {active && <TrendingFlatIcon />}
+                </div>
+              );
+            })}
+          </div>
+          <div className={styles.category_contents_wrapper}>
+            <div></div>
             <div className={styles.filter_wrapper}>
               <div className={styles.filter_wrap}>
                 {filterList.map((filter, index) => (
@@ -175,53 +317,12 @@ export default function CategoryContent() {
               onChange={handleChangePage}
             />
           </div>
-          {/*  <div className={styles.category_main_wrapper}>
-            <Slider ref={sliderRef} {...settings}>
-              {overview?.mainSlide.map((slider, index) => (
-                <div className={styles.category_main_wrap} key={index}>
-                  <img src={slider.url} className={styles.category_main_img} />
-                  <div className={styles.copyright_wrap}>
-                    <p className={styles.copyright_title}>{slider?.title}</p>
-                    <p className={styles.copyright_sub}>{slider?.subTitle}</p>
-                  </div>
-                </div>
-              ))}
-            </Slider>
-            <div
-              className={styles.arrow_wrap}
-              style={{ width: currentSlideWidth + 100 }}
-            >
-              <ArrowBackIosIcon onClick={previous} />
-              <ArrowForwardIosIcon onClick={next} />
-            </div>
-          </div> */}
-          <div className={styles.exhibition_container}>
-            <p className={styles.section_title}>EDITORIAL</p>
-
-            <div className={styles.exhibition_wrap}>
-              {overview?.events?.map((event, index) => (
-                <div className={styles.exhibition}>
-                  <hr />
-                  <img
-                    className={styles.exhibition_thumbnail}
-                    src={event?.thumbnail}
-                    alt=""
-                  />
-                  <p className={styles.title}>{event?.title}</p>
-                  <p className={styles.subtitle}>{event?.subTitle}</p>
-                  <div className={styles.exhibition_item_wrap}>
-                    {event?.items?.map((item) => (
-                      <div className={styles.exhibition_item}>
-                        <SmallCard item={item} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </CommonLayout>
   );
+}
+
+{
+  /*   */
 }

@@ -386,13 +386,12 @@ body {
     z-index: 10;
     width: 100%;
     background-color: rgba($color-skeleton-100, 0.4);
+    @include flex;
 
     .sold_out_badge {
       background-color: $color-dark-300;
       color: $color-background-100;
-      padding: $default;
-
-      font-size: 14px;
+      padding: $padding;
     }
   }
 }

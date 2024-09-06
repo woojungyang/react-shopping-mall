@@ -14,6 +14,7 @@ export const ItemCard = ({
   showOriginalPrice = true,
   item,
   style = {},
+  showRank = false,
 }) => {
   const navigation = useNavigate();
   const contentRef = useRef(null);
@@ -59,7 +60,7 @@ export const ItemCard = ({
       onMouseDown={handleMouseDown}
       onClick={() => !isDragging && navigation(`/items/${item?.id}`)}
     >
-      <LikeHeart like={item?.like} />
+      {!showRank && <LikeHeart like={item?.like} />}
       <div
         style={{
           minHeight: cardHeight,
@@ -111,14 +112,8 @@ export const ItemCard = ({
         )}
       </div>
       {item?.isSoldOut && (
-        <div
-          className={styles.sold_out_wrapper}
-          style={{
-            ...style,
-            paddingTop: cardHeight - 28 || 0,
-          }}
-        >
-          <span className={styles.sold_out_badge}>품절</span>
+        <div className={styles.sold_out_wrapper} style={style}>
+          <span className={styles.sold_out_badge}>sold out</span>
         </div>
       )}
     </div>
