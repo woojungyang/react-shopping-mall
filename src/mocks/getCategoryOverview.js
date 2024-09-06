@@ -41,10 +41,10 @@ export default function getCategoryOverview(mock) {
     }
 
     let data = {
-      mobileCategory: new Array(8).fill().map((_, index) => ({
+      /* mobileCategory: new Array(8).fill().map((_, index) => ({
         id: faker.number.int(),
         name: faker.lorem.word(),
-      })),
+      })), */
       mainSlide: new Array(faker.number.int({ max: 18, min: 6 }))
         .fill()
         .map((_, index) => ({
@@ -53,7 +53,16 @@ export default function getCategoryOverview(mock) {
           title: faker.lorem.sentence(),
           subTitle: faker.lorem.sentence(),
         })),
-      bestItems: new Array(faker.number.int({ max: 10, min: 5 }))
+      events: new Array(3).fill().map((_, index) => ({
+        id: faker.number.int(),
+        thumbnail: fakerSubImage(),
+        title: faker.lorem.sentence(),
+        subTitle: faker.lorem.sentence(),
+        items: new Array(faker.number.int({ max: 3, min: 0 }))
+          .fill()
+          .map((_, index) => fakerItem()),
+      })),
+      /* bestItems: new Array(faker.number.int({ max: 10, min: 5 }))
         .fill()
         .map((_, index) => fakerItem()),
       mdChoice: {
@@ -126,7 +135,7 @@ export default function getCategoryOverview(mock) {
             id: faker.number.int(),
             keywords: faker.lorem.word(),
           })),
-      },
+      }, */
     };
 
     return [status, data];
