@@ -61,22 +61,14 @@ export default function getCategoryOverview(mock) {
           title: faker.lorem.sentence(),
           subTitle: faker.lorem.sentence(),
           keyword: faker.lorem.word(),
-
-          // items: new Array(faker.number.int({ max: 3, min: 0 }))
-          //   .fill()
-          //   .map((_, index) => fakerItem()),
         })),
       bestItems: new Array(7).fill().map((_, index) => fakerItem()),
+      mdChoice: new Array(faker.number.int({ max: 10, min: 6 }))
+        .fill()
+        .map((_, index) => fakerItem()),
+      recommendedItems: new Array(10).fill().map((_, index) => fakerItem()),
       /*
-      mdChoice: {
-        banners: new Array(faker.number.int({ max: 10, min: 5 }))
-          .fill()
-          .map((_, index) => ({
-            id: faker.number.int(),
-            url: fakerSubImage(),
-          })),
-        items: new Array(8).fill().map((_, index) => fakerItem()),
-      },
+      
       events: new Array(3).fill().map((_, index) => ({
         id: faker.number.int(),
         thumbnail: fakerSubImage(),

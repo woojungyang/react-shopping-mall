@@ -14,6 +14,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
 import DoneIcon from "@mui/icons-material/Done";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
+import { height } from "@mui/system";
 import classNames from "classnames";
 import { filterList, getSubCategory } from "models/category";
 import { useParams } from "react-router-dom";
@@ -25,8 +26,17 @@ import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
 import { ItemCard, SmallCard } from "components/card";
-import { CommonLayout, DefaultPagination } from "components/common";
-import { CustomSliderContainer, ImageSlider } from "components/slider";
+import {
+  CommonLayout,
+  DefaultPagination,
+  Loading,
+  LoadingLayer,
+} from "components/common";
+import {
+  CustomSliderContainer,
+  FlexBoxSlider,
+  ImageSlider,
+} from "components/slider";
 
 import styles from "styles/_category.module.scss";
 
@@ -40,10 +50,14 @@ export default function CategoryContent() {
   const [sort, changeSort] = useQueryString("sort", filterList[0].sort);
 
   const [{ page, perPage: limit, offset }, changePage, getPageCount] =
-    usePageQueryString("page", 24);
+    usePageQueryString("page", 30);
   const handleChangePage = (_event, page) => changePage(page);
 
-  const { data: items, isLoading } = useItemsQuery(
+  const {
+    data: items,
+    isLoading,
+    isFetching,
+  } = useItemsQuery(
     {
       ...category,
       offset: offset,
@@ -57,32 +71,6 @@ export default function CategoryContent() {
     },
   );
   const [zoomIn, setZoomIn] = useState(false);
-
-  const settings = {
-    infinite: true,
-    speed: 500,
-    slidesToScroll: 1,
-    centerPadding: "30%",
-    centerMode: true,
-  };
-
-  const sliderRef = useRef(null);
-  const previous = useCallback(() => sliderRef.current.slickPrev(), []);
-  const next = useCallback(() => sliderRef.current.slickNext(), []);
-
-  const [currentSlideWidth, setCurrentSlideWidth] = useState(0);
-
-  const updateSlideWidth = () => {
-    const slideWidth = window.innerWidth - window.innerWidth * 0.3 * 2;
-    setCurrentSlideWidth(slideWidth);
-  };
-
-  useEffect(() => {
-    updateSlideWidth();
-
-    window.addEventListener("resize", updateSlideWidth);
-    return () => window.removeEventListener("resize", updateSlideWidth);
-  }, []);
 
   const [toastMessage, setToastMessage] = useState("");
   const subCategories = getSubCategory(categoryName);
@@ -107,62 +95,15 @@ export default function CategoryContent() {
     [],
   );
 
+  if (overviewLoading) return <LoadingLayer />;
+
   return (
     <CommonLayout
-      isLoading={overviewLoading || isLoading}
+      isLoading={isLoading}
       setToastMessage={setToastMessage}
       toastMessage={toastMessage}
     >
       <div className={styles.category_container}>
-        {/*   <div className={styles.category_main_wrapper}>
-          <Slider ref={sliderRef} {...settings}>
-            {overview?.mainSlide.map((slider, index) => (
-              <div className={styles.category_main_wrap} key={index}>
-                <img src={slider.url} className={styles.category_main_img} />
-                <div className={styles.copyright_wrap}>
-                  <p className={styles.copyright_title}>{slider?.title}</p>
-                  <p className={styles.copyright_sub}>{slider?.subTitle}</p>
-                </div>
-              </div>
-            ))}
-          </Slider>
-          <div
-            className={styles.arrow_wrap}
-            style={{ width: currentSlideWidth + 100 }}
-          >
-            <ArrowBackIosIcon onClick={previous} />
-            <ArrowForwardIosIcon onClick={next} />
-          </div>
-        </div>
-        <div className={styles.exhibition_container}>
-          <p className={styles.section_title}>MEMBERS-ONLY SPECIAL</p>
-
-          <div className={styles.exhibition_wrap}>
-            {overview?.events?.map((event, index) => (
-              <div className={styles.exhibition}>
-                <hr />
-                <img
-                  className={styles.exhibition_thumbnail}
-                  src={event?.thumbnail}
-                  alt=""
-                />
-                <p className={styles.title}>
-                  [{event?.keyword}]
-                  <br />
-                  {event?.title}
-                </p>
-                <p className={styles.subtitle}>{event?.subTitle}</p>
-                <div className={styles.exhibition_item_wrap}>
-                  {event?.items?.map((item) => (
-                    <div className={styles.exhibition_item}>
-                      <SmallCard item={item} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div> */}
         {/* pop-up */}
         <div className={styles.exhibition_container}>
           <p className={styles.section_title}>POP-UP</p>
@@ -219,7 +160,7 @@ export default function CategoryContent() {
                 <ItemCard
                   item={overview?.bestItems[0]}
                   showRank={true}
-                  style={{ height: 778 }}
+                  style={{ height: 735 }}
                 />
               </div>
             </div>
@@ -238,6 +179,48 @@ export default function CategoryContent() {
             </div>
           </div>
         </div>
+        {/* md pick */}
+        <div className={styles.md_pick_container}>
+          <div className={styles.md_pick_wrapper}>
+            <p className={styles.section_title}>MD'S PICK </p>
+            <FlexBoxSlider
+              settings={{
+                infinite: false,
+                speed: 500,
+                slidesToShow: 6,
+                slidesToScroll: 1,
+              }}
+              arrows={overview?.mdChoice.length > 6}
+            >
+              {overview?.mdChoice.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <ItemCard
+                      item={item}
+                      style={{
+                        height: "400px",
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </FlexBoxSlider>
+          </div>
+        </div>
+        <div className={styles.recommend_items_container}>
+          <p className={styles.section_title}>You May Also Like</p>
+          <div className={styles.recommend_items_wrapper}>
+            {overview?.recommendedItems.map((item, index) => (
+              <ItemCard
+                item={item}
+                showStatus={true}
+                key={index}
+                style={{ height: 428 }}
+              />
+            ))}
+          </div>
+        </div>
+
         <div className={styles.category_all_items_container}>
           <div className={styles.category_sidebar}>
             <h3 className={styles.category_name}>
@@ -265,57 +248,65 @@ export default function CategoryContent() {
             })}
           </div>
           <div className={styles.category_contents_wrapper}>
-            <div></div>
-            <div className={styles.filter_wrapper}>
-              <div className={styles.filter_wrap}>
-                {filterList.map((filter, index) => (
-                  <span
-                    key={index}
-                    onClick={() => changeSort(filter.sort)}
-                    className={classNames({
-                      [styles.active_filter]: sort == filter.sort,
-                    })}
-                  >
-                    {filter.label}
-                  </span>
-                ))}
+            {isFetching ? (
+              <div className={styles.item_loading_wrap}>
+                {" "}
+                <Loading />
               </div>
-              <div className={styles.filter_icon_wrap}>
-                <AppsIcon
-                  onClick={() => setZoomIn(false)}
+            ) : (
+              <>
+                <div className={styles.filter_wrapper}>
+                  <div className={styles.filter_wrap}>
+                    {filterList.map((filter, index) => (
+                      <span
+                        key={index}
+                        onClick={() => changeSort(filter.sort)}
+                        className={classNames({
+                          [styles.active_filter]: sort == filter.sort,
+                        })}
+                      >
+                        {filter.label}
+                      </span>
+                    ))}
+                  </div>
+                  <div className={styles.filter_icon_wrap}>
+                    <AppsIcon
+                      onClick={() => setZoomIn(false)}
+                      className={classNames({
+                        [styles.active_filter]: !zoomIn,
+                      })}
+                    />
+                    <CropSquareIcon
+                      onClick={() => setZoomIn(true)}
+                      className={classNames({
+                        [styles.active_filter]: zoomIn,
+                      })}
+                    />
+                  </div>
+                </div>
+                <div
                   className={classNames({
-                    [styles.active_filter]: !zoomIn,
+                    [styles.all_items_wrapper]: true,
+                    [styles.all_items_zoom]: !zoomIn,
+                    [styles.all_items_zoom_in]: zoomIn,
                   })}
+                >
+                  {items?.data?.map((item, index) => (
+                    <ItemCard
+                      key={index}
+                      showStatus={true}
+                      style={{ height: zoomIn ? 500 : 350 }}
+                      item={item}
+                    />
+                  ))}
+                </div>
+                <DefaultPagination
+                  count={getPageCount(items?.total)}
+                  page={page}
+                  onChange={handleChangePage}
                 />
-                <CropSquareIcon
-                  onClick={() => setZoomIn(true)}
-                  className={classNames({
-                    [styles.active_filter]: zoomIn,
-                  })}
-                />
-              </div>
-            </div>
-            <div
-              className={classNames({
-                [styles.all_items_wrapper]: true,
-                [styles.all_items_zoom]: !zoomIn,
-                [styles.all_items_zoom_in]: zoomIn,
-              })}
-            >
-              {items?.data?.map((item, index) => (
-                <ItemCard
-                  key={index}
-                  showStatus={true}
-                  style={{ height: zoomIn ? 500 : 350 }}
-                  item={item}
-                />
-              ))}
-            </div>
-            <DefaultPagination
-              count={getPageCount(items?.total)}
-              page={page}
-              onChange={handleChangePage}
-            />
+              </>
+            )}
           </div>
         </div>
       </div>

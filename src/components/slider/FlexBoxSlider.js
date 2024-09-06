@@ -35,7 +35,7 @@ export const FlexBoxSlider = ({
   return (
     <div className={styles.default_items_slider_container}>
       <div ref={bannerRef}>
-        <RenderComponent r />
+        <RenderComponent />
       </div>
       <div className={styles.default_item_slider_container}>
         <div
