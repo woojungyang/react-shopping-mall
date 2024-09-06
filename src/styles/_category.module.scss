@@ -175,9 +175,41 @@
         }
       }
     }
+    .all_items_container {
+      .filter_wrapper {
+        margin-bottom: $margin;
+        @include flex($justify-content: space-between);
+        .filter_wrap {
+          span {
+            margin-right: $padding;
+            color: $color-skeleton-100;
+            cursor: pointer;
+            font-weight: 500;
+            cursor: pointer;
+          }
+        }
+        .filter_icon_wrap {
+          svg {
+            cursor: pointer;
+            color: $color-skeleton-100;
+          }
+        }
+        .active_filter {
+          font-weight: 600;
+          color: $color-dark-300 !important;
+        }
+      }
+      .all_items_wrapper {
+        display: grid;
+      }
+      .all_items_zoom {
+        @include display-grid($colum: repeat(6, 1fr));
+      }
+      .all_items_zoom_in {
+        @include display-grid($colum: repeat(3, 1fr));
+      }
+    }
   }
-
-  /*   */
 }
 
 .mobile_category_container {

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import classNames from "classnames";
+import { filterList } from "models/category";
 import { Device } from "models/device";
 import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "utilities";
@@ -16,7 +17,6 @@ import {
   CommonLayout,
   DefaultCheckbox,
   DefaultPagination,
-  Loading,
   LoadingLayer,
   SearchInput,
 } from "components/common";
@@ -38,12 +38,6 @@ export default function Search() {
 
   const [excludingSoldOut, setExcludingSoldOut] = useState(true);
 
-  const filterList = [
-    { label: "신상품순", sort: "new" },
-    { label: "판매순", sort: "sale" },
-    { label: "낮은가격순", sort: "lowPrice" },
-    { label: "높은가격순", sort: "heighPrice" },
-  ];
   const [sort, changeSort] = useQueryString("sort", filterList[0].sort);
 
   const [{ page, perPage: limit, offset }, changePage, getPageCount] =

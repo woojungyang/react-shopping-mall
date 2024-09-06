@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { userToken } from "models/user";
 
-
 export default function getItems(mock) {
   const url = /^\/api\/v1\/items$/;
   mock.onGet(url).reply((config) => {
@@ -17,6 +16,7 @@ export default function getItems(mock) {
     let keyword = config.params.keyword || "";
     let sort = config.params.sort || "";
     let excludingSoldOut = config?.params?.excludingSoldOut;
+    let category = config?.params?.category;
 
     if (excludingSoldOut) data.data = data.data.filter((e) => !e.isSoldOut);
     else data.data = collection;
@@ -26,8 +26,7 @@ export default function getItems(mock) {
         e.itemName.toLowerCase().includes(keyword),
       );
 
-    if (sort == "new")
-      data.data = data.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (category) data.data = data.data.filter((e) => e.category == category);
     if (sort == "sale")
       data.data = data.data.sort((a, b) => b.SalesQuantity - a.SalesQuantity);
     if (sort == "lowPrice")
@@ -51,6 +50,7 @@ export default function getItems(mock) {
     .fill()
     .map((_, index) => ({
       id: faker.number.int(),
+      category: faker.helpers.arrayElement(["women", "men", "beauty"]),
       itemName: faker.commerce.productName(),
       thumbnail: fakerSubImage(),
       originalPrice: faker.commerce.price({

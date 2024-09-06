@@ -6,20 +6,26 @@ import React, {
   useState,
 } from "react";
 
+import AppsIcon from "@mui/icons-material/Apps";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CheckIcon from "@mui/icons-material/Check";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CropSquareIcon from "@mui/icons-material/CropSquare";
 import DoneIcon from "@mui/icons-material/Done";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import classNames from "classnames";
+import { filterList, getSubCategory } from "models/category";
 import { useParams } from "react-router-dom";
 import Slider from "react-slick";
 
 import useCategoryOverviewQuery from "hooks/query/useCategoryOverviewQuery";
+import useItemsQuery from "hooks/query/useItemsQuery";
+import usePageQueryString from "hooks/queryString/usePageQueryString";
+import useQueryString from "hooks/queryString/useQueryString";
 
-import { SmallCard } from "components/card";
-import { CommonLayout } from "components/common";
+import { ItemCard, SmallCard } from "components/card";
+import { CommonLayout, DefaultPagination } from "components/common";
 import { CustomSliderContainer } from "components/slider";
 
 import styles from "styles/_category.module.scss";
@@ -30,6 +36,27 @@ export default function CategoryContent() {
 
   const { data: overview, isLoading: overviewLoading } =
     useCategoryOverviewQuery(category);
+
+  const [sort, changeSort] = useQueryString("sort", filterList[0].sort);
+
+  const [{ page, perPage: limit, offset }, changePage, getPageCount] =
+    usePageQueryString("page", 24);
+  const handleChangePage = (_event, page) => changePage(page);
+
+  const { data: items, isLoading } = useItemsQuery(
+    {
+      ...category,
+      offset: offset,
+      limit: limit,
+      sort: sort,
+    },
+    {
+      onError: (error) => {
+        setToastMessage(error.message);
+      },
+    },
+  );
+  const [zoomIn, setZoomIn] = useState(false);
 
   const settings = {
     infinite: true,
@@ -58,13 +85,14 @@ export default function CategoryContent() {
   }, []);
 
   const [toastMessage, setToastMessage] = useState("");
+  const subCategories = getSubCategory(categoryName);
   const [currentSubCategory, setCurrentSubCategory] = useState(
     subCategories[0].id,
   );
 
   return (
     <CommonLayout
-      isLoading={overviewLoading}
+      isLoading={overviewLoading || isLoading}
       setToastMessage={setToastMessage}
       toastMessage={toastMessage}
     >
@@ -95,6 +123,58 @@ export default function CategoryContent() {
           })}
         </div>
         <div className={styles.category_contents_container}>
+          <div className={styles.all_items_container}>
+            <div className={styles.filter_wrapper}>
+              <div className={styles.filter_wrap}>
+                {filterList.map((filter, index) => (
+                  <span
+                    key={index}
+                    onClick={() => changeSort(filter.sort)}
+                    className={classNames({
+                      [styles.active_filter]: sort == filter.sort,
+                    })}
+                  >
+                    {filter.label}
+                  </span>
+                ))}
+              </div>
+              <div className={styles.filter_icon_wrap}>
+                <AppsIcon
+                  onClick={() => setZoomIn(false)}
+                  className={classNames({
+                    [styles.active_filter]: !zoomIn,
+                  })}
+                />
+                <CropSquareIcon
+                  onClick={() => setZoomIn(true)}
+                  className={classNames({
+                    [styles.active_filter]: zoomIn,
+                  })}
+                />
+              </div>
+            </div>
+            <div
+              className={classNames({
+                [styles.all_items_wrapper]: true,
+                [styles.all_items_zoom]: !zoomIn,
+                [styles.all_items_zoom_in]: zoomIn,
+              })}
+            >
+              {items?.data?.map((item, index) => (
+                <ItemCard
+                  key={index}
+                  showStatus={true}
+                  style={{ height: zoomIn ? 500 : 350 }}
+                  item={item}
+                />
+              ))}
+            </div>
+            <DefaultPagination
+              count={getPageCount(items?.total)}
+              page={page}
+              onChange={handleChangePage}
+            />
+          </div>
           {/*  <div className={styles.category_main_wrapper}>
             <Slider ref={sliderRef} {...settings}>
               {overview?.mainSlide.map((slider, index) => (
@@ -145,10 +225,3 @@ export default function CategoryContent() {
     </CommonLayout>
   );
 }
-
-const subCategories = [
-  { id: 1, label: "ALL", sub: "전체" },
-  { id: 2, label: "CLOTHING", sub: "의류" },
-  { id: 3, label: "BAG&ACC", sub: "가방&악세사리" },
-  { id: 4, label: "SHOES", sub: "슈즈" },
-];
