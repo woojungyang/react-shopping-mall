@@ -73,9 +73,10 @@
 
   .section_title {
     text-align: center;
-    font-weight: 700;
+    font-weight: $font-weight-normal;
+
     letter-spacing: 2px;
-    font-size: $margin * 1.5;
+    font-size: $margin * 1.6;
     color: $color-dark-200;
     margin-bottom: $margin * 1.5;
   }
@@ -186,7 +187,7 @@
 
         margin-right: $margin;
         color: $color-skeleton-200;
-        font-weight: 700;
+        font-weight: $font-weight-medium;
         &:last-child {
           margin-right: $margin;
         }
@@ -291,6 +292,11 @@
           overflow: hidden;
 
           .brand_info {
+            .brand_name {
+              color: $color-dark-300;
+              // font-weight: $font-weight-normal;
+              font-size: $padding * 1.2;
+            }
             @include flex($justify-content: space-between);
             min-height: 48px;
 
@@ -298,10 +304,11 @@
             padding: $default 0;
             p {
               @include overflow-text;
-              color: $color-skeleton-100;
+              color: $color-skeleton-200;
+              font-size: 14px;
             }
             svg {
-              color: $color-skeleton-100;
+              color: $color-skeleton-200;
             }
           }
           .items_list_wrapper {
@@ -329,7 +336,7 @@
         // max-width: 90px;
         // width: 100%;
         text-align: center;
-        font-weight: 800;
+        font-weight: $font-weight-medium;
         margin-right: 20px;
         cursor: pointer;
         color: $color-skeleton-100;
@@ -482,7 +489,7 @@
       margin-top: $margin * 1.2;
     }
     h1 {
-      font-weight: 800;
+      font-weight: $font-weight-bolder;
       font-size: $default * 4;
     }
 
@@ -502,7 +509,7 @@
       margin-top: $margin * 1;
     }
     h1 {
-      font-weight: 800;
+      font-weight: $font-weight-bolder;
       font-size: $default * 2.5;
     }
   }

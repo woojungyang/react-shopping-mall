@@ -555,7 +555,7 @@
     .menu_category {
       padding: 0 $padding;
       font-size: 18px;
-      font-weight: 800;
+      font-weight: $font-weight-bolder;
       border-bottom: 3px solid $color-dark-300;
       padding-bottom: $default/2;
       margin-top: $margin * 3;

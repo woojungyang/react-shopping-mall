@@ -193,14 +193,14 @@ body {
       .current_price {
         color: $color-dark-300;
         font-size: 15px;
-        font-weight: 700;
+        font-weight: $font-weight-medium;
         text-decoration: none;
         margin: 0px $padding/4;
       }
       .sale_percent {
         color: $color-orange;
         font-size: 15px;
-        font-weight: 700;
+        font-weight: $font-weight-medium;
         text-decoration: none;
       }
     }

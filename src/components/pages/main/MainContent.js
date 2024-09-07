@@ -300,7 +300,7 @@ export default function MainContent({ data }) {
                 <div className={styles.brand_info_wrap}>
                   <div className={styles.brand_info}>
                     <div>
-                      <h3>{brand?.brandName}</h3>
+                      <p className={styles.brand_name}>{brand?.brandName}</p>
                       <p>{brand?.copyright}</p>
                     </div>
                     <ChevronRight />

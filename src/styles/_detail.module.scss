@@ -136,7 +136,7 @@
         // border-bottom: 1px solid $color-skeleton-100;
         @include flex($justify-content: space-between);
         .total_price {
-          font-weight: 800;
+          font-weight: $font-weight-bolder;
           font-size: 24px;
         }
         .original_price {
@@ -147,7 +147,7 @@
         .sale_percent {
           text-decoration: none !important;
           color: $color-orange;
-          font-weight: 800;
+          font-weight: $font-weight-bolder;
           font-size: 18px;
           margin-left: $default/2;
         }
@@ -723,7 +723,7 @@
       .sale_percent {
         text-decoration: none !important;
         color: $color-orange;
-        font-weight: 800;
+        font-weight: $font-weight-bolder;
         font-size: 18px;
         margin-right: $default/2;
       }
