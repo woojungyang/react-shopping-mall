@@ -18,7 +18,8 @@
 
   .search_wrapper {
     width: 100%;
-    max-width: 620px;
+    max-width: 380px;
+
     @include flex($direction: column);
     .keyword_wrapper {
       color: $color-dark-200;

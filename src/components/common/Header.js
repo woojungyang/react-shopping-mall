@@ -2,11 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { clearCart } from "app/counterSlice";
 
+import AccountBoxOutlinedIcon from "@mui/icons-material/AccountBoxOutlined";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import LogoutIcon from "@mui/icons-material/Logout";
-import Person2Icon from "@mui/icons-material/Person2";
+import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { useDispatch } from "react-redux";
@@ -31,6 +32,14 @@ export default function Header() {
 
   const searchRef = useRef(null);
   const [showSearch, setShowSearch] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState("");
+  function searchItems(e) {
+    if (!searchInputValue) alert("검색어를 입력해주세요.");
+    else {
+      navigation(`/search?keyword=${searchInputValue}`);
+      setShowSearch(false);
+    }
+  }
 
   useEffect(() => {
     if (showSearch) document.body.style.overflow = "hidden";
@@ -73,14 +82,27 @@ export default function Header() {
                 className={styles.header_logo}
                 onClick={() => navigation("/")}
               />
+              <div className={styles.search_wrap}>
+                <input
+                  type="text"
+                  value={searchInputValue}
+                  onFocus={() => setShowSearch(true)}
+                  onChange={(e) => setSearchInputValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") searchItems();
+                  }}
+                />
+
+                <SearchIcon onClick={searchItems} />
+              </div>
               <div className={styles.user_wrapper}>
-                <div onClick={() => setShowSearch(!showSearch)}>
-                  <SearchIcon />
-                  <p>SEARCH</p>
-                </div>
                 <div onClick={() => navigation("/cart")}>
-                  <ShoppingBagIcon />
+                  <ShoppingBagOutlinedIcon />
                   <p>CART</p>
+                </div>
+                <div onClick={() => navigation("/like")}>
+                  <FavoriteBorderOutlinedIcon />
+                  <p>HEART</p>
                 </div>
                 {!token ? (
                   <div onClick={() => navigation("/login")}>
@@ -90,7 +112,7 @@ export default function Header() {
                 ) : (
                   <>
                     <div onClick={() => navigation("/mypage")}>
-                      <Person2Icon />
+                      <AccountBoxOutlinedIcon />
                       <p>MY</p>
                     </div>
                     <div
@@ -101,7 +123,7 @@ export default function Header() {
                         navigation("/", { replace: true });
                       }}
                     >
-                      <LogoutIcon />
+                      <ExitToAppOutlinedIcon />
                       <p>Logout</p>
                     </div>
                   </>
@@ -153,7 +175,7 @@ export default function Header() {
                 className={styles.user_icon}
                 onClick={() => setShowSearch(!showSearch)}
               />
-              <ShoppingBagIcon
+              <ShoppingBagOutlinedIcon
                 className={styles.user_icon}
                 onClick={() => navigation("/cart")}
               />

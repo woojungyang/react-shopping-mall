@@ -37,11 +37,29 @@
     max-width: $max-width;
     .header_wrap {
       padding: 40px 0 23px;
-      @include flex($justify-content: space-between);
+      @include flex($justify-content: space-between, $align-items: flex-end);
       .header_logo {
-        width: 220px;
+        width: 200px;
         cursor: pointer;
         margin-right: $margin * 3;
+      }
+      .search_wrap {
+        cursor: pointer;
+        @include flex;
+        border-bottom: 1px solid black;
+        max-width: 380px;
+        width: 100%;
+        color: $color-dark-100 !important;
+        padding-bottom: $default/2;
+        input {
+          border: none;
+          width: 100%;
+          height: 100%;
+          font-size: $padding;
+          &:focus {
+            outline: none;
+          }
+        }
       }
       .user_wrapper {
         @include flex;
@@ -50,12 +68,14 @@
           max-width: 80px;
           margin-right: $margin;
           font-size: 14px;
-          font-weight: 500;
+          color: $color-dark-100 !important;
           letter-spacing: 1px;
           cursor: pointer;
           svg {
             width: $margin * 2.1;
-            margin-bottom: $default/2;
+
+            // margin-bottom: $default/2;
+            color: $color-dark-100 !important;
           }
           &:last-child {
             margin-right: 0px;
@@ -64,15 +84,20 @@
       }
     }
     .nav_wrapper {
+      margin-bottom: $default;
       @include flex($justify-content: flex-start);
       p {
         @include flex;
+        color: $color-skeleton-200;
         margin-right: $margin * 2;
-        font-size: $margin;
-        font-weight: 800;
+        font-size: $padding;
+        font-weight: 600;
         letter-spacing: 1px;
         cursor: pointer;
         height: 45px;
+        &:last-child {
+          margin-right: 0;
+        }
       }
     }
   }

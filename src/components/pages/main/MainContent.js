@@ -385,7 +385,7 @@ export default function MainContent({ data }) {
             MON - FRI 09 : 00 - 18:00 | 주말, 공휴일 휴무 | BREAK TIME : 12:30 -
             13:30
             <br />
-            cs_help@wootique.co.kr
+            cs_help@WOOTEEK.co.kr
           </p>
           <div className={styles.information_button_wrapper}>
             <div>
@@ -434,7 +434,7 @@ export default function MainContent({ data }) {
           <div className={styles.bottom_navigation_wrapper}>
             <div className={styles.bottom_navigation_item}>
               <p>ABOUT US</p>
-              <p>WOOTIQUE 소개</p>
+              <p>WOOTEEK 소개</p>
               <p>SITE MAP</p>
             </div>
             <div className={styles.bottom_navigation_item}>

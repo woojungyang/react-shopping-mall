@@ -1,24 +1,13 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 
 import AppsIcon from "@mui/icons-material/Apps";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import CheckIcon from "@mui/icons-material/Check";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
-import DoneIcon from "@mui/icons-material/Done";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
-import { height } from "@mui/system";
 import classNames from "classnames";
 import { filterList, getSubCategory } from "models/category";
 import { useParams } from "react-router-dom";
-import Slider from "react-slick";
 
 import useCategoryOverviewQuery from "hooks/query/useCategoryOverviewQuery";
 import useItemsQuery from "hooks/query/useItemsQuery";
@@ -32,11 +21,7 @@ import {
   Loading,
   LoadingLayer,
 } from "components/common";
-import {
-  CustomSliderContainer,
-  FlexBoxSlider,
-  ImageSlider,
-} from "components/slider";
+import { CustomSliderContainer, FlexBoxSlider } from "components/slider";
 
 import styles from "styles/_category.module.scss";
 
@@ -250,7 +235,6 @@ export default function CategoryContent() {
           <div className={styles.category_contents_wrapper}>
             {isFetching ? (
               <div className={styles.item_loading_wrap}>
-                {" "}
                 <Loading />
               </div>
             ) : (
