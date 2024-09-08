@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import classNames from "classnames";
 import { filterList } from "models/category";
 import { Device } from "models/device";
@@ -19,6 +18,7 @@ import {
   DefaultPagination,
   LoadingLayer,
   SearchInput,
+  SelectBox,
 } from "components/common";
 
 import styles from "styles/_search.module.scss";
@@ -129,43 +129,5 @@ export default function Search() {
         )}
       </div>
     </CommonLayout>
-  );
-}
-
-function SelectBox({ options = [], onChange, selectedValue = "" }) {
-  const [showOptions, setShowOptions] = useState(false);
-  const selectedOptionLabel = options.find(
-    (option) => option.sort == selectedValue,
-  );
-  return (
-    <div
-      className={styles.select_box_container}
-      onClick={() => setShowOptions(!showOptions)}
-    >
-      <div className={styles.selected_value}>
-        <p> {selectedOptionLabel?.label}</p>
-        <ArrowDropDownIcon />
-      </div>
-      {showOptions && (
-        <div className={styles.select_options_wrap}>
-          {options?.map((option, index) => (
-            <p
-              key={index}
-              onClick={() => onChange(option.sort)}
-              style={
-                selectedValue == option.sort
-                  ? {
-                      backgroundColor: "black",
-                      color: "white",
-                    }
-                  : {}
-              }
-            >
-              {option.label}
-            </p>
-          ))}
-        </div>
-      )}
-    </div>
   );
 }

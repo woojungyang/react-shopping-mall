@@ -848,3 +848,31 @@ input[type="number"] {
     border-radius: 50%;
   }
 }
+
+.select_box_container {
+  position: relative;
+  font-size: 0.8em;
+  .selected_value {
+    @include flex;
+    padding: 1px $default/2;
+    cursor: pointer;
+    svg {
+      width: $default * 1.2;
+    }
+  }
+  .select_options_wrap {
+    box-shadow: 2px 2px 2px rgba($color-skeleton-100, 0.3);
+    position: absolute;
+    z-index: 10;
+    background-color: $color-background-100;
+    width: 150px;
+    right: 0;
+    border-radius: 4px;
+    overflow: hidden;
+
+    p {
+      padding: $default;
+      cursor: pointer;
+    }
+  }
+}

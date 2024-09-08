@@ -375,20 +375,15 @@
           border-bottom: 2px solid $color-dark-300;
         }
       }
-      .filter_icon_wrap {
+      .order_filter_wrap {
         background-color: $color-background-100;
         border-bottom: 1px solid rgba($color-skeleton-100, 0.3);
-        padding: $padding/2;
         @include flex($justify-content: flex-end);
+        .filter_icon_wrap {
+          padding: $padding/2;
+          @include flex($justify-content: flex-end);
+        }
       }
-    }
-    .fixed {
-      background-color: orange !important;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-      width: 100%; // 너비 100% 유지
     }
 
     .all_items_wrapper {

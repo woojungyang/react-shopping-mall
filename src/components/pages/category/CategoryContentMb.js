@@ -1,10 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
 import AppsIcon from "@mui/icons-material/Apps";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
-import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import classNames from "classnames";
 import { filterList, getSubCategory } from "models/category";
 import { Device } from "models/device";
@@ -13,18 +10,19 @@ import { useParams } from "react-router-dom";
 
 import { ApiClientQuery } from "hooks/apiClient/useApiClient";
 import useCategoryOverviewQuery from "hooks/query/useCategoryOverviewQuery";
-import useItemsQuery from "hooks/query/useItemsQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
+import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard } from "components/card";
 import {
-  CommonLayout,
-  DefaultPagination,
   Loading,
+  LoadingLayer,
   MobileLayout,
+  SelectBox,
 } from "components/common";
+import { ToastModal } from "components/modal";
 import { CustomSliderContainer, ScrollableSlider } from "components/slider";
 
 import styles from "styles/_category.module.scss";
@@ -53,6 +51,7 @@ export default function CategoryContentMb() {
       params: {
         offset: pageParam * limit,
         limit: limit,
+        sort: sort,
       },
       method: "get",
     });
@@ -64,14 +63,17 @@ export default function CategoryContentMb() {
     fetchNextPage,
     hasNextPage,
     isLoading,
+    isFetching,
     isFetchingNextPage,
-  } = useInfiniteQuery("orders", fetchItems, {
+  } = useInfiniteQuery(["items", sort], fetchItems, {
     getNextPageParam: (lastPage, pages) => {
       const total = getPageCount(pages[0].total);
       if (pages.length < total) return pages.length + 1;
       else return undefined;
     },
+    keepPreviousData: true,
   });
+
   const [zoomIn, setZoomIn] = useState(false);
 
   const subCategories = getSubCategory(categoryName);
@@ -99,13 +101,16 @@ export default function CategoryContentMb() {
     [isFetchingNextPage, fetchNextPage, hasNextPage],
   );
 
+  const { scrollToElement, setElementRef } = useScrollToElement();
+  const handleSortChange = (value) => {
+    changeSort(value);
+    setTimeout(() => scrollToElement("topItem"), 100);
+  };
+
+  if (overviewLoading) return <LoadingLayer />;
+
   return (
-    <MobileLayout
-      headerTitle={categoryName.toUpperCase()}
-      isLoading={overviewLoading || isLoading}
-      toastMessage={toastMessage}
-      setToastMessage={setToastMessage}
-    >
+    <MobileLayout headerTitle={categoryName.toUpperCase()}>
       <div className={styles.mobile_category_container}>
         <div className={styles.exhibition_container}>
           <p className={styles.section_title}>PROMOTION</p>
@@ -121,7 +126,7 @@ export default function CategoryContentMb() {
             }}
           >
             {overview?.events?.map((event, index) => {
-              const checkIndex = clearanceCurrentIndex == index;
+              const checkIndex = clearanceCurrentIndex === index;
               return (
                 <PopUpCard
                   event={event}
@@ -136,7 +141,11 @@ export default function CategoryContentMb() {
           <p className={styles.section_title}>WEEKLY BEST</p>
           <ScrollableSlider>
             {overview?.bestItems?.map((item, index) => (
-              <div className={styles.category_best_item} key={index}>
+              <div
+                className={styles.category_best_item}
+                key={index}
+                ref={setElementRef(`bestItem-${index}`)}
+              >
                 <div className={styles.rank}>{index + 1}</div>
                 <ItemCard
                   showRank={true}
@@ -180,13 +189,17 @@ export default function CategoryContentMb() {
               }}
             >
               {overview?.recommendedItems.map((item, index) => (
-                <div className={styles.default_item_card_container} key={index}>
+                <div
+                  className={styles.default_item_card_container}
+                  key={index}
+                  ref={setElementRef(`recommendedItem-${index}`)}
+                >
                   <ItemCard
                     showOriginalPrice={false}
                     item={item}
                     style={{
                       height: 300,
-                      marginBottom: index % 1 == 0 ? "50px" : "",
+                      marginBottom: index % 1 === 0 ? "50px" : "",
                     }}
                   />
                 </div>
@@ -194,6 +207,7 @@ export default function CategoryContentMb() {
             </CustomSliderContainer>
           </div>
         </div>
+
         <div className={styles.category_all_items_container}>
           <div
             className={classNames({
@@ -207,7 +221,7 @@ export default function CategoryContentMb() {
                   onClick={() => setToastMessage("준비중입니다.")}
                   className={classNames({
                     [styles.active_category]:
-                      currentSubCategory == subCategory.id,
+                      currentSubCategory === subCategory.id,
                   })}
                 >
                   {subCategory.label}
@@ -215,11 +229,18 @@ export default function CategoryContentMb() {
               ))}
             </div>
 
-            <div
-              className={styles.filter_icon_wrap}
-              onClick={() => setZoomIn(!zoomIn)}
-            >
-              {!zoomIn ? <AppsIcon /> : <CropSquareIcon />}
+            <div className={styles.order_filter_wrap}>
+              <SelectBox
+                options={filterList}
+                selectedValue={sort || filterList[0]?.sort}
+                onChange={handleSortChange}
+              />
+              <div
+                className={styles.filter_icon_wrap}
+                onClick={() => setZoomIn(!zoomIn)}
+              >
+                {!zoomIn ? <AppsIcon /> : <CropSquareIcon />}
+              </div>
             </div>
           </div>
           <div
@@ -228,14 +249,15 @@ export default function CategoryContentMb() {
               [styles.all_items_zoom]: !zoomIn,
               [styles.all_items_zoom_in]: zoomIn,
             })}
+            ref={setElementRef("topItem")}
           >
             {items?.pages?.flatMap((page) =>
-              page.data.map((order, index) => (
+              page.data.map((item, index) => (
                 <ItemCard
                   key={index}
                   showStatus={true}
-                  style={{ height: zoomIn ? 500 : 350 }}
-                  item={order}
+                  style={{ height: zoomIn ? "400px" : "300px" }}
+                  item={item}
                 />
               )),
             )}
@@ -246,6 +268,12 @@ export default function CategoryContentMb() {
           {isFetchingNextPage || hasNextPage ? <Loading /> : null}
         </div>
       </div>
+      {toastMessage && (
+        <ToastModal
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        />
+      )}
     </MobileLayout>
   );
 }
