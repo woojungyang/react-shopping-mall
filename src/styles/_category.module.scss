@@ -255,7 +255,7 @@
     font-weight: $font-weight-medium;
   }
 
-  margin-top: $header-height-mb2 * 2;
+  margin-top: $header-height-mb2;
   display: flex;
   flex-grow: 1;
   flex-direction: column;
@@ -346,12 +346,11 @@
     position: relative;
 
     .subcategory_filter_wrap {
-      position: sticky;
-      z-index: 10000;
-
       width: 100%;
-      top: $header-height-mb;
-      border: 2px solid blue;
+      top: $header-height-mb2;
+
+      position: sticky;
+      z-index: 92;
       .subcategory_wrap {
         background-color: $color-background-100;
 
@@ -382,6 +381,14 @@
         padding: $padding/2;
         @include flex($justify-content: flex-end);
       }
+    }
+    .fixed {
+      background-color: orange !important;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      width: 100%; // 너비 100% 유지
     }
 
     .all_items_wrapper {

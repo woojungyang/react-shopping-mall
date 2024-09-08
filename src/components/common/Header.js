@@ -11,6 +11,7 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
@@ -29,6 +30,8 @@ export default function Header() {
 
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
+
+  const cartItems = useSelector((state) => state.counter.items).length;
 
   const searchRef = useRef(null);
   const [showSearch, setShowSearch] = useState(false);
@@ -97,9 +100,18 @@ export default function Header() {
               </div>
               <div className={styles.user_wrapper}>
                 <div onClick={() => navigation("/cart")}>
-                  <ShoppingBagOutlinedIcon />
+                  <div className={styles.cart_items_count}>
+                    <ShoppingBagOutlinedIcon
+                      className={styles.user_icon}
+                      onClick={() => navigation("/cart")}
+                    />
+                    {cartItems > 0 && (
+                      <p>{cartItems > 98 ? "+99" : cartItems}</p>
+                    )}
+                  </div>
                   <p>CART</p>
                 </div>
+
                 <div onClick={() => navigation("/like")}>
                   <FavoriteBorderOutlinedIcon />
                   <p>HEART</p>
@@ -175,10 +187,14 @@ export default function Header() {
                 className={styles.user_icon}
                 onClick={() => setShowSearch(!showSearch)}
               />
-              <ShoppingBagOutlinedIcon
-                className={styles.user_icon}
-                onClick={() => navigation("/cart")}
-              />
+
+              <div className={styles.cart_items_count}>
+                <ShoppingBagOutlinedIcon
+                  className={styles.user_icon}
+                  onClick={() => navigation("/cart")}
+                />
+                {cartItems > 0 && <p>{cartItems > 98 ? "+99" : cartItems}</p>}
+              </div>
             </div>
           </div>
           <div className={styles.mb_scroll_menu_wrapper}>

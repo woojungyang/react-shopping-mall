@@ -19,7 +19,12 @@ import useQueryString from "hooks/queryString/useQueryString";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard } from "components/card";
-import { CommonLayout, DefaultPagination, Loading } from "components/common";
+import {
+  CommonLayout,
+  DefaultPagination,
+  Loading,
+  MobileLayout,
+} from "components/common";
 import { CustomSliderContainer, ScrollableSlider } from "components/slider";
 
 import styles from "styles/_category.module.scss";
@@ -94,28 +99,9 @@ export default function CategoryContentMb() {
     [isFetchingNextPage, fetchNextPage, hasNextPage],
   );
 
-  const [isFixed, setIsFixed] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const targetPosition = 200; // 파란색 라인 부분의 Y 위치 (적절히 조정 필요)
-
-      if (scrollPosition >= targetPosition) {
-        setIsFixed(true);
-      } else {
-        setIsFixed(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
   return (
-    <CommonLayout
+    <MobileLayout
+      headerTitle={categoryName.toUpperCase()}
       isLoading={overviewLoading || isLoading}
       toastMessage={toastMessage}
       setToastMessage={setToastMessage}
@@ -209,7 +195,11 @@ export default function CategoryContentMb() {
           </div>
         </div>
         <div className={styles.category_all_items_container}>
-          <div className={styles.subcategory_filter_wrap}>
+          <div
+            className={classNames({
+              [styles.subcategory_filter_wrap]: true,
+            })}
+          >
             <div className={styles.subcategory_wrap}>
               {subCategories.map((subCategory, index) => (
                 <p
@@ -232,32 +222,30 @@ export default function CategoryContentMb() {
               {!zoomIn ? <AppsIcon /> : <CropSquareIcon />}
             </div>
           </div>
-
-          {/*  */}
-        </div>
-        <div
-          className={classNames({
-            [styles.all_items_wrapper]: true,
-            [styles.all_items_zoom]: !zoomIn,
-            [styles.all_items_zoom_in]: zoomIn,
-          })}
-        >
-          {items?.pages?.flatMap((page) =>
-            page.data.map((order, index) => (
-              <ItemCard
-                key={index}
-                showStatus={true}
-                style={{ height: zoomIn ? 500 : 350 }}
-                item={order}
-              />
-            )),
-          )}
+          <div
+            className={classNames({
+              [styles.all_items_wrapper]: true,
+              [styles.all_items_zoom]: !zoomIn,
+              [styles.all_items_zoom_in]: zoomIn,
+            })}
+          >
+            {items?.pages?.flatMap((page) =>
+              page.data.map((order, index) => (
+                <ItemCard
+                  key={index}
+                  showStatus={true}
+                  style={{ height: zoomIn ? 500 : 350 }}
+                  item={order}
+                />
+              )),
+            )}
+          </div>
         </div>
 
         <div ref={observer}>
           {isFetchingNextPage || hasNextPage ? <Loading /> : null}
         </div>
       </div>
-    </CommonLayout>
+    </MobileLayout>
   );
 }
