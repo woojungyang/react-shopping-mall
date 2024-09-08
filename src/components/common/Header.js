@@ -134,11 +134,11 @@ export default function Header() {
             <div className={styles.nav_wrapper}>
               {menuList?.map((menu, index) => (
                 <p
+                  key={index}
                   style={{
                     color:
                       id == menu.name.toLowerCase() ? "rgb(254, 99, 32)" : "",
                   }}
-                  key={index}
                   onClick={() => navigation(menu.link)}
                 >
                   {menu.name}
@@ -183,15 +183,20 @@ export default function Header() {
           </div>
           <div className={styles.mb_scroll_menu_wrapper}>
             {[{ id: 0, name: "HOME", link: "/" }, ...menuList].map(
-              (e, index) => (
+              (menu, index) => (
                 <p
                   key={index}
                   className={classNames({
                     [styles.default_scroll_menu]: true,
                     // [styles.active_scroll_menu]: activeMobilMenu == e.id,
                   })}
+                  style={{
+                    color:
+                      id == menu.name.toLowerCase() ? "rgb(254, 99, 32)" : "",
+                  }}
+                  onClick={() => navigation(menu.link)}
                 >
-                  {e.name}
+                  {menu.name}
                 </p>
               ),
             )}

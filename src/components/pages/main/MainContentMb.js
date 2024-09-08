@@ -1,7 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 
-import { ChevronRight } from "@mui/icons-material";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { getDiscountPercent, numberWithCommas } from "utilities";
@@ -23,15 +21,6 @@ import styles from "styles/_main.module.scss";
 
 export default function MainContentMb({ data, setToastMessage }) {
   const [currentMainSliderIndex, setCurrentMainSliderIndex] = useState(0);
-
-  const categoryMenu = [
-    { id: 1, name: "OUTERS" },
-    { id: 2, name: "TOPS" },
-    { id: 3, name: "BOTTOMS" },
-    { id: 4, name: "ACCS" },
-    { id: 5, name: "SHOES" },
-    { id: 6, name: "BEAUTY" },
-  ];
 
   const [clearanceCurrentIndex, setClearanceCurrentIndex] = useState(0);
 
@@ -73,32 +62,17 @@ export default function MainContentMb({ data, setToastMessage }) {
             key={index}
             onClick={() => setToastMessage("준비중입니다.")}
           >
-            {/* <img
-              src="http://via.placeholder.com/100x100"
-              alt=""
-              className={styles.category_icon}
-            /> */}
-            <p className={styles.category_icon}>{category.name}</p>
+            <div className={styles.category_icon}>
+              <p>{category.name}</p>
+            </div>
             <p className={styles.category_name}>{category.name}</p>
           </div>
         ))}
-        {/* <ScrollableSlider showScroll={false}>
-          {categoryMenu.map((menu) => (
-            <div className={styles.category_wrap_mb}>
-              <img
-                src={require("assets/images/sub/sub24.jpg")}
-                alt=""
-                className={styles.category_icon}
-              />
-              <p className={styles.category_name}>{menu.name}</p>
-            </div>
-          ))}
-        </ScrollableSlider> */}
       </div>
 
       {/* for u */}
       <div className={styles.for_u_container}>
-        <h3 className={styles.section_title}>ITEMS FOR YOU</h3>
+        <p className={styles.section_title}>ITEMS FOR YOU</p>
         <div className={styles.scrollable_container}>
           <CustomSliderContainer
             arrows={false}
@@ -128,7 +102,7 @@ export default function MainContentMb({ data, setToastMessage }) {
       </div>
       {/* spotlight */}
       <div className={styles.spotlight_container}>
-        <h3 className={styles.section_title}>SPOTLIGHT</h3>
+        <p className={styles.section_title}>SPOTLIGHT</p>
         <div className={styles.spotlight_wrapper}>
           {data?.events?.map((event, index) => (
             <div
@@ -150,7 +124,7 @@ export default function MainContentMb({ data, setToastMessage }) {
       </div>
       {/* sale */}
       <div className={styles.clearance_container}>
-        <h3 className={styles.section_title}>CLEARANCE</h3>
+        <p className={styles.section_title}>CLEARANCE</p>
         <CustomSliderContainer
           setCurrentIndex={setClearanceCurrentIndex}
           settings={{
@@ -193,7 +167,7 @@ export default function MainContentMb({ data, setToastMessage }) {
 
       {/* mark it */}
       <div className={styles.default_selection_container}>
-        <h3 className={styles.section_title}>MARK IT</h3>
+        <p className={styles.section_title}>MARK IT</p>
         <ScrollableSlider>
           {data?.bestItems?.map((item, index) => (
             <ItemCard
@@ -211,7 +185,7 @@ export default function MainContentMb({ data, setToastMessage }) {
       </div>
       {/* brand news */}
       <div className={styles.brand_news_container}>
-        <h3 className={styles.section_title}>BRAND NEWS</h3>
+        <p className={styles.section_title}>BRAND NEWS</p>
         <CustomSliderContainer
           settings={{
             infinite: true,
@@ -244,7 +218,7 @@ export default function MainContentMb({ data, setToastMessage }) {
       </div>
       {/* beauty pick */}
       <div className={styles.default_selection_container}>
-        <h3 className={styles.section_title}>BEAUTY CHOICE</h3>
+        <p className={styles.section_title}>BEAUTY CHOICE</p>
         <ScrollableSlider>
           {data?.mdChoice?.items?.map((item, index) => {
             return (
@@ -264,7 +238,7 @@ export default function MainContentMb({ data, setToastMessage }) {
       </div>
       {/* focus */}
       <div className={styles.deep_in_focus_container}>
-        <h3 className={styles.section_title}>DEPP IN FOCUS</h3>
+        <p className={styles.section_title}>DEPP IN FOCUS</p>
         {data?.brandEvents?.slice(0, moreFocus)?.map((brandEvent, index) => (
           <div key={index} className={styles.deep_in_focus_wrapper}>
             <div className={styles.deep_in_focus_thumbnail_wrap}>
@@ -294,7 +268,7 @@ export default function MainContentMb({ data, setToastMessage }) {
       </div>
       {/* style */}
       <div className={styles.default_selection_container}>
-        <h3 className={styles.section_title}>STYLE PICK +</h3>
+        <p className={styles.section_title}>STYLE PICK +</p>
         <ScrollableSlider>
           {data?.userStyles.map((userStyle, index) => (
             <img

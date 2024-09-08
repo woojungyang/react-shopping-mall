@@ -111,6 +111,8 @@
           font-weight: 400;
         }
         .item_name {
+          font-size: 1.8em;
+          font-weight: $font-weight-bold;
           margin-top: $default;
         }
         .review_icon_wrap {
@@ -136,7 +138,7 @@
         // border-bottom: 1px solid $color-skeleton-100;
         @include flex($justify-content: space-between);
         .total_price {
-          font-weight: $font-weight-bolder;
+          font-weight: $font-weight-medium;
           font-size: 24px;
         }
         .original_price {
@@ -228,7 +230,7 @@
           color: $color-orange;
         }
         p {
-          font-weight: 700;
+          font-weight: $font-weight-medium;
           font-size: $margin;
           margin-top: 2px;
           margin-left: 4px;
@@ -245,14 +247,14 @@
       .detail_delivery_wrap {
         @include flex($justify-content: space-between);
         cursor: pointer;
-        font-weight: 700;
+        font-weight: $font-weight-bold;
         font-size: $padding;
         line-height: 140%;
         .delivery_description {
           span {
             margin-top: $default;
             color: $color-orange;
-            font-weight: 700;
+            font-weight: $font-weight-bold;
           }
           font-weight: 400;
         }
@@ -287,8 +289,10 @@
   margin-bottom: $margin * 4;
 
   .recommend_wrapper {
-    h3 {
+    p {
       margin-bottom: $padding;
+      font-size: 1.2em;
+      font-weight: $font-weight-medium;
     }
     img {
       cursor: pointer;
@@ -310,9 +314,11 @@
       }
       .brand_texts {
         padding-top: $padding * 4;
-        h1 {
+        p {
           margin-top: $default;
           margin-bottom: $margin;
+          font-weight: $font-weight-medium;
+          font-size: 2em;
         }
         .preference_wrapper {
           margin-top: $margin;

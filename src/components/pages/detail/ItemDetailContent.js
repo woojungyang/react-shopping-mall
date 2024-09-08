@@ -192,7 +192,7 @@ export default function ItemDetailContent() {
               <span className={styles.item_brand_name}>
                 {item?.brand?.name} | {item?.itemCode}{" "}
               </span>
-              <h1 className={styles.item_name}>{item?.itemName}</h1>
+              <p className={styles.item_name}>{item?.itemName}</p>
             </div>
             <div className={styles.price_information_wrapper}>
               <span className={styles.total_price}>
@@ -395,7 +395,7 @@ export default function ItemDetailContent() {
         </div>
         <div className={styles.recommend_container}>
           <div className={styles.recommend_wrapper}>
-            <h3>Recommended for you </h3>
+            <p>Recommended for you </p>
             <ScrollableSlider scrollBgColor="red" scrollPercentColor="white">
               {item?.recommendedItems?.map((recommend, index) => (
                 <img
@@ -457,8 +457,8 @@ export default function ItemDetailContent() {
                 <img src={item?.brand?.thumbnail} alt="" />
                 <div className={styles.brand_information_content}>
                   <div className={styles.brand_texts}>
-                    <h1>{item?.brand?.name}</h1>
-                    <h4>{item?.brand?.copyright}</h4>
+                    <p>{item?.brand?.name}</p>
+                    <em>{item?.brand?.copyright}</em>
                     <div className={styles.preference_wrapper}>
                       <LikeHeart position={{ position: "relative" }} />
                       <span>{item?.brand?.likeCount}</span>

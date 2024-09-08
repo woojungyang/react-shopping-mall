@@ -25,6 +25,8 @@ import { CustomSliderContainer, FlexBoxSlider } from "components/slider";
 
 import styles from "styles/_category.module.scss";
 
+import PopUpCard from "./PopUpCard";
+
 export default function CategoryContent() {
   const { id: categoryName } = useParams();
   const category = { category: categoryName };
@@ -89,9 +91,9 @@ export default function CategoryContent() {
       toastMessage={toastMessage}
     >
       <div className={styles.category_container}>
-        {/* pop-up */}
+        {/* PROMOTION */}
         <div className={styles.exhibition_container}>
-          <p className={styles.section_title}>POP-UP</p>
+          <p className={styles.section_title}>PROMOTION</p>
           <div className={styles.exhibition_arrow_button_wrap}>
             <div onClick={exhibitionPrevious}>
               <ArrowBackIosIcon />
@@ -112,27 +114,7 @@ export default function CategoryContent() {
             }}
           >
             {overview?.events?.map((event, index) => (
-              <div className={styles.exhibition}>
-                <hr />
-                <img
-                  className={styles.exhibition_thumbnail}
-                  src={event?.thumbnail}
-                  alt=""
-                />
-                <p className={styles.title}>
-                  [{event?.keyword}]
-                  <br />
-                  {event?.title}
-                </p>
-                <p className={styles.subtitle}>{event?.subTitle}</p>
-                <div className={styles.exhibition_item_wrap}>
-                  {event?.items?.map((item) => (
-                    <div className={styles.exhibition_item}>
-                      <SmallCard item={item} />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <PopUpCard event={event} key={index} />
             ))}
           </CustomSliderContainer>
         </div>
@@ -193,7 +175,7 @@ export default function CategoryContent() {
           </div>
         </div>
         <div className={styles.recommend_items_container}>
-          <p className={styles.section_title}>You May Also Like</p>
+          <p className={styles.section_title}>YOU MAY ALSO LIKE</p>
           <div className={styles.recommend_items_wrapper}>
             {overview?.recommendedItems.map((item, index) => (
               <ItemCard
@@ -296,8 +278,4 @@ export default function CategoryContent() {
       </div>
     </CommonLayout>
   );
-}
-
-{
-  /*   */
 }
