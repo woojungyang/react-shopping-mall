@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import classNames from "classnames";
 import { mypageMenuList } from "models/mypage";
@@ -29,12 +30,14 @@ export const MyPageLayout = ({ children }) => {
     <CommonLayout isLoading={isLoading}>
       <div className={styles.mypage_container}>
         <p className={styles.mypage_title}>MY PAGE</p>
-
         <div className={styles.profile_wrapper}>
           {membershipInformation.map((membership, index) => (
             <div
               key={index}
-              onClick={() => setToastMessage("준비중입니다.")}
+              onClick={() => {
+                if (!!membership?.link) navigation(membership.link);
+                else setToastMessage("준비중입니다.");
+              }}
               className={membership.className || styles.membership_wrap2}
             >
               <p className={styles.membership_title}>
@@ -48,8 +51,19 @@ export const MyPageLayout = ({ children }) => {
             </div>
           ))}
         </div>
+
         <div className={styles.mypage_wrapper}>
           <div className={styles.side_menu_wrap}>
+            <div className={styles.user_information}>
+              <p className={styles.user_name}>{user?.name}</p>
+              <p
+                className={styles.heart_wrap}
+                onClick={() => navigation("/mypage/heart")}
+              >
+                <FavoriteBorderIcon />
+                HEART
+              </p>
+            </div>
             {mypageMenuList.map((menu, index) => {
               const isActive = menu.category == menuCategory;
 

@@ -24,8 +24,6 @@ export default function Header() {
   const navigation = useNavigate();
   const dispatch = useDispatch();
 
-  const { id } = useParams();
-
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   const userDevice = useUserDevice();
@@ -73,6 +71,17 @@ export default function Header() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isDeskTop) {
+      const element = document.getElementsByClassName("current_menu")[0];
+
+      if (element) {
+        const tabMenu = document.querySelector("#tab_menu");
+        tabMenu.scrollLeft = element.offsetLeft - element.offsetWidth * 4;
+      }
+    }
+  }, [isDeskTop]);
+
   return (
     <Link>
       {isDeskTop ? (
@@ -101,10 +110,7 @@ export default function Header() {
               <div className={styles.user_wrapper}>
                 <div onClick={() => navigation("/cart")}>
                   <div className={styles.cart_items_count}>
-                    <ShoppingBagOutlinedIcon
-                      className={styles.user_icon}
-                      onClick={() => navigation("/cart")}
-                    />
+                    <ShoppingBagOutlinedIcon className={styles.user_icon} />
                     {cartItems > 0 && (
                       <p>{cartItems > 98 ? "+99" : cartItems}</p>
                     )}
@@ -112,7 +118,7 @@ export default function Header() {
                   <p>CART</p>
                 </div>
 
-                <div onClick={() => navigation("/like")}>
+                <div onClick={() => navigation("/mypage/heart")}>
                   <FavoriteBorderOutlinedIcon />
                   <p>HEART</p>
                 </div>
@@ -136,7 +142,7 @@ export default function Header() {
                       }}
                     >
                       <ExitToAppOutlinedIcon />
-                      <p>Logout</p>
+                      <p>LOGOUT</p>
                     </div>
                   </>
                 )}
@@ -144,33 +150,9 @@ export default function Header() {
             </div>
 
             <div className={styles.nav_wrapper}>
-              {menuList?.map((menu, index) => (
-                <p
-                  key={index}
-                  style={{
-                    color:
-                      id == menu.name.toLowerCase() ? "rgb(254, 99, 32)" : "",
-                  }}
-                  onClick={() => navigation(menu.link)}
-                >
-                  {menu.name}
-                </p>
-              ))}
-
+              <MenuList list={menuList} isDeskTop={isDeskTop} />
               <div className={styles.event_menu_wrap}>
-                {eventMenuList?.map((menu, index) => (
-                  <p
-                    key={index}
-                    style={{
-                      color: menu.link.includes(window.location.pathname)
-                        ? "rgb(254, 99, 32)"
-                        : "",
-                    }}
-                    onClick={() => navigation(menu.link)}
-                  >
-                    {menu.name}
-                  </p>
-                ))}
+                <MenuList list={eventMenuList} isDeskTop={isDeskTop} />
               </div>
             </div>
           </div>
@@ -213,41 +195,15 @@ export default function Header() {
               </div>
             </div>
           </div>
-          <div className={styles.mb_scroll_menu_wrapper}>
-            {[{ id: 0, name: "HOME", link: "/" }, ...menuList].map(
-              (menu, index) => (
-                <p
-                  key={index}
-                  className={classNames({
-                    [styles.default_scroll_menu]: true,
-                    // [styles.active_scroll_menu]: activeMobilMenu == e.id,
-                  })}
-                  style={{
-                    color:
-                      id == menu.name.toLowerCase() ? "rgb(254, 99, 32)" : "",
-                  }}
-                  onClick={() => navigation(menu.link)}
-                >
-                  {menu.name}
-                </p>
-              ),
-            )}
-            {eventMenuList?.map((menu, index) => (
-              <p
-                key={index}
-                className={classNames({
-                  [styles.default_scroll_menu]: true,
-                })}
-                style={{
-                  color: menu.link.includes(window.location.pathname)
-                    ? "rgb(254, 99, 32)"
-                    : "",
-                }}
-                onClick={() => navigation(menu.link)}
-              >
-                {menu.name}
-              </p>
-            ))}
+          <div className={styles.mb_scroll_menu_wrapper} id="tab_menu">
+            <MenuList
+              list={[
+                { id: 0, name: "HOME", link: "/" },
+                ...menuList,
+                ...eventMenuList,
+              ]}
+              isDeskTop={isDeskTop}
+            />
           </div>
           {showSearch && (
             <SearchContainer visible={showSearch} setVisible={setShowSearch} />
@@ -255,6 +211,38 @@ export default function Header() {
         </div>
       )}
     </Link>
+  );
+}
+
+function MenuList({ list, isDeskTop = false }) {
+  const navigation = useNavigate();
+  const { id: categoryName } = useParams();
+  const pathname = window.location.pathname.split("/")[1];
+
+  const currentMenuArray = [categoryName, pathname];
+
+  return (
+    <>
+      {list?.map((menu, index) => {
+        const checkCurrentMenu =
+          currentMenuArray.indexOf(menu.name.toLowerCase()) > -1;
+        return (
+          <p
+            key={index}
+            style={{
+              color: checkCurrentMenu ? "rgb(254, 99, 32)" : "",
+            }}
+            className={classNames({
+              [styles.default_scroll_menu]: !isDeskTop,
+              current_menu: checkCurrentMenu,
+            })}
+            onClick={() => navigation(menu.link)}
+          >
+            {menu.name}
+          </p>
+        );
+      })}
+    </>
   );
 }
 

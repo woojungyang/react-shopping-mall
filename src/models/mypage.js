@@ -7,7 +7,7 @@ export const mypageMenuList = [
     category: "my-order",
     sub: [
       { id: 1, label: "주문조회", url: "/my-order/my-order-list" },
-      { id: 2, label: "상품리뷰", url: "/my-order/my-review-list" },
+      { id: 2, label: "상품리뷰" },
     ],
   },
   {
