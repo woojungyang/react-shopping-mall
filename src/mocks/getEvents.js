@@ -36,7 +36,6 @@ let collection = new Array(faker.number.int({ max: 100, min: 10 }))
     type: faker.helpers.arrayElement(Object.values(EventType)),
     title: faker.lorem.sentence(),
     thumbnail: fakerSubImage(),
-    subTitle: faker.lorem.sentence(),
 
     startedAt: faker.date.between({
       from: "2024-01-01T00:00:00.000Z",

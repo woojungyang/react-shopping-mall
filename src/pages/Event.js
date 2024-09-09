@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { el } from "@faker-js/faker";
 import classNames from "classnames";
 import { Device } from "models/device";
 import { EventType, getEventTypeLabel } from "models/event";
+import { numberWithCommas } from "utilities";
 
 import useEventsQuery from "hooks/query/useEventsQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-import { CommonLayout } from "components/common";
+import { CommonLayout, DefaultPagination, SelectBox } from "components/common";
 
 import { formatDateTime } from "utilities/dateTime";
 
@@ -20,11 +20,12 @@ export default function Event() {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
+  const [type, changeType] = useQueryString("type", 0);
+  const typeArray = [0, ...Object.values(EventType)];
+
   const [{ page, perPage: limit, offset }, changePage, getPageCount] =
     usePageQueryString("page", 20);
   const handleChangePage = (_event, page) => changePage(page);
-
-  const [type, changeType] = useQueryString("type", 0);
 
   const { data: events, isLoading } = useEventsQuery({
     offset: offset,
@@ -32,23 +33,43 @@ export default function Event() {
     type: type,
   });
 
+  useEffect(() => {
+    if (type) changePage(1);
+  }, [type]);
+
   return (
     <CommonLayout isLoading={isLoading}>
       <div className={styles.event_container}>
-        <p className={styles.event_title}>이벤트</p>
+        <p className={styles.event_title}>EVENT</p>
 
-        <div className={styles.event_filter_wrap}>
-          {[0, ...Object.values(EventType)].map((eventType) => (
-            <div
-              className={classNames({
-                [styles.current_type]: type == eventType,
-              })}
-              onClick={() => changeType(eventType)}
-            >
-              <p>{getEventTypeLabel(eventType)}</p>
-            </div>
-          ))}
-        </div>
+        {isDeskTop ? (
+          <div className={styles.event_filter_wrap}>
+            {typeArray.map((eventType) => (
+              <div
+                className={classNames({
+                  [styles.current_type]: type == eventType,
+                })}
+                onClick={() => changeType(eventType)}
+              >
+                <p>{getEventTypeLabel(eventType)}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className={styles.events_filter_wrap_mb}>
+            <p className={styles.events_total}>
+              {numberWithCommas(events?.total)} EVENT{" "}
+            </p>
+            <SelectBox
+              options={typeArray.map((e) => ({
+                sort: e,
+                label: getEventTypeLabel(e),
+              }))}
+              selectedValue={type}
+              onChange={changeType}
+            />
+          </div>
+        )}
         <div
           className={classNames({
             [styles.events_wrapper]: isDeskTop,
@@ -65,9 +86,9 @@ export default function Event() {
                   </span>
                 </div>
                 <p className={styles.event_card_title}>{event.title}</p>
-                <p className={styles.event_card_subtitle}>{event.subTitle}</p>
+
                 <p className={styles.event_card_period}>
-                  {formatDateTime(event?.startedAt, "yyyy.MM.dd")}~{" "}
+                  {formatDateTime(event?.startedAt, "yyyy.MM.dd")} ~{" "}
                   {formatDateTime(event?.endedAt, "yyyy.MM.dd")}
                 </p>
               </div>
@@ -78,6 +99,13 @@ export default function Event() {
             </div>
           )}
         </div>
+        {events?.total > 0 && (
+          <DefaultPagination
+            count={getPageCount(events?.total)}
+            page={page}
+            onChange={handleChangePage}
+          />
+        )}
       </div>
     </CommonLayout>
   );

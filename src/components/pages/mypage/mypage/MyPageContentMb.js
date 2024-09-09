@@ -32,7 +32,7 @@ export default function MyPageContentMb() {
 
   return (
     <MobileLayout
-      headerTitle="마이페이지"
+      headerTitle="MY PAGE"
       isBottomNavigation={true}
       isFooter={true}
       currentTab="/mypage"

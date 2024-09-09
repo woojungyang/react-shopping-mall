@@ -28,7 +28,7 @@ export const MyPageLayout = ({ children }) => {
   return (
     <CommonLayout isLoading={isLoading}>
       <div className={styles.mypage_container}>
-        <p className={styles.mypage_title}>마이페이지</p>
+        <p className={styles.mypage_title}>MY PAGE</p>
 
         <div className={styles.profile_wrapper}>
           {membershipInformation.map((membership, index) => (

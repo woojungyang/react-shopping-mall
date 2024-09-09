@@ -12,6 +12,7 @@
   flex-direction: column;
 
   margin-top: $desktop-margin-top * 1.5;
+  position: relative;
 
   .event_title {
     text-align: center;
@@ -41,17 +42,22 @@
     @include display-grid(
       $colum: repeat(4, 1fr),
       $colum-gap: $margin,
-      $row-gap: $margin * 3
+      $row-gap: $margin * 2
     );
     .event_card {
       width: 100%;
       .event_thumbnail_wrap {
         position: relative;
         cursor: pointer;
+        overflow: hidden;
         img {
           @include default-image;
           aspect-ratio: 1;
-          max-height: 327px;
+          max-height: 226px;
+          transition: transform 0.3s ease;
+          &:hover {
+            transform: scale(1.1);
+          }
         }
         .event_badge {
           position: absolute;
@@ -71,14 +77,60 @@
         margin-bottom: $default;
         font-size: 17px;
       }
-      .event_card_subtitle {
-        font-size: 14px;
-        color: $color-skeleton-100;
-        @include overflow-text($clamp: 2);
-      }
+
       .event_card_period {
         font-size: 14px;
         color: $color-skeleton-200;
+        margin: $default/2 0;
+      }
+    }
+  }
+  .events_filter_wrap_mb {
+    @include flex($justify-content: space-between);
+    position: sticky;
+    z-index: 1000;
+    top: $header-height_mb * 1.5;
+    left: 0;
+    width: 100%;
+
+    padding: $default/2;
+    background-color: $color-background-100;
+    .events_total {
+      color: $color-skeleton-200;
+    }
+  }
+
+  .events_wrapper_mb {
+    @include display-grid($colum: repeat(2, 1fr), $row-gap: $default * 4);
+    margin-top: $margin;
+    padding: 0 1px;
+
+    .event_card {
+      width: 100%;
+      .event_thumbnail_wrap {
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+        img {
+          @include default-image;
+          aspect-ratio: 1;
+          max-height: 185px;
+        }
+        .event_badge {
+          display: none;
+        }
+      }
+      .event_card_title {
+        margin-top: $default;
+        margin-bottom: $default/2;
+        font-size: 14px;
+        @include overflow-text($clamp: 1);
+      }
+
+      .event_card_period {
+        font-size: 13px;
+        color: $color-skeleton-200;
+        margin: $default/2 0;
       }
     }
   }

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 
+import AppsIcon from "@mui/icons-material/Apps";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import HomeIcon from "@mui/icons-material/Home";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import PersonIcon from "@mui/icons-material/Person";
 import StoreIcon from "@mui/icons-material/Store";
@@ -19,25 +19,25 @@ export default function BottomNavigation({ currentTab }) {
     () => [
       {
         id: 1,
-        name: "카테고리",
+        name: "CATEGORY",
         icon: <ManageSearchIcon />,
       },
       {
         id: 2,
-        name: "브랜드",
+        name: "SHOP",
         icon: <StoreIcon />,
       },
       {
         id: 3,
-        name: "홈",
+        name: "HOME",
         url: "/",
 
-        icon: <HomeIcon />,
+        icon: <AppsIcon />,
       },
-      { id: 4, name: "좋아요", icon: <FavoriteBorderIcon /> },
+      { id: 4, name: "LIKE", icon: <FavoriteBorderIcon /> },
       {
         id: 5,
-        name: "마이",
+        name: "MY",
         url: localStorage.getItem("token") ? "/mypage" : "/login",
         icon: <PersonIcon />,
       },
