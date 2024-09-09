@@ -34,3 +34,9 @@ export const mypageMenuList = [
     ],
   },
 ];
+
+export const HeartType = enumerate({
+  Item: 1,
+  Brand: 2,
+  Style: 3,
+});

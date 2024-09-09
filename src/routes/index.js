@@ -4,6 +4,7 @@ import Cart from "pages/Cart";
 import Category from "pages/Category";
 import Event from "pages/Event";
 import FindMember from "pages/FindMember";
+import Heart from "pages/Heart";
 import ItemDetail from "pages/ItemDetail";
 import Join from "pages/Join";
 import Login from "pages/Login";
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
   {
     path: "/my-order/my-order-list/:id",
     element: <ProtectedRoute element={<OrderDetail />} />,
+  },
+  {
+    path: "/mypage/heart",
+    element: <ProtectedRoute element={<Heart />} />,
   },
   {
     path: "/category/:id",

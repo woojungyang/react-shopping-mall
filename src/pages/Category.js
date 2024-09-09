@@ -1,5 +1,6 @@
 import React, { useLayoutEffect } from "react";
 
+import { categoryList } from "models/category";
 import { Device } from "models/device";
 import { useParams } from "react-router-dom";
 
@@ -15,8 +16,6 @@ export default function Category() {
   const isDeskTop = userDevice == Device.Desktop;
 
   const { id } = useParams();
-
-  const categoryList = ["women", "men", "life", "beauty", "kid"];
 
   if (categoryList.indexOf(id) < 0) return <NotFound />;
 
