@@ -162,8 +162,9 @@ export default function Header() {
                   <p
                     key={index}
                     style={{
-                      color:
-                        id == menu.name.toLowerCase() ? "rgb(254, 99, 32)" : "",
+                      color: menu.link.includes(window.location.pathname)
+                        ? "rgb(254, 99, 32)"
+                        : "",
                     }}
                     onClick={() => navigation(menu.link)}
                   >

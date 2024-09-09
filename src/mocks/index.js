@@ -6,11 +6,13 @@ export default function mocking(axios) {
   [
     require("./deleteCartItem").default,
     require("./getCategoryOverview").default,
+    require("./getEvents").default,
     require("./getItem").default,
     require("./getItemQuestions").default,
     require("./getItemReviews").default,
     require("./getItems").default,
     require("./getKeywords").default,
+    require("./getLookbooks").default,
     require("./getOrder").default,
     require("./getOrders").default,
     require("./getOverview").default,

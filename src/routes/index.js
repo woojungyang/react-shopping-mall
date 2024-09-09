@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Cart from "pages/Cart";
 import Category from "pages/Category";
+import Event from "pages/Event";
 import FindMember from "pages/FindMember";
 import ItemDetail from "pages/ItemDetail";
 import Join from "pages/Join";
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
   {
     path: "/cart",
     element: <Cart />,
+  },
+  {
+    path: "/event",
+    element: <Event />,
   },
   {
     path: "/login",
