@@ -141,11 +141,7 @@ export default function CategoryContentMb() {
           <p className={styles.section_title}>WEEKLY BEST</p>
           <ScrollableSlider>
             {overview?.bestItems?.map((item, index) => (
-              <div
-                className={styles.category_best_item}
-                key={index}
-                ref={setElementRef(`bestItem-${index}`)}
-              >
+              <div className={styles.category_best_item} key={index}>
                 <div className={styles.rank}>{index + 1}</div>
                 <ItemCard
                   showRank={true}
@@ -189,11 +185,7 @@ export default function CategoryContentMb() {
               }}
             >
               {overview?.recommendedItems.map((item, index) => (
-                <div
-                  className={styles.default_item_card_container}
-                  key={index}
-                  ref={setElementRef(`recommendedItem-${index}`)}
-                >
+                <div className={styles.default_item_card_container} key={index}>
                   <ItemCard
                     showOriginalPrice={false}
                     item={item}

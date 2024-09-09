@@ -99,6 +99,22 @@
           margin-right: 0;
         }
       }
+
+      .event_menu_wrap {
+        &::before {
+          content: "";
+          display: block;
+          width: 1px;
+          height: 10px;
+          padding-right: 30px;
+          border-left: 1px solid $color-skeleton-100;
+        }
+        @include flex($justify-content: flex-start);
+
+        p {
+          font-style: italic;
+        }
+      }
     }
   }
 }

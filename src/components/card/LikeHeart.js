@@ -11,13 +11,14 @@ export const LikeHeart = ({
   position = { top: "3%", right: "3%" },
   defaultColor = "white",
 }) => {
+  const [heart, setHeart] = useState(like);
   const navigation = useNavigate();
 
   function LikeItem(event) {
     event.stopPropagation();
     if (!userToken) navigation("/login");
     else {
-      onClick?.();
+      setHeart(!heart);
     }
   }
 
@@ -36,7 +37,7 @@ export const LikeHeart = ({
       }}
       onClick={LikeItem}
     >
-      {!like ? (
+      {!heart ? (
         <FavoriteBorderOutlinedIcon sx={{ color: colors[defaultColor] }} />
       ) : (
         <FavoriteIcon sx={{ color: "red" }} />

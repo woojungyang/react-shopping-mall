@@ -9,6 +9,7 @@ import { numberWithCommas } from "utilities";
 import useItemsQuery from "hooks/query/useItemsQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
+import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard } from "components/card";
@@ -59,6 +60,12 @@ export default function Search() {
     },
   );
 
+  const { scrollToElement, setElementRef } = useScrollToElement();
+  const handleSortChange = (value) => {
+    changeSort(value);
+    setTimeout(() => scrollToElement("topItem"), 100);
+  };
+
   if (isLoading) return <LoadingLayer />;
 
   return (
@@ -105,12 +112,15 @@ export default function Search() {
                 <SelectBox
                   options={filterList}
                   selectedValue={sort || filterList[0]?.sort}
-                  onChange={changeSort}
+                  onChange={handleSortChange}
                 />
               )}
             </div>
 
-            <div className={styles.search_result_item_wrapper}>
+            <div
+              className={styles.search_result_item_wrapper}
+              ref={setElementRef("topItem")}
+            >
               {items?.data?.map((item, index) => (
                 <ItemCard
                   key={index}

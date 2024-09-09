@@ -246,7 +246,7 @@
 
 @mixin default-section_mb($padding: $padding) {
   margin: $margin * 1.2 0;
-  border: 1px solid red;
+  // border: 1px solid red;
   padding: $padding;
 }
 .mobile_category_container {

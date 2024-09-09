@@ -156,6 +156,21 @@ export default function Header() {
                   {menu.name}
                 </p>
               ))}
+
+              <div className={styles.event_menu_wrap}>
+                {eventMenuList?.map((menu, index) => (
+                  <p
+                    key={index}
+                    style={{
+                      color:
+                        id == menu.name.toLowerCase() ? "rgb(254, 99, 32)" : "",
+                    }}
+                    onClick={() => navigation(menu.link)}
+                  >
+                    {menu.name}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
           {showSearch && (
@@ -231,5 +246,11 @@ const menuList = [
   { id: 2, name: "MEN", link: "/category/men" },
   { id: 3, name: "BEAUTY", link: "/category/beauty" },
   { id: 4, name: "LIFE", link: "/category/life" },
-  { id: 5, name: "EVENT", link: "/event" },
+  { id: 5, name: "KIDS", link: "/category/kid" },
+  // { id: 6, name: "EVENT", link: "/event" },
+];
+
+const eventMenuList = [
+  { id: 1, name: "EVENT", link: "/event" },
+  { id: 2, name: "LOOKBOOK", link: "/lookbook" },
 ];

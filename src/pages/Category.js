@@ -16,7 +16,7 @@ export default function Category() {
 
   const { id } = useParams();
 
-  const categoryList = ["women", "men", "life", "beauty"];
+  const categoryList = ["women", "men", "life", "beauty", "kid"];
 
   if (categoryList.indexOf(id) < 0) return <NotFound />;
 

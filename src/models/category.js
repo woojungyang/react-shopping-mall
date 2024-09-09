@@ -9,7 +9,7 @@ export const filterList = [
 
 export function getSubCategory(categoryName) {
   if (!categoryName) return [];
-  if (categoryName == "women" || categoryName == "men")
+  if (categoryName == "women" || categoryName == "men" || categoryName == "kid")
     return [
       { id: 1, label: "ALL", sub: "전체" },
       { id: 2, label: "CLOTHING", sub: "의류" },

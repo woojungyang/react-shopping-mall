@@ -124,6 +124,7 @@
 }
 
 .search_result_container {
+  position: relative;
   max-width: $max-width;
   width: 100%;
   margin: auto;
@@ -155,9 +156,15 @@
     }
   }
   .search_result_filter_wrapper {
+    position: sticky;
+    z-index: 99;
+    top: $header-height_mb * 1.45;
+    background-color: $color-background-100;
+
     border-top: 1px solid $color-skeleton-200;
-    padding-top: $margin;
-    margin-bottom: $padding;
+    // padding-top: $margin;
+    padding: $padding;
+
     font-size: 0.9em;
     @include flex($justify-content: space-between);
     .checkbox_wrap {
@@ -192,5 +199,3 @@
     margin-top: $header-height * 1.2;
   }
 }
-
-
