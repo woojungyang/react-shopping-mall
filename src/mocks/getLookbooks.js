@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 
 export default function getLookbooks(mock) {
-  const url = /^\/api\/v1\/look-books$/;
+  const url = /^\/api\/v1\/lookbooks$/;
   mock.onGet(url).reply((config) => {
     let status = 200;
     let data = {
@@ -28,6 +28,6 @@ let collection = new Array(faker.number.int({ max: 100, min: 10 }))
   .fill()
   .map((_, index) => ({
     id: faker.number.int(),
-    name: faker.lorem.sentence(),
+    title: faker.lorem.sentence(),
     thumbnail: fakerSubImage(),
   }));

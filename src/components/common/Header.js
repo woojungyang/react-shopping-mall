@@ -232,6 +232,22 @@ export default function Header() {
                 </p>
               ),
             )}
+            {eventMenuList?.map((menu, index) => (
+              <p
+                key={index}
+                className={classNames({
+                  [styles.default_scroll_menu]: true,
+                })}
+                style={{
+                  color: menu.link.includes(window.location.pathname)
+                    ? "rgb(254, 99, 32)"
+                    : "",
+                }}
+                onClick={() => navigation(menu.link)}
+              >
+                {menu.name}
+              </p>
+            ))}
           </div>
           {showSearch && (
             <SearchContainer visible={showSearch} setVisible={setShowSearch} />

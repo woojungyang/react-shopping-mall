@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import classNames from "classnames";
 import { Device } from "models/device";
@@ -20,6 +20,8 @@ export default function Event() {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
+  const [toastMessage, setToastMessage] = useState("");
+
   const [type, changeType] = useQueryString("type", 0);
   const typeArray = [0, ...Object.values(EventType)];
 
@@ -38,7 +40,11 @@ export default function Event() {
   }, [type]);
 
   return (
-    <CommonLayout isLoading={isLoading}>
+    <CommonLayout
+      isLoading={isLoading}
+      setToastMessage={setToastMessage}
+      toastMessage={toastMessage}
+    >
       <div className={styles.event_container}>
         <p className={styles.event_title}>EVENT</p>
 
@@ -58,7 +64,7 @@ export default function Event() {
         ) : (
           <div className={styles.events_filter_wrap_mb}>
             <p className={styles.events_total}>
-              {numberWithCommas(events?.total)} EVENT{" "}
+              {numberWithCommas(events?.total)} EVENTS{" "}
             </p>
             <SelectBox
               options={typeArray.map((e) => ({
@@ -70,41 +76,47 @@ export default function Event() {
             />
           </div>
         )}
-        <div
-          className={classNames({
-            [styles.events_wrapper]: isDeskTop,
-            [styles.events_wrapper_mb]: !isDeskTop,
-          })}
-        >
-          {events?.total > 0 ? (
-            events?.data.map((event, index) => (
-              <div key={index} className={styles.event_card}>
-                <div className={styles.event_thumbnail_wrap}>
-                  <img src={event.thumbnail} />
-                  <span className={styles.event_badge}>
-                    {getEventTypeLabel(event.type)}
-                  </span>
-                </div>
-                <p className={styles.event_card_title}>{event.title}</p>
+        {events?.total > 0 ? (
+          <>
+            <div
+              className={classNames({
+                [styles.events_wrapper]: isDeskTop,
+                [styles.events_wrapper_mb]: !isDeskTop,
+              })}
+            >
+              {events?.data.map((event, index) => (
+                <div
+                  key={index}
+                  className={styles.event_card}
+                  onClick={() => setToastMessage("페이지 준비중입니다.")}
+                >
+                  <div className={styles.event_thumbnail_wrap}>
+                    <img src={event.thumbnail} />
+                    <span className={styles.event_badge}>
+                      {getEventTypeLabel(event.type)}
+                    </span>
+                  </div>
+                  <p className={styles.event_card_title}>{event.title}</p>
 
-                <p className={styles.event_card_period}>
-                  {formatDateTime(event?.startedAt, "yyyy.MM.dd")} ~{" "}
-                  {formatDateTime(event?.endedAt, "yyyy.MM.dd")}
-                </p>
-              </div>
-            ))
-          ) : (
-            <div className={styles.event_empty_wrap}>
-              <p>진행중인 이벤트가 없습니다.</p>
+                  <p className={styles.event_card_period}>
+                    {formatDateTime(event?.startedAt, "yyyy.MM.dd")} ~{" "}
+                    {formatDateTime(event?.endedAt, "yyyy.MM.dd")}
+                  </p>
+                </div>
+              ))}
             </div>
-          )}
-        </div>
-        {events?.total > 0 && (
-          <DefaultPagination
-            count={getPageCount(events?.total)}
-            page={page}
-            onChange={handleChangePage}
-          />
+            {events?.total > 0 && (
+              <DefaultPagination
+                count={getPageCount(events?.total)}
+                page={page}
+                onChange={handleChangePage}
+              />
+            )}
+          </>
+        ) : (
+          <div className={styles.event_empty_wrap}>
+            <p>진행중인 이벤트가 없습니다.</p>
+          </div>
         )}
       </div>
     </CommonLayout>

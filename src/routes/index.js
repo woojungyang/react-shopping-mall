@@ -7,6 +7,7 @@ import FindMember from "pages/FindMember";
 import ItemDetail from "pages/ItemDetail";
 import Join from "pages/Join";
 import Login from "pages/Login";
+import LookBook from "pages/LookBook";
 import Main from "pages/Main";
 import MyOrder from "pages/MyOrder";
 import MyPage from "pages/MyPage";
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
   {
     path: "/event",
     element: <Event />,
+  },
+  {
+    path: "/lookbook",
+    element: <LookBook />,
   },
   {
     path: "/login",
