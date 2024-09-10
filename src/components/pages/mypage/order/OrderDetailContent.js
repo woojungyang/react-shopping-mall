@@ -186,7 +186,7 @@ export default function OrderDetailContent() {
           setToastMessage={setToastMessage}
         />
       )}
-      {changeOptionModal && (
+      {/* {changeOptionModal && (
         <ChangeOptionModal
           item={item}
           isQuantity={false}
@@ -196,7 +196,7 @@ export default function OrderDetailContent() {
           setSelectedItem={setSelectedItem}
           onSubmit={requestPatchOrderItemOptions}
         />
-      )}
+      )} */}
     </MyPageLayout>
   );
 }

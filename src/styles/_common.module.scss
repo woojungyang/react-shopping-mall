@@ -742,6 +742,14 @@ input[type="number"] {
     font-size: $default * 2.5;
   }
 }
+.error_message {
+  color: red;
+  font-weight: $font-weight-medium;
+  font-size: 14px;
+  width: 100%;
+  text-align: right;
+  font-style: italic;
+}
 
 .default_items_slider_container {
   display: flex;

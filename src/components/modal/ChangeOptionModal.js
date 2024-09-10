@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { numberWithCommas } from "utilities";
 
@@ -33,6 +33,20 @@ export const ChangeOptionModal = ({
     setVisible(false);
     setSelectedItemOptions({});
   }
+
+  const [error, setError] = useState(false);
+
+  const checkError = useMemo(
+    () =>
+      (!!colorOptions.length && !selectedItemOptions.color) ||
+      (!!sizeOptions.length && !selectedItemOptions.size),
+    [colorOptions, sizeOptions, selectedItemOptions],
+  );
+
+  useEffect(() => {
+    if (error && (!!selectedItemOptions.color || !!selectedItemOptions.size))
+      setError(false);
+  }, [error, selectedItemOptions]);
 
   return (
     <ModalContainer
@@ -69,6 +83,7 @@ export const ChangeOptionModal = ({
           <strong>{numberWithCommas(item.price)}</strong>원
         </p>
       </div>
+      {error && <p className={styles.error_message}>옵션을 확인해주세요.</p>}
       <div className={styles.default_flex_space}>
         <DefaultButton
           label="취소"
@@ -78,8 +93,11 @@ export const ChangeOptionModal = ({
         <DefaultButton
           label="변경"
           onClick={() => {
-            setVisible(false);
-            onSubmit?.();
+            if (checkError) setError(true);
+            else {
+              setVisible(false);
+              onSubmit?.();
+            }
           }}
         />
       </div>

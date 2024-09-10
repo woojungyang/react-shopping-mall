@@ -15,7 +15,7 @@ import { ToastModal } from "components/modal";
 
 import styles from "styles/_mypage.module.scss";
 
-export const MyPageLayout = ({ children }) => {
+export const MyPageLayout = ({ children, childrenLoading = false }) => {
   const navigation = useNavigate();
   const pathname = window.location.pathname;
   const menuCategory = pathname.split("/")[1];
@@ -27,7 +27,7 @@ export const MyPageLayout = ({ children }) => {
   const { data: user, isLoading } = useUserQuery();
 
   return (
-    <CommonLayout isLoading={isLoading}>
+    <CommonLayout isLoading={isLoading || childrenLoading}>
       <div className={styles.mypage_container}>
         <p className={styles.mypage_title}>MY PAGE</p>
         <div className={styles.profile_wrapper}>

@@ -1030,7 +1030,7 @@
     }
   }
   .add_cart_button {
-    // margin-top: $padding;
+    margin-top: $default;
     border: 1px solid $color-skeleton-100;
     // background-color: $color-skeleton-100;
     // color: $color-background-100;
@@ -1054,21 +1054,7 @@
     }
   }
   .sold_out_button {
-    margin-top: $default;
     background-color: $color-skeleton-100 !important;
-  }
-  .flex_button_wrap {
-    display: flex;
-    gap: $default/2;
-    margin-top: $default;
-    p {
-      margin: 0 !important;
-      width: 100%;
-
-      svg {
-        display: none;
-      }
-    }
   }
 }
 .expansion_card {

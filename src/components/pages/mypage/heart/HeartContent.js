@@ -5,38 +5,25 @@ import CropDinOutlinedIcon from "@mui/icons-material/CropDinOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import classNames from "classnames";
-import { categoryList } from "models/category";
 import { HeartType } from "models/mypage";
-import { OrderState, getOrderState } from "models/order";
-import { useNavigate } from "react-router-dom";
-import { numberWithCommas } from "utilities";
+import { useQueryClient } from "react-query";
 
+import useDeleteLikeMutation from "hooks/mutation/useDeleteLikeMutation";
 import useLikesQuery from "hooks/query/useLikesQuery";
-import useOrdersQuery from "hooks/query/useOrdersQuery";
-import useDateIntervalQueryString from "hooks/queryString/useDateIntervalQueryString";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
 import { LikeHeart } from "components/card";
-import {
-  DefaultCheckbox,
-  DefaultPagination,
-  LoadingLayer,
-  SelectBox,
-} from "components/common";
+import { DefaultCheckbox, DefaultPagination } from "components/common";
 import { ToastModal } from "components/modal";
-import { Table, TableFilter, TableRow } from "components/table";
-
-import { addMonths, formatDateTime, now } from "utilities/dateTime";
 
 import styles from "styles/_mypage.module.scss";
 
 import { MyPageLayout } from "../MyPageLayout";
-import SearchFilter from "../SearchFilter";
 import { HeartCard } from "./HeartCard";
 
 export default function HeartContent() {
-  const navigation = useNavigate();
+  const queryClient = useQueryClient();
 
   const [toastMessage, setToastMessage] = useState("");
 
@@ -62,22 +49,32 @@ export default function HeartContent() {
     excludingSoldOut: excludingSoldOut,
   });
 
-  const [selectedOrderState, changeSelectedOrderState] =
-    useQueryString("selectedOrderState");
+  const [selectedElementId, setSelectedElementId] = useState("");
 
-  const [selectedCategory, changeSelectedCategory] = useQueryString(
-    "selectedCategory",
-    "",
-  );
+  const deleteLikeMutation = useDeleteLikeMutation(selectedElementId);
+  async function requestDeleteLikeItem() {
+    try {
+      deleteLikeMutation.mutateAsync({
+        type: currentTab,
+      });
+      setSelectedElementId("");
+      queryClient.refetchQueries([`/api/v1/likes`, { type: currentTab }]);
+    } catch (err) {
+      setToastMessage(err.message);
+    }
+  }
 
+  useEffect(() => {
+    if (!!selectedElementId) requestDeleteLikeItem();
+  }, [selectedElementId]);
   useEffect(() => {
     changePage(1);
   }, [currentTab]);
 
-  if (isLoading || isFetching) return <LoadingLayer />;
-
   return (
-    <MyPageLayout>
+    <MyPageLayout
+      childrenLoading={isLoading || isFetching || deleteLikeMutation.isLoading}
+    >
       <div className={styles.my_heart_container}>
         <div className={styles.heart_filter_wrapper}>
           {menuList.map((menu, index) => (
@@ -98,7 +95,7 @@ export default function HeartContent() {
             </p>
           ))}
         </div>
-        {HeartType.Item == currentTab && likes.total > 0 && (
+        {HeartType.Item == currentTab && likes?.total > 0 && (
           <div>
             <div className={styles.heart_items_filter}>
               <div>
@@ -136,10 +133,10 @@ export default function HeartContent() {
             </div>
           </div>
         )}
-        {HeartType.Brand == currentTab && likes.total > 0 && (
+        {HeartType.Brand == currentTab && likes?.total > 0 && (
           <div className={styles.brand_wrapper}>
-            {likes.data.map((e) => (
-              <div className={styles.brand_wrap}>
+            {likes.data.map((brand, index) => (
+              <div className={styles.brand_wrap} key={index}>
                 <div className={styles.brand_header}>
                   <div className={styles.brand_name_wrap}>
                     <LikeHeart
@@ -151,8 +148,9 @@ export default function HeartContent() {
                       }}
                       defaultColor="skeleton"
                       like={true}
+                      onClick={() => setSelectedElementId(brand.id)}
                     />
-                    <p>{e.name}</p>
+                    <p>{brand.name}</p>
                   </div>
                   <p
                     className={styles.more_button}
@@ -162,7 +160,7 @@ export default function HeartContent() {
                   </p>
                 </div>
                 <div className={styles.brand_items_wrap}>
-                  {e.items.map((item) => (
+                  {brand.items.map((item) => (
                     <HeartCard item={item} showButton={false} />
                   ))}
                 </div>
@@ -170,7 +168,7 @@ export default function HeartContent() {
             ))}
           </div>
         )}
-        {HeartType.Style == currentTab && likes.total > 0 && (
+        {HeartType.Style == currentTab && likes?.total > 0 && (
           <div
             className={classNames({
               [styles.heart_items_wrapper_reduction]: true,
@@ -180,7 +178,11 @@ export default function HeartContent() {
             {likes?.data?.map((style, index) => (
               <div className={styles.style_wrap} key={index}>
                 <img src={style.avatar} />
-                <LikeHeart like={true} position={{ right: "5%", top: "5%" }} />
+                <LikeHeart
+                  like={true}
+                  position={{ right: "5%", top: "5%" }}
+                  onClick={() => setSelectedElementId(style.id)}
+                />
                 <p>@{style.username.split("@")[0]}</p>
               </div>
             ))}

@@ -2,9 +2,10 @@ import Axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 
 export default function mocking(axios) {
-  const mock = new MockAdapter(axios, { delayResponse: 0 });
+  const mock = new MockAdapter(axios, { delayResponse: 1000 });
   [
     require("./deleteCartItem").default,
+    require("./deleteLike").default,
     require("./getCategoryOverview").default,
     require("./getEvents").default,
     require("./getItem").default,

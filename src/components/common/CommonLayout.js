@@ -32,6 +32,8 @@ export const CommonLayout = ({
     scrollTop();
   }, []);
 
+  if (isLoading) return <LoadingLayer />;
+
   return (
     <div
       className={styles.container}
@@ -39,7 +41,6 @@ export const CommonLayout = ({
         maxWidth: innerWidth,
       }}
     >
-      {isLoading && <LoadingLayer />}
       <Header />
       <div className={styles.common_layout_content_wrapper}>{children}</div>
       <ScrollNavigation />
