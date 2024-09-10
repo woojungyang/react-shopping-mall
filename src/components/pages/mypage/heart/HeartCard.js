@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import { addItem } from "app/counterSlice";
 
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import DisplaySettingsOutlinedIcon from "@mui/icons-material/DisplaySettingsOutlined";
 import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
 import classNames from "classnames";
+import { Device } from "models/device";
 import { useQueryClient } from "react-query";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ import useCartItemsMutation from "hooks/mutation/useCartItemsMutation";
 import useDeleteLikeMutation from "hooks/mutation/useDeleteLikeMutation";
 import useItemQuery from "hooks/query/useItemQuery";
 import useQueryString from "hooks/queryString/useQueryString";
+import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { LikeHeart } from "components/card";
 import { Loading } from "components/common";
@@ -27,6 +28,9 @@ export const HeartCard = ({
   isExpansion = false,
   showButton = true,
 }) => {
+  const userDevice = useUserDevice();
+  const isDeskTop = userDevice == Device.Desktop;
+
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const queryClient = useQueryClient();
@@ -92,6 +96,7 @@ export const HeartCard = ({
       className={classNames({
         [styles.heart_card_item_wrap]: true,
         [styles.expansion_card]: isExpansion,
+        [styles.heart_card_item_wrap_mobile]: !isDeskTop,
       })}
     >
       {itemQuery.isLoading ||
@@ -104,9 +109,9 @@ export const HeartCard = ({
             <LikeHeart
               like={item.like ?? true}
               position={
-                isExpansion
-                  ? { right: "15%", top: "3%" }
-                  : { right: "15%", top: "3%" }
+                isDeskTop
+                  ? { right: "14%", top: "4%" }
+                  : { right: "18%", top: "4%" }
               }
               onClick={requestDeleteLikeItem}
             />

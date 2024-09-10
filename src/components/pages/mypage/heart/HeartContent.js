@@ -5,7 +5,7 @@ import CropDinOutlinedIcon from "@mui/icons-material/CropDinOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import classNames from "classnames";
-import { HeartType } from "models/mypage";
+import { HeartType, heartMenu } from "models/mypage";
 import { useQueryClient } from "react-query";
 
 import useDeleteLikeMutation from "hooks/mutation/useDeleteLikeMutation";
@@ -77,7 +77,7 @@ export default function HeartContent() {
     >
       <div className={styles.my_heart_container}>
         <div className={styles.heart_filter_wrapper}>
-          {menuList.map((menu, index) => (
+          {heartMenu.map((menu, index) => (
             <p
               className={classNames({
                 [styles.heart_filter]: true,
@@ -170,9 +170,7 @@ export default function HeartContent() {
         )}
         {HeartType.Style == currentTab && likes?.total > 0 && (
           <div
-            className={classNames({
-              [styles.heart_items_wrapper_reduction]: true,
-            })}
+            className={styles.heart_items_wrapper_reduction}
             style={{ paddingTop: 20 }}
           >
             {likes?.data?.map((style, index) => (
@@ -192,7 +190,7 @@ export default function HeartContent() {
         {!likes?.total && (
           <div className={styles.empty_heart_wrap}>
             <p className={styles.empty_title}>
-              MY {menuList.find((e) => e.id == currentTab).label}에 저장된
+              MY {heartMenu.find((e) => e.id == currentTab).label}에 저장된
               내역이 없습니다.
             </p>
             <p>
@@ -219,9 +217,3 @@ export default function HeartContent() {
     </MyPageLayout>
   );
 }
-
-const menuList = [
-  { id: HeartType.Item, label: "ITEM" },
-  { id: HeartType.Brand, label: "BRAND" },
-  { id: HeartType.Style, label: "STYLE" },
-];

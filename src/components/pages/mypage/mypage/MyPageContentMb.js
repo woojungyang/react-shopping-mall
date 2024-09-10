@@ -44,7 +44,7 @@ export default function MyPageContentMb() {
             <LikeHeart
               readOnly={true}
               position={{ position: "relative" }}
-              onClick={() => setToastMessage("준비중입니다.")}
+              onClick={() => navigation("/mypage/heart")}
             />
 
             <p>{user?.likeCount > 998 ? "+999" : user?.likeCount}</p>

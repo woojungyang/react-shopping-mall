@@ -40,3 +40,9 @@ export const HeartType = enumerate({
   Brand: 2,
   Style: 3,
 });
+
+export const heartMenu = [
+  { id: HeartType.Item, label: "ITEM" },
+  { id: HeartType.Brand, label: "BRAND" },
+  { id: HeartType.Style, label: "STYLE" },
+];
