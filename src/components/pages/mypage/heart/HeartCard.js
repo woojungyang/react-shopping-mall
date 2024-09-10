@@ -10,7 +10,11 @@ import { LikeHeart } from "components/card";
 
 import styles from "styles/_mypage.module.scss";
 
-export const HeartCard = ({ item = {}, isExpansion = false }) => {
+export const HeartCard = ({
+  item = {},
+  isExpansion = false,
+  showButton = true,
+}) => {
   const navigation = useNavigate();
   return (
     <div
@@ -21,7 +25,7 @@ export const HeartCard = ({ item = {}, isExpansion = false }) => {
     >
       <div className={styles.item_thumbnail}>
         <LikeHeart
-          like={true}
+          like={item.like ?? true}
           position={
             isExpansion
               ? { right: "15%", top: "3%" }
@@ -51,31 +55,33 @@ export const HeartCard = ({ item = {}, isExpansion = false }) => {
           </div>
         </div>
 
-        {item?.isSoldOut ? (
-          <p
-            className={classNames({
-              [styles.add_cart_button]: true,
-              [styles.sold_out_button]: true,
-            })}
-          >
-            품절
-          </p>
-        ) : (
-          <div
-            className={classNames({
-              [styles.flex_button_wrap]: !isExpansion,
-            })}
-          >
-            <p className={styles.add_cart_button}>
-              <DisplaySettingsOutlinedIcon />
-              옵션
+        {showButton ? (
+          item?.isSoldOut ? (
+            <p
+              className={classNames({
+                [styles.add_cart_button]: true,
+                [styles.sold_out_button]: true,
+              })}
+            >
+              품절
             </p>
-            <p className={styles.add_cart_button}>
-              <LocalMallOutlinedIcon />
-              쇼핑백
-            </p>
-          </div>
-        )}
+          ) : (
+            <div
+              className={classNames({
+                [styles.flex_button_wrap]: !isExpansion,
+              })}
+            >
+              <p className={styles.add_cart_button}>
+                <DisplaySettingsOutlinedIcon />
+                옵션
+              </p>
+              <p className={styles.add_cart_button}>
+                <LocalMallOutlinedIcon />
+                쇼핑백
+              </p>
+            </div>
+          )
+        ) : null}
       </div>
     </div>
   );

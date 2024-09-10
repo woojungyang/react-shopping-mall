@@ -24,6 +24,7 @@ import {
   LoadingLayer,
   SelectBox,
 } from "components/common";
+import { ToastModal } from "components/modal";
 import { Table, TableFilter, TableRow } from "components/table";
 
 import { addMonths, formatDateTime, now } from "utilities/dateTime";
@@ -37,6 +38,8 @@ import { HeartCard } from "./HeartCard";
 export default function HeartContent() {
   const navigation = useNavigate();
 
+  const [toastMessage, setToastMessage] = useState("");
+
   const [isExpansion, setIsExpansion] = useState(true);
   const [excludingSoldOut, setExcludingSoldOut] = useState(false);
 
@@ -48,7 +51,11 @@ export default function HeartContent() {
   const [{ page, perPage: limit, offset }, changePage, getPageCount] =
     usePageQueryString("page", 10);
   const handleChangePage = (_event, page) => changePage(page);
-  const { data: likes, isLoading } = useLikesQuery({
+  const {
+    data: likes,
+    isLoading,
+    isFetching,
+  } = useLikesQuery({
     type: currentTab,
     limit: limit,
     offset: offset,
@@ -63,7 +70,11 @@ export default function HeartContent() {
     "",
   );
 
-  if (isLoading) return <LoadingLayer />;
+  useEffect(() => {
+    changePage(1);
+  }, [currentTab]);
+
+  if (isLoading || isFetching) return <LoadingLayer />;
 
   return (
     <MyPageLayout>
@@ -125,20 +136,54 @@ export default function HeartContent() {
             </div>
           </div>
         )}
+        {HeartType.Brand == currentTab && likes.total > 0 && (
+          <div className={styles.brand_wrapper}>
+            {likes.data.map((e) => (
+              <div className={styles.brand_wrap}>
+                <div className={styles.brand_header}>
+                  <div className={styles.brand_name_wrap}>
+                    <LikeHeart
+                      position={{
+                        position: "relative",
+                        width: "20px",
+                        height: "20px",
+                        top: "-2px",
+                      }}
+                      defaultColor="skeleton"
+                      like={true}
+                    />
+                    <p>{e.name}</p>
+                  </div>
+                  <p
+                    className={styles.more_button}
+                    onClick={() => setToastMessage("준비중입니다.")}
+                  >
+                    MORE
+                  </p>
+                </div>
+                <div className={styles.brand_items_wrap}>
+                  {e.items.map((item) => (
+                    <HeartCard item={item} showButton={false} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         {HeartType.Style == currentTab && likes.total > 0 && (
           <div
             className={classNames({
               [styles.heart_items_wrapper_reduction]: true,
             })}
+            style={{ paddingTop: 20 }}
           >
-            dfsf
-            {/* {likes?.data?.map((style, index) => (
-              <div className={styles.style_wrap}>
+            {likes?.data?.map((style, index) => (
+              <div className={styles.style_wrap} key={index}>
                 <img src={style.avatar} />
-                <LikeHeart like={true} />
+                <LikeHeart like={true} position={{ right: "5%", top: "5%" }} />
                 <p>@{style.username.split("@")[0]}</p>
               </div>
-            ))} */}
+            ))}
           </div>
         )}
 
@@ -163,6 +208,12 @@ export default function HeartContent() {
           />
         )}
       </div>
+      {toastMessage && (
+        <ToastModal
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        />
+      )}
     </MyPageLayout>
   );
 }

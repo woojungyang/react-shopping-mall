@@ -919,15 +919,51 @@
       $colum-gap: $default * 2,
       $row-gap: $default * 3
     );
-    background-color: pink;
+
     .style_wrap {
-      border: 1px solid red;
+      position: relative;
       img {
         @include default-image;
-        height: 295px;
+        height: 290px;
+      }
+      p {
+        position: relative;
+        bottom: 10%;
+        color: $color-background-100;
+        font-size: 14px;
+        left: 5%;
+        width: 90%;
+        @include overflow-text($clamp: 1);
       }
     }
     // padding-bottom: $margin * 5;
+  }
+  .brand_wrapper {
+    padding-top: $margin;
+    .brand_wrap {
+      margin-bottom: $margin * 3;
+      .brand_header {
+        @include flex($justify-content: space-between);
+        margin-bottom: $margin;
+        .brand_name_wrap {
+          @include flex($justify-content: flex-start, $align-items: flex-end);
+          p {
+            margin-left: $default/2;
+          }
+        }
+        .more_button {
+          cursor: pointer;
+          font-size: 14px;
+          text-decoration: underline;
+        }
+      }
+      .brand_items_wrap {
+        @include display-grid(
+          $colum: repeat(6, 1fr),
+          $colum-gap: $default * 1.5
+        );
+      }
+    }
   }
 
   .empty_heart_wrap {

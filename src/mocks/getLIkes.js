@@ -74,7 +74,7 @@ let brandsCollection = new Array(faker.number.int({ max: 10, min: 1 }))
   .map((_, index) => ({
     id: faker.number.int(),
     name: faker.company.name(),
-    items: new Array(5).fill().map((_, index) => ({
+    items: new Array(6).fill().map((_, index) => ({
       id: faker.number.int(),
       itemName: faker.commerce.productName(),
       originalPrice: faker.commerce.price({
