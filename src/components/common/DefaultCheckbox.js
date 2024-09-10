@@ -5,7 +5,12 @@ import { Device } from "models/device";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
-export const DefaultCheckbox = ({ checked, onChange, disabled = false }) => {
+export const DefaultCheckbox = ({
+  checked,
+  onChange,
+  disabled = false,
+  size = "",
+}) => {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
   return (
@@ -15,7 +20,7 @@ export const DefaultCheckbox = ({ checked, onChange, disabled = false }) => {
       disabled={disabled}
       sx={{
         marginRight: "10px",
-        "& .MuiSvgIcon-root": { fontSize: isDeskTop ? 24 : 20 },
+        "& .MuiSvgIcon-root": { fontSize: size ? size : isDeskTop ? 24 : 20 },
         padding: "0 !important",
         color: "black",
         "&.Mui-checked": {

@@ -9,6 +9,7 @@ export const TableFilter = ({
   filterOptions = [],
   selectedOption = "",
   onClick,
+  placeholder = "",
 }) => {
   const options = [...[{ id: "", label: "전체" }].concat(filterOptions)];
   const updateOption = useMemo(() => {

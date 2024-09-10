@@ -19,6 +19,7 @@ export const LikeHeart = ({
     if (!userToken) navigation("/login");
     else {
       setHeart(!heart);
+      onClick?.();
     }
   }
 

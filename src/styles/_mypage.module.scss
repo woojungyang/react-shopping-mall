@@ -856,13 +856,15 @@
     width: 100%;
     height: 70px;
     @include flex;
-    background-color: rgba($color-skeleton-100, 0.2);
+    border-bottom: 1px solid rgba($color-skeleton-100, 0.5);
     margin-bottom: $margin;
     .heart_filter {
+      height: 100%;
       position: relative;
       width: 100%;
       @include flex;
       cursor: pointer;
+      color: $color-skeleton-100;
       svg {
         margin-right: 4px;
       }
@@ -883,14 +885,177 @@
         }
       }
     }
+    .heart_filter_active {
+      border-bottom: 1px solid $color-dark-300;
+      color: $color-dark-300;
+    }
   }
   .heart_items_filter {
+    margin-top: $margin * 2;
+    margin-bottom: $margin * 1.3;
     @include flex($justify-content: space-between);
     svg {
+      cursor: pointer;
       width: $margin * 1.2;
       color: $color-skeleton-100;
     }
+    .excluding_wrap {
+      color: $color-skeleton-200;
+      span {
+        margin-left: -8px;
+        font-size: 14px;
+      }
+    }
+  }
+  .active_filter {
+    color: $color-dark-300 !important;
+  }
+  .heart_items_wrapper {
+    @include display-grid($colum: repeat(2, 1fr), $colum-gap: $default * 3);
+  }
+  .heart_items_wrapper_reduction {
+    @include display-grid(
+      $colum: repeat(5, 1fr),
+      $colum-gap: $default * 2,
+      $row-gap: $default * 3
+    );
+    background-color: pink;
+    .style_wrap {
+      border: 1px solid red;
+      img {
+        @include default-image;
+        height: 295px;
+      }
+    }
+    // padding-bottom: $margin * 5;
+  }
+
+  .empty_heart_wrap {
+    height: 30vh;
+
+    @include flex($direction: column);
+    p {
+      color: $color-skeleton-100;
+      font-size: 14px;
+      svg {
+        width: 16px;
+        padding-top: 5px;
+        height: 16px;
+      }
+    }
+    .empty_title {
+      font-size: $margin;
+      margin-bottom: $default;
+      color: $color-skeleton-200;
+    }
   }
 }
-.my_heart_cart {
+.heart_card_item_wrap {
+  // height: 320px;
+
+  .item_thumbnail {
+    position: relative;
+    img {
+      @include default-image;
+      margin-bottom: $default/2;
+      height: 250px;
+      cursor: pointer;
+    }
+    svg {
+      position: absolute;
+    }
+  }
+  .item_info_wrap {
+    .brand_name {
+      font-size: 15px;
+      margin-bottom: $default;
+      @include overflow-text($clamp: 1);
+    }
+    .item_name {
+      font-size: 14px;
+      color: $color-skeleton-200;
+      margin-bottom: $margin;
+      @include overflow-text($clamp: 1);
+    }
+    .price_info_wrap {
+      @include flex($justify-content: justify-content);
+      .current_price {
+        width: 100%;
+        span {
+          text-decoration: line-through;
+          color: $color-skeleton-100;
+          font-size: 14px;
+        }
+      }
+      .sale_percent {
+        color: $color-orange;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+  .add_cart_button {
+    // margin-top: $padding;
+    border: 1px solid $color-skeleton-100;
+    // background-color: $color-skeleton-100;
+    // color: $color-background-100;
+    @include flex;
+    height: 38px;
+    font-size: 14px;
+    svg {
+      width: $padding;
+      height: $padding;
+      margin-right: 3px;
+    }
+    margin-bottom: $default/2;
+    &:first-child {
+      margin-top: $padding;
+    }
+    &:last-child {
+      margin-bottom: 0;
+      border: none;
+      background-color: $color-dark-300;
+      color: $color-background-100;
+    }
+  }
+  .sold_out_button {
+    margin-top: $default;
+    background-color: $color-skeleton-100 !important;
+  }
+  .flex_button_wrap {
+    display: flex;
+    gap: $default/2;
+    margin-top: $default;
+    p {
+      margin: 0 !important;
+      width: 100%;
+
+      svg {
+        display: none;
+      }
+    }
+  }
+}
+.expansion_card {
+  height: 320px;
+  border: 1px solid $color-skeleton-100;
+  padding: $default * 3;
+  display: flex;
+
+  .item_thumbnail {
+    img {
+      min-width: 216px;
+      margin-bottom: 0px;
+      height: 100%;
+    }
+    margin-right: $margin;
+  }
+  .item_info_wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    // border: 1px solid teal;
+  }
 }
