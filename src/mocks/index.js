@@ -15,6 +15,8 @@ export default function mocking(axios) {
     require("./getKeywords").default,
     require("./getLIkes").default,
     require("./getLookbooks").default,
+    require("./getNotice").default,
+    require("./getNotices").default,
     require("./getOrder").default,
     require("./getOrders").default,
     require("./getOverview").default,

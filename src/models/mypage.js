@@ -20,7 +20,7 @@ export const userMenuList = [
     label: "쇼핑정보",
     category: "my-order",
     sub: [
-      { id: 1, label: "주문조회", url: "/my-order/my-order-list" },
+      { id: 1, label: "주문조회", url: "/mypage/my-order/my-order-list" },
       { id: 2, label: "상품리뷰" },
     ],
   },

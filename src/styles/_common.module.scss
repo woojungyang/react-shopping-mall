@@ -591,9 +591,9 @@ input[type="number"] {
 
     > tr {
       > th {
-        height: 70px;
+        height: 50px;
 
-        font-weight: 500;
+        font-weight: $font-weight-bold;
         padding: 0 $padding * 1.1;
 
         min-width: 120px;

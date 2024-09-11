@@ -1257,3 +1257,24 @@
     }
   }
 }
+
+.notice_table_container {
+  .default_table_content {
+    cursor: pointer;
+    border-bottom: 1px solid rgba($color-skeleton-100, 0.3);
+
+    height: 48px;
+    width: 100%;
+    p {
+      @include overflow-text($clamp: 1);
+    }
+  }
+}
+
+.notice_container_mb {
+  @include default-mobile;
+  padding: $margin $padding;
+  .date_mb {
+    margin-bottom: $default;
+  }
+}

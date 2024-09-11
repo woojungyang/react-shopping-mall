@@ -96,7 +96,7 @@ export default function MyOrderContentMb() {
                 <TableRow
                   key={index}
                   onClick={() =>
-                    navigation(`/my-order/my-order-list/${order.id}`)
+                    navigation(`/mypage/my-order/my-order-list/${order.id}`)
                   }
                 >
                   <td
@@ -123,7 +123,7 @@ export default function MyOrderContentMb() {
                         styles.button_background_100_outline_color_dark_300
                       }
                       onClick={() =>
-                        navigation(`/my-order/my-order-list/${order.id}`)
+                        navigation(`/mypage/my-order/my-order-list/${order.id}`)
                       }
                     />
                   </td>

@@ -18,7 +18,7 @@ import styles from "styles/_mypage.module.scss";
 export const MyPageLayout = ({ children, childrenLoading = false }) => {
   const navigation = useNavigate();
   const pathname = window.location.pathname;
-  const menuCategory = pathname.split("/")[1];
+  const menuCategory = pathname.split("/mypage")[1].split("/")[1];
 
   const { id } = useParams();
 
@@ -75,9 +75,6 @@ export const MyPageLayout = ({ children, childrenLoading = false }) => {
             )}
             {menuList.map((menu, index) => {
               const isActive = menu.category == menuCategory;
-
-              console.log(menu.category);
-              console.log(menuCategory);
 
               const hasSubMenu = menu?.sub?.length;
               return (

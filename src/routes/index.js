@@ -72,11 +72,11 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute element={<MyPage />} />,
   },
   {
-    path: "/my-order/my-order-list",
+    path: "/mypage/my-order/my-order-list",
     element: <ProtectedRoute element={<MyOrder />} />,
   },
   {
-    path: "/my-order/my-order-list/:id",
+    path: "/mypage/my-order/my-order-list/:id",
     element: <ProtectedRoute element={<OrderDetail />} />,
   },
   {
