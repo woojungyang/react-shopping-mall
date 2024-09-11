@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 
-import AppsIcon from "@mui/icons-material/Apps";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ManageSearchIcon from "@mui/icons-material/ManageSearch";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import MenuIcon from "@mui/icons-material/Menu";
 import PersonIcon from "@mui/icons-material/Person";
 import StoreIcon from "@mui/icons-material/Store";
 import classNames from "classnames";
@@ -12,15 +12,18 @@ import { ToastModal } from "components/modal";
 
 import styles from "styles/_navigation.module.scss";
 
-export default function BottomNavigation({ currentTab }) {
+export default function BottomNavigation() {
   const navigation = useNavigate();
+
+  const pathname = window.location.pathname;
 
   const bottomMenu = useMemo(
     () => [
       {
         id: 1,
         name: "CATEGORY",
-        icon: <ManageSearchIcon />,
+        icon: <MenuIcon />,
+        url: "/category",
       },
       {
         id: 2,
@@ -32,7 +35,7 @@ export default function BottomNavigation({ currentTab }) {
         name: "HOME",
         url: "/",
 
-        icon: <AppsIcon />,
+        icon: <HomeOutlinedIcon />,
       },
       {
         id: 4,
@@ -59,7 +62,7 @@ export default function BottomNavigation({ currentTab }) {
           key={index}
           className={classNames({
             [styles.bottom_menu_wrapper]: true,
-            [styles.bottom_menu_wrapper_active]: menu.url == currentTab,
+            [styles.bottom_menu_wrapper_active]: menu.url == pathname,
           })}
           onClick={() => {
             if (!!menu.url) {

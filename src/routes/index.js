@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Cart from "pages/Cart";
 import Category from "pages/Category";
+import CategoryMenu from "pages/CategoryMenu";
 import Event from "pages/Event";
 import FindMember from "pages/FindMember";
 import Heart from "pages/Heart";
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
   {
     path: "/lookbook",
     element: <LookBook />,
+  },
+  {
+    path: "/category",
+    element: <CategoryMenu />,
   },
   {
     path: "/login",

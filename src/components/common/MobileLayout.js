@@ -21,7 +21,6 @@ export const MobileLayout = ({
   showIcon = true,
   isFooter = false,
   isBottomNavigation = false,
-  currentTab = "/",
 }) => {
   const navigation = useNavigate();
   const location = useLocation();
@@ -81,7 +80,7 @@ export const MobileLayout = ({
       </div>
       {children}
       <ScrollNavigation />
-      {isBottomNavigation && <BottomNavigation currentTab={currentTab} />}
+      {isBottomNavigation && <BottomNavigation />}
       {isFooter && <Footer />}
     </div>
   );

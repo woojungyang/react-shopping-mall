@@ -35,7 +35,6 @@ export default function MyPageContentMb() {
       headerTitle="MY PAGE"
       isBottomNavigation={true}
       isFooter={true}
-      currentTab="/mypage"
     >
       <div className={styles.mobile_mypage_container}>
         <div className={styles.profile_wrapper}>

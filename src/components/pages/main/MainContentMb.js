@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import classNames from "classnames";
 import { Device } from "models/device";
-import { getDiscountPercent, numberWithCommas } from "utilities";
+import {
+  addLeadingZero,
+  getDiscountPercent,
+  numberWithCommas,
+} from "utilities";
 
 import { useUserDevice } from "hooks/size/useUserDevice";
 
@@ -10,7 +14,6 @@ import { ItemCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
 import {
   CustomSliderContainer,
-  ImageSlider,
   ScrollableSlider,
   SliderPagination,
 } from "components/slider";
@@ -29,33 +32,77 @@ export default function MainContentMb({ data, setToastMessage }) {
   const userDevice = useUserDevice();
   const isMobile = userDevice == Device.Mobile;
 
+  function getWindowSize() {
+    return window.innerWidth - window.innerWidth * 0.21;
+  }
+  const [windowSize, setWindowSize] = useState(getWindowSize());
+  const handleWindowResize = useCallback((event) => {
+    setWindowSize(getWindowSize());
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowResize);
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, [handleWindowResize]);
+
   if (!data) return null;
 
   return (
     <div className={styles.main_container_mb}>
-      <div className="slider-container" style={{ position: "relative" }}>
-        <ImageSlider
-          images={data?.mainSlide}
-          currentIndex={currentMainSliderIndex}
-          setCurrentIndex={setCurrentMainSliderIndex}
-        />
-
-        <SliderPagination
-          bgColor="black"
-          percentColor="#f2d16d"
-          customStyle={{
-            height: 5,
-            marginTop: -5,
-            width: `100%`,
+      <div className={styles.slider_image_container}>
+        <CustomSliderContainer
+          autoPlay={true}
+          settings={{
+            className: "center",
+            centerMode: true,
+            infinite: true,
+            speed: 2000,
+            centerPadding: "5%",
+            slidesToShow: 1,
+            slidesToScroll: 1,
           }}
-          percent={calculatePercent(
-            currentMainSliderIndex,
-            data?.mainSlide?.length,
-          )}
-        />
+          setCurrentIndex={setCurrentMainSliderIndex}
+        >
+          {data?.mainSlide.map((image, index) => {
+            return (
+              <div key={index} className={styles.slider_image_wrapper_mb}>
+                <img src={image?.url} className={styles.slider_image} />
+                <div className={styles.slider_copyright_mobile2}>
+                  <h1>{image?.title}</h1>
+                  <p>{image?.subTitle}</p>
+                </div>
+              </div>
+            );
+          })}
+        </CustomSliderContainer>
+
+        <div
+          className={styles.slider_pagination_mb}
+          style={{ width: windowSize }}
+        >
+          <p className={styles.slider_index}>
+            {addLeadingZero(currentMainSliderIndex + 1)}
+            <span> ・ {addLeadingZero(data?.mainSlide?.length || 0)}</span>
+          </p>
+          <SliderPagination
+            bgColor="rgba(225,225,225,0.9)"
+            percentColor="#ffff"
+            customStyle={{
+              height: 2,
+              marginTop: 0,
+              width: `100%`,
+            }}
+            percent={calculatePercent(
+              currentMainSliderIndex,
+              data?.mainSlide?.length,
+            )}
+          />
+        </div>
       </div>
 
-      <div className={styles.category_wrapper_mb}>
+      {/* <div className={styles.category_wrapper_mb}>
         {data?.mobileCategory.map((category, index) => (
           <div
             className={styles.category_wrap}
@@ -68,7 +115,7 @@ export default function MainContentMb({ data, setToastMessage }) {
             <p className={styles.category_name}>{category.name}</p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* for u */}
       <div className={styles.for_u_container}>
@@ -91,7 +138,7 @@ export default function MainContentMb({ data, setToastMessage }) {
                   showOriginalPrice={false}
                   item={item}
                   style={{
-                    height: 300,
+                    height: 270,
                     marginBottom: index % 1 == 0 ? "30px" : "",
                   }}
                 />
@@ -131,7 +178,7 @@ export default function MainContentMb({ data, setToastMessage }) {
             infinite: true,
             speed: 500,
             centerMode: true,
-            centerPadding: isMobile ? "40px" : "150px",
+            centerPadding: isMobile ? "20%" : "30%",
             slidesToShow: 1,
             slidesToScroll: 1,
           }}
@@ -241,20 +288,20 @@ export default function MainContentMb({ data, setToastMessage }) {
         <p className={styles.section_title}>DEPP IN FOCUS</p>
         {data?.brandEvents?.slice(0, moreFocus)?.map((brandEvent, index) => (
           <div key={index} className={styles.deep_in_focus_wrapper}>
-            <div className={styles.deep_in_focus_thumbnail_wrap}>
-              <img
-                src={brandEvent?.brandThumbnail}
-                className={styles.item_thumbnail}
-              />
-              <div className={styles.brand_copyright_wrap}>
-                <h2>{brandEvent?.brandName}</h2>
-                <p>{brandEvent?.copyright}</p>
-              </div>
+            <img
+              src={brandEvent?.brandThumbnail}
+              className={styles.item_thumbnail}
+            />
+            <div className={styles.brand_copyright_wrap}>
+              <h2>{brandEvent?.brandName}</h2>
+              <p>{brandEvent?.copyright}</p>
             </div>
 
             <div className={styles.deep_in_focus_items_wrap}>
               {brandEvent?.items.map((item, index) => (
-                <SmallCard key={index} item={item} />
+                <div key={index} className={styles.items_card_wrap}>
+                  <SmallCard item={item} showBrand={false} />
+                </div>
               ))}
             </div>
           </div>

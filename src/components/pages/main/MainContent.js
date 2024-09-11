@@ -6,6 +6,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import ShopIcon from "@mui/icons-material/Shop";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import classNames from "classnames";
+import { addLeadingZero } from "utilities";
 
 import { ItemCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
@@ -14,7 +15,6 @@ import {
   CustomSliderContainer,
   FlexBoxSlider,
   ImageSlider,
-  ScrollableSlider,
 } from "components/slider";
 
 import { calculatePercent } from "utilities/calculatePercent";
@@ -26,10 +26,6 @@ export default function MainContent({ data }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const progressBarWidth = useRef(null);
-
-  function addLeadingZero(number) {
-    return number.toString().padStart(2, "0");
-  }
 
   const forUCategories = [
     { id: 1, name: "WOMAN" },

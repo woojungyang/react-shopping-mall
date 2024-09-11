@@ -210,7 +210,7 @@ body {
   padding: $default;
   img {
     width: 64px;
-    height: 86px;
+    height: 64px;
     margin-right: $default;
   }
   .brand_item_info {
@@ -713,6 +713,9 @@ input[type="number"] {
   img {
     max-width: 300px;
     width: 100%;
+    @include tablet {
+      max-width: 200px;
+    }
   }
   a {
     margin-top: $default;

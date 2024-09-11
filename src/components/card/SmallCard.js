@@ -10,7 +10,7 @@ import styles from "styles/_common.module.scss";
 
 import { LikeHeart } from "./LikeHeart";
 
-export const SmallCard = ({ item = {} }) => {
+export const SmallCard = ({ item = {}, showBrand = true }) => {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
   return (
@@ -23,7 +23,7 @@ export const SmallCard = ({ item = {} }) => {
       <img src={item?.thumbnail} alt="" />
       <div className={styles.brand_item_info}>
         <div className={styles.item_info}>
-          <p className={styles.brand_name}>{item?.brandName}</p>
+          {showBrand && <p className={styles.brand_name}>{item?.brandName}</p>}
           <p className={styles.brand_item_name}>{item?.itemName}</p>
         </div>
         <div className={styles.price_info}>
