@@ -25,7 +25,7 @@ export function getSubCategory(categoryName) {
       { id: 6, label: "Skirt", sub: "스커트" },
       { id: 7, label: "One-piece", sub: "원피스" },
     ])
-    .sort((a, b) => b.id - a.id);
+    .sort((a, b) => a.id - b.id);
 
   const commonShoes = [
     { id: 0, label: "ALL", sub: "전체" },
@@ -39,11 +39,11 @@ export function getSubCategory(categoryName) {
 
   const womenShoes = [{ id: 4, label: "Pumps/Heals", sub: "펌프/힐" }]
     .concat(commonShoes)
-    .sort((a, b) => b.id - a.id);
+    .sort((a, b) => a.id - b.id);
 
   const menShoes = [{ id: 7, label: "Lace-up", sub: "레이스업" }]
     .concat(commonShoes)
-    .sort((a, b) => b.id - a.id);
+    .sort((a, b) => a.id - b.id);
 
   if (!categoryName) return [];
 
