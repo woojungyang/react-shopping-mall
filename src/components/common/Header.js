@@ -77,7 +77,7 @@ export default function Header() {
 
       if (element) {
         const tabMenu = document.querySelector("#tab_menu");
-        tabMenu.scrollLeft = element.offsetLeft - element.offsetWidth * 4;
+        tabMenu.scrollLeft = element.offsetLeft - element.offsetWidth;
       }
     }
   }, [isDeskTop]);
@@ -219,7 +219,8 @@ function MenuList({ list, isDeskTop = false }) {
   const { id: categoryName } = useParams();
   const pathname = window.location.pathname.split("/")[1];
 
-  const currentMenuArray = [categoryName, pathname];
+  const currentMenuArray = [categoryName, pathname].filter(Boolean);
+  console.log(currentMenuArray);
 
   return (
     <>
@@ -230,7 +231,11 @@ function MenuList({ list, isDeskTop = false }) {
           <p
             key={index}
             style={{
-              color: checkCurrentMenu ? "rgb(254, 99, 32)" : "",
+              color:
+                checkCurrentMenu ||
+                (currentMenuArray.length == 0 && menu.name == "HOME")
+                  ? "rgb(254, 99, 32)"
+                  : "",
             }}
             className={classNames({
               [styles.default_scroll_menu]: !isDeskTop,

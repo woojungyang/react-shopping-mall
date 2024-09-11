@@ -409,8 +409,17 @@
   flex-direction: column;
   position: relative;
   width: 100%;
-  padding: 0 $padding;
+  // padding: 0 $padding;
+  padding-top: $margin;
+  padding-bottom: 100px;
+  .event_banner {
+    padding: 0 $padding;
+    margin-bottom: $margin * 1.3;
+    @include default-image;
+    height: 80px;
+  }
   .category_wrapper {
+    margin: 0 $padding;
     @include flex;
     height: 40px;
     border-bottom: 1px solid $color-skeleton-100;
@@ -430,8 +439,9 @@
     }
   }
   .sub_category_container {
-    padding: $margin 0;
+    padding: $margin $padding;
     font-size: 14px;
+    border-bottom: 10px solid rgba($color-skeleton-100, 0.1);
     .sub_category_wrapper {
       .first_depth {
         padding: $default 0;
@@ -448,6 +458,48 @@
         margin-bottom: $default;
 
         @include display-grid($colum: repeat(2, 1fr));
+      }
+    }
+  }
+  .category_section_wrapper {
+    padding-left: $padding;
+    margin: $margin 0;
+    .category_section_header {
+      padding-right: $padding;
+      margin-bottom: $padding;
+      @include flex($justify-content: space-between);
+      .category_section_title {
+        font-size: $margin;
+        font-weight: $font-weight-medium;
+      }
+      .category_section_more {
+        font-size: $padding * 0.8;
+        @include flex;
+      }
+    }
+    .category_section_body {
+      width: 100%;
+      .category_section_card {
+        position: relative;
+        color: $color-background-100;
+        font-weight: $font-weight-medium;
+        .section_body_thumbnail {
+          @include default-image;
+          height: 193px;
+          margin-bottom: $default;
+        }
+        .category_section_content {
+          position: absolute;
+          bottom: 15%;
+          left: 5%;
+          z-index: 1;
+        }
+        .section_body_title {
+          font-size: 15px;
+        }
+        p {
+          font-size: 12px;
+        }
       }
     }
   }
