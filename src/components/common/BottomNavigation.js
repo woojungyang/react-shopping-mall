@@ -34,7 +34,12 @@ export default function BottomNavigation({ currentTab }) {
 
         icon: <AppsIcon />,
       },
-      { id: 4, name: "LIKE", icon: <FavoriteBorderIcon /> },
+      {
+        id: 4,
+        name: "HEART",
+        icon: <FavoriteBorderIcon />,
+        url: "/mypage/heart",
+      },
       {
         id: 5,
         name: "MY",

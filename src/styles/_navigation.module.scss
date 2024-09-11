@@ -187,7 +187,8 @@
 
       padding-left: $default/1.5;
       padding-right: $default/1.5;
-      font-weight: 500;
+      font-size: 14px;
+      // font-weight: 500;
       flex-shrink: 0;
       color: $color-skeleton-100;
       cursor: pointer;
@@ -258,11 +259,14 @@
   .footer_wrapper {
     @include flex($direction: column);
     text-align: center;
+    p {
+      font-size: 13px;
+    }
   }
 }
 
 .bottom_navigation_container {
-  font-size: 14px;
+  font-size: 13px;
   position: fixed;
   bottom: 0px;
   background-color: #f6f6f6;

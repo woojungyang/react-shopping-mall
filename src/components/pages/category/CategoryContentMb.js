@@ -110,7 +110,10 @@ export default function CategoryContentMb() {
   if (overviewLoading) return <LoadingLayer />;
 
   return (
-    <MobileLayout headerTitle={categoryName.toUpperCase()}>
+    <MobileLayout
+      headerTitle={categoryName.toUpperCase()}
+      isBottomNavigation={true}
+    >
       <div className={styles.mobile_category_container}>
         <div className={styles.exhibition_container}>
           <p className={styles.section_title}>PROMOTION</p>

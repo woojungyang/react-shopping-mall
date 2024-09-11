@@ -73,7 +73,11 @@ export default function HeartContentMb() {
     return <LoadingLayer />;
 
   return (
-    <MobileLayout headerTitle="♡ HEART" isFooter={true}>
+    <MobileLayout
+      headerTitle="♡ HEART"
+      isFooter={true}
+      isBottomNavigation={true}
+    >
       <div className={styles.my_heart_container_mobile}>
         <div className={styles.heart_filter_wrapper}>
           {heartMenu.map((menu, index) => (

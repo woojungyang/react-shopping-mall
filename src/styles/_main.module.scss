@@ -509,7 +509,7 @@
       margin-top: $margin * 1;
     }
     h1 {
-      font-weight: $font-weight-bolder;
+      font-weight: $font-weight-medium;
       font-size: $default * 2.5;
     }
   }
@@ -533,6 +533,8 @@
 }
 
 .main_container_mb {
+  width: 100%;
+  overflow-x: hidden;
   .section_title {
     margin-bottom: $padding;
     font-weight: $font-weight-medium;
@@ -606,13 +608,14 @@
         }
         .spotlight_title {
           margin-top: $default;
-          font-weight: 600;
+          font-weight: $font-weight-medium;
           @include overflow-text($clamp: 2);
         }
         .spotlight_subtitle {
           margin-top: $default/2;
           color: $color-skeleton-100;
           font-size: 13px;
+          @include overflow-text($clamp: 2);
         }
       }
     }
@@ -742,7 +745,7 @@
         font-size: 14px;
 
         .brand {
-          font-weight: 600;
+          font-weight: $font-weight-medium;
           @include overflow-text($clamp: 1);
         }
 
