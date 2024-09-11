@@ -4,7 +4,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import classNames from "classnames";
-import { mypageMenuList } from "models/mypage";
+import { guestMenu, userMenuList } from "models/mypage";
 import { getMembershipLabel } from "models/user";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -24,48 +24,60 @@ export const MyPageLayout = ({ children, childrenLoading = false }) => {
 
   const [toastMessage, setToastMessage] = useState("");
 
-  const { data: user, isLoading } = useUserQuery();
+  const token = localStorage.getItem("token");
+  const { data: user, isLoading } = useUserQuery({ enabled: !!token });
+
+  const menuList = !!token ? userMenuList : guestMenu;
 
   return (
     <CommonLayout isLoading={isLoading || childrenLoading}>
       <div className={styles.mypage_container}>
-        <p className={styles.mypage_title}>MY PAGE</p>
-        <div className={styles.profile_wrapper}>
-          {membershipInformation.map((membership, index) => (
-            <div
-              key={index}
-              onClick={() => {
-                if (!!membership?.link) navigation(membership.link);
-                else setToastMessage("준비중입니다.");
-              }}
-              className={membership.className || styles.membership_wrap2}
-            >
-              <p className={styles.membership_title}>
-                {membership.label} <ChevronRightIcon />
-              </p>
-              <p className={styles.membership_count}>
-                {membership.key == "rank"
-                  ? getMembershipLabel(user?.rank)
-                  : user?.[membership.key]}
-              </p>
+        {!!token && (
+          <>
+            <p className={styles.mypage_title}>MY PAGE</p>
+            <div className={styles.profile_wrapper}>
+              {membershipInformation.map((membership, index) => (
+                <div
+                  key={index}
+                  onClick={() => {
+                    if (!!membership?.link) navigation(membership.link);
+                    else setToastMessage("준비중입니다.");
+                  }}
+                  className={membership.className || styles.membership_wrap2}
+                >
+                  <p className={styles.membership_title}>
+                    {membership.label} <ChevronRightIcon />
+                  </p>
+                  <p className={styles.membership_count}>
+                    {membership.key == "rank"
+                      ? getMembershipLabel(user?.rank)
+                      : user?.[membership.key]}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
 
         <div className={styles.mypage_wrapper}>
           <div className={styles.side_menu_wrap}>
-            <div className={styles.user_information}>
-              <p className={styles.user_name}>{user?.name}</p>
-              <p
-                className={styles.heart_wrap}
-                onClick={() => navigation("/mypage/heart")}
-              >
-                <FavoriteBorderIcon />
-                HEART
-              </p>
-            </div>
-            {mypageMenuList.map((menu, index) => {
+            {!!token && (
+              <div className={styles.user_information}>
+                <p className={styles.user_name}>{user?.name}</p>
+                <p
+                  className={styles.heart_wrap}
+                  onClick={() => navigation("/mypage/heart")}
+                >
+                  <FavoriteBorderIcon />
+                  HEART
+                </p>
+              </div>
+            )}
+            {menuList.map((menu, index) => {
               const isActive = menu.category == menuCategory;
+
+              console.log(menu.category);
+              console.log(menuCategory);
 
               const hasSubMenu = menu?.sub?.length;
               return (

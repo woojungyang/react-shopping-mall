@@ -30,7 +30,11 @@ export default function Footer() {
         },
       },
       { id: 2, label: "고객센터" },
-      { id: 3, label: "공지사항" },
+      {
+        id: 3,
+        label: "공지사항",
+        onClick: () => navigation("/mypage/cscenter/notice"),
+      },
     ];
   }, [localStorage.getItem("token")]);
 

@@ -6,6 +6,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import ShopIcon from "@mui/icons-material/Shop";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import classNames from "classnames";
+import { useNavigate } from "react-router-dom";
 import { addLeadingZero } from "utilities";
 
 import { ItemCard, SmallCard } from "components/card";
@@ -23,6 +24,7 @@ import { formatDateTime } from "utilities/dateTime";
 import styles from "styles/_main.module.scss";
 
 export default function MainContent({ data }) {
+  const navigation = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const progressBarWidth = useRef(null);
@@ -412,7 +414,15 @@ export default function MainContent({ data }) {
         </div>
         <div className={styles.default_flex_space}>
           <div className={styles.notice_wrapper}>
-            <p className={styles.notice_title}>NOTICE</p>
+            <div className={styles.default_flex_space}>
+              <p className={styles.notice_title}>NOTICE</p>
+              <span
+                style={{ fontSize: 12, cursor: "pointer" }}
+                onClick={() => navigation("/mypage/cscenter/notice")}
+              >
+                more
+              </span>
+            </div>
             <div>
               {notices?.map((notice, index) => (
                 <div key={index} className={styles.default_flex_space}>
@@ -443,7 +453,9 @@ export default function MainContent({ data }) {
               <p>1:1문의 내역</p>
               <p>주문 문의</p>
               <p>FQA</p>
-              <p>공지사항</p>
+              <p onClick={() => navigation("/mypage/cscenter/notice")}>
+                공지사항
+              </p>
               <p>고객의 소리</p>
             </div>
           </div>

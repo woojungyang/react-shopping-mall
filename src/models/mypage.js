@@ -1,6 +1,20 @@
 import { enumerate } from "utilities/enumeration";
 
-export const mypageMenuList = [
+export const guestMenu = [
+  {
+    id: 2,
+    label: "고객센터",
+    category: "cscenter",
+    sub: [
+      { id: 1, label: "상품 Q&A" },
+      { id: 2, label: "1:1문의 내역" },
+      { id: 3, label: "공지사항", url: "/mypage/cscenter/notice" },
+      { id: 4, label: "FAQ" },
+      { id: 5, label: "고객의소리" },
+    ],
+  },
+];
+export const userMenuList = [
   {
     id: 1,
     label: "쇼핑정보",
@@ -21,19 +35,7 @@ export const mypageMenuList = [
       { id: 4, label: "마일리지" },
     ],
   },
-  {
-    id: 2,
-    label: "고객센터",
-    category: "cs-center",
-    sub: [
-      { id: 1, label: "상품 Q&A" },
-      { id: 2, label: "1:1문의 내역" },
-      { id: 3, label: "공지사항" },
-      { id: 4, label: "FAQ" },
-      { id: 5, label: "고객의소리" },
-    ],
-  },
-];
+].concat(guestMenu);
 
 export const HeartType = enumerate({
   Item: 1,

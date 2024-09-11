@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { mypageMenuList } from "models/mypage";
+import { userMenuList } from "models/mypage";
 import { OrderState } from "models/order";
 import { getMembershipLabel } from "models/user";
 import { useNavigate } from "react-router-dom";
@@ -72,7 +72,7 @@ export default function MyPageContentMb() {
         </div>
 
         <div className={styles.menu_wrapper}>
-          {mypageMenuList.map((menu, index) => (
+          {userMenuList.map((menu, index) => (
             <div key={index} className={styles.menu}>
               <p className={styles.menu_category}>{menu.label} </p>
               {menu.sub.map((menu2) => {
