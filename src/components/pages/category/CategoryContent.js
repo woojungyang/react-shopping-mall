@@ -14,7 +14,7 @@ import useItemsQuery from "hooks/query/useItemsQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
-import { ItemCard, SmallCard } from "components/card";
+import { ItemCard } from "components/card";
 import {
   CommonLayout,
   DefaultPagination,
@@ -61,9 +61,9 @@ export default function CategoryContent() {
 
   const [toastMessage, setToastMessage] = useState("");
   const subCategories = getSubCategory(categoryName);
-  const [currentSubCategory, setCurrentSubCategory] = useState(
-    subCategories[0].id,
-  );
+  const [currentSubCategory, setCurrentSubCategory] = useState({
+    id: subCategories[0].id,
+  });
 
   const bestItems = useMemo(() => {
     if (!overview?.bestItems) return [];
@@ -195,21 +195,49 @@ export default function CategoryContent() {
               <br />
               CATEGORY
             </h3>
-            {subCategories.map((subCategory) => {
-              const active = currentSubCategory == subCategory.id;
+            {subCategories.map((subCategory, index) => {
+              const active = currentSubCategory.id == subCategory.id;
               return (
-                <div
-                  onClick={() => setToastMessage("준비중입니다.")}
-                  className={classNames({
-                    [styles.sub_category]: true,
-                    [styles.active_category]: active,
-                  })}
-                >
-                  <div className={styles.default_flex}>
-                    <p>{subCategory.label}</p>
-                    <span>{subCategory.sub}</span>
+                <div key={index}>
+                  <div
+                    onClick={() =>
+                      setCurrentSubCategory({
+                        id: subCategory.id,
+                        depth: subCategory?.depth?.[0].id,
+                      })
+                    }
+                    className={classNames({
+                      [styles.sub_category]: true,
+                      [styles.active_category]: active,
+                    })}
+                  >
+                    <div className={styles.default_flex}>
+                      <p>{subCategory.label}</p>
+                      <span>{subCategory.sub}</span>
+                    </div>
+                    {active && <TrendingFlatIcon />}
                   </div>
-                  {active && <TrendingFlatIcon />}
+                  {active && !!subCategory?.depth?.length && (
+                    <div className={styles.depth_wrapper}>
+                      {subCategory?.depth.map((depth) => (
+                        <p
+                          onClick={() =>
+                            setCurrentSubCategory({
+                              id: subCategory.id,
+                              depth: depth.id,
+                            })
+                          }
+                          className={classNames({
+                            [styles.depth]: true,
+                            [styles.depth_active]:
+                              currentSubCategory.depth == depth.id,
+                          })}
+                        >
+                          {depth.label} <span>{depth.sub}</span>
+                        </p>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}

@@ -183,9 +183,10 @@
           font-weight: 600;
         }
         span {
-          margin-left: 5px;
+          margin-left: 10px;
           color: $color-skeleton-100;
           font-size: 12px;
+          margin-top: 2px;
         }
         border-bottom: 0.3px solid rgba($color-skeleton-100, 0.3);
         svg {
@@ -195,6 +196,27 @@
       }
       .active_category {
         border-bottom: 2.3px solid $color-dark-300;
+      }
+      .depth_wrapper {
+        background-color: rgba($color-skeleton-100, 0.1);
+        padding: $margin;
+        .depth {
+          cursor: pointer;
+          margin-bottom: $padding;
+          font-size: 14px;
+          font-weight: $font-weight-medium;
+
+          color: $color-skeleton-100;
+          span {
+            margin-left: $default;
+          }
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+        .depth_active {
+          color: $color-dark-300;
+        }
       }
     }
     .category_contents_wrapper {
@@ -375,13 +397,37 @@
           border-bottom: 2px solid $color-dark-300;
         }
       }
+      .depth_wrapper {
+        @include flex($justify-content: flex-start);
+        background-color: #fafafa;
+        padding: $default $margin * 1.2;
+        border-bottom: 1px solid #f2f2f2;
+        overflow-x: scroll;
+        @include hidden-scrollbar;
+        .depth {
+          flex-shrink: 0;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: $font-weight-medium;
+
+          color: $color-skeleton-100;
+          margin-right: $margin;
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+        .depth_active {
+          color: $color-dark-300;
+        }
+      }
       .order_filter_wrap {
+        padding: 0 $padding;
         background-color: $color-background-100;
         border-bottom: 1px solid rgba($color-skeleton-100, 0.3);
-        @include flex($justify-content: flex-end);
+        @include flex($justify-content: space-between);
         .filter_icon_wrap {
           padding: $padding/2;
-          @include flex($justify-content: flex-end);
+          @include flex($justify-content: space-between);
         }
       }
     }

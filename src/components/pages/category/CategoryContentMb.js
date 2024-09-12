@@ -1,4 +1,11 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import AppsIcon from "@mui/icons-material/Apps";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
@@ -77,9 +84,50 @@ export default function CategoryContentMb() {
   const [zoomIn, setZoomIn] = useState(false);
 
   const subCategories = getSubCategory(categoryName);
-  const [currentSubCategory, setCurrentSubCategory] = useState(
-    subCategories[0].id,
+
+  const [subCategory, changeSubCategory] = useQueryString("subCategory", "");
+  const [smallCategory, changeSmallCategory] = useQueryString(
+    "smallCategory",
+    "",
   );
+  const [currentSubCategory, setCurrentSubCategory] = useState({
+    id: subCategory || subCategories[0].id,
+    depth: smallCategory,
+  });
+
+  const currentDepth = useMemo(
+    () => subCategories.find((e) => e.id == currentSubCategory.id).depth,
+    [currentSubCategory],
+  );
+
+  const [flag, setFlag] = useState(false);
+
+  useEffect(() => {
+    if (!!smallCategory) setFlag(true);
+  }, []);
+
+  useEffect(() => {
+    const element1 = document.getElementsByClassName("sub_category")[0];
+    const element2 = document.getElementsByClassName("small_category")[0];
+    const scrollTarget = document.getElementById("scrollTarget");
+
+    // 전체 렌더링이 완료된 후 스크롤 이동
+    requestAnimationFrame(() => {
+      if (element1) {
+        const subMenu = document.querySelector("#sub_menu");
+        if (subMenu) {
+          subMenu.scrollLeft = element1.offsetLeft - element1.offsetWidth;
+        }
+      }
+
+      if (element2) {
+        const smallMenu = document.querySelector("#small_menu");
+        if (smallMenu) {
+          smallMenu.scrollLeft = element2.offsetLeft - element2.offsetWidth;
+        }
+      }
+    });
+  }, [currentSubCategory, smallCategory]);
 
   const [toastMessage, setToastMessage] = useState("");
 
@@ -104,7 +152,7 @@ export default function CategoryContentMb() {
   const { scrollToElement, setElementRef } = useScrollToElement();
   const handleSortChange = (value) => {
     changeSort(value);
-    setTimeout(() => scrollToElement("topItem"), 100);
+    // setTimeout(() => scrollToElement("topItem"), 100);
   };
 
   if (overviewLoading) return <LoadingLayer />;
@@ -114,7 +162,7 @@ export default function CategoryContentMb() {
       headerTitle={categoryName.toUpperCase()}
       isBottomNavigation={true}
     >
-      <div className={styles.mobile_category_container}>
+      <div className={styles.mobile_category_container} id="container">
         <div className={styles.exhibition_container}>
           <p className={styles.section_title}>PROMOTION</p>
           <CustomSliderContainer
@@ -203,26 +251,56 @@ export default function CategoryContentMb() {
           </div>
         </div>
 
-        <div className={styles.category_all_items_container}>
+        <div className={styles.category_all_items_container} id="scrollTarget">
           <div
             className={classNames({
               [styles.subcategory_filter_wrap]: true,
             })}
+
+            // ref={setElementRef("topItem")}
           >
-            <div className={styles.subcategory_wrap}>
+            <div className={styles.subcategory_wrap} id="sub_menu">
               {subCategories.map((subCategory, index) => (
                 <p
                   key={index}
-                  onClick={() => setToastMessage("준비중입니다.")}
+                  onClick={() =>
+                    setCurrentSubCategory({
+                      id: subCategory.id,
+                      depth: subCategory?.depth?.[0].id,
+                    })
+                  }
                   className={classNames({
                     [styles.active_category]:
-                      currentSubCategory === subCategory.id,
+                      currentSubCategory.id == subCategory.id,
+                    sub_category: currentSubCategory.id == subCategory.id,
                   })}
                 >
                   {subCategory.label}
                 </p>
               ))}
             </div>
+            {currentDepth?.length && (
+              <div className={styles.depth_wrapper} id="small_menu">
+                {currentDepth?.map((depth) => (
+                  <p
+                    onClick={() =>
+                      setCurrentSubCategory({
+                        ...currentSubCategory,
+                        depth: depth.id,
+                      })
+                    }
+                    className={classNames({
+                      [styles.depth]: true,
+                      [styles.depth_active]:
+                        currentSubCategory.depth == depth.id,
+                      small_category: currentSubCategory.depth == depth.id,
+                    })}
+                  >
+                    {depth.sub}
+                  </p>
+                ))}
+              </div>
+            )}
 
             <div className={styles.order_filter_wrap}>
               <SelectBox
@@ -244,7 +322,6 @@ export default function CategoryContentMb() {
               [styles.all_items_zoom]: !zoomIn,
               [styles.all_items_zoom_in]: zoomIn,
             })}
-            ref={setElementRef("topItem")}
           >
             {items?.pages?.flatMap((page) =>
               page.data.map((item, index) => (
