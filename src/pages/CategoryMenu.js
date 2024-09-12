@@ -107,7 +107,7 @@ export default function CategoryMenu() {
                     <p
                       onClick={() =>
                         navigation(
-                          `/category/${selectedCategory}?subCategory=${cate.id}${cate2.id > 0 ? `&smallCategory=${cate2.id}` : ""}`,
+                          `/category/${selectedCategory}?subCategory=${cate.id}&smallCategory=${cate2.id}`,
                         )
                       }
                     >

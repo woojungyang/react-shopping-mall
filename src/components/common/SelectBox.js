@@ -4,7 +4,12 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 import styles from "styles/_common.module.scss";
 
-export const SelectBox = ({ options = [], onChange, selectedValue = "" }) => {
+export const SelectBox = ({
+  options = [],
+  onChange,
+  selectedValue = "",
+  style = {},
+}) => {
   const [showOptions, setShowOptions] = useState(false);
   const selectedOptionLabel = options.find(
     (option) => option.sort == selectedValue,
@@ -19,7 +24,7 @@ export const SelectBox = ({ options = [], onChange, selectedValue = "" }) => {
         <ArrowDropDownIcon />
       </div>
       {showOptions && (
-        <div className={styles.select_options_wrap}>
+        <div className={styles.select_options_wrap} style={style}>
           {options?.map((option, index) => (
             <p
               key={index}
