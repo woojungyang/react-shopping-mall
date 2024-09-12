@@ -106,6 +106,7 @@ export default function CategoryContentMb() {
   useEffect(() => {
     if (!!subCategory) {
       setScrollLoading(true);
+
       const timer = setTimeout(() => {
         const element1 = document.getElementsByClassName("sub_category")[0];
         const element2 = document.getElementsByClassName("small_category")[0];
@@ -130,10 +131,10 @@ export default function CategoryContentMb() {
               element2.offsetLeft - element2.offsetWidth + 20;
           }
         }
-      }, 2000); // 100ms 지연
+      }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [subCategory, smallCategory, sort]);
+  }, []);
 
   const [toastMessage, setToastMessage] = useState("");
 

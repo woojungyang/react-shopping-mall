@@ -27,7 +27,7 @@ export const MobileLayout = ({
 
   useEffect(() => {
     scrollTop();
-  }, [location]);
+  }, []);
 
   const cartItems = useSelector((state) => state.counter.items).length;
 
