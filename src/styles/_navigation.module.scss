@@ -91,17 +91,19 @@
     .nav_wrapper {
       margin-bottom: $default;
       @include flex($justify-content: flex-start);
-      p {
-        @include flex;
-        color: $color-skeleton-200;
-        margin-right: $margin * 2;
-        font-size: $padding;
-        font-weight: 600;
-        letter-spacing: 1px;
+      .default_scroll_menu_wrap {
         cursor: pointer;
-        height: 45px;
-        &:last-child {
-          margin-right: 0;
+        margin-right: $margin * 2;
+        p {
+          height: 45px;
+          @include flex;
+          color: $color-skeleton-200;
+          font-size: $padding;
+          font-weight: 600;
+          letter-spacing: 1px;
+          &:last-child {
+            margin-right: 0;
+          }
         }
       }
 
@@ -119,6 +121,18 @@
         p {
           font-style: italic;
         }
+      }
+    }
+    .hover_menu_container {
+      position: absolute;
+      left: 0;
+
+      // top: 500px;
+      width: 100%;
+      background-color: pink;
+      .hover_menu_wrapper {
+        margin: auto;
+        max-width: $max-width;
       }
     }
   }

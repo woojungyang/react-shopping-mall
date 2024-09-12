@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import AppsIcon from "@mui/icons-material/Apps";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -7,7 +13,9 @@ import CropSquareIcon from "@mui/icons-material/CropSquare";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import classNames from "classnames";
 import { filterList, getSubCategory } from "models/category";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { scrollTop } from "utilities";
 
 import useCategoryOverviewQuery from "hooks/query/useCategoryOverviewQuery";
 import useItemsQuery from "hooks/query/useItemsQuery";
@@ -28,6 +36,8 @@ import styles from "styles/_category.module.scss";
 import PopUpCard from "./PopUpCard";
 
 export default function CategoryContent() {
+  const navigation = useNavigate();
+  const [searchParams] = useSearchParams();
   const { id: categoryName } = useParams();
   const category = { category: categoryName };
 
@@ -61,9 +71,37 @@ export default function CategoryContent() {
 
   const [toastMessage, setToastMessage] = useState("");
   const subCategories = getSubCategory(categoryName);
+  const [subCategory, changeSubCategory] = useQueryString("subCategory", "");
+  const [smallCategory, changeSmallCategory] = useQueryString(
+    "smallCategory",
+    "",
+  );
   const [currentSubCategory, setCurrentSubCategory] = useState({
-    id: subCategories[0].id,
+    id: subCategory || subCategories[0].id,
+    depth: smallCategory,
   });
+
+  const [scrollLoading, setScrollLoading] = useState(false);
+
+  useEffect(() => {
+    if (!!subCategory) {
+      setScrollLoading(true);
+
+      const timer = setTimeout(() => {
+        const container = document.getElementById("scrollTarget");
+        console.log(document.getElementById("scrollTarget"));
+        if (container) {
+          window.scrollTo({
+            top: container.offsetTop - 200,
+            behavior: "smooth",
+          });
+        }
+
+        setScrollLoading(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const bestItems = useMemo(() => {
     if (!overview?.bestItems) return [];
@@ -82,15 +120,16 @@ export default function CategoryContent() {
     [],
   );
 
-  if (overviewLoading) return <LoadingLayer />;
+  useEffect(() => {
+    scrollTop();
+  }, [categoryName]);
 
   return (
-    <CommonLayout
-      isLoading={isLoading}
-      setToastMessage={setToastMessage}
-      toastMessage={toastMessage}
-    >
+    <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
       <div className={styles.category_container}>
+        {(overviewLoading || isLoading || isFetching || scrollLoading) && (
+          <LoadingLayer />
+        )}
         {/* PROMOTION */}
         <div className={styles.exhibition_container}>
           <p className={styles.section_title}>PROMOTION</p>
@@ -188,7 +227,7 @@ export default function CategoryContent() {
           </div>
         </div>
 
-        <div className={styles.category_all_items_container}>
+        <div className={styles.category_all_items_container} id="scrollTarget">
           <div className={styles.category_sidebar}>
             <h3 className={styles.category_name}>
               {categoryName.toUpperCase()}
@@ -200,12 +239,23 @@ export default function CategoryContent() {
               return (
                 <div key={index}>
                   <div
-                    onClick={() =>
-                      setCurrentSubCategory({
+                    onClick={() => {
+                      const newCategory = {
                         id: subCategory.id,
                         depth: subCategory?.depth?.[0].id,
-                      })
-                    }
+                      };
+                      setCurrentSubCategory(newCategory);
+                      changeSubCategory(newCategory.id);
+                      const newSearchParams = new URLSearchParams(searchParams);
+
+                      if (!newCategory?.depth?.length) {
+                        newSearchParams.delete("smallCategory");
+                      }
+
+                      navigation("?" + newSearchParams.toString(), {
+                        replace: true,
+                      });
+                    }}
                     className={classNames({
                       [styles.sub_category]: true,
                       [styles.active_category]: active,
@@ -219,14 +269,16 @@ export default function CategoryContent() {
                   </div>
                   {active && !!subCategory?.depth?.length && (
                     <div className={styles.depth_wrapper}>
-                      {subCategory?.depth.map((depth) => (
+                      {subCategory?.depth.map((depth, index) => (
                         <p
-                          onClick={() =>
+                          key={index}
+                          onClick={() => {
                             setCurrentSubCategory({
                               id: subCategory.id,
                               depth: depth.id,
-                            })
-                          }
+                            });
+                            changeSmallCategory(depth.id);
+                          }}
                           className={classNames({
                             [styles.depth]: true,
                             [styles.depth_active]:

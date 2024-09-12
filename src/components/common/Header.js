@@ -31,6 +31,17 @@ export default function Header() {
 
   const cartItems = useSelector((state) => state.counter.items).length;
 
+  const [isHovering, setIsHovering] = useState(false);
+  function handleMouseOver() {
+    if (isDeskTop) setIsHovering(true);
+    else return;
+  }
+
+  function handleMouseOut() {
+    if (isDeskTop) setIsHovering(false);
+    else return;
+  }
+
   const searchRef = useRef(null);
   const [showSearch, setShowSearch] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
@@ -150,11 +161,21 @@ export default function Header() {
             </div>
 
             <div className={styles.nav_wrapper}>
-              <MenuList list={menuList} isDeskTop={isDeskTop} />
+              <MenuList
+                list={menuList}
+                isDeskTop={isDeskTop}
+                handleMouseOver={handleMouseOver}
+                handleMouseOut={handleMouseOut}
+              />
               <div className={styles.event_menu_wrap}>
                 <MenuList list={eventMenuList} isDeskTop={isDeskTop} />
               </div>
             </div>
+            {isHovering && (
+              <div className={styles.hover_menu_container}>
+                <div className={styles.hover_menu_wrapper}>ddd</div>
+              </div>
+            )}
           </div>
           {showSearch && (
             <SearchContainer visible={showSearch} setVisible={setShowSearch} />
@@ -214,7 +235,12 @@ export default function Header() {
   );
 }
 
-function MenuList({ list, isDeskTop = false }) {
+function MenuList({
+  list,
+  isDeskTop = false,
+  handleMouseOver = () => {},
+  handleMouseOut = () => {},
+}) {
   const navigation = useNavigate();
   const { id: categoryName } = useParams();
   const pathname = window.location.pathname.split("/")[1];
@@ -227,23 +253,30 @@ function MenuList({ list, isDeskTop = false }) {
         const checkCurrentMenu =
           currentMenuArray.indexOf(menu.name.toLowerCase()) > -1;
         return (
-          <p
+          <div
+            className={styles.default_scroll_menu_wrap}
             key={index}
-            style={{
-              color:
-                checkCurrentMenu ||
-                (currentMenuArray.length == 0 && menu.name == "HOME")
-                  ? "rgb(254, 99, 32)"
-                  : "",
-            }}
-            className={classNames({
-              [styles.default_scroll_menu]: !isDeskTop,
-              current_menu: checkCurrentMenu,
-            })}
-            onClick={() => navigation(menu.link)}
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}
           >
-            {menu.name}
-          </p>
+            <p
+              key={index}
+              style={{
+                color:
+                  checkCurrentMenu ||
+                  (currentMenuArray.length == 0 && menu.name == "HOME")
+                    ? "rgb(254, 99, 32)"
+                    : "",
+              }}
+              className={classNames({
+                [styles.default_scroll_menu]: !isDeskTop,
+                current_menu: checkCurrentMenu,
+              })}
+              onClick={() => navigation(menu.link)}
+            >
+              {menu.name}
+            </p>
+          </div>
         );
       })}
     </>
