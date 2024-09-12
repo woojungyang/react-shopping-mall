@@ -101,23 +101,39 @@ export default function CategoryContentMb() {
     [currentSubCategory],
   );
 
-  const test = useRef(null);
+  const [scrollLoading, setScrollLoading] = useState(false);
+
   useEffect(() => {
-    const element1 = document.getElementsByClassName("sub_category")[0];
-    const element2 = document.getElementsByClassName("small_category")[0];
+    if (!!subCategory) {
+      setScrollLoading(true);
+      const timer = setTimeout(() => {
+        const element1 = document.getElementsByClassName("sub_category")[0];
+        const element2 = document.getElementsByClassName("small_category")[0];
+        const container = document.getElementById("scrollTarget");
+        if (element1) {
+          window.scrollTo({
+            top: container.offsetTop,
+            behavior: "smooth",
+          });
+          setScrollLoading(false);
 
-    if (element1) {
-      const subMenu = document.querySelector("#sub_menu");
-      if (subMenu)
-        subMenu.scrollLeft = element1.offsetLeft - element1.offsetWidth;
-    }
+          const subMenu = document.querySelector("#sub_menu");
+          if (subMenu) {
+            subMenu.scrollLeft = element1.offsetLeft - element1.offsetWidth;
+          }
+        }
 
-    if (element2) {
-      const smallMenu = document.querySelector("#small_menu");
-      if (smallMenu)
-        smallMenu.scrollLeft = element2.offsetLeft - element2.offsetWidth;
+        if (element2) {
+          const smallMenu = document.querySelector("#small_menu");
+          if (smallMenu) {
+            smallMenu.scrollLeft =
+              element2.offsetLeft - element2.offsetWidth + 20;
+          }
+        }
+      }, 2000); // 100ms 지연
+      return () => clearTimeout(timer);
     }
-  }, [subCategory, smallCategory]);
+  }, [subCategory, smallCategory, sort]);
 
   const [toastMessage, setToastMessage] = useState("");
 
@@ -142,113 +158,107 @@ export default function CategoryContentMb() {
   const { scrollToElement, setElementRef } = useScrollToElement();
   const handleSortChange = (value) => {
     changeSort(value);
-    setTimeout(() => scrollToElement("topItem"), 100);
+    // setTimeout(() => scrollToElement("topItem"), 100);
   };
-
-  if (overviewLoading) return <LoadingLayer />;
 
   return (
     <MobileLayout
       headerTitle={categoryName.toUpperCase()}
       isBottomNavigation={true}
     >
+      {(overviewLoading || isLoading || isFetching || scrollLoading) && (
+        <LoadingLayer />
+      )}
       <div className={styles.mobile_category_container}>
-        {subCategory < 2 && (
-          <>
-            <div className={styles.exhibition_container}>
-              <p className={styles.section_title}>PROMOTION</p>
-              <CustomSliderContainer
-                setCurrentIndex={setClearanceCurrentIndex}
-                settings={{
-                  infinite: true,
-                  speed: 500,
-                  centerMode: true,
-                  centerPadding: isMobile ? "40px" : "150px",
-                  slidesToShow: 1,
-                  slidesToScroll: 1,
+        <div className={styles.exhibition_container}>
+          <p className={styles.section_title}>PROMOTION</p>
+          <CustomSliderContainer
+            setCurrentIndex={setClearanceCurrentIndex}
+            settings={{
+              infinite: true,
+              speed: 500,
+              centerMode: true,
+              centerPadding: isMobile ? "40px" : "150px",
+              slidesToShow: 1,
+              slidesToScroll: 1,
+            }}
+          >
+            {overview?.events?.map((event, index) => {
+              const checkIndex = clearanceCurrentIndex === index;
+              return (
+                <PopUpCard
+                  event={event}
+                  key={index}
+                  className={!checkIndex ? styles.exhibition_disabled : ""}
+                />
+              );
+            })}
+          </CustomSliderContainer>
+        </div>
+        <div className={styles.category_best_item_container}>
+          <p className={styles.section_title}>WEEKLY BEST</p>
+          <ScrollableSlider>
+            {overview?.bestItems?.map((item, index) => (
+              <div className={styles.category_best_item} key={index}>
+                <div className={styles.rank}>{index + 1}</div>
+                <ItemCard
+                  showRank={true}
+                  item={item}
+                  style={{
+                    height: 300,
+                    flex: "0 0 calc(31% - 10px)",
+                    minWidth: 200,
+                  }}
+                />
+              </div>
+            ))}
+          </ScrollableSlider>
+        </div>
+        <div className={styles.category_md_pick_container}>
+          <p className={styles.section_title}>MD'S PICK</p>
+          <ScrollableSlider>
+            {overview?.mdChoice?.map((item, index) => (
+              <ItemCard
+                key={index}
+                item={item}
+                style={{
+                  height: 300,
+                  flex: "0 0 calc(31% - 10px)",
+                  minWidth: 200,
                 }}
-              >
-                {overview?.events?.map((event, index) => {
-                  const checkIndex = clearanceCurrentIndex === index;
-                  return (
-                    <PopUpCard
-                      event={event}
-                      key={index}
-                      className={!checkIndex ? styles.exhibition_disabled : ""}
-                    />
-                  );
-                })}
-              </CustomSliderContainer>
-            </div>
-            <div className={styles.category_best_item_container}>
-              <p className={styles.section_title}>WEEKLY BEST</p>
-              <ScrollableSlider>
-                {overview?.bestItems?.map((item, index) => (
-                  <div className={styles.category_best_item} key={index}>
-                    <div className={styles.rank}>{index + 1}</div>
-                    <ItemCard
-                      showRank={true}
-                      item={item}
-                      style={{
-                        height: 300,
-                        flex: "0 0 calc(31% - 10px)",
-                        minWidth: 200,
-                      }}
-                    />
-                  </div>
-                ))}
-              </ScrollableSlider>
-            </div>
-            <div className={styles.category_md_pick_container}>
-              <p className={styles.section_title}>MD'S PICK</p>
-              <ScrollableSlider>
-                {overview?.mdChoice?.map((item, index) => (
+              />
+            ))}
+          </ScrollableSlider>
+        </div>
+        <div className={styles.for_u_container}>
+          <p className={styles.section_title}>YOU MAY ALSO LIKE</p>
+          <div className={styles.scrollable_container}>
+            <CustomSliderContainer
+              arrows={false}
+              settings={{
+                rows: 2,
+                slidesToShow: 2,
+                slidesToScroll: 2,
+                infinite: false,
+              }}
+            >
+              {overview?.recommendedItems.map((item, index) => (
+                <div className={styles.default_item_card_container} key={index}>
                   <ItemCard
-                    key={index}
+                    showOriginalPrice={false}
                     item={item}
                     style={{
                       height: 300,
-                      flex: "0 0 calc(31% - 10px)",
-                      minWidth: 200,
+                      marginBottom: index % 1 === 0 ? "50px" : "",
                     }}
                   />
-                ))}
-              </ScrollableSlider>
-            </div>
-            <div className={styles.for_u_container}>
-              <p className={styles.section_title}>YOU MAY ALSO LIKE</p>
-              <div className={styles.scrollable_container}>
-                <CustomSliderContainer
-                  arrows={false}
-                  settings={{
-                    rows: 2,
-                    slidesToShow: 2,
-                    slidesToScroll: 2,
-                    infinite: false,
-                  }}
-                >
-                  {overview?.recommendedItems.map((item, index) => (
-                    <div
-                      className={styles.default_item_card_container}
-                      key={index}
-                    >
-                      <ItemCard
-                        showOriginalPrice={false}
-                        item={item}
-                        style={{
-                          height: 300,
-                          marginBottom: index % 1 === 0 ? "50px" : "",
-                        }}
-                      />
-                    </div>
-                  ))}
-                </CustomSliderContainer>
-              </div>
-            </div>
-          </>
-        )}
+                </div>
+              ))}
+            </CustomSliderContainer>
+          </div>
+        </div>
 
-        <div className={styles.category_all_items_container}>
+        <div className={styles.category_all_items_container} id="scrollTarget">
           <div
             className={classNames({
               [styles.subcategory_filter_wrap]: true,
@@ -281,25 +291,27 @@ export default function CategoryContentMb() {
             </div>
             {currentDepth?.length && (
               <div className={styles.depth_wrapper} id="small_menu">
-                {currentDepth?.map((depth) => (
-                  <p
-                    onClick={() => {
-                      setCurrentSubCategory({
-                        ...currentSubCategory,
-                        depth: depth.id,
-                      });
-                      changeSmallCategory(depth.id);
-                    }}
-                    className={classNames({
-                      [styles.depth]: true,
-                      [styles.depth_active]:
-                        currentSubCategory.depth == depth.id,
-                      small_category: currentSubCategory.depth == depth.id,
-                    })}
-                  >
-                    {depth.sub}
-                  </p>
-                ))}
+                {currentDepth?.map((depth) => {
+                  const active = currentSubCategory.depth == depth.id;
+                  return (
+                    <p
+                      onClick={() => {
+                        setCurrentSubCategory({
+                          ...currentSubCategory,
+                          depth: depth.id,
+                        });
+                        changeSmallCategory(depth.id);
+                      }}
+                      className={classNames({
+                        [styles.depth]: true,
+                        [styles.depth_active]: active,
+                        small_category: active,
+                      })}
+                    >
+                      {depth.sub}
+                    </p>
+                  );
+                })}
               </div>
             )}
 

@@ -807,7 +807,7 @@ input[type="number"] {
   height: 100vh;
   z-index: 100000;
   @include flex;
-  background-color: rgba($color-background-100, 0.7);
+  background-color: $color-background-100;
 }
 
 .scroll_top_button_wrapper {
@@ -815,6 +815,7 @@ input[type="number"] {
   bottom: 10%;
   right: 2%;
   @include flex($direction: column);
+  z-index: 100000;
 
   row-gap: 0.5em;
   .scroll_top_button {
