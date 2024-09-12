@@ -15,6 +15,7 @@ import MyOrder from "pages/MyOrder";
 import MyPage from "pages/MyPage";
 import NotFound from "pages/NotFound";
 import Notice from "pages/Notice";
+import NoticeDetail from "pages/NoticeDetail";
 import OrderDetail from "pages/OrderDetail";
 import Payment from "pages/Payment";
 import Search from "pages/Search";
@@ -86,6 +87,10 @@ export const router = createBrowserRouter([
   {
     path: "/mypage/cscenter/notice",
     element: <Notice />,
+  },
+  {
+    path: "/mypage/cscenter/notice/:id",
+    element: <NoticeDetail />,
   },
   {
     path: "/category/:id",

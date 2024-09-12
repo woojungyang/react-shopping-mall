@@ -1,13 +1,13 @@
 import React from "react";
 
-import { TableRow } from "@mui/material";
+import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 
 import useNoticesQuery from "hooks/query/useNoticesQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 
 import { LoadingLayer } from "components/common";
-import { Table } from "components/table";
+import { Table, TableRow } from "components/table";
 
 import { formatDateTime } from "utilities/dateTime";
 
@@ -32,6 +32,14 @@ export default function NoticeContent({ isDeskTop = true }) {
 
   return (
     <div className={styles.notice_table_container}>
+      <p
+        className={classNames({
+          [styles.notice_title]: true,
+          [styles.notice_title_mb]: !isDeskTop,
+        })}
+      >
+        공지사항
+      </p>
       <Table
         page={page}
         total={notices?.total}
@@ -50,7 +58,7 @@ export default function NoticeContent({ isDeskTop = true }) {
           <TableRow
             cursor={false}
             key={index}
-            onClick={() => navigation(`/notice/${notice.id}`)}
+            onClick={() => navigation(`/mypage/cscenter/notice/${notice.id}`)}
           >
             {isDeskTop ? (
               <>
@@ -59,7 +67,7 @@ export default function NoticeContent({ isDeskTop = true }) {
                 </td>
                 <td
                   className={styles.default_table_content}
-                  style={{ textAlign: "center" }}
+                  // style={{ textAlign: isDeskTop ? "center" : "left" }}
                 >
                   {formatDateTime(notice.writtenAt)}
                 </td>

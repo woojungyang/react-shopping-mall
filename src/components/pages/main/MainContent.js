@@ -425,7 +425,14 @@ export default function MainContent({ data }) {
             </div>
             <div>
               {notices?.map((notice, index) => (
-                <div key={index} className={styles.default_flex_space}>
+                <div
+                  key={index}
+                  className={styles.default_flex_space}
+                  onClick={() =>
+                    navigation(`/mypage/cscenter/notice/${notice.id}`)
+                  }
+                  style={{ cursor: "pointer" }}
+                >
                   <p className={styles.notice_content_title}>{notice?.title}</p>
                   <p
                     className={styles.notice_content_title}

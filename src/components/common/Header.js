@@ -220,7 +220,6 @@ function MenuList({ list, isDeskTop = false }) {
   const pathname = window.location.pathname.split("/")[1];
 
   const currentMenuArray = [categoryName, pathname].filter(Boolean);
-  console.log(currentMenuArray);
 
   return (
     <>

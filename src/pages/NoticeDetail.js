@@ -6,11 +6,11 @@ import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { MobileLayout } from "components/common";
 import { MyPageLayout } from "components/pages/mypage/MyPageLayout";
-import NoticeContent from "components/pages/mypage/cscenter/NoticeContent";
+import NoticeContentDetail from "components/pages/mypage/cscenter/NoticeContentDetail";
 
 import styles from "styles/_mypage.module.scss";
 
-export default function Notice() {
+export default function NoticeDetail() {
   const userDevice = useUserDevice();
   const isDeskTop = userDevice == Device.Desktop;
 
@@ -18,12 +18,12 @@ export default function Notice() {
     <>
       {isDeskTop ? (
         <MyPageLayout>
-          <NoticeContent />
+          <NoticeContentDetail />
         </MyPageLayout>
       ) : (
-        <MobileLayout isFooter={true} showIcon={false} headerTitle="고객센터">
+        <MobileLayout isFooter={true} showIcon={false} headerTitle="공지사항">
           <div className={styles.notice_container_mb}>
-            <NoticeContent isDeskTop={isDeskTop} />
+            <NoticeContentDetail isDeskTop={isDeskTop} />
           </div>
         </MobileLayout>
       )}
