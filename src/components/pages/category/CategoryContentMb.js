@@ -171,93 +171,100 @@ export default function CategoryContentMb() {
         <LoadingLayer />
       )}
       <div className={styles.mobile_category_container}>
-        <div className={styles.exhibition_container}>
-          <p className={styles.section_title}>PROMOTION</p>
-          <CustomSliderContainer
-            setCurrentIndex={setClearanceCurrentIndex}
-            settings={{
-              infinite: true,
-              speed: 500,
-              centerMode: true,
-              centerPadding: isMobile ? "40px" : "150px",
-              slidesToShow: 1,
-              slidesToScroll: 1,
-            }}
-          >
-            {overview?.events?.map((event, index) => {
-              const checkIndex = clearanceCurrentIndex === index;
-              return (
-                <PopUpCard
-                  event={event}
-                  key={index}
-                  className={!checkIndex ? styles.exhibition_disabled : ""}
-                />
-              );
-            })}
-          </CustomSliderContainer>
-        </div>
-        <div className={styles.category_best_item_container}>
-          <p className={styles.section_title}>WEEKLY BEST</p>
-          <ScrollableSlider>
-            {overview?.bestItems?.map((item, index) => (
-              <div className={styles.category_best_item} key={index}>
-                <div className={styles.rank}>{index + 1}</div>
-                <ItemCard
-                  showRank={true}
-                  item={item}
-                  style={{
-                    height: 300,
-                    flex: "0 0 calc(31% - 10px)",
-                    minWidth: 200,
-                  }}
-                />
-              </div>
-            ))}
-          </ScrollableSlider>
-        </div>
-        <div className={styles.category_md_pick_container}>
-          <p className={styles.section_title}>MD'S PICK</p>
-          <ScrollableSlider>
-            {overview?.mdChoice?.map((item, index) => (
-              <ItemCard
-                key={index}
-                item={item}
-                style={{
-                  height: 300,
-                  flex: "0 0 calc(31% - 10px)",
-                  minWidth: 200,
+        {!subCategory && (
+          <>
+            <div className={styles.exhibition_container}>
+              <p className={styles.section_title}>PROMOTION</p>
+              <CustomSliderContainer
+                setCurrentIndex={setClearanceCurrentIndex}
+                settings={{
+                  infinite: true,
+                  speed: 500,
+                  centerMode: true,
+                  centerPadding: isMobile ? "40px" : "150px",
+                  slidesToShow: 1,
+                  slidesToScroll: 1,
                 }}
-              />
-            ))}
-          </ScrollableSlider>
-        </div>
-        <div className={styles.for_u_container}>
-          <p className={styles.section_title}>YOU MAY ALSO LIKE</p>
-          <div className={styles.scrollable_container}>
-            <CustomSliderContainer
-              arrows={false}
-              settings={{
-                rows: 2,
-                slidesToShow: 2,
-                slidesToScroll: 2,
-                infinite: false,
-              }}
-            >
-              {overview?.recommendedItems.map((item, index) => (
-                <div className={styles.default_item_card_container} key={index}>
+              >
+                {overview?.events?.map((event, index) => {
+                  const checkIndex = clearanceCurrentIndex === index;
+                  return (
+                    <PopUpCard
+                      event={event}
+                      key={index}
+                      className={!checkIndex ? styles.exhibition_disabled : ""}
+                    />
+                  );
+                })}
+              </CustomSliderContainer>
+            </div>
+            <div className={styles.category_best_item_container}>
+              <p className={styles.section_title}>WEEKLY BEST</p>
+              <ScrollableSlider>
+                {overview?.bestItems?.map((item, index) => (
+                  <div className={styles.category_best_item} key={index}>
+                    <div className={styles.rank}>{index + 1}</div>
+                    <ItemCard
+                      showRank={true}
+                      item={item}
+                      style={{
+                        height: 300,
+                        flex: "0 0 calc(31% - 10px)",
+                        minWidth: 200,
+                      }}
+                    />
+                  </div>
+                ))}
+              </ScrollableSlider>
+            </div>
+            <div className={styles.category_md_pick_container}>
+              <p className={styles.section_title}>MD'S PICK</p>
+              <ScrollableSlider>
+                {overview?.mdChoice?.map((item, index) => (
                   <ItemCard
-                    showOriginalPrice={false}
+                    key={index}
                     item={item}
                     style={{
                       height: 300,
-                      marginBottom: index % 1 === 0 ? "50px" : "",
+                      flex: "0 0 calc(31% - 10px)",
+                      minWidth: 200,
                     }}
                   />
-                </div>
-              ))}
-            </CustomSliderContainer>
-          </div>
-        </div>
+                ))}
+              </ScrollableSlider>
+            </div>
+            <div className={styles.for_u_container}>
+              <p className={styles.section_title}>YOU MAY ALSO LIKE</p>
+              <div className={styles.scrollable_container}>
+                <CustomSliderContainer
+                  arrows={false}
+                  settings={{
+                    rows: 2,
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                    infinite: false,
+                  }}
+                >
+                  {overview?.recommendedItems.map((item, index) => (
+                    <div
+                      className={styles.default_item_card_container}
+                      key={index}
+                    >
+                      <ItemCard
+                        showOriginalPrice={false}
+                        item={item}
+                        style={{
+                          height: 300,
+                          marginBottom: index % 1 === 0 ? "50px" : "",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </CustomSliderContainer>
+              </div>
+            </div>
+          </>
+        )}
 
         <div className={styles.category_all_items_container} id="scrollTarget">
           <div

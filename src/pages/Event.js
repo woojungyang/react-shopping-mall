@@ -50,8 +50,9 @@ export default function Event() {
 
         {isDeskTop ? (
           <div className={styles.event_filter_wrap}>
-            {typeArray.map((eventType) => (
+            {typeArray.map((eventType, index) => (
               <div
+                key={index}
                 className={classNames({
                   [styles.current_type]: type == eventType,
                 })}

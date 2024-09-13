@@ -29,7 +29,11 @@ import {
   Loading,
   LoadingLayer,
 } from "components/common";
-import { CustomSliderContainer, FlexBoxSlider } from "components/slider";
+import {
+  CustomSliderContainer,
+  FlexBoxSlider,
+  ScrollableSlider,
+} from "components/slider";
 
 import styles from "styles/_category.module.scss";
 
@@ -81,6 +85,15 @@ export default function CategoryContent() {
     depth: smallCategory,
   });
 
+  const updateSubCategory = useMemo(
+    () =>
+      setCurrentSubCategory({
+        id: subCategory || subCategories[0].id,
+        depth: smallCategory,
+      }),
+    [subCategory, smallCategory],
+  );
+
   const [scrollLoading, setScrollLoading] = useState(false);
 
   useEffect(() => {
@@ -130,102 +143,98 @@ export default function CategoryContent() {
         {(overviewLoading || isLoading || isFetching || scrollLoading) && (
           <LoadingLayer />
         )}
-        {/* PROMOTION */}
-        <div className={styles.exhibition_container}>
-          <p className={styles.section_title}>PROMOTION</p>
-          <div className={styles.exhibition_arrow_button_wrap}>
-            <div onClick={exhibitionPrevious}>
-              <ArrowBackIosIcon />
-            </div>
-            <div onClick={exhibitionNext}>
-              <ArrowForwardIosIcon />
-            </div>
-          </div>
+        {!subCategory && (
+          <>
+            {/* PROMOTION */}
+            <div className={styles.exhibition_container}>
+              <p className={styles.section_title}>PROMOTION</p>
 
-          <CustomSliderContainer
-            ref={exhibitionRef}
-            settings={{
-              dots: false,
-              infinite: false,
-              speed: 500,
-              slidesToShow: 3,
-              slidesToScroll: 1,
-            }}
-          >
-            {overview?.events?.map((event, index) => (
-              <PopUpCard event={event} key={index} />
-            ))}
-          </CustomSliderContainer>
-        </div>
-        <div className={styles.category_best_item_container}>
-          <p className={styles.section_title}>WEEKLY BEST </p>
-          <div className={styles.category_best_item_wrap}>
-            <div className={styles.first_ranking}>
-              <div className={styles.rank}>
-                <div className={styles.rank_badge}>1</div>
-                <ItemCard
-                  item={overview?.bestItems[0]}
-                  showRank={true}
-                  style={{ height: 735 }}
-                />
-              </div>
+              <ScrollableSlider>
+                {overview?.events?.map((event, index) => (
+                  <div
+                    style={{
+                      // height: 300,
+                      marginRight: 20,
+                      flex: "0 0 calc(32.333%)",
+                      minWidth: 200,
+                    }}
+                  >
+                    <PopUpCard event={event} key={index} />
+                  </div>
+                ))}
+              </ScrollableSlider>
             </div>
-            <div className={styles.ranking_wrap}>
-              {bestItems.map((item, index) => (
-                <div className={styles.rank}>
-                  <div className={styles.rank_badge}>{index + 2}</div>
-                  <ItemCard
-                    item={item}
-                    key={index}
-                    style={{ height: 384 }}
-                    showRank={true}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        {/* md pick */}
-        <div className={styles.md_pick_container}>
-          <div className={styles.md_pick_wrapper}>
-            <p className={styles.section_title}>MD'S PICK </p>
-            <FlexBoxSlider
-              settings={{
-                infinite: false,
-                speed: 500,
-                slidesToShow: 6,
-                slidesToScroll: 1,
-              }}
-              arrows={overview?.mdChoice.length > 6}
-            >
-              {overview?.mdChoice.map((item, index) => {
-                return (
-                  <div key={index}>
+            <div className={styles.category_best_item_container}>
+              <p className={styles.section_title}>WEEKLY BEST </p>
+              <div className={styles.category_best_item_wrap}>
+                <div className={styles.first_ranking}>
+                  <div className={styles.rank}>
+                    <div className={styles.rank_badge}>1</div>
                     <ItemCard
-                      item={item}
-                      style={{
-                        height: "400px",
-                      }}
+                      item={overview?.bestItems[0]}
+                      showRank={true}
+                      style={{ height: 735 }}
                     />
                   </div>
-                );
-              })}
-            </FlexBoxSlider>
-          </div>
-        </div>
-        <div className={styles.recommend_items_container}>
-          <p className={styles.section_title}>YOU MAY ALSO LIKE</p>
-          <div className={styles.recommend_items_wrapper}>
-            {overview?.recommendedItems.map((item, index) => (
-              <ItemCard
-                item={item}
-                showStatus={true}
-                key={index}
-                style={{ height: 428 }}
-              />
-            ))}
-          </div>
-        </div>
+                </div>
+                <div className={styles.ranking_wrap}>
+                  {bestItems.map((item, index) => (
+                    <div className={styles.rank}>
+                      <div className={styles.rank_badge}>{index + 2}</div>
+                      <ItemCard
+                        item={item}
+                        key={index}
+                        style={{ height: 384 }}
+                        showRank={true}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            {/* md pick */}
+            <div className={styles.md_pick_container}>
+              <div className={styles.md_pick_wrapper}>
+                <p className={styles.section_title}>MD'S PICK </p>
+                <FlexBoxSlider
+                  settings={{
+                    infinite: false,
+                    speed: 500,
+                    slidesToShow: 6,
+                    slidesToScroll: 1,
+                  }}
+                  arrows={overview?.mdChoice.length > 6}
+                >
+                  {overview?.mdChoice.map((item, index) => {
+                    return (
+                      <div key={index}>
+                        <ItemCard
+                          item={item}
+                          style={{
+                            height: "400px",
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </FlexBoxSlider>
+              </div>
+            </div>
+            <div className={styles.recommend_items_container}>
+              <p className={styles.section_title}>YOU MAY ALSO LIKE</p>
+              <div className={styles.recommend_items_wrapper}>
+                {overview?.recommendedItems.map((item, index) => (
+                  <ItemCard
+                    item={item}
+                    showStatus={true}
+                    key={index}
+                    style={{ height: 428 }}
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
         <div className={styles.category_all_items_container} id="scrollTarget">
           <div className={styles.category_sidebar}>

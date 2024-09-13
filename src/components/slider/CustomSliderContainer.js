@@ -15,20 +15,22 @@ export const CustomSliderContainer = forwardRef(
     },
     ref,
   ) => {
-    const memoizedSettings = useMemo(
-      () => ({
+    const memoizedSettings = useMemo(() => {
+      const mergedSettings = {
         ...settings,
         arrows: arrows,
         autoplay: autoPlay,
         draggable: true,
         swipeToSlide: true,
         speed: 500,
-        afterChange: (newIndex) => {
-          setCurrentIndex?.(newIndex);
-        },
-      }),
-      [settings, arrows, autoPlay, setCurrentIndex],
-    );
+        infinite: false, // Adjust based on use case
+        afterChange: setCurrentIndex
+          ? (newIndex) => setCurrentIndex(newIndex)
+          : undefined,
+      };
+      return mergedSettings;
+    }, [settings, arrows, autoPlay, setCurrentIndex]);
+
     return (
       <div className="one-row-slider">
         <Slider ref={ref} {...memoizedSettings}>

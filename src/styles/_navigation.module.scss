@@ -97,9 +97,9 @@
         p {
           height: 45px;
           @include flex;
-          color: $color-skeleton-200;
-          font-size: $padding;
-          font-weight: 600;
+          color: $color-skeleton-100;
+          font-size: 15px;
+          font-weight: $font-weight-medium;
           letter-spacing: 1px;
           &:last-child {
             margin-right: 0;
@@ -124,15 +124,99 @@
       }
     }
     .hover_menu_container {
+      animation: slideDown 0.5s forwards ease-out;
       position: absolute;
       left: 0;
 
       // top: 500px;
       width: 100%;
-      background-color: pink;
+      background-color: $color-background-100;
       .hover_menu_wrapper {
         margin: auto;
         max-width: $max-width;
+        // padding: $margin * 1.5 0;
+        padding-top: $margin;
+        padding-bottom: $margin * 1.5;
+        @include flex(
+          $justify-content: space-between,
+          $align-items: flex-start
+        );
+
+        .hover_menu_wrap {
+          @include display-grid($colum: repeat(4, 1fr));
+
+          .hover_menu {
+            flex-shrink: 0;
+            margin-right: $margin * 2;
+            &:last-child {
+              margin-right: 0;
+            }
+
+            .hover_menu_subcategory {
+              @include flex($justify-content: flex-start);
+              font-size: 15px;
+              svg {
+                width: $margin;
+                height: $margin;
+              }
+              margin-bottom: $padding;
+              cursor: pointer;
+            }
+            .hover_menu_smallcategory {
+              p {
+                color: $color-skeleton-100;
+                font-size: 14px;
+                cursor: pointer;
+
+                margin-bottom: $padding;
+                &:last-child {
+                  margin-bottom: 0;
+                }
+              }
+            }
+          }
+        }
+        .event_wrapper {
+          display: flex;
+          .event_card {
+            margin-right: $margin;
+            width: 100%;
+            &:last-child {
+              margin-right: 0;
+            }
+            .event_thumbnail_wrap {
+              position: relative;
+              cursor: pointer;
+              overflow: hidden;
+              img {
+                @include default-image;
+                aspect-ratio: 1;
+                max-height: 226px;
+                transition: transform 0.3s ease;
+                &:hover {
+                  transform: scale(1.1);
+                }
+              }
+              .event_badge {
+                position: absolute;
+
+                z-index: 10;
+                left: 0;
+                bottom: 5px;
+                background-color: $color-dark-200;
+                padding: $default/2;
+                font-size: 13px;
+
+                color: $color-background-100;
+              }
+            }
+            .event_card_title {
+              margin-top: $padding;
+              margin-bottom: $default;
+              font-size: 15px;
+            }
+          }
+        }
       }
     }
   }

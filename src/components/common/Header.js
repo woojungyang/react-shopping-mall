@@ -1,20 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { clearCart } from "app/counterSlice";
 
 import AccountBoxOutlinedIcon from "@mui/icons-material/AccountBoxOutlined";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import classNames from "classnames";
+import { getSubCategory } from "models/category";
 import { Device } from "models/device";
+import { getEventTypeLabel } from "models/event";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
+import useEventsQuery from "hooks/query/useEventsQuery";
 import { useUserDevice } from "hooks/size/useUserDevice";
+
+import { ToastModal } from "components/modal";
 
 import styles from "styles/_navigation.module.scss";
 
@@ -24,6 +30,8 @@ export default function Header() {
   const navigation = useNavigate();
   const dispatch = useDispatch();
 
+  const [toastMessage, setToastMessage] = useState("");
+
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   const userDevice = useUserDevice();
@@ -32,15 +40,28 @@ export default function Header() {
   const cartItems = useSelector((state) => state.counter.items).length;
 
   const [isHovering, setIsHovering] = useState(false);
-  function handleMouseOver() {
-    if (isDeskTop) setIsHovering(true);
-    else return;
+  const [hoverElement, setHoverElement] = useState("");
+  function handleMouseOver(element) {
+    if (isDeskTop) {
+      setIsHovering(true);
+      setHoverElement(element.toLowerCase());
+    } else return;
   }
 
-  function handleMouseOut() {
-    if (isDeskTop) setIsHovering(false);
-    else return;
+  function handleMouseLeave() {
+    setIsHovering(false);
+    setHoverElement("");
   }
+
+  const subCategory = useMemo(
+    () => getSubCategory(hoverElement),
+    [hoverElement],
+  );
+
+  const { data: events, isLoading } = useEventsQuery({
+    offset: 0,
+    limit: 2,
+  });
 
   const searchRef = useRef(null);
   const [showSearch, setShowSearch] = useState(false);
@@ -94,7 +115,7 @@ export default function Header() {
   }, [isDeskTop]);
 
   return (
-    <Link>
+    <div>
       {isDeskTop ? (
         <div ref={searchRef} className={styles.header_container}>
           <div className={styles.header_wrapper}>
@@ -165,20 +186,79 @@ export default function Header() {
                 list={menuList}
                 isDeskTop={isDeskTop}
                 handleMouseOver={handleMouseOver}
-                handleMouseOut={handleMouseOut}
               />
               <div className={styles.event_menu_wrap}>
                 <MenuList list={eventMenuList} isDeskTop={isDeskTop} />
               </div>
             </div>
-            {isHovering && (
-              <div className={styles.hover_menu_container}>
-                <div className={styles.hover_menu_wrapper}>ddd</div>
+            {hoverElement && (
+              <div
+                className={styles.hover_menu_container}
+                onMouseLeave={handleMouseLeave}
+              >
+                <div className={styles.hover_menu_wrapper}>
+                  <div className={styles.hover_menu_wrap}>
+                    {subCategory.slice(1).map((cate1, index) => (
+                      <div key={index} className={styles.hover_menu}>
+                        <p
+                          className={styles.hover_menu_subcategory}
+                          onClick={() =>
+                            navigation(
+                              `/category/${hoverElement}?subCategory=${cate1.id}`,
+                            )
+                          }
+                        >
+                          {cate1.label}
+                          <ChevronRightIcon />
+                        </p>
+                        {!!cate1.depth?.length && (
+                          <div className={styles.hover_menu_smallcategory}>
+                            {cate1.depth.slice(1).map((depth) => (
+                              <p
+                                onClick={() => {
+                                  navigation(
+                                    `/category/${hoverElement}?subCategory=${cate1.id}&smallCategory=${depth.id}`,
+                                  );
+                                  handleMouseLeave();
+                                }}
+                              >
+                                {depth.label}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className={styles.event_wrapper}>
+                    {events?.data.map((event, index) => (
+                      <div
+                        key={index}
+                        className={styles.event_card}
+                        onClick={() => setToastMessage("페이지 준비중입니다.")}
+                      >
+                        <div className={styles.event_thumbnail_wrap}>
+                          <img src={event.thumbnail} />
+                          <span className={styles.event_badge}>
+                            {getEventTypeLabel(event.type)}
+                          </span>
+                        </div>
+                        <p className={styles.event_card_title}>{event.title}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>
           {showSearch && (
             <SearchContainer visible={showSearch} setVisible={setShowSearch} />
+          )}
+          {toastMessage && (
+            <ToastModal
+              toastMessage={toastMessage}
+              setToastMessage={setToastMessage}
+            />
           )}
         </div>
       ) : (
@@ -231,7 +311,7 @@ export default function Header() {
           )}
         </div>
       )}
-    </Link>
+    </div>
   );
 }
 
@@ -256,8 +336,8 @@ function MenuList({
           <div
             className={styles.default_scroll_menu_wrap}
             key={index}
-            onMouseOver={handleMouseOver}
-            onMouseOut={handleMouseOut}
+            onMouseOver={() => handleMouseOver(menu.name)}
+            // onMouseOut={handleMouseOut}
           >
             <p
               key={index}
@@ -288,7 +368,7 @@ const menuList = [
   { id: 2, name: "MEN", link: "/category/men" },
   { id: 3, name: "BEAUTY", link: "/category/beauty" },
   { id: 4, name: "LIFE", link: "/category/life" },
-  { id: 5, name: "KIDS", link: "/category/kid" },
+  { id: 5, name: "KID", link: "/category/kid" },
   // { id: 6, name: "EVENT", link: "/event" },
 ];
 
