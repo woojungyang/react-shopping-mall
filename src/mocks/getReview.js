@@ -2,8 +2,15 @@ import { faker } from "@faker-js/faker";
 
 export default function getReview(mock) {
   mock.onGet(/^\/api\/v1\/review\/(\d+)$/).reply((config) => {
+    const urlSegments = config.url.split("/");
+    const itemId = urlSegments[urlSegments.length - 1];
+    console.log(itemId);
+
     const status = 200;
-    let data = collection;
+    let data = {
+      id: itemId,
+      ...collection,
+    };
 
     return [status, data];
   });
@@ -15,13 +22,11 @@ function fakerSubImage() {
 }
 
 let collection = {
-  id: faker.number.int(),
   orderNumber: faker.string.numeric(18),
-  thumbnail: fakerSubImage(),
   reviewRate: faker.number.int({ max: 5, min: 1 }),
   writtenAt: faker.date.past(),
   content: {
-    text: faker.lorem.paragraph(),
+    text: faker.lorem.paragraphs(),
     photo: new Array(faker.number.int({ max: 5, min: 0 }))
       .fill()
       .map((_, index) => ({
@@ -29,7 +34,9 @@ let collection = {
       })),
   },
   item: {
+    thumbnail: fakerSubImage(),
     color: faker.lorem.word(),
     size: faker.lorem.word(),
+    quantity: faker.number.int({ max: 5, min: 1 }),
   },
 };

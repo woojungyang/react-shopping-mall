@@ -19,11 +19,17 @@ export const Table = ({
   selectedOption = "",
   onChangeOption,
   handleChangePage,
+  showTotal = true,
 }) => {
   return (
     <div>
-      <div className={styles.table_filter_wrap}>
-        {pagination && <p>전체 {numberWithCommas(total)}건</p>}
+      <div
+        className={styles.table_filter_wrap}
+        style={{
+          marginBottom: !showTotal && !filterOptions.length ? 0 : 10,
+        }}
+      >
+        {showTotal && <p>전체 {numberWithCommas(total)}건</p>}
         {!!filterOptions.length && (
           <TableFilter
             filterOptions={filterOptions}

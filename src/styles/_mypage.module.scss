@@ -368,7 +368,7 @@
           }
         }
       }
-      .review_wrapper {
+      .reviews_wrapper {
         .review_tab_menu_wrapper {
           @include flex($justify-content: flex-start);
           border-bottom: 2px solid $color-dark-200;
@@ -387,6 +387,61 @@
             color: $color-background-100;
           }
         }
+
+        .review_index {
+          width: 5%;
+        }
+        .review_order_number {
+          text-decoration: underline;
+          cursor: pointer;
+        }
+        .review_item_info_wrap {
+          cursor: pointer;
+          @include flex($justify-content: flex-start, $align-items: flex-start);
+          height: 100%;
+          img {
+            @include default-image;
+            width: 60px;
+            height: 80px;
+          }
+          .review_item_info {
+            text-align: left;
+            margin-left: $padding;
+            height: 80px;
+            @include flex(
+              $direction: column,
+              $justify-content: space-between,
+              $align-items: flex-start
+            );
+            color: $color-skeleton-200;
+            font-size: 14px;
+            .brand {
+              margin-bottom: $default;
+            }
+
+            .option {
+              font-size: 13px;
+            }
+          }
+        }
+        .review_rate {
+          @include flex;
+          p {
+            margin-top: -3px;
+            margin-left: 5px;
+          }
+        }
+        .review_content_wrapper {
+          background-color: rgba($color-skeleton-100, 0.15);
+          width: 100%;
+          text-align: left;
+          padding: $padding;
+          p {
+            line-height: 180%;
+            white-space: pre-wrap;
+          }
+        }
+
         .empty_review {
           height: 30vh;
           @include flex;
