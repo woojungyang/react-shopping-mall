@@ -133,6 +133,6 @@ const membershipInformation = [
     className: styles.membership_wrap1,
     key: "rank",
   },
-  { label: "쿠폰", key: "couponCount" },
+  { label: "사용가능쿠폰", key: "couponCount" },
   { label: "마일리지", key: "mileage" },
 ];

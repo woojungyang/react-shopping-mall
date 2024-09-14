@@ -18,7 +18,6 @@ import { ApiClientQuery } from "hooks/apiClient/useApiClient";
 import useCategoryOverviewQuery from "hooks/query/useCategoryOverviewQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
-import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { ItemCard } from "components/card";
@@ -156,10 +155,8 @@ export default function CategoryContentMb() {
     [isFetchingNextPage, fetchNextPage, hasNextPage],
   );
 
-  const { scrollToElement, setElementRef } = useScrollToElement();
   const handleSortChange = (value) => {
     changeSort(value);
-    // setTimeout(() => scrollToElement("topItem"), 100);
   };
 
   return (
@@ -271,7 +268,6 @@ export default function CategoryContentMb() {
             className={classNames({
               [styles.subcategory_filter_wrap]: true,
             })}
-            ref={setElementRef("topItem")}
           >
             <div className={styles.subcategory_wrap} id="sub_menu">
               {subCategories.map((subCategory, index) => {

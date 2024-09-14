@@ -18,6 +18,7 @@ import Notice from "pages/Notice";
 import NoticeDetail from "pages/NoticeDetail";
 import OrderDetail from "pages/OrderDetail";
 import Payment from "pages/Payment";
+import Review from "pages/Review";
 import Search from "pages/Search";
 
 import GuestRoute from "./GuestRoute";
@@ -83,6 +84,10 @@ export const router = createBrowserRouter([
   {
     path: "/mypage/heart",
     element: <ProtectedRoute element={<Heart />} />,
+  },
+  {
+    path: "/mypage/my-order/review",
+    element: <ProtectedRoute element={<Review />} />,
   },
   {
     path: "/mypage/cscenter/notice",

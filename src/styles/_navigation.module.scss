@@ -178,6 +178,7 @@
         }
         .event_wrapper {
           display: flex;
+          max-width: 60%;
           .event_card {
             margin-right: $margin;
             width: 100%;

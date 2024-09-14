@@ -368,6 +368,32 @@
           }
         }
       }
+      .review_wrapper {
+        .review_tab_menu_wrapper {
+          @include flex($justify-content: flex-start);
+          border-bottom: 2px solid $color-dark-200;
+          .review_tab_menu_wrap {
+            min-width: 180px;
+            cursor: pointer;
+            height: 50px;
+            border: 1px solid rgba($color-skeleton-100, 0.3);
+            @include flex;
+            font-weight: $font-weight-medium;
+            color: rgba($color-skeleton-100, 0.9);
+          }
+          .active_tab {
+            background-color: $color-dark-200;
+            border: none;
+            color: $color-background-100;
+          }
+        }
+        .empty_review {
+          height: 30vh;
+          @include flex;
+          text-align: center;
+          border-bottom: 1px solid rgba($color-skeleton-100, 0.5);
+        }
+      }
     }
   }
 }

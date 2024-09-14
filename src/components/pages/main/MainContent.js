@@ -27,6 +27,8 @@ export default function MainContent({ data }) {
   const navigation = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const [toastMessage, setToastMessage] = useState("");
+
   const progressBarWidth = useRef(null);
 
   const forUCategories = [
@@ -390,10 +392,12 @@ export default function MainContent({ data }) {
               <DefaultButton
                 className={styles.information_button}
                 label="FAQ"
+                onClick={() => setToastMessage("준비중입니다.")}
               />
               <DefaultButton
                 className={styles.information_button}
                 label="1:1문의"
+                onClick={() => setToastMessage("준비중입니다.")}
               />
             </div>
             <div className={styles.default_flex}>

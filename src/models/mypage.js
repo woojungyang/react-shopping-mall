@@ -21,7 +21,7 @@ export const userMenuList = [
     category: "my-order",
     sub: [
       { id: 1, label: "주문조회", url: "/mypage/my-order/my-order-list" },
-      { id: 2, label: "상품리뷰" },
+      { id: 2, label: "상품리뷰", url: "/mypage/my-order/review" },
     ],
   },
   {
@@ -48,3 +48,8 @@ export const heartMenu = [
   { id: HeartType.Brand, label: "BRAND" },
   { id: HeartType.Style, label: "STYLE" },
 ];
+
+export const ReviewState = enumerate({
+  Waiting: 1,
+  Complete: 2,
+});
