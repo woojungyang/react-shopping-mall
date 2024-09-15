@@ -7,6 +7,7 @@ export default function ReviewRating({
   value = 0,
   color = "black",
   readOnly = true,
+  onChange = () => {},
 }) {
   return (
     <Rating
@@ -14,6 +15,7 @@ export default function ReviewRating({
       defaultValue={value}
       precision={0.5}
       readOnly={readOnly}
+      onChange={onChange}
       sx={{
         fontSize: size,
         color: color,

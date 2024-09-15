@@ -388,9 +388,6 @@
           }
         }
 
-        .review_index {
-          width: 5%;
-        }
         .review_order_number {
           text-decoration: underline;
           cursor: pointer;
@@ -416,6 +413,7 @@
             color: $color-skeleton-200;
             font-size: 14px;
             .brand {
+              font-size: 13px;
               margin-bottom: $default;
             }
 
@@ -505,10 +503,21 @@
           border-radius: 4px;
         }
         .review_content_form {
+          @include flex($direction: column, $align-items: flex-start);
           textarea {
             width: 100%;
             height: 200px;
             resize: none;
+            margin-bottom: $default;
+            padding: $default;
+          }
+          .star_rating {
+            @include flex($justify-content: flex-start);
+            margin-bottom: $default;
+            p {
+              font-size: $padding;
+              margin-right: $default/2;
+            }
           }
         }
 
@@ -887,6 +896,155 @@
         > p {
           &:first-child {
             color: $color-skeleton-100;
+          }
+        }
+      }
+    }
+  }
+  .reviews_wrapper {
+    // margin-top: $padding;
+    .review_tab_menu_wrapper {
+      @include flex($justify-content: flex-start);
+
+      .review_tab_menu_wrap {
+        width: 100%;
+        height: 48px;
+
+        @include flex;
+        font-weight: $font-weight-medium;
+        color: rgba($color-skeleton-100, 0.9);
+        font-size: 14px;
+        background-color: rgba($color-skeleton-100, 0.1);
+        color: $color-skeleton-100;
+      }
+      .active_tab {
+        background-color: $color-background-100;
+        border: none;
+        color: $color-dark-300;
+      }
+    }
+    .reviews_wrap {
+      .review {
+        .review_body {
+          @include flex($justify-content: flex-start);
+          img {
+            @include default-image;
+            width: 70px;
+            height: 70px;
+          }
+          .review_item_info {
+            margin-left: $default;
+            font-size: 13px;
+            height: 70px;
+
+            color: $color-skeleton-200;
+            @include flex(
+              $direction: column,
+              $justify-content: space-between,
+              $align-items: flex-start
+            );
+            .brand {
+              font-size: 13px;
+            }
+            .option {
+              margin-top: $default/2;
+              font-size: 12px;
+            }
+          }
+        }
+        .order_info {
+          @include flex($justify-content: space-between);
+          font-size: 12px;
+          margin: $default 0;
+          .order_number {
+            text-decoration: underline;
+          }
+        }
+        padding: $default $padding;
+        border-bottom: 1px solid rgba($color-skeleton-100, 0.2);
+        .review_content_wrapper {
+          background-color: rgba($color-skeleton-100, 0.15);
+          margin: $padding 0;
+          padding: $padding;
+          .review_content {
+            font-size: 14px;
+            line-height: 20px;
+            margin-bottom: $margin;
+          }
+          .image_wrap {
+            img {
+              @include default-image;
+              width: 50px;
+              height: 50px;
+              margin-right: $default;
+              &:last-child {
+                margin-right: 0;
+              }
+            }
+          }
+          .review_btn_wrap {
+            @include flex($justify-content: space-between);
+            button {
+              margin-right: $default;
+              &:last-child {
+                margin-right: 0;
+              }
+            }
+          }
+        }
+        .review_content_form {
+          .star_rating {
+            @include flex($justify-content: flex-start);
+            p {
+              font-size: 14px;
+              margin-right: $default/2;
+            }
+            margin-bottom: $default;
+          }
+          textarea {
+            padding: $default;
+            width: 100%;
+            height: 300px;
+            resize: none;
+            margin-bottom: $default;
+          }
+          .image_wrap {
+            @include flex($justify-content: flex-start);
+            .image {
+              position: relative;
+              img {
+                @include default-image;
+                width: 50px;
+                height: 50px;
+              }
+              .delete_icon {
+                position: absolute;
+                @include flex;
+
+                top: -13%;
+                right: 0%;
+
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                cursor: pointer;
+                background-color: #454545;
+                svg {
+                  width: 14px;
+                  height: 14px;
+                  color: $color-background-100;
+                }
+              }
+            }
+            .more_button {
+              background-color: $color-skeleton-100;
+              width: 50px;
+              height: 50px;
+              @include flex;
+              svg {
+                color: $color-background-100;
+              }
+            }
           }
         }
       }

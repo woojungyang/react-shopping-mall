@@ -53,3 +53,16 @@ export const ReviewState = enumerate({
   Waiting: 1,
   Complete: 2,
 });
+
+export const reviewMenu = [
+  {
+    id: ReviewState.Waiting,
+    label: "작성 가능한 리뷰",
+    key: "waiting",
+  },
+  {
+    id: ReviewState.Complete,
+    label: "작성된 리뷰",
+    key: "complete",
+  },
+];

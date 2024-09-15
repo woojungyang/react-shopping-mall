@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import classNames from "classnames";
-import { ReviewState } from "models/mypage";
+import { ReviewState, reviewMenu } from "models/mypage";
 import { useNavigate } from "react-router-dom";
 
 import useCreateReviewMutation from "hooks/mutation/useCreateReviewMutation";
@@ -110,7 +110,7 @@ export default function ReviewContent() {
     >
       <div className={styles.reviews_wrapper}>
         <div className={styles.review_tab_menu_wrapper}>
-          {reviewMenuList.map((menu, index) => (
+          {reviewMenu.map((menu, index) => (
             <div
               className={classNames({
                 [styles.review_tab_menu_wrap]: true,
@@ -281,8 +281,6 @@ function ReviewForm({ review, setReview, onSubmit = () => {} }) {
     [review?.content?.photos?.length],
   );
 
-  console.log(error);
-
   const fileInput = useRef(null);
   const handleChange = (e) => {
     const file = e.target.files[0];
@@ -310,6 +308,20 @@ function ReviewForm({ review, setReview, onSubmit = () => {} }) {
   };
   return (
     <div className={styles.review_content_form}>
+      <div className={styles.star_rating}>
+        <p>만족도 </p>
+        <ReviewRating
+          readOnly={false}
+          size="2em"
+          value={review?.reviewRate}
+          onChange={(e) =>
+            setReview({
+              ...review,
+              reviewRate: e.target.value,
+            })
+          }
+        />
+      </div>
       <textarea
         value={review?.content?.text}
         onChange={(e) =>
@@ -359,7 +371,10 @@ function ReviewForm({ review, setReview, onSubmit = () => {} }) {
         )}
       </div>
       {error && <p style={{ color: "red", textAlign: "right" }}>{error}</p>}
-      <div className={styles.review_btn_wrap}>
+      <div
+        className={styles.review_btn_wrap}
+        style={{ justifyContent: "flex-end", width: "100%" }}
+      >
         <button
           onClick={() => {
             if (!review?.content?.text || review?.content?.text.length < 10)
@@ -373,16 +388,3 @@ function ReviewForm({ review, setReview, onSubmit = () => {} }) {
     </div>
   );
 }
-
-const reviewMenuList = [
-  {
-    id: ReviewState.Waiting,
-    label: "작성 가능한 리뷰",
-    key: "waiting",
-  },
-  {
-    id: ReviewState.Complete,
-    label: "작성된 리뷰",
-    key: "complete",
-  },
-];
