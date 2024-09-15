@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
+import AddIcon from "@mui/icons-material/Add";
+import ClearIcon from "@mui/icons-material/Clear";
 import classNames from "classnames";
 import { ReviewState } from "models/mypage";
 import { useNavigate } from "react-router-dom";
 
+import useCreateReviewMutation from "hooks/mutation/useCreateReviewMutation";
 import useReviewMutation from "hooks/mutation/useReviewMutation";
 import useReviewQuery from "hooks/query/useReviewQuery";
 import useReviewsQuery from "hooks/query/useReviewsQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
-import { LoadingLayer } from "components/common";
 import { ToastModal } from "components/modal";
 import ReviewRating from "components/pages/detail/ReviewRating";
 import { Table, TableRow } from "components/table";
@@ -32,7 +34,7 @@ export default function ReviewContent() {
   );
 
   const [{ page, perPage: limit, offset }, changePage, getPageCount] =
-    usePageQueryString("page", 15);
+    usePageQueryString("page", 10);
   const handleChangePage = (_event, page) => changePage(page);
 
   const {
@@ -47,8 +49,9 @@ export default function ReviewContent() {
 
   const [selectedReviewId, setSelectedReviewId] = useState("");
   const [writtenReview, setWrittenReview] = useState({});
+  const [patchMode, setPatchMode] = useState(false);
   const reviewQuery = useReviewQuery(selectedReviewId, {
-    enabled: !!selectedReviewId,
+    enabled: !!selectedReviewId && reviewState == ReviewState.Complete,
     onSuccess: (res) => {
       setWrittenReview(res);
     },
@@ -66,15 +69,43 @@ export default function ReviewContent() {
       setToastMessage(err.message);
     }
   }
+  async function requestPatchReview() {
+    try {
+      await reviewMutation.mutateAsync(writtenReview);
+      setSelectedReviewId("");
+      refetch();
+      setPatchMode(false);
+      setToastMessage("수정완료");
+    } catch (err) {
+      setToastMessage(err.message);
+    }
+  }
+
+  const createReviewMutation = useCreateReviewMutation();
+  async function requestPostReview() {
+    try {
+      await createReviewMutation.mutateAsync(writtenReview);
+      setSelectedReviewId("");
+      refetch();
+      setPatchMode(false);
+      setToastMessage("작성 완료");
+    } catch (err) {
+      setToastMessage(err.message);
+    }
+  }
 
   useEffect(() => {
     changePage(1);
+    setWrittenReview({});
   }, [reviewState]);
 
   return (
     <MyPageLayout
       childrenLoading={
-        isLoading || reviewQuery.isLoading || reviewMutation.isLoading
+        isLoading ||
+        reviewQuery.isLoading ||
+        reviewMutation.isLoading ||
+        createReviewMutation.isLoading
       }
     >
       <div className={styles.reviews_wrapper}>
@@ -109,68 +140,119 @@ export default function ReviewContent() {
               { label: "작성일" },
             ]}
           >
-            {reviews?.data.map((review, index) => (
-              <>
-                <TableRow cursor={false} key={index}>
-                  <td>{formatDateTime(review.createdAt)}</td>
-                  <td
-                    onClick={() =>
-                      navigation(
-                        `/mypage/my-order/my-order-list/${review.order.id}`,
-                      )
-                    }
-                    className={styles.review_order_number}
-                  >
-                    {review.orderNumber}
-                  </td>
-                  <td>
-                    <div
-                      className={styles.review_item_info_wrap}
-                      onClick={() => {
-                        if (review.id == selectedReviewId)
-                          setSelectedReviewId("");
-                        else setSelectedReviewId(review.id);
-                      }}
+            {reviews?.data.map((review, index) => {
+              const isComplete = reviewState == ReviewState.Complete;
+              return (
+                <>
+                  <TableRow cursor={false} key={index}>
+                    <td>{formatDateTime(review.createdAt)}</td>
+                    <td
+                      onClick={() =>
+                        navigation(
+                          `/mypage/my-order/my-order-list/${review.order.id}`,
+                        )
+                      }
+                      className={styles.review_order_number}
                     >
-                      <img src={review.item?.thumbnail} />
-                      <div className={styles.review_item_info}>
-                        <p className={styles.brand}>{review?.brand?.name}</p>
-                        <p>{review?.item?.itemName}</p>
-                        <p className={styles.option}>
-                          옵션 : {review?.item?.color} | {review?.item?.size}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div className={styles.review_rate}>
-                      <ReviewRating value={review?.reviewRate} />
-                      <p>({review?.reviewRate})</p>
-                    </div>
-                  </td>
-                  <td>{formatDateTime(review?.writtenAt)}</td>
-                  {reviewState == ReviewState.Waiting && <td>작성하기</td>}
-                </TableRow>
-                {writtenReview && selectedReviewId == review.id && (
-                  <TableRow>
-                    <td colSpan={5}>
-                      <div className={styles.review_content_wrapper}>
-                        <p>{writtenReview?.content?.text}</p>
-                        <div className={styles.image_wrap}>
-                          {writtenReview?.content?.photos?.map((photo) => (
-                            <img src={photo.thumbnail} />
-                          ))}
-                        </div>
-                        <div className={styles.review_btn_wrap}>
-                          <button>수정</button>
-                          <button onClick={requestDeleteReview}>삭제</button>
+                      {review.orderNumber}
+                    </td>
+                    <td>
+                      <div
+                        className={styles.review_item_info_wrap}
+                        onClick={() => {
+                          if (isComplete) {
+                            setWrittenReview({});
+                            if (review.id == selectedReviewId)
+                              setSelectedReviewId("");
+                            else setSelectedReviewId(review.id);
+                          }
+                        }}
+                      >
+                        <img src={review.item?.thumbnail} />
+                        <div className={styles.review_item_info}>
+                          <p className={styles.brand}>{review?.brand?.name}</p>
+                          <p>{review?.item?.itemName}</p>
+                          <p className={styles.option}>
+                            옵션 : {review?.item?.color} | {review?.item?.size}
+                          </p>
                         </div>
                       </div>
                     </td>
+                    <td>
+                      <div className={styles.review_rate}>
+                        <ReviewRating value={review?.reviewRate} />
+                        <p>({review?.reviewRate})</p>
+                      </div>
+                    </td>
+                    <td>{formatDateTime(review?.writtenAt)}</td>
+                    {reviewState == ReviewState.Waiting && (
+                      <td>
+                        <button
+                          onClick={() => {
+                            setPatchMode(true);
+                            setSelectedReviewId(review.id);
+                          }}
+                          className={styles.create_button}
+                        >
+                          작성하기
+                        </button>
+                      </td>
+                    )}
                   </TableRow>
-                )}
-              </>
-            ))}
+                  {writtenReview &&
+                    isComplete &&
+                    selectedReviewId == review.id && (
+                      <TableRow>
+                        <td colSpan={5}>
+                          <div className={styles.review_content_wrapper}>
+                            {patchMode ? (
+                              <ReviewForm
+                                review={writtenReview}
+                                setReview={setWrittenReview}
+                                onSubmit={requestPatchReview}
+                              />
+                            ) : (
+                              <>
+                                <p>{writtenReview?.content?.text}</p>
+                                <div className={styles.image_wrap}>
+                                  {writtenReview?.content?.photos?.map(
+                                    (photo) => (
+                                      <img src={photo.thumbnail} />
+                                    ),
+                                  )}
+                                </div>
+                                <div className={styles.review_btn_wrap}>
+                                  <button onClick={() => setPatchMode(true)}>
+                                    수정
+                                  </button>
+                                  <button onClick={requestDeleteReview}>
+                                    삭제
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </TableRow>
+                    )}
+                  {patchMode &&
+                    !isComplete &&
+                    selectedReviewId == review.id && (
+                      <TableRow>
+                        <td colSpan={6}>
+                          <div className={styles.review_content_wrapper}>
+                            <ReviewForm
+                              review={writtenReview}
+                              setReview={setWrittenReview}
+                              onSubmit={requestPostReview}
+                            />
+                          </div>
+                        </td>
+                      </TableRow>
+                    )}
+                </>
+              );
+            })}
           </Table>
         ) : (
           <div className={styles.empty_review}>
@@ -190,19 +272,103 @@ export default function ReviewContent() {
   );
 }
 
-function ReviewForm({ review }) {
+function ReviewForm({ review, setReview, onSubmit = () => {} }) {
+  const [error, setError] = useState("");
+
+  const maxPhotoLength = 5;
+  const currentFileLength = useMemo(
+    () => review?.content?.photos?.length || 0,
+    [review?.content?.photos?.length],
+  );
+
+  console.log(error);
+
+  const fileInput = useRef(null);
+  const handleChange = (e) => {
+    const file = e.target.files[0];
+    const imageType = ["image/png", "image/jpg", "image/gif"];
+    if (!imageType.includes(file.type)) {
+      setError("이미지 파일만 첨부 가능합니다.");
+    } else {
+      const url = URL.createObjectURL(file);
+      const newFile = {
+        thumbnail: url,
+        id: currentFileLength,
+      };
+
+      setReview({
+        ...review,
+        content: {
+          ...review.content,
+          photos:
+            currentFileLength > 0
+              ? review?.content?.photos?.concat(newFile)
+              : [newFile],
+        },
+      });
+    }
+  };
   return (
-    <div className={styles.review_content_wrapper}>
-      <textarea />
+    <div className={styles.review_content_form}>
+      <textarea
+        value={review?.content?.text}
+        onChange={(e) =>
+          setReview({
+            ...review,
+            content: { ...review.content, text: e.target.value },
+          })
+        }
+      />
       <div className={styles.image_wrap}>
         {review?.content?.photos?.map((photo) => (
-          <div>
-            <img src={photo} />
+          <div className={styles.image}>
+            <img src={photo.thumbnail} />
+            <div
+              className={styles.delete_icon}
+              onClick={() =>
+                setReview({
+                  ...review,
+                  content: {
+                    ...review.content,
+                    photos: review.content.photos.filter(
+                      (e) => e.id !== photo.id,
+                    ),
+                  },
+                })
+              }
+            >
+              <ClearIcon />
+            </div>
           </div>
         ))}
+        {currentFileLength < maxPhotoLength && (
+          <>
+            <input
+              type="file"
+              ref={fileInput}
+              onChange={handleChange}
+              style={{ display: "none" }}
+            />
+            <div
+              className={styles.more_button}
+              onClick={() => fileInput.current.click()}
+            >
+              <AddIcon />
+            </div>
+          </>
+        )}
       </div>
+      {error && <p style={{ color: "red", textAlign: "right" }}>{error}</p>}
       <div className={styles.review_btn_wrap}>
-        <button>저장</button>
+        <button
+          onClick={() => {
+            if (!review?.content?.text || review?.content?.text.length < 10)
+              setError("후기는 10글자 이상 작성해주세요.");
+            else onSubmit();
+          }}
+        >
+          저장
+        </button>
       </div>
     </div>
   );

@@ -442,6 +442,27 @@
           }
           .image_wrap {
             @include flex($justify-content: flex-start);
+            .image {
+              position: relative;
+              .delete_icon {
+                position: absolute;
+                @include flex;
+
+                top: 0%;
+                right: 0%;
+
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                cursor: pointer;
+                background-color: $color-skeleton-100;
+                svg {
+                  width: 14px;
+                  height: 14px;
+                  color: $color-background-100;
+                }
+              }
+            }
             img {
               @include default-image;
               width: 50px;
@@ -450,6 +471,17 @@
               margin-right: $default;
             }
           }
+          .more_button {
+            background-color: $color-skeleton-200;
+            width: 50px;
+            height: 50px;
+            @include flex;
+            margin-top: 6px;
+            svg {
+              color: $color-background-100;
+            }
+          }
+
           .review_btn_wrap {
             @include flex($justify-content: flex-end);
             margin-top: $padding;
@@ -464,6 +496,19 @@
                 background-color: $color-skeleton-100;
               }
             }
+          }
+        }
+        .create_button {
+          background-color: $color-background-100;
+          border: 1px solid $color-skeleton-100;
+          padding: $default/2 $default;
+          border-radius: 4px;
+        }
+        .review_content_form {
+          textarea {
+            width: 100%;
+            height: 200px;
+            resize: none;
           }
         }
 

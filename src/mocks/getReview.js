@@ -4,11 +4,10 @@ export default function getReview(mock) {
   mock.onGet(/^\/api\/v1\/review\/(\d+)$/).reply((config) => {
     const urlSegments = config.url.split("/");
     const itemId = urlSegments[urlSegments.length - 1];
-    console.log(itemId);
 
     const status = 200;
     let data = {
-      id: itemId,
+      // id: itemId,
       ...collection,
     };
 
@@ -22,6 +21,7 @@ function fakerSubImage() {
 }
 
 let collection = {
+  id: faker.number.int(),
   orderNumber: faker.string.numeric(18),
   reviewRate: faker.number.int({ max: 5, min: 1 }),
   writtenAt: faker.date.past(),
@@ -30,6 +30,7 @@ let collection = {
     photos: new Array(faker.number.int({ max: 5, min: 0 }))
       .fill()
       .map((_, index) => ({
+        id: faker.number.int(),
         thumbnail: fakerSubImage(),
       })),
   },
