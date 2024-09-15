@@ -27,7 +27,7 @@ let collection = {
   writtenAt: faker.date.past(),
   content: {
     text: faker.lorem.paragraphs(),
-    photo: new Array(faker.number.int({ max: 5, min: 0 }))
+    photos: new Array(faker.number.int({ max: 5, min: 0 }))
       .fill()
       .map((_, index) => ({
         thumbnail: fakerSubImage(),

@@ -4,12 +4,14 @@ import classNames from "classnames";
 import { ReviewState } from "models/mypage";
 import { useNavigate } from "react-router-dom";
 
+import useReviewMutation from "hooks/mutation/useReviewMutation";
 import useReviewQuery from "hooks/query/useReviewQuery";
 import useReviewsQuery from "hooks/query/useReviewsQuery";
 import usePageQueryString from "hooks/queryString/usePageQueryString";
 import useQueryString from "hooks/queryString/useQueryString";
 
 import { LoadingLayer } from "components/common";
+import { ToastModal } from "components/modal";
 import ReviewRating from "components/pages/detail/ReviewRating";
 import { Table, TableRow } from "components/table";
 
@@ -22,6 +24,8 @@ import { MyPageLayout } from "../MyPageLayout";
 export default function ReviewContent() {
   const navigation = useNavigate();
 
+  const [toastMessage, setToastMessage] = useState("");
+
   const [reviewState, changeReviewState] = useQueryString(
     "reviewState",
     ReviewState.Waiting,
@@ -31,26 +35,48 @@ export default function ReviewContent() {
     usePageQueryString("page", 15);
   const handleChangePage = (_event, page) => changePage(page);
 
-  const { data: reviews, isLoading } = useReviewsQuery({
+  const {
+    data: reviews,
+    isLoading,
+    refetch,
+  } = useReviewsQuery({
     offset: offset,
     limit: limit,
     state: reviewState,
   });
 
-  const [selectedReview, setSelectedReview] = useState("");
-  const { data: writtenReview, isLoading: reviewLoading } = useReviewQuery(
-    selectedReview,
-    {
-      enabled: !!selectedReview,
+  const [selectedReviewId, setSelectedReviewId] = useState("");
+  const [writtenReview, setWrittenReview] = useState({});
+  const reviewQuery = useReviewQuery(selectedReviewId, {
+    enabled: !!selectedReviewId,
+    onSuccess: (res) => {
+      setWrittenReview(res);
     },
-  );
+  });
+
+  const reviewMutation = useReviewMutation(selectedReviewId, "delete");
+  async function requestDeleteReview() {
+    try {
+      await reviewMutation.mutateAsync();
+      setSelectedReviewId("");
+      refetch();
+      if (page > 1 && getPageCount(reviews?.total) < page) changePage(page - 1);
+      setToastMessage("삭제완료");
+    } catch (err) {
+      setToastMessage(err.message);
+    }
+  }
 
   useEffect(() => {
     changePage(1);
   }, [reviewState]);
 
   return (
-    <MyPageLayout childrenLoading={isLoading || reviewLoading}>
+    <MyPageLayout
+      childrenLoading={
+        isLoading || reviewQuery.isLoading || reviewMutation.isLoading
+      }
+    >
       <div className={styles.reviews_wrapper}>
         <div className={styles.review_tab_menu_wrapper}>
           {reviewMenuList.map((menu, index) => (
@@ -101,8 +127,9 @@ export default function ReviewContent() {
                     <div
                       className={styles.review_item_info_wrap}
                       onClick={() => {
-                        if (review.id == selectedReview) setSelectedReview("");
-                        else setSelectedReview(review.id);
+                        if (review.id == selectedReviewId)
+                          setSelectedReviewId("");
+                        else setSelectedReviewId(review.id);
                       }}
                     >
                       <img src={review.item?.thumbnail} />
@@ -124,11 +151,20 @@ export default function ReviewContent() {
                   <td>{formatDateTime(review?.writtenAt)}</td>
                   {reviewState == ReviewState.Waiting && <td>작성하기</td>}
                 </TableRow>
-                {writtenReview && selectedReview == review.id && (
+                {writtenReview && selectedReviewId == review.id && (
                   <TableRow>
                     <td colSpan={5}>
                       <div className={styles.review_content_wrapper}>
                         <p>{writtenReview?.content?.text}</p>
+                        <div className={styles.image_wrap}>
+                          {writtenReview?.content?.photos?.map((photo) => (
+                            <img src={photo.thumbnail} />
+                          ))}
+                        </div>
+                        <div className={styles.review_btn_wrap}>
+                          <button>수정</button>
+                          <button onClick={requestDeleteReview}>삭제</button>
+                        </div>
                       </div>
                     </td>
                   </TableRow>
@@ -144,7 +180,31 @@ export default function ReviewContent() {
           </div>
         )}
       </div>
+      {toastMessage && (
+        <ToastModal
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        />
+      )}
     </MyPageLayout>
+  );
+}
+
+function ReviewForm({ review }) {
+  return (
+    <div className={styles.review_content_wrapper}>
+      <textarea />
+      <div className={styles.image_wrap}>
+        {review?.content?.photos?.map((photo) => (
+          <div>
+            <img src={photo} />
+          </div>
+        ))}
+      </div>
+      <div className={styles.review_btn_wrap}>
+        <button>저장</button>
+      </div>
+    </div>
   );
 }
 
@@ -160,24 +220,3 @@ const reviewMenuList = [
     key: "complete",
   },
 ];
-
-{
-  /* <div className={styles.reviews_wrap}>
-            {reviews?.data.map((review, index) => (
-              <div className={styles.review_wrapper}>
-                <p className={styles.review_index}>{index + 1 + offset}</p>
-                <p className={styles.review_order_number}>
-                  {review?.orderNumber}
-                </p>
-                <div className={styles.review_item_info_wrap}>
-                  {review.item?.thumbnail}
-                  {review?.item?.color} || {review?.item?.size}
-                </div>
-                <p className={styles.review_rate}>{review?.reviewRate}</p>
-                <p className={styles.review_date}>
-                  {formatDateTime(review?.writtenAt)}
-                </p>
-              </div>
-            ))}
-          </div> */
-}

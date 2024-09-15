@@ -440,6 +440,31 @@
             line-height: 180%;
             white-space: pre-wrap;
           }
+          .image_wrap {
+            @include flex($justify-content: flex-start);
+            img {
+              @include default-image;
+              width: 50px;
+              height: 50px;
+              margin-top: $default;
+              margin-right: $default;
+            }
+          }
+          .review_btn_wrap {
+            @include flex($justify-content: flex-end);
+            margin-top: $padding;
+            button {
+              border: none;
+              background-color: $color-dark-300;
+              color: $color-background-100;
+              font-size: 14px;
+              padding: $default $padding;
+              &:first-child {
+                margin-right: $default;
+                background-color: $color-skeleton-100;
+              }
+            }
+          }
         }
 
         .empty_review {
