@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 
 import { Device } from "models/device";
 import { useLocation } from "react-router-dom";
@@ -28,7 +28,7 @@ export const CommonLayout = ({
   const isDeskTop = userDevice == Device.Desktop;
   const location = useLocation();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     scrollTop();
   }, []);
 

@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import OtherHousesOutlinedIcon from "@mui/icons-material/OtherHousesOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useSelector } from "react-redux";
@@ -25,7 +24,7 @@ export const MobileLayout = ({
   const navigation = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     scrollTop();
   }, []);
 

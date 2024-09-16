@@ -17,7 +17,7 @@ export const ApiClientQuery = ({ ...options }) => {
   mocking(ApiClient);
 
   const onSuccess = (response) => {
-    console.log(response.config.url, response);
+    // console.log(response.config.url, response);
     return response.data;
   };
   const onError = (error) => {
