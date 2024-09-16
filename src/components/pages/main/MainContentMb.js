@@ -231,7 +231,9 @@ export default function MainContentMb({ data, setToastMessage }) {
       </div>
       {/* brand news */}
       <div className={styles.brand_news_container}>
-        <p className={styles.section_title}>BRAND NEWS</p>
+        <p className={styles.section_title} style={{ paddingLeft: 16 }}>
+          BRAND NEWS
+        </p>
         <CustomSliderContainer
           settings={{
             infinite: true,
