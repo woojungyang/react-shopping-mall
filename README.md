@@ -5,7 +5,7 @@
 ## Demo
 
 [Live Demo](https://wootkeek.web.app/)
-[GitHub](https://github.com/woojungyang/react-shopping-mall)
+[GitHub](https://github.com/woojungyang/react-shopping-mall/tree/develop?tab=readme-ov-file)
 
 ---
 
