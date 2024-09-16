@@ -2,11 +2,17 @@
 
 **Wooteek**은 다양한 상품을 구매할 수 있는 복합 온라인 쇼핑몰입니다. React와 최신 웹 기술을 활용하여 구축된 Wooteek은 상품 검색, 필터링, 장바구니 관리 등 사용자에게 편리한 쇼핑 경험을 제공합니다.
 
+## Demo
+
+[Live Demo](https://your-deployment-link.com)
+[GitHub](https://github.com/woojungyang/react-shopping-mall)
+
 ---
 
 ## 목차
 
 - [Wooteek - 복합 쇼핑몰](#wooteek---복합-쇼핑몰)
+  - [Demo](#demo)
   - [목차](#목차)
   - [주요 기능](#주요-기능)
   - [기술 스택](#기술-스택)
@@ -39,7 +45,7 @@
 - **Daum Postcode API**: 주소 검색 기능을 제공합니다.
 - **Kakao Maps SDK**: 웹 애플리케이션 내 지도 기능을 구현.
 - **React Slick**: 반응형 슬라이더 컴포넌트.
-- **Nanoid**: 고유 ID 생성 라이브러리.
+- **Nanoid**: 구매 고유 ID 생성 라이브러리.
 
 ---
 
@@ -67,7 +73,7 @@
 - projectRoot/
   ├── public/
   ├── src/
-  │ ├── app/ # 메인 애플리케이션 설정 (라우팅 등)
+  │ ├── app/ # 메인 애플리케이션 설정
   │ ├── assets/ # 이미지, 폰트 등의 정적 자산
   │ ├── components/ # 재사용 가능한 UI 컴포넌트
   │ ├── constants/ # 애플리케이션 상수 값
@@ -75,6 +81,8 @@
   │ ├── mocks/ # Mock 데이터 및 API 요청
   │ ├── models/ # 데이터 모델 정의
   │ ├── pages/ # 주요 페이지
+  │ ├── routes/ # 라우팅
+  │ ├── styles/ # 사용자 정의 scss 파일
   │ ├── utilities/ # 유틸리티 함수 모음
   │ └── index.js # 메인 엔트리 포인트
   ├── .env # 환경 변수 파일
