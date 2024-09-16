@@ -53,7 +53,6 @@ export default function MainContentMb({ data, setToastMessage }) {
     <div className={styles.main_container_mb}>
       <div className={styles.slider_image_container}>
         <CustomSliderContainer
-          autoPlay={true}
           settings={{
             className: "center",
             centerMode: true,

@@ -312,7 +312,16 @@ export default function ItemDetailContent() {
                 />
                 <p>좋아요 {numberWithCommas(item?.likeCount)}</p>
               </div>
-              <div>
+              <div
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    setToastMessage("주소가 복사되었습니다!");
+                  } catch (err) {
+                    setToastMessage(err.message);
+                  }
+                }}
+              >
                 <ShareOutlinedIcon />
                 <p>공유하기</p>
               </div>

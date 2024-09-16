@@ -6,7 +6,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import { getQuestionStateLabel } from "models/notice";
-import { userToken } from "models/user";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -197,8 +196,18 @@ export default function ItemDetailContentMb() {
                 <KeyboardArrowRightIcon />
               </p>
 
-              <ShareOutlinedIcon className={styles.share_icon} />
-            </div>{" "}
+              <ShareOutlinedIcon
+                className={styles.share_icon}
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    setToastMessage("주소가 복사되었습니다!");
+                  } catch (err) {
+                    setToastMessage(err.message);
+                  }
+                }}
+              />
+            </div>
             <h1 className={styles.item_name}>{item?.itemName}</h1>
           </div>
           <div className={styles.price_information_wrapper}>
