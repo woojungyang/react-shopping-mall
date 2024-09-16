@@ -26,12 +26,7 @@ import usePageQueryString from "hooks/queryString/usePageQueryString";
 import { useScrollToElement } from "hooks/scroll/useScrollToElement";
 
 import { ItemCard, LikeHeart } from "components/card";
-import {
-  DefaultPagination,
-  ListContent,
-  Loading,
-  LoadingLayer,
-} from "components/common";
+import { DefaultPagination, ListContent, Loading } from "components/common";
 import { CommonLayout, DefaultButton } from "components/common";
 import {
   ColorOptions,
@@ -178,10 +173,12 @@ export default function ItemDetailContent() {
     }
   }
 
-  if (!item || isLoading || cartItemMutation.isLoading) return <LoadingLayer />;
-
   return (
-    <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
+    <CommonLayout
+      setToastMessage={setToastMessage}
+      toastMessage={toastMessage}
+      isLoading={!item || isLoading || cartItemMutation.isLoading}
+    >
       <div className={styles.item_detail_container}>
         <div className={styles.item_detail_wrapper}>
           <div className={styles.item_content_scroll_wrapper}>
@@ -306,11 +303,11 @@ export default function ItemDetailContent() {
                 }}
               >
                 <LikeHeart
-                  position={{ position: "relative" }}
-                  defaultColor="dark"
+                  position={{ position: "relative", top: "3px" }}
+                  defaultColor="skeleton"
                   like={like}
                 />
-                <p>좋아요 {numberWithCommas(item?.likeCount)}</p>
+                <p>좋아요 ({numberWithCommas(item?.likeCount)})</p>
               </div>
               <div
                 onClick={async () => {

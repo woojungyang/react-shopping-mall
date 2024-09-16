@@ -411,7 +411,6 @@ export default function ItemDetailContentMb() {
                 position={{ position: "relative" }}
                 defaultColor="skeleton"
                 like={like}
-                onClick={() => setLike(!like)}
               />
               <p>{numberWithCommas(item?.likeCount)}</p>
             </div>

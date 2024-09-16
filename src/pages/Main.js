@@ -6,7 +6,6 @@ import useOverviewQuery from "hooks/query/useOverviewQuery";
 import { useUserDevice } from "hooks/size/useUserDevice";
 
 import { CommonLayout } from "components/common";
-import { ToastModal } from "components/modal";
 import MainContent from "components/pages/main/MainContent";
 import MainContentMb from "components/pages/main/MainContentMb";
 

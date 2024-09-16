@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { ChevronRight } from "@mui/icons-material";
 import AppleIcon from "@mui/icons-material/Apple";
@@ -11,6 +11,7 @@ import { addLeadingZero } from "utilities";
 
 import { ItemCard, SmallCard } from "components/card";
 import { DefaultButton } from "components/common";
+import { ToastModal } from "components/modal";
 import {
   ChevronArrows,
   CustomSliderContainer,
@@ -53,18 +54,6 @@ export default function MainContent({ data }) {
   ];
   const [activeStyleCategory, setActiveStyleCategory] = useState(1);
 
-  const mainSlide = useMemo(() => data?.mainSlide || [], [data]);
-  const bestItems = useMemo(() => data?.bestItems || [], [data]);
-
-  const mdChoice = useMemo(() => data?.mdChoice || {}, [data]);
-  const events = useMemo(() => data?.events || [], [data]);
-  const clearances = useMemo(() => data?.clearances || {}, [data]);
-  const recommendedItems = useMemo(() => data?.recommendedItems || [], [data]);
-  const brands = useMemo(() => data?.brands || [], [data]);
-  const brandEvents = useMemo(() => data?.brandEvents || [], [data]);
-  const notices = useMemo(() => data?.notices || [], [data]);
-  const userStyles = useMemo(() => data?.userStyles || [], [data]);
-
   if (!data) return null;
 
   return (
@@ -83,13 +72,14 @@ export default function MainContent({ data }) {
               ref={progressBarWidth}
               style={{
                 width:
-                  calculatePercent(currentIndex, mainSlide?.length || 0) + "%",
+                  calculatePercent(currentIndex, data?.mainSlide?.length || 0) +
+                  "%",
               }}
             ></div>
           </div>
           <p className={styles.slider_index}>
             {addLeadingZero(currentIndex + 1)} /
-            {addLeadingZero(mainSlide?.length || 0)}
+            {addLeadingZero(data?.mainSlide?.length || 0)}
           </p>
         </div>
       </div>
@@ -104,7 +94,7 @@ export default function MainContent({ data }) {
             slidesToScroll: 1,
           }}
         >
-          {bestItems.map((item, index) => {
+          {data?.bestItems.map((item, index) => {
             return (
               <div key={index}>
                 <ItemCard
@@ -133,7 +123,7 @@ export default function MainContent({ data }) {
                 slidesToScroll: 1,
               }}
             >
-              {mdChoice?.banners?.map((banner, index) => (
+              {data?.mdChoice?.banners?.map((banner, index) => (
                 <div className={styles.md_pick_banner} key={index}>
                   <div className={styles.banner_copyright_wrap}>
                     <h1>AD COPYRIGHT{index}</h1>
@@ -165,7 +155,7 @@ export default function MainContent({ data }) {
             />
           </div>
           <div className={styles.md_pick_item_wrap}>
-            {mdChoice?.items?.map((item, index) => {
+            {data?.mdChoice?.items?.map((item, index) => {
               return (
                 <div key={index}>
                   <ItemCard
@@ -185,7 +175,7 @@ export default function MainContent({ data }) {
       <div className={styles.spotlight_container}>
         <h4 className={styles.section_title}>SPOTLIGHT</h4>
         <div className={styles.spotlight_wrapper}>
-          {events?.map((event, index) => (
+          {data?.events?.map((event, index) => (
             <div className={styles.spotlight_wrap} key={index}>
               <img src={event?.thumbnail} />
               <p className={styles.spotlight_title}>{event?.title}</p>
@@ -202,7 +192,7 @@ export default function MainContent({ data }) {
         <h4 className={styles.section_title}>CLEARANCE</h4>
         <FlexBoxSlider
           arrows={false}
-          totalCount={clearances?.items?.length || 0}
+          totalCount={data?.clearances?.items?.length || 0}
           settings={{
             infinite: false,
             speed: 500,
@@ -212,7 +202,7 @@ export default function MainContent({ data }) {
           banner={() => {
             return (
               <div className={styles.sale_banner_wrap}>
-                <img src={clearances?.banner?.url} />
+                <img src={data?.clearances?.banner?.url} />
                 <div className={styles.sale_banner_copyright}>
                   <p>subTitle</p>
                   <h1 className={styles.copyright_title}>AD COPYRIGHT</h1>
@@ -221,7 +211,7 @@ export default function MainContent({ data }) {
             );
           }}
         >
-          {clearances?.items?.map((item, index) => {
+          {data?.clearances?.items?.map((item, index) => {
             return (
               <div key={index}>
                 <ItemCard
@@ -265,7 +255,7 @@ export default function MainContent({ data }) {
               slidesToScroll: 5,
             }}
           >
-            {recommendedItems?.map((item, index) => (
+            {data?.recommendedItems?.map((item, index) => (
               <div key={index}>
                 <ItemCard
                   item={item}
@@ -283,7 +273,7 @@ export default function MainContent({ data }) {
       <div className={styles.brand_container}>
         <h4 className={styles.section_title}>BRAND NEWS</h4>
         <div className={styles.brand_wrapper}>
-          {brands.map((brand, index) => {
+          {data?.brands.map((brand, index) => {
             return (
               <div
                 key={index}
@@ -325,7 +315,7 @@ export default function MainContent({ data }) {
       <div className={styles.gallery_container}>
         <h4 className={styles.section_title}>DEEP IN FOCUS</h4>
         <div className={styles.selected_keyword_item_wrapper}>
-          {brandEvents?.map((brandEvent, index) => (
+          {data?.brandEvents?.map((brandEvent, index) => (
             <div key={index} className={styles.selected_keyword_item_wrap}>
               <div className={styles.brand_thumbnail_wrap}>
                 <img
@@ -367,7 +357,7 @@ export default function MainContent({ data }) {
         </div>
 
         <div className={styles.style_image_wrapper}>
-          {userStyles?.map((userStyle, index) => (
+          {data?.userStyles?.map((userStyle, index) => (
             <div className={styles.image_wrap} key={index}>
               <img src={userStyle?.avatar} className={styles.style_image} />
               <p className={styles.user_name}>
@@ -428,7 +418,7 @@ export default function MainContent({ data }) {
               </span>
             </div>
             <div>
-              {notices?.map((notice, index) => (
+              {data?.notices?.map((notice, index) => (
                 <div
                   key={index}
                   className={styles.default_flex_space}
@@ -472,6 +462,12 @@ export default function MainContent({ data }) {
           </div>
         </div>
       </div>
+      {toastMessage && (
+        <ToastModal
+          toastMessage={toastMessage}
+          setToastMessage={setToastMessage}
+        />
+      )}
     </div>
   );
 }

@@ -11,7 +11,8 @@ export const LikeHeart = ({
   position = { top: "3%", right: "3%" },
   defaultColor = "white",
 }) => {
-  const [heart, setHeart] = useState(like);
+  const [heart, setHeart] = useState(false);
+  const getHeart = useMemo(() => setHeart(like), [like]);
   const navigation = useNavigate();
 
   function LikeItem(event) {

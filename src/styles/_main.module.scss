@@ -462,6 +462,9 @@
   position: relative;
   width: 100vw;
   height: 83vh;
+  @include tablet {
+    height: 70vh;
+  }
 
   overflow: hidden;
 
