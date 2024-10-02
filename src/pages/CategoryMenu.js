@@ -105,11 +105,12 @@ export default function CategoryMenu() {
                 <div className={styles.second_depth}>
                   {cate?.depth.map((cate2) => (
                     <p
-                      onClick={() =>
+                      onClick={() => {
                         navigation(
                           `/category/${selectedCategory}?subCategory=${cate.id}&smallCategory=${cate2.id}`,
-                        )
-                      }
+                        );
+                        window.localStorage.removeItem("promotion");
+                      }}
                     >
                       {cate2.label}
                     </p>

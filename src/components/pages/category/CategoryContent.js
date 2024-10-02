@@ -7,8 +7,6 @@ import React, {
 } from "react";
 
 import AppsIcon from "@mui/icons-material/Apps";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import classNames from "classnames";
@@ -29,11 +27,7 @@ import {
   Loading,
   LoadingLayer,
 } from "components/common";
-import {
-  CustomSliderContainer,
-  FlexBoxSlider,
-  ScrollableSlider,
-} from "components/slider";
+import { FlexBoxSlider, ScrollableSlider } from "components/slider";
 
 import styles from "styles/_category.module.scss";
 
@@ -42,6 +36,7 @@ import PopUpCard from "./PopUpCard";
 export default function CategoryContent() {
   const navigation = useNavigate();
   const [searchParams] = useSearchParams();
+
   const { id: categoryName } = useParams();
   const category = { category: categoryName };
 
@@ -85,19 +80,12 @@ export default function CategoryContent() {
     depth: smallCategory,
   });
 
-  const updateSubCategory = useMemo(
-    () =>
-      setCurrentSubCategory({
-        id: subCategory || subCategories[0].id,
-        depth: smallCategory,
-      }),
-    [subCategory, smallCategory],
-  );
-
   const [scrollLoading, setScrollLoading] = useState(false);
 
+  const showPromotion = window.localStorage.getItem("promotion");
+
   useEffect(() => {
-    if (!!subCategory) {
+    if (!!showPromotion && (!!subCategory || !!smallCategory)) {
       setScrollLoading(true);
 
       const timer = setTimeout(() => {
@@ -137,13 +125,30 @@ export default function CategoryContent() {
     scrollTop();
   }, [categoryName]);
 
+  useEffect(() => {
+    if (!!subCategory) {
+      const findSubCategory = subCategories
+        ?.find((e) => e.id == subCategory)
+        .depth?.find((depth) => depth?.id == smallCategory);
+      if (!findSubCategory) {
+        const newSearchParams = new URLSearchParams(searchParams);
+
+        newSearchParams.delete("smallCategory");
+
+        navigation("?" + newSearchParams.toString(), {
+          replace: true,
+        });
+      }
+    }
+  }, [subCategory, smallCategory]);
+
   return (
     <CommonLayout setToastMessage={setToastMessage} toastMessage={toastMessage}>
       <div className={styles.category_container}>
         {(overviewLoading || isLoading || isFetching || scrollLoading) && (
           <LoadingLayer />
         )}
-        {!subCategory && (
+        {!!showPromotion && (
           <>
             {/* PROMOTION */}
             <div className={styles.exhibition_container}>
@@ -255,15 +260,6 @@ export default function CategoryContent() {
                       };
                       setCurrentSubCategory(newCategory);
                       changeSubCategory(newCategory.id);
-                      const newSearchParams = new URLSearchParams(searchParams);
-
-                      if (!newCategory?.depth?.length) {
-                        newSearchParams.delete("smallCategory");
-                      }
-
-                      navigation("?" + newSearchParams.toString(), {
-                        replace: true,
-                      });
                     }}
                     className={classNames({
                       [styles.sub_category]: true,
@@ -283,7 +279,7 @@ export default function CategoryContent() {
                           key={index}
                           onClick={() => {
                             setCurrentSubCategory({
-                              id: subCategory.id,
+                              ...currentSubCategory,
                               depth: depth.id,
                             });
                             changeSmallCategory(depth.id);

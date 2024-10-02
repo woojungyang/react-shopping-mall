@@ -198,6 +198,7 @@
         border-bottom: 2.3px solid $color-dark-300;
       }
       .depth_wrapper {
+        margin-bottom: $margin;
         background-color: rgba($color-skeleton-100, 0.1);
         padding: $margin;
         .depth {

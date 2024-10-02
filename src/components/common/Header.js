@@ -202,11 +202,12 @@ export default function Header() {
                       <div key={index} className={styles.hover_menu}>
                         <p
                           className={styles.hover_menu_subcategory}
-                          onClick={() =>
+                          onClick={() => {
                             navigation(
                               `/category/${hoverElement}?subCategory=${cate1.id}`,
-                            )
-                          }
+                            );
+                            window.localStorage.removeItem("promotion");
+                          }}
                         >
                           {cate1.label}
                           <ChevronRightIcon />
@@ -219,6 +220,7 @@ export default function Header() {
                                   navigation(
                                     `/category/${hoverElement}?subCategory=${cate1.id}&smallCategory=${depth.id}`,
                                   );
+                                  window.localStorage.removeItem("promotion");
                                   handleMouseLeave();
                                 }}
                               >
@@ -352,7 +354,10 @@ function MenuList({
                 [styles.default_scroll_menu]: !isDeskTop,
                 current_menu: checkCurrentMenu,
               })}
-              onClick={() => navigation(menu.link)}
+              onClick={() => {
+                navigation(menu.link);
+                if (isDeskTop) window.localStorage.setItem("promotion", true);
+              }}
             >
               {menu.name}
             </p>

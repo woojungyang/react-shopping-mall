@@ -84,6 +84,7 @@ export default function CategoryContentMb() {
   const [zoomIn, setZoomIn] = useState(false);
 
   const subCategories = getSubCategory(categoryName);
+  const showPromotion = window.localStorage.getItem("promotion");
 
   const [subCategory, changeSubCategory] = useQueryString("subCategory", "");
   const [smallCategory, changeSmallCategory] = useQueryString(
@@ -168,7 +169,7 @@ export default function CategoryContentMb() {
         <LoadingLayer />
       )}
       <div className={styles.mobile_category_container}>
-        {!subCategory && (
+        {showPromotion && (
           <>
             <div className={styles.exhibition_container}>
               <p className={styles.section_title}>PROMOTION</p>
